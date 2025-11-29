@@ -1,0 +1,44 @@
+export type UserRole = 'technician' | 'manager' | 'admin';
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  phone: string | null;
+  avatar: string | null;
+  isActive: boolean;
+  lastLogin: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  user: User;
+  token: string;
+}
+
+export interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+  role?: UserRole;
+  phone?: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  error: string | null;
+}

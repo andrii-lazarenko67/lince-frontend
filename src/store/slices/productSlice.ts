@@ -1,0 +1,209 @@
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axiosInstance from '../../api/axiosInstance';
+import { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest, RecordUsageRequest } from '../../types';
+import { setLoading } from './uiSlice';
+
+const initialState: ProductState = {
+  products: [],
+  currentProduct: null,
+  usageHistory: [],
+  error: null
+};
+
+export const fetchProducts = createAsyncThunk(
+  'products/fetchAll',
+  async (params: { isActive?: boolean; lowStock?: boolean } = {}, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get<{ success: boolean; data: Product[] }>('/products', { params });
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch products');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const fetchProductById = createAsyncThunk(
+  'products/fetchById',
+  async (id: number, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get<{ success: boolean; data: Product }>(`/products/${id}`);
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const createProduct = createAsyncThunk(
+  'products/create',
+  async (data: CreateProductRequest, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.post<{ success: boolean; data: Product }>('/products', data);
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to create product');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  'products/update',
+  async ({ id, data }: { id: number; data: UpdateProductRequest }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.put<{ success: boolean; data: Product }>(`/products/${id}`, data);
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to update product');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const recordProductUsage = createAsyncThunk(
+  'products/recordUsage',
+  async ({ id, data }: { id: number; data: RecordUsageRequest }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.post<{ success: boolean; data: ProductUsage }>(`/products/${id}/usage`, data);
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to record usage');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const fetchProductUsageHistory = createAsyncThunk(
+  'products/fetchUsageHistory',
+  async ({ id, params }: { id: number; params?: { startDate?: string; endDate?: string } }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get<{ success: boolean; data: ProductUsage[] }>(`/products/${id}/usage`, { params });
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch usage history');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const updateStock = createAsyncThunk(
+  'products/updateStock',
+  async ({ id, quantity, type, notes }: { id: number; quantity: number; type: 'add' | 'remove'; notes?: string }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.put<{ success: boolean; data: Product }>(`/products/${id}/stock`, { quantity, type, notes });
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to update stock');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  'products/delete',
+  async (id: number, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      await axiosInstance.delete(`/products/${id}`);
+      return id;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to delete product');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+const productSlice = createSlice({
+  name: 'products',
+  initialState,
+  reducers: {
+    clearError: (state) => {
+      state.error = null;
+    },
+    clearCurrentProduct: (state) => {
+      state.currentProduct = null;
+    },
+    clearUsageHistory: (state) => {
+      state.usageHistory = [];
+    }
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.products = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchProductById.fulfilled, (state, action) => {
+        state.currentProduct = action.payload;
+        state.error = null;
+      })
+      .addCase(createProduct.fulfilled, (state, action) => {
+        state.products.unshift(action.payload);
+        state.error = null;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const index = state.products.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+        if (state.currentProduct?.id === action.payload.id) {
+          state.currentProduct = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(recordProductUsage.fulfilled, (state, action) => {
+        state.usageHistory.unshift(action.payload);
+        const product = state.products.find(p => p.id === action.payload.productId);
+        if (product) {
+          product.currentStock = (parseFloat(product.currentStock.toString()) - parseFloat(action.payload.quantity.toString())).toString();
+        }
+        state.error = null;
+      })
+      .addCase(fetchProductUsageHistory.fulfilled, (state, action) => {
+        state.usageHistory = action.payload;
+        state.error = null;
+      })
+      .addCase(updateStock.fulfilled, (state, action) => {
+        const index = state.products.findIndex(p => p.id === action.payload.id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+        if (state.currentProduct?.id === action.payload.id) {
+          state.currentProduct = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.products = state.products.filter(p => p.id !== action.payload);
+        state.error = null;
+      });
+  }
+});
+
+export const { clearError, clearCurrentProduct, clearUsageHistory } = productSlice.actions;
+export default productSlice.reducer;
