@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector, useAppNavigation } from '../../../hooks';
 import { Table, Badge } from '../../../components/common';
-import { Inspection } from '../../../types';
+import type { Inspection } from '../../../types';
 
 const InspectionsList: React.FC = () => {
   const { inspections } = useAppSelector((state) => state.inspections);
@@ -50,7 +50,7 @@ const InspectionsList: React.FC = () => {
       header: 'Items',
       render: (inspection: Inspection) => {
         const total = inspection.items?.length || 0;
-        const passed = inspection.items?.filter(i => i.passed).length || 0;
+        const passed = inspection.items?.filter(i => i.status === 'pass').length || 0;
         return (
           <span>
             {passed}/{total} passed

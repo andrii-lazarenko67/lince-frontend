@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createInspection, fetchChecklistItems } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, Input, TextArea, Checkbox, FileUpload } from '../../components/common';
+import { Card, Button, Select, Input, TextArea, FileUpload } from '../../components/common';
 
 interface ItemValue {
   checklistItemId: number;
-  passed: boolean;
-  value?: string;
-  notes: string;
+  status: 'pass' | 'fail' | 'na';
+  comment: string;
 }
 
 const NewInspectionPage: React.FC = () => {
@@ -26,7 +25,7 @@ const NewInspectionPage: React.FC = () => {
   const [photos, setPhotos] = useState<File[]>([]);
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   useEffect(() => {
@@ -39,9 +38,8 @@ const NewInspectionPage: React.FC = () => {
     if (checklistItems.length > 0) {
       setItems(checklistItems.map(ci => ({
         checklistItemId: ci.id,
-        passed: false,
-        value: '',
-        notes: ''
+        status: 'na' as const,
+        comment: ''
       })));
     }
   }, [checklistItems]);
@@ -53,7 +51,7 @@ const NewInspectionPage: React.FC = () => {
     });
   };
 
-  const handleItemChange = (index: number, field: 'passed' | 'value' | 'notes', value: boolean | string) => {
+  const handleItemChange = (index: number, field: 'status' | 'comment', value: string) => {
     const newItems = [...items];
     newItems[index] = { ...newItems[index], [field]: value };
     setItems(newItems);
@@ -77,11 +75,9 @@ const NewInspectionPage: React.FC = () => {
       conclusion: formData.conclusion || undefined,
       items: items.map(item => ({
         checklistItemId: item.checklistItemId,
-        passed: item.passed,
-        value: item.value ? parseFloat(item.value) : undefined,
-        notes: item.notes || undefined
-      })),
-      photos: photos.length > 0 ? photos : undefined
+        status: item.status,
+        comment: item.comment || undefined
+      }))
     }));
 
     if (createInspection.fulfilled.match(result)) {
@@ -90,6 +86,11 @@ const NewInspectionPage: React.FC = () => {
   };
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const statusOptions = [
+    { value: 'pass', label: 'Pass' },
+    { value: 'fail', label: 'Fail' },
+    { value: 'na', label: 'N/A' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -135,38 +136,28 @@ const NewInspectionPage: React.FC = () => {
               {checklistItems.map((ci, index) => (
                 <div key={ci.id} className="p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-start justify-between mb-2">
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-900">{ci.name}</p>
                       {ci.description && (
                         <p className="text-sm text-gray-500">{ci.description}</p>
                       )}
                     </div>
-                    <Checkbox
-                      name={`passed-${ci.id}`}
-                      checked={items[index]?.passed || false}
-                      onChange={(e) => handleItemChange(index, 'passed', e.target.checked)}
-                      label="Passed"
-                    />
+                    <div className="w-32 ml-4">
+                      <Select
+                        name={`status-${ci.id}`}
+                        value={items[index]?.status || 'na'}
+                        onChange={(e) => handleItemChange(index, 'status', e.target.value)}
+                        options={statusOptions}
+                      />
+                    </div>
                   </div>
-
-                  {ci.type === 'value' && (
-                    <Input
-                      type="number"
-                      name={`value-${ci.id}`}
-                      value={items[index]?.value || ''}
-                      onChange={(e) => handleItemChange(index, 'value', e.target.value)}
-                      placeholder="Enter value"
-                      step="0.01"
-                      className="mb-2"
-                    />
-                  )}
 
                   <Input
                     type="text"
-                    name={`notes-${ci.id}`}
-                    value={items[index]?.notes || ''}
-                    onChange={(e) => handleItemChange(index, 'notes', e.target.value)}
-                    placeholder="Notes (optional)"
+                    name={`comment-${ci.id}`}
+                    value={items[index]?.comment || ''}
+                    onChange={(e) => handleItemChange(index, 'comment', e.target.value)}
+                    placeholder="Comment (optional)"
                   />
                 </div>
               ))}

@@ -1,12 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest, RecordUsageRequest } from '../../types';
+import type { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
 import { setLoading } from './uiSlice';
+
+interface RecordUsageRequest {
+  systemId: number;
+  quantity: number;
+  notes?: string;
+}
 
 const initialState: ProductState = {
   products: [],
   currentProduct: null,
-  usageHistory: [],
+  usages: [],
   error: null
 };
 
@@ -148,8 +154,8 @@ const productSlice = createSlice({
     clearCurrentProduct: (state) => {
       state.currentProduct = null;
     },
-    clearUsageHistory: (state) => {
-      state.usageHistory = [];
+    clearUsages: (state) => {
+      state.usages = [];
     }
   },
   extraReducers: (builder) => {
@@ -177,15 +183,15 @@ const productSlice = createSlice({
         state.error = null;
       })
       .addCase(recordProductUsage.fulfilled, (state, action) => {
-        state.usageHistory.unshift(action.payload);
+        state.usages.unshift(action.payload);
         const product = state.products.find(p => p.id === action.payload.productId);
         if (product) {
-          product.currentStock = (parseFloat(product.currentStock.toString()) - parseFloat(action.payload.quantity.toString())).toString();
+          product.currentStock = parseFloat(product.currentStock.toString()) - parseFloat(action.payload.quantity.toString());
         }
         state.error = null;
       })
       .addCase(fetchProductUsageHistory.fulfilled, (state, action) => {
-        state.usageHistory = action.payload;
+        state.usages = action.payload;
         state.error = null;
       })
       .addCase(updateStock.fulfilled, (state, action) => {
@@ -205,5 +211,5 @@ const productSlice = createSlice({
   }
 });
 
-export const { clearError, clearCurrentProduct, clearUsageHistory } = productSlice.actions;
+export const { clearError, clearCurrentProduct, clearUsages } = productSlice.actions;
 export default productSlice.reducer;

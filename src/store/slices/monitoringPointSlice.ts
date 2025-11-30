@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { MonitoringPoint, MonitoringPointState, CreateMonitoringPointRequest, UpdateMonitoringPointRequest } from '../../types';
+import type { MonitoringPoint, MonitoringPointState, CreateMonitoringPointRequest, UpdateMonitoringPointRequest } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: MonitoringPointState = {

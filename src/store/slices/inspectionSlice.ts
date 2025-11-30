@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest } from '../../types';
+import type { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: InspectionState = {

@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDocuments, uploadDocument, searchDocuments } from '../../store/slices/librarySlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Input, Select, Table, Badge, Modal, TextArea, FileUpload } from '../../components/common';
-import { Document } from '../../types';
+import type { Document } from '../../types';
 
 const LibraryPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -24,7 +24,7 @@ const LibraryPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchDocuments({}));
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   const handleSearch = () => {
@@ -41,14 +41,14 @@ const LibraryPage: React.FC = () => {
   };
 
   const handleUpload = async () => {
-    if (!selectedFile || !uploadData.title) {
-      alert('Please provide a title and select a file');
+    if (!selectedFile || !uploadData.title || !uploadData.category) {
+      alert('Please provide a title, category, and select a file');
       return;
     }
 
     const result = await dispatch(uploadDocument({
       title: uploadData.title,
-      category: uploadData.category || undefined,
+      category: uploadData.category,
       description: uploadData.description || undefined,
       systemId: uploadData.systemId ? Number(uploadData.systemId) : undefined,
       file: selectedFile

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Document, LibraryState, CreateDocumentRequest, UpdateDocumentRequest } from '../../types';
+import type { Document, LibraryState, CreateDocumentRequest, UpdateDocumentRequest } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: LibraryState = {

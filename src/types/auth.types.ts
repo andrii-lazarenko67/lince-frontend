@@ -31,6 +31,22 @@ export interface RegisterRequest {
   phone?: string;
 }
 
+export interface CreateUserRequest {
+  name: string;
+  email: string;
+  password: string;
+  role: UserRole;
+  phone?: string;
+}
+
+export interface UpdateUserRequest {
+  name?: string;
+  email?: string;
+  role?: UserRole;
+  phone?: string;
+  isActive?: boolean;
+}
+
 export interface ChangePasswordRequest {
   currentPassword: string;
   newPassword: string;

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDailyLogById } from '../../store/slices/dailyLogSlice';
 import { Card, Badge, Table } from '../../components/common';
-import { DailyLogEntry } from '../../types';
+import type { DailyLogEntry } from '../../types';
 
 const DailyLogDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,7 +46,7 @@ const DailyLogDetailPage: React.FC = () => {
       header: 'Expected Range',
       render: (entry: DailyLogEntry) => {
         const mp = entry.monitoringPoint;
-        return mp?.minValue !== null && mp?.maxValue !== null
+        return mp && mp.minValue !== null && mp.maxValue !== null
           ? `${mp.minValue} - ${mp.maxValue}`
           : '-';
       }

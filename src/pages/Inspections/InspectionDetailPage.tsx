@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspectionById, approveInspection } from '../../store/slices/inspectionSlice';
 import { Card, Badge, Table, Button, Modal, TextArea } from '../../components/common';
-import { InspectionItem } from '../../types';
+import type { InspectionItem } from '../../types';
 
 const InspectionDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -58,23 +58,18 @@ const InspectionDetailPage: React.FC = () => {
       )
     },
     {
-      key: 'passed',
+      key: 'status',
       header: 'Result',
-      render: (item: InspectionItem) => (
-        <Badge variant={item.passed ? 'success' : 'danger'}>
-          {item.passed ? 'Passed' : 'Failed'}
-        </Badge>
-      )
+      render: (item: InspectionItem) => {
+        const variant = item.status === 'pass' ? 'success' : item.status === 'fail' ? 'danger' : 'secondary';
+        const label = item.status === 'pass' ? 'Passed' : item.status === 'fail' ? 'Failed' : 'N/A';
+        return <Badge variant={variant}>{label}</Badge>;
+      }
     },
     {
-      key: 'value',
-      header: 'Value',
-      render: (item: InspectionItem) => item.value || '-'
-    },
-    {
-      key: 'notes',
-      header: 'Notes',
-      render: (item: InspectionItem) => item.notes || '-'
+      key: 'comment',
+      header: 'Comment',
+      render: (item: InspectionItem) => item.comment || '-'
     }
   ];
 
@@ -86,7 +81,7 @@ const InspectionDetailPage: React.FC = () => {
     );
   }
 
-  const passedCount = currentInspection.items?.filter(i => i.passed).length || 0;
+  const passedCount = currentInspection.items?.filter(i => i.status === 'pass').length || 0;
   const totalCount = currentInspection.items?.length || 0;
   const isManager = user?.role === 'manager';
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector, useAppNavigation } from '../../../hooks';
 import { Table, Badge } from '../../../components/common';
-import { System } from '../../../types';
+import type { System } from '../../../types';
 
 const SystemsList: React.FC = () => {
   const { systems } = useAppSelector((state) => state.systems);

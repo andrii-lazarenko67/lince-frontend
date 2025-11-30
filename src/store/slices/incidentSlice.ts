@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest } from '../../types';
+import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: IncidentState = {

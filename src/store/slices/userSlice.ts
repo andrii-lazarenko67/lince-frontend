@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { User } from '../../types';
+import type { User } from '../../types';
 import { setLoading } from './uiSlice';
 
 interface UserState {

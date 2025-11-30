@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppSelector, useAppNavigation } from '../../../hooks';
 import { Table, Badge } from '../../../components/common';
-import { DailyLog } from '../../../types';
+import type { DailyLog } from '../../../types';
 
 const DailyLogsList: React.FC = () => {
   const { dailyLogs } = useAppSelector((state) => state.dailyLogs);
@@ -21,13 +21,6 @@ const DailyLogsList: React.FC = () => {
       key: 'system',
       header: 'System',
       render: (log: DailyLog) => log.system?.name || '-'
-    },
-    {
-      key: 'shift',
-      header: 'Shift',
-      render: (log: DailyLog) => (
-        <span className="capitalize">{log.shift}</span>
-      )
     },
     {
       key: 'user',

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
-import { Card, Button, Table, Badge, Modal, Input, TextArea, Select } from '../../components/common';
-import { Product, CreateProductRequest } from '../../types';
+import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import type { Product, CreateProductRequest } from '../../types';
 
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -190,7 +190,7 @@ const ProductsPage: React.FC = () => {
             <Input
               type="number"
               name="currentStock"
-              value={formData.currentStock}
+              value={formData.currentStock ?? 0}
               onChange={handleChange}
               label="Current Stock"
               min={0}

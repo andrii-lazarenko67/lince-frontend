@@ -1,5 +1,3 @@
-import { System } from './system.types';
-
 export interface MonitoringPoint {
   id: number;
   systemId: number;
@@ -10,7 +8,6 @@ export interface MonitoringPoint {
   maxValue: number | null;
   alertEnabled: boolean;
   isActive: boolean;
-  system?: System;
   createdAt: string;
   updatedAt: string;
 }

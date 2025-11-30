@@ -92,7 +92,7 @@ const DocumentDetailPage: React.FC = () => {
             Upload New Version
           </Button>
           <a
-            href={currentDocument.url}
+            href={currentDocument.fileUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700"
@@ -134,7 +134,7 @@ const DocumentDetailPage: React.FC = () => {
             )}
             <div>
               <dt className="text-sm font-medium text-gray-500">Uploaded By</dt>
-              <dd className="mt-1 text-gray-900">{currentDocument.uploadedBy?.name || '-'}</dd>
+              <dd className="mt-1 text-gray-900">{currentDocument.uploader?.name || '-'}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Created At</dt>
@@ -163,7 +163,7 @@ const DocumentDetailPage: React.FC = () => {
       {currentDocument.fileType && ['jpg', 'jpeg', 'png', 'gif'].includes(currentDocument.fileType.toLowerCase()) && (
         <Card title="Preview">
           <img
-            src={currentDocument.url}
+            src={currentDocument.fileUrl}
             alt={currentDocument.title}
             className="max-w-full h-auto rounded-lg"
           />
@@ -173,7 +173,7 @@ const DocumentDetailPage: React.FC = () => {
       {currentDocument.fileType === 'pdf' && (
         <Card title="Preview">
           <iframe
-            src={currentDocument.url}
+            src={currentDocument.fileUrl}
             title={currentDocument.title}
             className="w-full h-96 rounded-lg"
           />

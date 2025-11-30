@@ -9,7 +9,7 @@ const SystemsPage: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   return (

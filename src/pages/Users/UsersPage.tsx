@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers, createUser, updateUser, deleteUser } from '../../store/slices/userSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
-import { User, CreateUserRequest } from '../../types';
+import type { User, CreateUserRequest } from '../../types';
 
 const UsersPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -21,7 +21,7 @@ const UsersPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(fetchUsers({}));
   }, [dispatch]);
 
   const handleOpenForm = (user?: User) => {
@@ -145,10 +145,10 @@ const UsersPage: React.FC = () => {
       header: 'Actions',
       render: (user: User) => (
         <div className="flex space-x-2">
-          <Button size="sm" variant="outline" onClick={(e) => { e.stopPropagation(); handleOpenForm(user); }}>
+          <Button size="sm" variant="outline" onClick={() => handleOpenForm(user)}>
             Edit
           </Button>
-          <Button size="sm" variant="danger" onClick={(e) => { e.stopPropagation(); setDeletingUser(user); setIsDeleteOpen(true); }}>
+          <Button size="sm" variant="danger" onClick={() => { setDeletingUser(user); setIsDeleteOpen(true); }}>
             Delete
           </Button>
         </div>

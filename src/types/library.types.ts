@@ -1,5 +1,5 @@
-import { User } from './auth.types';
-import { System } from './system.types';
+import type { User } from './auth.types';
+import type { System } from './system.types';
 
 export interface Document {
   id: number;

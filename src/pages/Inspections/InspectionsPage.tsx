@@ -18,7 +18,7 @@ const InspectionsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
     dispatch(fetchInspections({}));
   }, [dispatch]);
 

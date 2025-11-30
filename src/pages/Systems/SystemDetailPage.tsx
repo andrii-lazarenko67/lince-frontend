@@ -5,7 +5,7 @@ import { fetchSystemById, deleteSystem } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
 import { Card, Button, Badge, Table, Modal } from '../../components/common';
 import { SystemForm } from './sections';
-import { MonitoringPoint } from '../../types';
+import type { MonitoringPoint } from '../../types';
 
 const SystemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,7 +20,7 @@ const SystemDetailPage: React.FC = () => {
   useEffect(() => {
     if (id) {
       dispatch(fetchSystemById(Number(id)));
-      dispatch(fetchMonitoringPoints(Number(id)));
+      dispatch(fetchMonitoringPoints({ systemId: Number(id) }));
     }
   }, [dispatch, id]);
 

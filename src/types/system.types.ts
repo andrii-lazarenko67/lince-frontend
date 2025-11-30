@@ -1,7 +1,18 @@
-import { MonitoringPoint } from './monitoringPoint.types';
-import { ChecklistItem } from './inspection.types';
+import type { MonitoringPoint } from './monitoringPoint.types';
 
 export type SystemStatus = 'active' | 'inactive' | 'maintenance';
+
+export interface ChecklistItem {
+  id: number;
+  systemId: number;
+  name: string;
+  description: string | null;
+  isRequired: boolean;
+  order: number;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface System {
   id: number;

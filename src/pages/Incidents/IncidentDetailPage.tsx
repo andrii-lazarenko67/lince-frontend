@@ -24,7 +24,7 @@ const IncidentDetailPage: React.FC = () => {
     if (id) {
       dispatch(fetchIncidentById(Number(id)));
     }
-    dispatch(fetchUsers());
+    dispatch(fetchUsers({}));
   }, [dispatch, id]);
 
   const handleStatusUpdate = async () => {
@@ -154,7 +154,7 @@ const IncidentDetailPage: React.FC = () => {
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Assigned To</dt>
-              <dd className="mt-1 text-gray-900">{currentIncident.assignedTo?.name || 'Not assigned'}</dd>
+              <dd className="mt-1 text-gray-900">{currentIncident.assignee?.name || 'Not assigned'}</dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Created At</dt>
@@ -217,7 +217,7 @@ const IncidentDetailPage: React.FC = () => {
                     {new Date(comment.createdAt).toLocaleString()}
                   </span>
                 </div>
-                <p className="text-gray-700">{comment.comment}</p>
+                <p className="text-gray-700">{comment.content}</p>
               </div>
             ))
           ) : (

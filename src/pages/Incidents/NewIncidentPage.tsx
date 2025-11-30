@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createIncident } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Select, Input, TextArea, FileUpload } from '../../components/common';
+import type { IncidentPriority } from '../../types';
 
 const NewIncidentPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,7 +20,7 @@ const NewIncidentPage: React.FC = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -53,7 +54,7 @@ const NewIncidentPage: React.FC = () => {
       systemId: Number(formData.systemId),
       title: formData.title,
       description: formData.description,
-      priority: formData.priority,
+      priority: formData.priority as IncidentPriority,
       photos: photos.length > 0 ? photos : undefined
     }));
 

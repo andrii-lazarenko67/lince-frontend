@@ -1,6 +1,6 @@
-import { User } from './auth.types';
-import { System } from './system.types';
-import { MonitoringPoint } from './monitoringPoint.types';
+import type { User } from './auth.types';
+import type { System } from './system.types';
+import type { MonitoringPoint } from './monitoringPoint.types';
 
 export interface DailyLogEntry {
   id: number;
@@ -8,16 +8,20 @@ export interface DailyLogEntry {
   monitoringPointId: number;
   value: number;
   isOutOfRange: boolean;
+  notes: string | null;
   monitoringPoint?: MonitoringPoint;
   createdAt: string;
   updatedAt: string;
 }
+
+export type ShiftType = 'morning' | 'afternoon' | 'night';
 
 export interface DailyLog {
   id: number;
   userId: number;
   systemId: number;
   date: string;
+  shift: ShiftType;
   notes: string | null;
   user?: User;
   system?: System;
@@ -29,10 +33,12 @@ export interface DailyLog {
 export interface CreateDailyLogRequest {
   systemId: number;
   date: string;
+  shift: ShiftType;
   notes?: string;
   entries: {
     monitoringPointId: number;
     value: number;
+    notes?: string;
   }[];
 }
 

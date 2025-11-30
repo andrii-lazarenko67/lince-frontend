@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest } from '../../types';
+import type { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: DailyLogState = {

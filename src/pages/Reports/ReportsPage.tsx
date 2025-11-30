@@ -17,7 +17,7 @@ const ReportsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {

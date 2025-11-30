@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { DashboardState, DashboardStats, RecentActivity, Alert } from '../../types';
+import type { DashboardState, DashboardStats, RecentActivity, Alert } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: DashboardState = {

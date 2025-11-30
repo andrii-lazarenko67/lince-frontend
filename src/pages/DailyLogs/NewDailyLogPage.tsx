@@ -26,12 +26,12 @@ const NewDailyLogPage: React.FC = () => {
   const [entries, setEntries] = useState<EntryValue[]>([]);
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch]);
 
   useEffect(() => {
     if (formData.systemId) {
-      dispatch(fetchMonitoringPoints(Number(formData.systemId)));
+      dispatch(fetchMonitoringPoints({ systemId: Number(formData.systemId) }));
     }
   }, [dispatch, formData.systemId]);
 

@@ -1,17 +1,7 @@
-import { User } from './auth.types';
-import { System } from './system.types';
+import type { User } from './auth.types';
+import type { System, ChecklistItem } from './system.types';
 
-export interface ChecklistItem {
-  id: number;
-  systemId: number;
-  name: string;
-  description: string | null;
-  isRequired: boolean;
-  order: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { ChecklistItem } from './system.types';
 
 export type InspectionItemStatus = 'pass' | 'fail' | 'na';
 export type InspectionStatus = 'pending' | 'completed' | 'approved';

@@ -4,12 +4,12 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProductById, fetchProductUsageHistory, recordProductUsage, updateStock, deleteProduct } from '../../store/slices/productSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Badge, Button, Modal, Input, Select, TextArea, Table } from '../../components/common';
-import { ProductUsage } from '../../types';
+import type { ProductUsage } from '../../types';
 
 const ProductDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const { currentProduct, usageHistory } = useAppSelector((state) => state.products);
+  const { currentProduct, usages } = useAppSelector((state) => state.products);
   const { systems } = useAppSelector((state) => state.systems);
   const { goBack, goToProducts } = useAppNavigation();
 
@@ -34,7 +34,7 @@ const ProductDetailPage: React.FC = () => {
       dispatch(fetchProductById(Number(id)));
       dispatch(fetchProductUsageHistory({ id: Number(id) }));
     }
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
   }, [dispatch, id]);
 
   const handleRecordUsage = async () => {
@@ -194,7 +194,7 @@ const ProductDetailPage: React.FC = () => {
         <Card title="Usage History" className="lg:col-span-2" noPadding>
           <Table
             columns={usageColumns}
-            data={usageHistory}
+            data={usages}
             keyExtractor={(usage) => usage.id}
             emptyMessage="No usage recorded for this product."
           />

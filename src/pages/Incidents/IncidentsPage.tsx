@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchIncidents } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Select, Input, Table, Badge } from '../../components/common';
-import { Incident } from '../../types';
+import type { Incident } from '../../types';
 
 const IncidentsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +20,7 @@ const IncidentsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
     dispatch(fetchIncidents({}));
   }, [dispatch]);
 

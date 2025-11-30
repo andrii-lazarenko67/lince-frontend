@@ -16,7 +16,7 @@ const DailyLogsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems());
+    dispatch(fetchSystems({}));
     dispatch(fetchDailyLogs({}));
   }, [dispatch]);
 

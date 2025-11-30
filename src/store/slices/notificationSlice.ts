@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Notification, NotificationState } from '../../types';
+import type { Notification, NotificationState } from '../../types';
 import { setLoading } from './uiSlice';
 
 const initialState: NotificationState = {
@@ -27,7 +27,7 @@ export const fetchNotifications = createAsyncThunk(
 
 export const fetchUnreadCount = createAsyncThunk(
   'notifications/fetchUnreadCount',
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get<{ success: boolean; data: { count: number } }>('/notifications/unread/count');
       return response.data.data.count;
