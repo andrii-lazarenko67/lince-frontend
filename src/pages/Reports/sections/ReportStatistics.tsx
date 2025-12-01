@@ -17,6 +17,7 @@ interface CircularChartProps {
 }
 
 const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }) => {
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   if (total === 0) {
@@ -33,16 +34,18 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
     );
   }
 
-  // Calculate segments
+  // Calculate segments with midpoint for tooltip positioning
   let currentAngle = -90; // Start from top
   const segments = data.map(item => {
     const percentage = (item.value / total) * 100;
     const angle = (item.value / total) * 360;
+    const midAngle = currentAngle + angle / 2;
     const segment = {
       ...item,
       percentage,
       startAngle: currentAngle,
-      endAngle: currentAngle + angle
+      endAngle: currentAngle + angle,
+      midAngle
     };
     currentAngle += angle;
     return segment;
@@ -71,9 +74,19 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
   const radius = size / 2;
   const innerRadius = radius * 0.6;
 
+  // Calculate tooltip position at segment midpoint
+  const getTooltipPosition = (midAngle: number) => {
+    const midRad = (midAngle * Math.PI) / 180;
+    const tooltipRadius = (radius + innerRadius) / 2;
+    return {
+      x: radius + tooltipRadius * Math.cos(midRad),
+      y: radius + tooltipRadius * Math.sin(midRad)
+    };
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="cursor-pointer overflow-visible">
         {segments.map((segment, index) => (
           segment.value > 0 && (
             <path
@@ -81,16 +94,17 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
               d={createArcPath(segment.startAngle, segment.endAngle, radius - 2, innerRadius)}
               fill={segment.color}
               className="transition-opacity hover:opacity-80"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
             />
           )
         ))}
-        {/* Center text */}
+        {/* Center text - always shows total */}
         <text
           x={radius}
           y={radius - 8}
           textAnchor="middle"
-          className="text-2xl font-bold fill-gray-700"
-          style={{ fontSize: '24px', fontWeight: 'bold' }}
+          style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151' }}
         >
           {total}
         </text>
@@ -98,18 +112,89 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
           x={radius}
           y={radius + 12}
           textAnchor="middle"
-          className="text-xs fill-gray-500"
-          style={{ fontSize: '12px' }}
+          style={{ fontSize: '12px', fill: '#9ca3af' }}
         >
           Total
         </text>
+        {/* Tooltip - detailed content */}
+        {hoveredIndex !== null && segments[hoveredIndex] && (() => {
+          const segment = segments[hoveredIndex];
+          const pos = getTooltipPosition(segment.midAngle);
+          const tooltipWidth = 100;
+          const tooltipHeight = 58;
+          // Adjust position to keep tooltip within view
+          let tooltipX = pos.x - tooltipWidth / 2;
+          let tooltipY = pos.y - tooltipHeight - 8;
+          // Keep within bounds
+          if (tooltipX < -10) tooltipX = -10;
+          if (tooltipX + tooltipWidth > size + 10) tooltipX = size - tooltipWidth + 10;
+          if (tooltipY < -10) tooltipY = pos.y + 15;
+          return (
+            <g
+              onMouseEnter={() => setHoveredIndex(hoveredIndex)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <rect
+                x={tooltipX}
+                y={tooltipY}
+                width={tooltipWidth}
+                height={tooltipHeight}
+                rx="6"
+                fill="#1f2937"
+                style={{ cursor: 'pointer' }}
+              />
+              {/* Color indicator */}
+              <rect
+                x={tooltipX + 8}
+                y={tooltipY + 10}
+                width={10}
+                height={10}
+                rx="2"
+                fill={segment.color}
+                style={{ pointerEvents: 'none' }}
+              />
+              {/* Label */}
+              <text
+                x={tooltipX + 24}
+                y={tooltipY + 18}
+                textAnchor="start"
+                style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}
+              >
+                {segment.label}
+              </text>
+              {/* Value */}
+              <text
+                x={tooltipX + 8}
+                y={tooltipY + 34}
+                textAnchor="start"
+                style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}
+              >
+                Count: <tspan fill="white" fontWeight="600">{segment.value}</tspan>
+              </text>
+              {/* Percentage */}
+              <text
+                x={tooltipX + 8}
+                y={tooltipY + 48}
+                textAnchor="start"
+                style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}
+              >
+                Share: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan>
+              </text>
+            </g>
+          );
+        })()}
       </svg>
       <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       {/* Legend */}
       <div className="flex flex-wrap justify-center gap-2 mt-2">
         {segments.map((segment, index) => (
           segment.value > 0 && (
-            <div key={index} className="flex items-center gap-1">
+            <div
+              key={index}
+              className="flex items-center gap-1 cursor-pointer"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
               <div
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: segment.color }}

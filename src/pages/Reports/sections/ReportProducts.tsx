@@ -14,6 +14,7 @@ interface DonutChartProps {
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   if (total === 0) {
@@ -31,7 +32,8 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
   const segments = data.map(item => {
     const percentage = (item.value / total) * 100;
     const angle = (item.value / total) * 360;
-    const segment = { ...item, percentage, startAngle: currentAngle, endAngle: currentAngle + angle };
+    const midAngle = currentAngle + angle / 2;
+    const segment = { ...item, percentage, startAngle: currentAngle, endAngle: currentAngle + angle, midAngle };
     currentAngle += angle;
     return segment;
   });
@@ -54,16 +56,60 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
   const radius = size / 2;
   const innerRadius = radius * 0.6;
 
+  const getTooltipPosition = (midAngle: number) => {
+    const rad = (midAngle * Math.PI) / 180;
+    const tooltipRadius = radius * 0.8;
+    return {
+      x: radius + tooltipRadius * Math.cos(rad),
+      y: radius + tooltipRadius * Math.sin(rad)
+    };
+  };
+
   return (
     <div className="flex flex-col items-center">
-      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <svg width={size + 40} height={size + 40} viewBox={`-20 -20 ${size + 40} ${size + 40}`} className="overflow-visible">
         {segments.map((segment, index) => (
           segment.value > 0 && (
-            <path key={index} d={createArcPath(segment.startAngle, segment.endAngle, radius - 2, innerRadius)} fill={segment.color} className="transition-opacity hover:opacity-80" />
+            <path
+              key={index}
+              d={createArcPath(segment.startAngle, segment.endAngle, radius - 2, innerRadius)}
+              fill={segment.color}
+              className="transition-all cursor-pointer"
+              style={{
+                opacity: hoveredIndex === null || hoveredIndex === index ? 1 : 0.6
+              }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            />
           )
         ))}
-        <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280' }}>Total</text>
+        <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>Total</text>
+
+        {/* Detailed Tooltip */}
+        {hoveredIndex !== null && segments[hoveredIndex] && (() => {
+          const segment = segments[hoveredIndex];
+          const pos = getTooltipPosition(segment.midAngle);
+          const tooltipWidth = 100;
+          const tooltipHeight = 58;
+          let tooltipX = pos.x - tooltipWidth / 2;
+          let tooltipY = pos.y - tooltipHeight - 8;
+          if (tooltipX < -15) tooltipX = -15;
+          if (tooltipX + tooltipWidth > size + 15) tooltipX = size - tooltipWidth + 15;
+          if (tooltipY < -15) tooltipY = pos.y + 15;
+          return (
+            <g
+              onMouseEnter={() => setHoveredIndex(hoveredIndex)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
+              <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={segment.color} style={{ pointerEvents: 'none' }} />
+              <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{segment.label}</text>
+              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Count: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Share: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
+            </g>
+          );
+        })()}
       </svg>
       <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       <div className="flex flex-wrap justify-center gap-3 mt-2">
@@ -87,6 +133,8 @@ interface HorizontalBarChartProps {
 }
 
 const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => {
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+
   if (data.length === 0) {
     return (
       <div className="w-full">
@@ -97,6 +145,7 @@ const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => 
   }
 
   const maxValue = Math.max(...data.map(d => d.current), 1);
+  const totalStock = data.reduce((sum, item) => sum + item.current, 0);
 
   return (
     <div className="w-full">
@@ -104,27 +153,68 @@ const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => 
       <div className="space-y-3">
         {data.slice(0, 10).map((item, index) => {
           const isLowStock = item.min !== null && item.current <= item.min;
+          const percentage = totalStock > 0 ? (item.current / totalStock) * 100 : 0;
           return (
-            <div key={index} className="space-y-1">
+            <div
+              key={index}
+              className="space-y-1 relative"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
               <div className="flex justify-between text-xs">
                 <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-gray-700'}`}>
                   {item.label} {isLowStock && '⚠️'}
                 </span>
                 <span className="text-gray-500">{item.current} {item.unit}</span>
               </div>
-              <div className="relative h-4 bg-gray-100 rounded overflow-hidden">
+              <div className="relative h-4 bg-gray-100 rounded overflow-hidden cursor-pointer">
                 <div
-                  className={`h-full rounded ${isLowStock ? 'bg-red-500' : 'bg-blue-500'}`}
-                  style={{ width: `${(item.current / maxValue) * 100}%`, minWidth: item.current > 0 ? '4px' : '0' }}
+                  className={`h-full rounded transition-opacity ${isLowStock ? 'bg-red-500' : 'bg-blue-500'}`}
+                  style={{
+                    width: `${(item.current / maxValue) * 100}%`,
+                    minWidth: item.current > 0 ? '4px' : '0',
+                    opacity: hoveredIndex === null || hoveredIndex === index ? 1 : 0.6
+                  }}
                 />
                 {item.min !== null && (
                   <div
                     className="absolute top-0 bottom-0 w-0.5 bg-yellow-500"
                     style={{ left: `${(item.min / maxValue) * 100}%` }}
-                    title={`Min alert: ${item.min}`}
                   />
                 )}
               </div>
+
+              {/* Detailed Tooltip */}
+              {hoveredIndex === index && (
+                <div
+                  className="absolute z-10 bg-gray-800 rounded-md shadow-lg pointer-events-auto"
+                  style={{
+                    top: '-80px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    minWidth: '130px',
+                    padding: '8px'
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: isLowStock ? '#ef4444' : '#3b82f6' }} />
+                    <span className="text-white text-xs font-bold truncate">{item.label}</span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Stock: <span className="text-white font-semibold">{item.current} {item.unit}</span>
+                  </div>
+                  {item.min !== null && (
+                    <div className="text-xs text-gray-400">
+                      Min Alert: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
+                    </div>
+                  )}
+                  <div className="text-xs text-gray-400">
+                    Share: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
@@ -146,6 +236,8 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+
   if (data.length === 0) {
     return (
       <div className="w-full">
@@ -155,26 +247,63 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
     );
   }
 
+  const total = data.reduce((sum, item) => sum + item.value, 0);
   const maxValue = Math.max(...data.map(d => d.value), 1);
 
   return (
     <div className="w-full">
       <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-      <div className="flex items-end justify-around gap-2" style={{ height }}>
-        {data.map((item, index) => (
-          <div key={index} className="flex flex-col items-center flex-1 max-w-[60px]">
-            <span className="text-xs font-medium text-gray-600 mb-1">{item.value}</span>
+      <div className="flex items-end justify-around gap-2 relative" style={{ height }}>
+        {data.map((item, index) => {
+          const percentage = total > 0 ? (item.value / total) * 100 : 0;
+          return (
             <div
-              className="w-full rounded-t transition-all hover:opacity-80"
-              style={{
-                height: `${(item.value / maxValue) * (height - 40)}px`,
-                backgroundColor: item.color || '#3b82f6',
-                minHeight: item.value > 0 ? '4px' : '0'
-              }}
-            />
-            <span className="text-xs text-gray-500 mt-2 text-center truncate w-full">{item.label}</span>
-          </div>
-        ))}
+              key={index}
+              className="flex flex-col items-center flex-1 max-w-[60px] relative"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <span className="text-xs font-medium text-gray-600 mb-1">{item.value}</span>
+              <div
+                className="w-full rounded-t transition-all cursor-pointer"
+                style={{
+                  height: `${(item.value / maxValue) * (height - 40)}px`,
+                  backgroundColor: item.color || '#3b82f6',
+                  minHeight: item.value > 0 ? '4px' : '0',
+                  opacity: hoveredIndex === null || hoveredIndex === index ? 1 : 0.6
+                }}
+              />
+              <span className="text-xs text-gray-500 mt-2 text-center truncate w-full">{item.label}</span>
+
+              {/* Detailed Tooltip */}
+              {hoveredIndex === index && (
+                <div
+                  className="absolute z-10 bg-gray-800 rounded-md shadow-lg pointer-events-auto"
+                  style={{
+                    bottom: `${(item.value / maxValue) * (height - 40) + 50}px`,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    minWidth: '100px',
+                    padding: '8px'
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: item.color || '#3b82f6' }} />
+                    <span className="text-white text-xs font-bold truncate">{item.label}</span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Count: <span className="text-white font-semibold">{item.value}</span>
+                  </div>
+                  <div className="text-xs text-gray-400">
+                    Share: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -277,21 +406,38 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
             })}
             <path d={areaPath} fill={`url(#${gradientId})`} />
             <path d={linePath} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            {points.map((p, i) => (
-              <g key={i}>
-                {hoveredIndex === i && (
-                  <line x1={p.x} y1={padding.top} x2={p.x} y2={padding.top + chartHeight} stroke={color} strokeWidth="1" strokeDasharray="4,4" opacity="0.4" />
-                )}
-                <circle cx={p.x} cy={p.y} r="15" fill="transparent" onMouseEnter={() => setHoveredIndex(i)} onMouseLeave={() => setHoveredIndex(null)} style={{ cursor: 'pointer' }} />
-                <circle cx={p.x} cy={p.y} r={hoveredIndex === i ? 6 : 4} fill="white" stroke={color} strokeWidth="2.5" />
-                {hoveredIndex === i && (
-                  <g>
-                    <rect x={p.x - 20} y={p.y - 32} width="40" height="22" rx="4" fill="#1f2937" />
-                    <text x={p.x} y={p.y - 16} textAnchor="middle" style={{ fontSize: '12px', fill: 'white', fontWeight: 'bold' }}>{p.value}</text>
-                  </g>
-                )}
-              </g>
-            ))}
+            {points.map((p, i) => {
+              const total = data.reduce((sum, d) => sum + d.value, 0);
+              const percentage = total > 0 ? (p.value / total) * 100 : 0;
+              const tooltipWidth = 110;
+              const tooltipHeight = 58;
+              let tooltipX = p.x - tooltipWidth / 2;
+              let tooltipY = p.y - tooltipHeight - 12;
+              if (tooltipX < padding.left) tooltipX = padding.left;
+              if (tooltipX + tooltipWidth > padding.left + chartWidth) tooltipX = padding.left + chartWidth - tooltipWidth;
+              if (tooltipY < padding.top) tooltipY = p.y + 15;
+              return (
+                <g key={i}>
+                  {hoveredIndex === i && (
+                    <line x1={p.x} y1={padding.top} x2={p.x} y2={padding.top + chartHeight} stroke={color} strokeWidth="1" strokeDasharray="4,4" opacity="0.4" />
+                  )}
+                  <circle cx={p.x} cy={p.y} r="15" fill="transparent" onMouseEnter={() => setHoveredIndex(i)} onMouseLeave={() => setHoveredIndex(null)} style={{ cursor: 'pointer' }} />
+                  <circle cx={p.x} cy={p.y} r={hoveredIndex === i ? 6 : 4} fill="white" stroke={color} strokeWidth="2.5" />
+                  {hoveredIndex === i && (
+                    <g
+                      onMouseEnter={() => setHoveredIndex(i)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
+                      <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={color} style={{ pointerEvents: 'none' }} />
+                      <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{p.label}</text>
+                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Value: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Share: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
+                    </g>
+                  )}
+                </g>
+              );
+            })}
             {data.length <= 12 ? points.map((p, i) => (
               <text key={i} x={p.x} y={height - 10} textAnchor="middle" style={{ fontSize: '11px', fill: hoveredIndex === i ? '#374151' : '#9ca3af', fontWeight: hoveredIndex === i ? 600 : 400 }}>{data[i].label}</text>
             )) : (
