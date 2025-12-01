@@ -70,8 +70,8 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!validate()) return;
 
     onSubmit({
