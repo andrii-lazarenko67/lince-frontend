@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchSystemById, deleteSystem } from '../../store/slices/systemSlice';
-import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
+import { fetchMonitoringPoints, deleteMonitoringPoint as deleteMonitoringPointAction } from '../../store/slices/monitoringPointSlice';
 import { Card, Button, Badge, Table, Modal } from '../../components/common';
-import { SystemForm } from './sections';
+import { SystemForm, MonitoringPointForm } from './sections';
 import type { MonitoringPoint } from '../../types';
 
 const SystemDetailPage: React.FC = () => {
@@ -16,6 +16,10 @@ const SystemDetailPage: React.FC = () => {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [isMonitoringPointFormOpen, setIsMonitoringPointFormOpen] = useState(false);
+  const [editingMonitoringPoint, setEditingMonitoringPoint] = useState<MonitoringPoint | null>(null);
+  const [deletingMonitoringPoint, setDeletingMonitoringPoint] = useState<MonitoringPoint | null>(null);
+  const [isDeleteMonitoringPointOpen, setIsDeleteMonitoringPointOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -24,11 +28,40 @@ const SystemDetailPage: React.FC = () => {
     }
   }, [dispatch, id]);
 
-  const handleDelete = async () => {
+  const handleDeleteSystem = async () => {
     if (id) {
       const result = await dispatch(deleteSystem(Number(id)));
       if (deleteSystem.fulfilled.match(result)) {
         goToSystems();
+      }
+    }
+  };
+
+  const handleOpenMonitoringPointForm = (point?: MonitoringPoint) => {
+    if (point) {
+      setEditingMonitoringPoint(point);
+    } else {
+      setEditingMonitoringPoint(null);
+    }
+    setIsMonitoringPointFormOpen(true);
+  };
+
+  const handleCloseMonitoringPointForm = () => {
+    setIsMonitoringPointFormOpen(false);
+    setEditingMonitoringPoint(null);
+  };
+
+  const handleOpenDeleteMonitoringPoint = (point: MonitoringPoint) => {
+    setDeletingMonitoringPoint(point);
+    setIsDeleteMonitoringPointOpen(true);
+  };
+
+  const handleDeleteMonitoringPoint = async () => {
+    if (deletingMonitoringPoint) {
+      const result = await dispatch(deleteMonitoringPointAction(deletingMonitoringPoint.id));
+      if (deleteMonitoringPointAction.fulfilled.match(result)) {
+        setIsDeleteMonitoringPointOpen(false);
+        setDeletingMonitoringPoint(null);
       }
     }
   };
@@ -61,12 +94,26 @@ const SystemDetailPage: React.FC = () => {
       )
     },
     {
-      key: 'isActive',
-      header: 'Status',
+      key: 'alertEnabled',
+      header: 'Alerts',
       render: (point: MonitoringPoint) => (
-        <Badge variant={point.isActive ? 'success' : 'secondary'}>
-          {point.isActive ? 'Active' : 'Inactive'}
+        <Badge variant={point.alertEnabled ? 'primary' : 'secondary'}>
+          {point.alertEnabled ? 'Enabled' : 'Disabled'}
         </Badge>
+      )
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (point: MonitoringPoint) => (
+        <div className="flex space-x-2">
+          <Button size="sm" variant="outline" onClick={() => handleOpenMonitoringPointForm(point)}>
+            Edit
+          </Button>
+          <Button size="sm" variant="danger" onClick={() => handleOpenDeleteMonitoringPoint(point)}>
+            Delete
+          </Button>
+        </div>
       )
     }
   ];
@@ -131,7 +178,16 @@ const SystemDetailPage: React.FC = () => {
           </dl>
         </Card>
 
-        <Card title="Monitoring Points" className="lg:col-span-2" noPadding>
+        <Card
+          title="Monitoring Points"
+          className="lg:col-span-2"
+          noPadding
+          headerActions={
+            <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
+              Add Point
+            </Button>
+          }
+        >
           <Table
             columns={monitoringPointColumns}
             data={monitoringPoints}
@@ -155,7 +211,33 @@ const SystemDetailPage: React.FC = () => {
           <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
+          <Button variant="danger" onClick={handleDeleteSystem}>
+            Delete
+          </Button>
+        </div>
+      </Modal>
+
+      <MonitoringPointForm
+        isOpen={isMonitoringPointFormOpen}
+        onClose={handleCloseMonitoringPointForm}
+        systemId={Number(id)}
+        monitoringPoint={editingMonitoringPoint}
+      />
+
+      <Modal
+        isOpen={isDeleteMonitoringPointOpen}
+        onClose={() => setIsDeleteMonitoringPointOpen(false)}
+        title="Delete Monitoring Point"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete <strong>{deletingMonitoringPoint?.name}</strong>? This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-3">
+          <Button variant="outline" onClick={() => setIsDeleteMonitoringPointOpen(false)}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteMonitoringPoint}>
             Delete
           </Button>
         </div>

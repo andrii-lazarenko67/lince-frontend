@@ -7,7 +7,6 @@ export interface MonitoringPoint {
   minValue: number | null;
   maxValue: number | null;
   alertEnabled: boolean;
-  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,7 +28,6 @@ export interface UpdateMonitoringPointRequest {
   minValue?: number;
   maxValue?: number;
   alertEnabled?: boolean;
-  isActive?: boolean;
 }
 
 export interface MonitoringPointState {

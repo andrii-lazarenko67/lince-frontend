@@ -11,7 +11,7 @@ const initialState: MonitoringPointState = {
 
 export const fetchMonitoringPoints = createAsyncThunk(
   'monitoringPoints/fetchAll',
-  async (params: { systemId?: number; isActive?: boolean } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { systemId?: number } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: MonitoringPoint[] }>('/monitoring-points', { params });
