@@ -3,21 +3,6 @@ import type { System } from './system.types';
 
 export type ProductUsageType = 'in' | 'out';
 
-export interface ProductUsage {
-  id: number;
-  productId: number;
-  userId: number;
-  systemId: number | null;
-  type: ProductUsageType;
-  quantity: number;
-  notes: string | null;
-  date: string;
-  user?: User;
-  system?: System;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface Product {
   id: number;
   name: string;
@@ -29,6 +14,22 @@ export interface Product {
   description: string | null;
   isActive: boolean;
   usages?: ProductUsage[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ProductUsage {
+  id: number;
+  productId: number;
+  userId: number;
+  systemId: number | null;
+  type: ProductUsageType;
+  quantity: number;
+  notes: string | null;
+  date: string;
+  product?: Product;
+  user?: User;
+  system?: System;
   createdAt: string;
   updatedAt: string;
 }
