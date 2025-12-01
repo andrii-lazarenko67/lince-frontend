@@ -9,3 +9,4 @@ export type * from './product.types';
 export type * from './library.types';
 export type * from './notification.types';
 export type * from './dashboard.types';
+export type * from './report.types';
