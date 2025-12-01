@@ -17,7 +17,8 @@ const UsersPage: React.FC = () => {
     name: '',
     email: '',
     password: '',
-    role: 'technician'
+    role: 'technician',
+    phone: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -32,7 +33,8 @@ const UsersPage: React.FC = () => {
         name: user.name,
         email: user.email,
         role: user.role,
-        password: ''
+        password: '',
+        phone: user.phone || ''
       });
     } else {
       setEditingUser(null);
@@ -40,7 +42,8 @@ const UsersPage: React.FC = () => {
         name: '',
         email: '',
         password: '',
-        role: 'technician'
+        role: 'technician',
+        phone: ''
       });
     }
     setErrors({});
@@ -82,7 +85,8 @@ const UsersPage: React.FC = () => {
       const updateData: Partial<CreateUserRequest> = {
         name: formData.name,
         email: formData.email,
-        role: formData.role
+        role: formData.role,
+        phone: formData.phone || undefined
       };
       const result = await dispatch(updateUser({ id: editingUser.id, data: updateData }));
       if (updateUser.fulfilled.match(result)) {
@@ -106,24 +110,69 @@ const UsersPage: React.FC = () => {
     }
   };
 
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'admin': return 'Admin';
+      case 'manager': return 'Manager';
+      case 'technician': return 'Technician';
+      default: return role;
+    }
+  };
+
+  const getRoleBadgeVariant = (role: string) => {
+    switch (role) {
+      case 'admin': return 'danger';
+      case 'manager': return 'primary';
+      default: return 'secondary';
+    }
+  };
+
   const columns = [
+    {
+      key: 'id',
+      header: 'ID',
+      render: (user: User) => (
+        <span className="text-gray-500 text-sm">#{user.id}</span>
+      )
+    },
     {
       key: 'name',
       header: 'Name',
       render: (user: User) => (
-        <span className="font-medium text-gray-900">{user.name}</span>
+        <div className="flex items-center">
+          {user.avatar ? (
+            <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full mr-2" />
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center mr-2">
+              <span className="text-gray-600 text-sm font-medium">
+                {user.name.charAt(0).toUpperCase()}
+              </span>
+            </div>
+          )}
+          <span className="font-medium text-gray-900">{user.name}</span>
+        </div>
       )
     },
     {
       key: 'email',
-      header: 'Email'
+      header: 'Email',
+      render: (user: User) => (
+        <a href={`mailto:${user.email}`} className="text-blue-600 hover:underline">
+          {user.email}
+        </a>
+      )
+    },
+    {
+      key: 'phone',
+      header: 'Phone',
+      render: (user: User) => user.phone || '-'
     },
     {
       key: 'role',
       header: 'Role',
       render: (user: User) => (
-        <Badge variant={user.role === 'manager' ? 'primary' : 'secondary'}>
-          {user.role === 'manager' ? 'Manager' : 'Technician'}
+        <Badge variant={getRoleBadgeVariant(user.role) as 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'}>
+          {getRoleLabel(user.role)}
         </Badge>
       )
     },
@@ -135,6 +184,11 @@ const UsersPage: React.FC = () => {
           {user.isActive ? 'Active' : 'Inactive'}
         </Badge>
       )
+    },
+    {
+      key: 'lastLogin',
+      header: 'Last Login',
+      render: (user: User) => user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'
     },
     {
       key: 'createdAt',
@@ -159,20 +213,35 @@ const UsersPage: React.FC = () => {
 
   const roleOptions = [
     { value: 'technician', label: 'Technician' },
-    { value: 'manager', label: 'Manager' }
+    { value: 'manager', label: 'Manager' },
+    { value: 'admin', label: 'Admin' }
   ];
 
   const getExportData = () => {
-    const headers = ['Name', 'Email', 'Role', 'Status', 'Created'];
+    const headers = ['ID', 'Name', 'Email', 'Phone', 'Role', 'Status', 'Last Login', 'Created', 'Updated'];
     const rows = users.map(user => [
+      user.id,
       user.name,
       user.email,
-      user.role === 'manager' ? 'Manager' : 'Technician',
+      user.phone || '-',
+      getRoleLabel(user.role),
       user.isActive ? 'Active' : 'Inactive',
-      new Date(user.createdAt).toLocaleDateString()
+      user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never',
+      new Date(user.createdAt).toLocaleString(),
+      new Date(user.updatedAt).toLocaleString()
     ]);
     return { headers, rows };
   };
+
+  const getExportMetadata = () => [
+    { label: 'Total Users', value: String(users.length) },
+    { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
+    { label: 'Inactive Users', value: String(users.filter(u => !u.isActive).length) },
+    { label: 'Admins', value: String(users.filter(u => u.role === 'admin').length) },
+    { label: 'Managers', value: String(users.filter(u => u.role === 'manager').length) },
+    { label: 'Technicians', value: String(users.filter(u => u.role === 'technician').length) },
+    { label: 'Generated', value: new Date().toLocaleString() }
+  ];
 
   const handleExportPDF = () => {
     const { headers, rows } = getExportData();
@@ -181,11 +250,7 @@ const UsersPage: React.FC = () => {
         title: 'Users Report',
         subtitle: 'LINCE Water Treatment System',
         filename: `users-${new Date().toISOString().split('T')[0]}`,
-        metadata: [
-          { label: 'Total Users', value: String(users.length) },
-          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
-        ]
+        metadata: getExportMetadata()
       },
       [{ title: `Users (${users.length})`, headers, rows }]
     );
@@ -197,11 +262,7 @@ const UsersPage: React.FC = () => {
       {
         title: 'Users Report',
         filename: `users-${new Date().toISOString().split('T')[0]}`,
-        metadata: [
-          { label: 'Total Users', value: String(users.length) },
-          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
-        ]
+        metadata: getExportMetadata()
       },
       [{ title: `Users (${users.length})`, headers, rows }]
     );
@@ -213,11 +274,7 @@ const UsersPage: React.FC = () => {
       {
         title: 'Users Report',
         filename: `users-${new Date().toISOString().split('T')[0]}`,
-        metadata: [
-          { label: 'Total Users', value: String(users.length) },
-          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
-          { label: 'Generated', value: new Date().toISOString() }
-        ]
+        metadata: getExportMetadata()
       },
       [{ title: 'USERS', headers, rows }]
     );
@@ -288,6 +345,15 @@ const UsersPage: React.FC = () => {
               required
             />
           )}
+
+          <Input
+            type="tel"
+            name="phone"
+            value={formData.phone || ''}
+            onChange={handleChange}
+            label="Phone"
+            placeholder="Enter phone number (optional)"
+          />
 
           <Select
             name="role"
