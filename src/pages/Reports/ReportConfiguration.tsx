@@ -17,6 +17,7 @@ interface ReportConfigurationProps {
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onGenerate: () => void;
   onExportPDF: () => void;
+  onExportHTML: () => void;
   onExportCSV: () => void;
 }
 
@@ -37,6 +38,7 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
   onDateChange,
   onGenerate,
   onExportPDF,
+  onExportHTML,
   onExportCSV
 }) => {
   return (
@@ -112,6 +114,9 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
         {hasReport && (
           <>
             <Button variant="outline" onClick={onExportPDF}>
+              Export PDF
+            </Button>
+            <Button variant="outline" onClick={onExportHTML}>
               Export HTML
             </Button>
             <Button variant="outline" onClick={onExportCSV}>
