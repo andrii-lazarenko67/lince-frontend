@@ -4,7 +4,8 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchSystemById, deleteSystem } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints, deleteMonitoringPoint as deleteMonitoringPointAction } from '../../store/slices/monitoringPointSlice';
 import { Card, Button, Badge, Table, Modal } from '../../components/common';
-import { SystemForm, MonitoringPointForm } from './sections';
+import SystemForm from "./SystemForm";
+import MonitoringPointForm from './MonitoringPointForm';
 import type { MonitoringPoint } from '../../types';
 
 const SystemDetailPage: React.FC = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAppSelector, useAppNavigation } from '../../../hooks';
-import { Table, Badge } from '../../../components/common';
-import type { DailyLog } from '../../../types';
+import { useAppSelector, useAppNavigation } from '../../hooks';
+import { Table, Badge } from '../../components/common';
+import type { DailyLog } from '../../types';
 
 const DailyLogsList: React.FC = () => {
   const { dailyLogs } = useAppSelector((state) => state.dailyLogs);

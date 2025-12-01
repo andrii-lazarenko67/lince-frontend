@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, Button, Select, Input } from '../../../components/common';
-import type { System } from '../../../types';
+import { Card, Button, Select, Input } from '../../components/common';
+import type { System } from '../../types';
 
 interface ReportConfigurationProps {
   formData: {

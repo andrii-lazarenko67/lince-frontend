@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAppSelector, useAppNavigation } from '../../../hooks';
-import { Card, Badge } from '../../../components/common';
+import { useAppSelector, useAppNavigation } from '../../hooks';
+import { Card, Badge } from '../../components/common';
 
 const AlertsSection: React.FC = () => {
   const { alerts } = useAppSelector((state) => state.dashboard);

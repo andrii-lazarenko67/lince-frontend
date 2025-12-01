@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAppSelector } from '../../../hooks';
-import { Select, Input, Button } from '../../../components/common';
+import { useAppSelector } from '../../hooks';
+import { Select, Input, Button } from '../../components/common';
 
 interface DailyLogFiltersProps {
   filters: {

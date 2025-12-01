@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card } from '../../../components/common';
-import type { ReportData } from '../../../types';
+import { Card } from '../../components/common';
+import type { ReportData } from '../../types';
 
-interface ReportProductsProps {
+interface ReportDailyLogsProps {
   report: ReportData;
 }
 
@@ -126,127 +126,16 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
   );
 };
 
-// Horizontal Bar Chart for Stock Levels
-interface HorizontalBarChartProps {
-  data: { label: string; current: number; min: number | null; unit: string }[];
-  title: string;
-}
-
-const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => {
-  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
-
-  if (data.length === 0) {
-    return (
-      <div className="w-full">
-        <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
-      </div>
-    );
-  }
-
-  const maxValue = Math.max(...data.map(d => d.current), 1);
-  const totalStock = data.reduce((sum, item) => sum + item.current, 0);
-
-  return (
-    <div className="w-full">
-      <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-      <div className="space-y-3">
-        {data.slice(0, 10).map((item, index) => {
-          const isLowStock = item.min !== null && item.current <= item.min;
-          const percentage = totalStock > 0 ? (item.current / totalStock) * 100 : 0;
-          return (
-            <div
-              key={index}
-              className="space-y-1 relative"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <div className="flex justify-between text-xs">
-                <span className={`font-medium ${isLowStock ? 'text-red-600' : 'text-gray-700'}`}>
-                  {item.label} {isLowStock && '⚠️'}
-                </span>
-                <span className="text-gray-500">{item.current} {item.unit}</span>
-              </div>
-              <div className="relative h-4 bg-gray-100 rounded overflow-hidden cursor-pointer">
-                <div
-                  className={`h-full rounded transition-opacity ${isLowStock ? 'bg-red-500' : 'bg-blue-500'}`}
-                  style={{
-                    width: `${(item.current / maxValue) * 100}%`,
-                    minWidth: item.current > 0 ? '4px' : '0',
-                    opacity: hoveredIndex === null || hoveredIndex === index ? 1 : 0.6
-                  }}
-                />
-                {item.min !== null && (
-                  <div
-                    className="absolute top-0 bottom-0 w-0.5 bg-yellow-500"
-                    style={{ left: `${(item.min / maxValue) * 100}%` }}
-                  />
-                )}
-              </div>
-
-              {/* Detailed Tooltip */}
-              {hoveredIndex === index && (
-                <div
-                  className="absolute z-10 bg-gray-800 rounded-md shadow-lg pointer-events-auto"
-                  style={{
-                    top: '-80px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    minWidth: '130px',
-                    padding: '8px'
-                  }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: isLowStock ? '#ef4444' : '#3b82f6' }} />
-                    <span className="text-white text-xs font-bold truncate">{item.label}</span>
-                  </div>
-                  <div className="text-xs text-gray-400">
-                    Stock: <span className="text-white font-semibold">{item.current} {item.unit}</span>
-                  </div>
-                  {item.min !== null && (
-                    <div className="text-xs text-gray-400">
-                      Min Alert: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
-                    </div>
-                  )}
-                  <div className="text-xs text-gray-400">
-                    Share: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
-                  </div>
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">Normal</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">Low Stock</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">Min Alert</span></div>
-      </div>
-    </div>
-  );
-};
-
 // Bar Chart Component
 interface BarChartProps {
   data: { label: string; value: number; color?: string }[];
   title: string;
   height?: number;
+  showValues?: boolean;
 }
 
-const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
+const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, showValues = true }) => {
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
-
-  if (data.length === 0) {
-    return (
-      <div className="w-full">
-        <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
-      </div>
-    );
-  }
-
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const maxValue = Math.max(...data.map(d => d.value), 1);
 
@@ -263,7 +152,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
-              <span className="text-xs font-medium text-gray-600 mb-1">{item.value}</span>
+              <span className="text-xs font-medium text-gray-600 mb-1">{showValues ? item.value : ''}</span>
               <div
                 className="w-full rounded-t transition-all cursor-pointer"
                 style={{
@@ -467,173 +356,135 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
   );
 };
 
-const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
-  // Calculate totals
-  const totalProducts = report.products.length;
-  const lowStockCount = report.products.filter(p =>
-    p.minStockAlert !== null && Number(p.currentStock) <= Number(p.minStockAlert)
-  ).length;
+const ReportDailyLogs: React.FC<ReportDailyLogsProps> = ({ report }) => {
+  // Calculate readings stats
+  const totalReadings = report.dailyLogs.reduce((acc, log) => acc + (log.entries?.length || 0), 0);
+  const outOfRangeCount = report.dailyLogs.reduce((acc, log) => acc + (log.entries?.filter(e => e.isOutOfRange).length || 0), 0);
 
-  const totalQtyIn = report.productUsages.filter(u => u.type === 'in').reduce((acc, u) => acc + Number(u.quantity), 0);
-  const totalQtyOut = report.productUsages.filter(u => u.type === 'out').reduce((acc, u) => acc + Number(u.quantity), 0);
-
-  const stockInCount = report.productUsages.filter(u => u.type === 'in').length;
-  const stockOutCount = report.productUsages.filter(u => u.type === 'out').length;
-
-  // Stock status donut
-  const stockStatusData = [
-    { label: 'Normal', value: totalProducts - lowStockCount, color: '#22c55e' },
-    { label: 'Low Stock', value: lowStockCount, color: '#ef4444' }
+  // Readings status donut chart
+  const readingsStatusData = [
+    { label: 'Normal', value: totalReadings - outOfRangeCount, color: '#22c55e' },
+    { label: 'Out of Range', value: outOfRangeCount, color: '#ef4444' }
   ];
 
-  // Usage type donut
-  const usageTypeData = [
-    { label: 'Stock In', value: stockInCount, color: '#22c55e' },
-    { label: 'Stock Out', value: stockOutCount, color: '#8b5cf6' }
-  ];
-
-  // Stock levels horizontal bar
-  const stockLevelData = report.products.map(p => ({
-    label: p.name,
-    current: Number(p.currentStock),
-    min: p.minStockAlert !== null ? Number(p.minStockAlert) : null,
-    unit: p.unit
-  })).sort((a, b) => a.current - b.current);
-
-  // Usage by product
-  const productUsageMap = new Map<string, { in: number; out: number }>();
-  report.productUsages.forEach(usage => {
-    const productName = usage.product?.name || 'Unknown';
-    const current = productUsageMap.get(productName) || { in: 0, out: 0 };
-    if (usage.type === 'in') {
-      current.in += Number(usage.quantity);
-    } else {
-      current.out += Number(usage.quantity);
-    }
-    productUsageMap.set(productName, current);
+  // Logs by system bar chart
+  const systemLogsMap = new Map<string, number>();
+  report.dailyLogs.forEach(log => {
+    const systemName = log.system?.name || 'Unknown';
+    systemLogsMap.set(systemName, (systemLogsMap.get(systemName) || 0) + 1);
   });
-
-  const usageByProductData = Array.from(productUsageMap.entries())
-    .map(([label, data]) => ({
-      label: label.length > 10 ? label.substring(0, 10) + '...' : label,
-      value: data.out,
-      color: '#8b5cf6'
-    }))
-    .sort((a, b) => b.value - a.value)
-    .slice(0, 8);
-
-  // Usage over time
-  const usageTimeMap = new Map<string, { in: number; out: number }>();
-  report.productUsages.forEach(usage => {
-    const date = new Date(usage.date).toISOString().split('T')[0];
-    const current = usageTimeMap.get(date) || { in: 0, out: 0 };
-    if (usage.type === 'in') {
-      current.in += Number(usage.quantity);
-    } else {
-      current.out += Number(usage.quantity);
-    }
-    usageTimeMap.set(date, current);
-  });
-
-  const stockInOverTimeData = Array.from(usageTimeMap.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([label, data]) => ({ label: label.split('-').slice(1).join('/'), value: data.in }));
-
-  const stockOutOverTimeData = Array.from(usageTimeMap.entries())
-    .sort((a, b) => a[0].localeCompare(b[0]))
-    .map(([label, data]) => ({ label: label.split('-').slice(1).join('/'), value: data.out }));
-
-  // Usage by system
-  const systemUsageMap = new Map<string, number>();
-  report.productUsages.filter(u => u.type === 'out').forEach(usage => {
-    const systemName = usage.system?.name || 'No System';
-    systemUsageMap.set(systemName, (systemUsageMap.get(systemName) || 0) + Number(usage.quantity));
-  });
-  const usageBySystemData = Array.from(systemUsageMap.entries())
-    .map(([label, value]) => ({
-      label: label.length > 10 ? label.substring(0, 10) + '...' : label,
-      value,
-      color: '#3b82f6'
-    }))
-    .sort((a, b) => b.value - a.value);
-
-  // Products by type
-  const productTypeMap = new Map<string, number>();
-  report.products.forEach(p => {
-    productTypeMap.set(p.type, (productTypeMap.get(p.type) || 0) + 1);
-  });
-  const byTypeData = Array.from(productTypeMap.entries()).map(([label, value]) => ({
-    label,
+  const logsBySystemData = Array.from(systemLogsMap.entries()).map(([label, value]) => ({
+    label: label.length > 10 ? label.substring(0, 10) + '...' : label,
     value,
     color: '#3b82f6'
   }));
 
+  // Readings by system bar chart
+  const systemReadingsMap = new Map<string, { normal: number; outOfRange: number }>();
+  report.dailyLogs.forEach(log => {
+    const systemName = log.system?.name || 'Unknown';
+    const current = systemReadingsMap.get(systemName) || { normal: 0, outOfRange: 0 };
+    log.entries?.forEach(entry => {
+      if (entry.isOutOfRange) {
+        current.outOfRange++;
+      } else {
+        current.normal++;
+      }
+    });
+    systemReadingsMap.set(systemName, current);
+  });
+
+  // Logs over time line chart
+  const logsOverTimeMap = new Map<string, number>();
+  report.dailyLogs.forEach(log => {
+    const date = log.date;
+    logsOverTimeMap.set(date, (logsOverTimeMap.get(date) || 0) + 1);
+  });
+  const logsOverTimeData = Array.from(logsOverTimeMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, value]) => ({ label: label.split('-').slice(1).join('/'), value }));
+
+  // Out of range over time
+  const outOfRangeOverTimeMap = new Map<string, number>();
+  report.dailyLogs.forEach(log => {
+    const date = log.date;
+    const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
+    outOfRangeOverTimeMap.set(date, (outOfRangeOverTimeMap.get(date) || 0) + outOfRange);
+  });
+  const outOfRangeOverTimeData = Array.from(outOfRangeOverTimeMap.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(([label, value]) => ({ label: label.split('-').slice(1).join('/'), value }));
+
+  // Logs by user
+  const userLogsMap = new Map<string, number>();
+  report.dailyLogs.forEach(log => {
+    const userName = log.user?.name || 'Unknown';
+    userLogsMap.set(userName, (userLogsMap.get(userName) || 0) + 1);
+  });
+  const logsByUserData = Array.from(userLogsMap.entries()).map(([label, value]) => ({
+    label: label.length > 10 ? label.substring(0, 10) + '...' : label,
+    value,
+    color: '#8b5cf6'
+  }));
+
   return (
     <div className="space-y-6">
-      <Card title="Products & Usage Overview">
+      <Card title="Daily Logs Overview">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <p className="text-3xl font-bold text-blue-600">{totalProducts}</p>
-            <p className="text-sm text-blue-700">Total Products</p>
+            <p className="text-3xl font-bold text-blue-600">{report.dailyLogs.length}</p>
+            <p className="text-sm text-blue-700">Total Logs</p>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
-            <p className="text-3xl font-bold text-red-600">{lowStockCount}</p>
-            <p className="text-sm text-red-700">Low Stock</p>
+          <div className="text-center p-4 bg-indigo-50 rounded-lg">
+            <p className="text-3xl font-bold text-indigo-600">{totalReadings}</p>
+            <p className="text-sm text-indigo-700">Total Readings</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <p className="text-3xl font-bold text-green-600">{totalQtyIn}</p>
-            <p className="text-sm text-green-700">Total Qty In</p>
+            <p className="text-3xl font-bold text-green-600">{totalReadings - outOfRangeCount}</p>
+            <p className="text-sm text-green-700">Normal Readings</p>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <p className="text-3xl font-bold text-purple-600">{totalQtyOut}</p>
-            <p className="text-sm text-purple-700">Total Qty Out</p>
+          <div className="text-center p-4 bg-red-50 rounded-lg">
+            <p className="text-3xl font-bold text-red-600">{outOfRangeCount}</p>
+            <p className="text-sm text-red-700">Out of Range</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Stock Status">
+        <Card title="Readings Status">
           <div className="flex justify-center py-4">
-            <DonutChart data={stockStatusData} title="Normal vs Low Stock" size={200} />
+            <DonutChart data={readingsStatusData} title="Normal vs Out of Range" size={200} />
           </div>
         </Card>
 
-        <Card title="Usage Transactions">
-          <div className="flex justify-center py-4">
-            <DonutChart data={usageTypeData} title="Stock In vs Out" size={200} />
-          </div>
-        </Card>
-      </div>
-
-      <Card title="Current Stock Levels">
-        <StockLevelChart data={stockLevelData} title="Product stock levels with min alert thresholds" />
-      </Card>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Top Products by Usage">
-          <BarChart data={usageByProductData} title="Quantity used per product" height={220} />
-        </Card>
-
-        <Card title="Usage by System">
-          <BarChart data={usageBySystemData} title="Quantity used per system" height={220} />
+        <Card title="Logs by System">
+          {logsBySystemData.length > 0 ? (
+            <BarChart data={logsBySystemData} title="Number of logs per system" height={220} />
+          ) : (
+            <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+          )}
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Stock In Over Time">
-          <LineChart data={stockInOverTimeData} title="Quantity added trend" height={200} color="#22c55e" />
+        <Card title="Logs Over Time">
+          <LineChart data={logsOverTimeData} title="Daily logs trend" height={200} color="#3b82f6" />
         </Card>
 
-        <Card title="Stock Out Over Time">
-          <LineChart data={stockOutOverTimeData} title="Quantity used trend" height={200} color="#8b5cf6" />
+        <Card title="Out of Range Over Time">
+          <LineChart data={outOfRangeOverTimeData} title="Out of range readings trend" height={200} color="#ef4444" />
         </Card>
       </div>
 
-      <Card title="Products by Type">
-        <BarChart data={byTypeData} title="Number of products per type" height={200} />
+      <Card title="Logs by User">
+        {logsByUserData.length > 0 ? (
+          <BarChart data={logsByUserData} title="Number of logs per user" height={200} />
+        ) : (
+          <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        )}
       </Card>
     </div>
   );
 };
 
-export default ReportProducts;
+export default ReportDailyLogs;

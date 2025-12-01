@@ -1,6 +1,6 @@
 import React from 'react';
-import { useAppSelector, useAppNavigation } from '../../../hooks';
-import { StatCard } from '../../../components/common';
+import { useAppSelector, useAppNavigation } from '../../hooks';
+import { StatCard } from '../../components/common';
 
 const StatsSection: React.FC = () => {
   const { stats } = useAppSelector((state) => state.dashboard);

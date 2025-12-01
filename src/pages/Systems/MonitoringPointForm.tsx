@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch } from '../../../hooks';
-import { createMonitoringPoint, updateMonitoringPoint } from '../../../store/slices/monitoringPointSlice';
-import { Input, Select, Button, Modal } from '../../../components/common';
-import type { MonitoringPoint, CreateMonitoringPointRequest } from '../../../types';
+import { useAppDispatch } from '../../hooks';
+import { createMonitoringPoint, updateMonitoringPoint } from '../../store/slices/monitoringPointSlice';
+import { Input, Select, Button, Modal } from '../../components/common';
+import type { MonitoringPoint, CreateMonitoringPointRequest } from '../../types';
 
 interface MonitoringPointFormProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card } from '../../../components/common';
-import type { ReportData } from '../../../types';
+import { Card } from '../../components/common';
+import type { ReportData } from '../../types';
 
 interface ReportIncidentsProps {
   report: ReportData;

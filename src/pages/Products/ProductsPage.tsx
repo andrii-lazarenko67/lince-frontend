@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import ProductsChartView from './ProductsChartView';
 import type { Product, CreateProductRequest } from '../../types';
 
 const ProductsPage: React.FC = () => {
@@ -9,6 +10,7 @@ const ProductsPage: React.FC = () => {
   const { products } = useAppSelector((state) => state.products);
   const { goToProductDetail } = useAppNavigation();
 
+  const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formData, setFormData] = useState<CreateProductRequest>({
@@ -140,20 +142,54 @@ const ProductsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Products</h1>
           <p className="text-gray-500 mt-1">Manage chemical products and inventory</p>
         </div>
-        <Button variant="primary" onClick={() => handleOpenForm()}>
-          Add Product
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setViewMode('table')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === 'table'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+              </svg>
+              Table
+            </button>
+            <button
+              onClick={() => setViewMode('chart')}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                viewMode === 'chart'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Charts
+            </button>
+          </div>
+          <Button variant="primary" onClick={() => handleOpenForm()}>
+            Add Product
+          </Button>
+        </div>
       </div>
 
-      <Card noPadding>
-        <Table
-          columns={columns}
-          data={products}
-          keyExtractor={(product) => product.id}
-          onRowClick={(product) => goToProductDetail(product.id)}
-          emptyMessage="No products found. Click 'Add Product' to create one."
-        />
-      </Card>
+      {viewMode === 'table' ? (
+        <Card noPadding>
+          <Table
+            columns={columns}
+            data={products}
+            keyExtractor={(product) => product.id}
+            onRowClick={(product) => goToProductDetail(product.id)}
+            emptyMessage="No products found. Click 'Add Product' to create one."
+          />
+        </Card>
+      ) : (
+        <ProductsChartView products={products} />
+      )}
 
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingProduct ? 'Edit Product' : 'Add Product'} size="lg">
         <form onSubmit={handleSubmit}>

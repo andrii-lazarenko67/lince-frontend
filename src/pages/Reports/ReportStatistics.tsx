@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card } from '../../../components/common';
-import type { ReportData } from '../../../types';
+import { Card } from '../../components/common';
+import type { ReportData } from '../../types';
 import ReportDailyLogs from './ReportDailyLogs';
 import ReportInspections from './ReportInspections';
 import ReportIncidents from './ReportIncidents';

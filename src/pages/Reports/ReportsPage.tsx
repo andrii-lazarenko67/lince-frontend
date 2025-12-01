@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { generateReport } from '../../store/slices/reportSlice';
-import { ReportConfiguration, ReportStatistics } from './sections';
+import ReportConfiguration from './ReportConfiguration';
+import ReportStatistics from "./ReportStatistics";
+
 import type { ReportType } from '../../types';
 
 const ReportsPage: React.FC = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAppSelector, useAppNavigation } from '../../../hooks';
-import { Table, Badge } from '../../../components/common';
-import type { Inspection } from '../../../types';
+import { useAppSelector, useAppNavigation } from '../../hooks';
+import { Table, Badge } from '../../components/common';
+import type { Inspection } from '../../types';
 
 const InspectionsList: React.FC = () => {
   const { inspections } = useAppSelector((state) => state.inspections);

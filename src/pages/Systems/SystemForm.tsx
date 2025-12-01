@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch } from '../../../hooks';
-import { createSystem, updateSystem } from '../../../store/slices/systemSlice';
-import { Input, Select, TextArea, Button, Modal } from '../../../components/common';
-import type { System, CreateSystemRequest } from '../../../types';
+import { useAppDispatch } from '../../hooks';
+import { createSystem, updateSystem } from '../../store/slices/systemSlice';
+import { Input, Select, TextArea, Button, Modal } from '../../components/common';
+import type { System, CreateSystemRequest } from '../../types';
 
 interface SystemFormProps {
   isOpen: boolean;
