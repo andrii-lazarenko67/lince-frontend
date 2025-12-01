@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchIncidents } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, Input, Table, Badge } from '../../components/common';
+import { Card, Button, Select, Input, Table, Badge, ExportDropdown } from '../../components/common';
 import IncidentsChartView from './IncidentsChartView';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Incident } from '../../types';
 
 const IncidentsPage: React.FC = () => {
@@ -39,6 +40,66 @@ const IncidentsPage: React.FC = () => {
   const handleClearFilters = () => {
     setFilters({ systemId: '', status: '', priority: '', startDate: '', endDate: '' });
     dispatch(fetchIncidents({}));
+  };
+
+  const getExportData = () => {
+    const headers = ['Title', 'System', 'Priority', 'Status', 'Reporter', 'Assignee', 'Created'];
+    const rows = incidents.map(inc => [
+      inc.title,
+      inc.system?.name || '-',
+      inc.priority,
+      inc.status,
+      inc.reporter?.name || '-',
+      inc.assignee?.name || '-',
+      new Date(inc.createdAt).toLocaleDateString()
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Incidents Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `incidents-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Incidents', value: String(incidents.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Incidents (${incidents.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Incidents Report',
+        filename: `incidents-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Incidents', value: String(incidents.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Incidents (${incidents.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Incidents Report',
+        filename: `incidents-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Incidents', value: String(incidents.length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'INCIDENTS', headers, rows }]
+    );
   };
 
   const getStatusBadge = (status: string) => {
@@ -153,6 +214,12 @@ const IncidentsPage: React.FC = () => {
               Charts
             </button>
           </div>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={incidents.length === 0}
+          />
           <Button variant="primary" onClick={goToNewIncident}>
             Report Incident
           </Button>

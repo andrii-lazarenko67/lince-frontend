@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspections } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, Input } from '../../components/common';
+import { Card, Button, Select, Input, ExportDropdown } from '../../components/common';
 import InspectionsList from "./InspectionsList"
 import InspectionsChartView from './InspectionsChartView';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const InspectionsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +38,65 @@ const InspectionsPage: React.FC = () => {
   const handleClearFilters = () => {
     setFilters({ systemId: '', status: '', startDate: '', endDate: '' });
     dispatch(fetchInspections({}));
+  };
+
+  const getExportData = () => {
+    const headers = ['Date', 'System', 'Inspector', 'Status', 'Conclusion', 'Items'];
+    const rows = inspections.map(insp => [
+      new Date(insp.date).toLocaleDateString(),
+      insp.system?.name || '-',
+      insp.user?.name || '-',
+      insp.status,
+      insp.conclusion || '-',
+      insp.items?.length || 0
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Inspections Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `inspections-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Inspections', value: String(inspections.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Inspections (${inspections.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Inspections Report',
+        filename: `inspections-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Inspections', value: String(inspections.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Inspections (${inspections.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Inspections Report',
+        filename: `inspections-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Inspections', value: String(inspections.length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'INSPECTIONS', headers, rows }]
+    );
   };
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
@@ -82,6 +142,12 @@ const InspectionsPage: React.FC = () => {
               Charts
             </button>
           </div>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={inspections.length === 0}
+          />
           <Button variant="primary" onClick={goToNewInspection}>
             New Inspection
           </Button>

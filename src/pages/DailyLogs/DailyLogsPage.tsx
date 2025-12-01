@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDailyLogs } from '../../store/slices/dailyLogSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button } from '../../components/common';
+import { Card, Button, ExportDropdown } from '../../components/common';
 import DailyLogsList from "./DailyLogsList"
 import DailyLogFilters from "./DailyLogFilters"
 import DailyLogsChartView from './DailyLogsChartView';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const DailyLogsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -35,6 +36,64 @@ const DailyLogsPage: React.FC = () => {
   const handleClearFilters = () => {
     setFilters({ systemId: '', startDate: '', endDate: '' });
     dispatch(fetchDailyLogs({}));
+  };
+
+  const getExportData = () => {
+    const headers = ['Date', 'System', 'User', 'Entries', 'Notes'];
+    const rows = dailyLogs.map(log => [
+      log.date,
+      log.system?.name || '-',
+      log.user?.name || '-',
+      log.entries?.length || 0,
+      log.notes || '-'
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Daily Logs Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Records', value: String(dailyLogs.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Daily Logs (${dailyLogs.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Daily Logs Report',
+        filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Records', value: String(dailyLogs.length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Daily Logs (${dailyLogs.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Daily Logs Report',
+        filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Records', value: String(dailyLogs.length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'DAILY LOGS', headers, rows }]
+    );
   };
 
   return (
@@ -73,6 +132,12 @@ const DailyLogsPage: React.FC = () => {
               Charts
             </button>
           </div>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={dailyLogs.length === 0}
+          />
           <Button variant="primary" onClick={goToNewDailyLog}>
             New Log
           </Button>

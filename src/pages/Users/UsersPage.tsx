@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers, createUser, updateUser, deleteUser } from '../../store/slices/userSlice';
-import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import { Card, Button, Table, Badge, Modal, Input, Select, ExportDropdown } from '../../components/common';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { User, CreateUserRequest } from '../../types';
 
 const UsersPage: React.FC = () => {
@@ -161,6 +162,67 @@ const UsersPage: React.FC = () => {
     { value: 'manager', label: 'Manager' }
   ];
 
+  const getExportData = () => {
+    const headers = ['Name', 'Email', 'Role', 'Status', 'Created'];
+    const rows = users.map(user => [
+      user.name,
+      user.email,
+      user.role === 'manager' ? 'Manager' : 'Technician',
+      user.isActive ? 'Active' : 'Inactive',
+      new Date(user.createdAt).toLocaleDateString()
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Users Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `users-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Users', value: String(users.length) },
+          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Users (${users.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Users Report',
+        filename: `users-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Users', value: String(users.length) },
+          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Users (${users.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Users Report',
+        filename: `users-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Users', value: String(users.length) },
+          { label: 'Active Users', value: String(users.filter(u => u.isActive).length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'USERS', headers, rows }]
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -168,9 +230,17 @@ const UsersPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">Users</h1>
           <p className="text-gray-500 mt-1">Manage system users and permissions</p>
         </div>
-        <Button variant="primary" onClick={() => handleOpenForm()}>
-          Add User
-        </Button>
+        <div className="flex items-center gap-3">
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={users.length === 0}
+          />
+          <Button variant="primary" onClick={() => handleOpenForm()}>
+            Add User
+          </Button>
+        </div>
       </div>
 
       <Card noPadding>

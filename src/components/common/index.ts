@@ -11,3 +11,4 @@ export { default as Alert } from './Alert';
 export { default as FileUpload } from './FileUpload';
 export { default as Checkbox } from './Checkbox';
 export { default as StatCard } from './StatCard';
+export { default as ExportDropdown } from './ExportDropdown';

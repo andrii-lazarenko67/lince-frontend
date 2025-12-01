@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchNotifications, markAsRead, markAllAsRead, deleteNotification } from '../../store/slices/notificationSlice';
-import { Card, Button, Badge } from '../../components/common';
+import { Card, Button, Badge, ExportDropdown } from '../../components/common';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const NotificationsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -56,6 +57,77 @@ const NotificationsPage: React.FC = () => {
     }
   };
 
+  const getTypeLabel = (type: string) => {
+    switch (type) {
+      case 'incident': return 'Incident';
+      case 'out_of_range': return 'Out of Range';
+      case 'low_stock': return 'Low Stock';
+      case 'inspection': return 'Inspection';
+      default: return type;
+    }
+  };
+
+  const getExportData = () => {
+    const headers = ['Title', 'Message', 'Type', 'Status', 'Created'];
+    const rows = notifications.map(notif => [
+      notif.title,
+      notif.message,
+      getTypeLabel(notif.type),
+      notif.isRead ? 'Read' : 'Unread',
+      new Date(notif.createdAt).toLocaleString()
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Notifications Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `notifications-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Notifications', value: String(notifications.length) },
+          { label: 'Unread', value: String(unreadCount) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Notifications (${notifications.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Notifications Report',
+        filename: `notifications-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Notifications', value: String(notifications.length) },
+          { label: 'Unread', value: String(unreadCount) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Notifications (${notifications.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Notifications Report',
+        filename: `notifications-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Notifications', value: String(notifications.length) },
+          { label: 'Unread', value: String(unreadCount) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'NOTIFICATIONS', headers, rows }]
+    );
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case 'incident':
@@ -94,11 +166,19 @@ const NotificationsPage: React.FC = () => {
             {unreadCount > 0 ? `${unreadCount} unread notification(s)` : 'All caught up!'}
           </p>
         </div>
-        {unreadCount > 0 && (
-          <Button variant="outline" onClick={handleMarkAllAsRead}>
-            Mark All as Read
-          </Button>
-        )}
+        <div className="flex items-center gap-3">
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={notifications.length === 0}
+          />
+          {unreadCount > 0 && (
+            <Button variant="outline" onClick={handleMarkAllAsRead}>
+              Mark All as Read
+            </Button>
+          )}
+        </div>
       </div>
 
       <Card noPadding>

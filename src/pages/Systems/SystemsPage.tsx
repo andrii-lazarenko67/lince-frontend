@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button } from '../../components/common';
+import { Card, Button, ExportDropdown } from '../../components/common';
 import SystemsList from "./SystemsList";
 import SystemForm from "./SystemForm";
 import SystemsChartView from './SystemsChartView';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const SystemsPage: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -15,6 +16,76 @@ const SystemsPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchSystems({}));
   }, [dispatch]);
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'active': return 'Active';
+      case 'inactive': return 'Inactive';
+      case 'maintenance': return 'Maintenance';
+      default: return status;
+    }
+  };
+
+  const getExportData = () => {
+    const headers = ['Name', 'Location', 'Type', 'Status', 'Created'];
+    const rows = systems.map(sys => [
+      sys.name,
+      sys.location || '-',
+      sys.type || '-',
+      getStatusLabel(sys.status),
+      new Date(sys.createdAt).toLocaleDateString()
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Systems Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `systems-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Systems', value: String(systems.length) },
+          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Systems (${systems.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Systems Report',
+        filename: `systems-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Systems', value: String(systems.length) },
+          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Systems (${systems.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Systems Report',
+        filename: `systems-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Systems', value: String(systems.length) },
+          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'SYSTEMS', headers, rows }]
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -52,6 +123,12 @@ const SystemsPage: React.FC = () => {
               Charts
             </button>
           </div>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={systems.length === 0}
+          />
           <Button variant="primary" onClick={() => setIsFormOpen(true)}>
             Add System
           </Button>

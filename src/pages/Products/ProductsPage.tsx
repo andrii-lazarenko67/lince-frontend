@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
-import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import { Card, Button, Table, Badge, Modal, Input, Select, ExportDropdown } from '../../components/common';
 import ProductsChartView from './ProductsChartView';
+import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Product, CreateProductRequest } from '../../types';
 
 const ProductsPage: React.FC = () => {
@@ -81,6 +82,69 @@ const ProductsPage: React.FC = () => {
 
   const isLowStock = (product: Product) => {
     return product.minStockAlert && parseFloat(product.currentStock.toString()) <= parseFloat(product.minStockAlert.toString());
+  };
+
+  const getExportData = () => {
+    const headers = ['Name', 'Type', 'Current Stock', 'Unit', 'Min. Alert', 'Status', 'Supplier'];
+    const rows = products.map(prod => [
+      prod.name,
+      prod.type || '-',
+      prod.currentStock,
+      prod.unit,
+      prod.minStockAlert || '-',
+      isLowStock(prod) ? 'Low Stock' : 'In Stock',
+      prod.supplier || '-'
+    ]);
+    return { headers, rows };
+  };
+
+  const handleExportPDF = () => {
+    const { headers, rows } = getExportData();
+    exportToPdf(
+      {
+        title: 'Products Report',
+        subtitle: 'LINCE Water Treatment System',
+        filename: `products-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Products', value: String(products.length) },
+          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Products (${products.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportHTML = () => {
+    const { headers, rows } = getExportData();
+    exportToHtml(
+      {
+        title: 'Products Report',
+        filename: `products-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Products', value: String(products.length) },
+          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
+          { label: 'Generated', value: new Date().toLocaleString() }
+        ]
+      },
+      [{ title: `Products (${products.length})`, headers, rows }]
+    );
+  };
+
+  const handleExportCSV = () => {
+    const { headers, rows } = getExportData();
+    exportToCsv(
+      {
+        title: 'Products Report',
+        filename: `products-${new Date().toISOString().split('T')[0]}`,
+        metadata: [
+          { label: 'Total Products', value: String(products.length) },
+          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
+          { label: 'Generated', value: new Date().toISOString() }
+        ]
+      },
+      [{ title: 'PRODUCTS', headers, rows }]
+    );
   };
 
   const columns = [
@@ -171,6 +235,12 @@ const ProductsPage: React.FC = () => {
               Charts
             </button>
           </div>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportHTML={handleExportHTML}
+            onExportCSV={handleExportCSV}
+            disabled={products.length === 0}
+          />
           <Button variant="primary" onClick={() => handleOpenForm()}>
             Add Product
           </Button>
