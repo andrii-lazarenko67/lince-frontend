@@ -1,6 +1,7 @@
 import React from 'react';
-import { useAppSelector, useAppNavigation } from '../../hooks';
+import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { useLocation } from 'react-router-dom';
+import { toggleSidebar } from '../../store/slices/uiSlice';
 
 interface NavItem {
   name: string;
@@ -10,10 +11,23 @@ interface NavItem {
 }
 
 const Sidebar: React.FC = () => {
+  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { goTo } = useAppNavigation();
   const location = useLocation();
+
+  const handleCloseSidebar = () => {
+    dispatch(toggleSidebar());
+  };
+
+  const handleNavClick = (path: string) => {
+    goTo(path);
+    // Close sidebar on mobile after navigation
+    if (window.innerWidth < 1024) {
+      dispatch(toggleSidebar());
+    }
+  };
 
   const navItems: NavItem[] = [
     {
@@ -121,66 +135,86 @@ const Sidebar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');
 
   return (
-    <aside
-      className={`fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-blue-600 via-blue-700 to-indigo-800 shadow-xl transform transition-transform duration-300 ease-in-out ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } lg:translate-x-0`}
-    >
-      <div className="flex flex-col h-full">
-        {/* Logo */}
-        <div className="flex items-center justify-center h-16 px-4 border-b border-white/10">
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
+    <>
+      {/* Overlay for mobile */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-30 bg-black/50 backdrop-blur-sm lg:hidden"
+          onClick={handleCloseSidebar}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-gradient-to-b from-blue-400 via-blue-500 to-indigo-500 shadow-xl transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
+      >
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="flex items-center justify-between h-16 px-4 border-b border-white/10">
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+              </div>
+              <h1 className="text-2xl font-bold text-white tracking-wide">LINCE</h1>
             </div>
-            <h1 className="text-2xl font-bold text-white tracking-wide">LINCE</h1>
+            {/* Close button for mobile */}
+            <button
+              onClick={handleCloseSidebar}
+              className="lg:hidden p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            >
+              <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
-        </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4">
-          <ul className="space-y-1 px-3">
-            {filteredNavItems.map((item) => (
-              <li key={item.path}>
-                <button
-                  onClick={() => goTo(item.path)}
-                  className={`w-full flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
-                    isActive(item.path)
-                      ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
-                      : 'text-white/70 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span className={`mr-3 ${isActive(item.path) ? 'text-white' : 'text-white/70'}`}>
-                    {item.icon}
-                  </span>
-                  {item.name}
-                  {isActive(item.path) && (
-                    <span className="ml-auto w-1.5 h-1.5 bg-white rounded-full"></span>
-                  )}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
+          {/* Navigation */}
+          <nav className="flex-1 overflow-y-auto py-4">
+            <ul className="space-y-1 px-3">
+              {filteredNavItems.map((item) => (
+                <li key={item.path}>
+                  <button
+                    onClick={() => handleNavClick(item.path)}
+                    className={`w-full flex items-center px-4 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 ${
+                      isActive(item.path)
+                        ? 'bg-white/20 text-white shadow-lg backdrop-blur-sm'
+                        : 'text-white/70 hover:bg-white/10 hover:text-white'
+                    }`}
+                  >
+                    <span className={`mr-3 ${isActive(item.path) ? 'text-white' : 'text-white/70'}`}>
+                      {item.icon}
+                    </span>
+                    {item.name}
+                    {isActive(item.path) && (
+                      <span className="ml-auto w-1.5 h-1.5 bg-white rounded-full"></span>
+                    )}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-        {/* User Profile */}
-        <div className="p-4 border-t border-white/10">
-          <div className="flex items-center p-3 rounded-lg bg-white/10 backdrop-blur-sm">
-            <div className="flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold ring-2 ring-white/30">
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+          {/* User Profile */}
+          <div className="p-4 border-t border-white/10">
+            <div className="flex items-center p-3 rounded-lg bg-white/10 backdrop-blur-sm">
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-white font-semibold ring-2 ring-white/30">
+                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                </div>
+              </div>
+              <div className="ml-3 flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{user?.name || 'User'}</p>
+                <p className="text-xs text-white/60 capitalize">{user?.role || 'Role'}</p>
               </div>
             </div>
-            <div className="ml-3 flex-1 min-w-0">
-              <p className="text-sm font-medium text-white truncate">{user?.name || 'User'}</p>
-              <p className="text-xs text-white/60 capitalize">{user?.role || 'Role'}</p>
-            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 
