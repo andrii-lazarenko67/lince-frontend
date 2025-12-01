@@ -101,7 +101,7 @@ export const fetchProductUsageHistory = createAsyncThunk(
   async ({ id, params }: { id: number; params?: { startDate?: string; endDate?: string } }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: ProductUsage[] }>(`/products/${id}/usage`, { params });
+      const response = await axiosInstance.get<{ success: boolean; data: ProductUsage[] }>(`/products/${id}/usages`, { params });
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

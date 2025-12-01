@@ -1,17 +1,43 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchNotifications, markAsRead, markAllAsRead, deleteNotification } from '../../store/slices/notificationSlice';
-import { Card, Button, Badge, ExportDropdown } from '../../components/common';
+import {
+  fetchNotifications,
+  markAsRead,
+  markAllAsRead,
+  clearMyNotifications,
+  fetchAllNotificationsWithStats,
+  fetchNotificationRecipients,
+  createNotification,
+  deleteNotification,
+  clearSelectedNotification
+} from '../../store/slices/notificationSlice';
+import { Card, Button, ExportDropdown } from '../../components/common';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
+import {
+  NotificationList,
+  AdminNotificationList,
+  NotificationRecipientsModal,
+  CreateNotificationModal
+} from './sections';
+import type { Notification, CreateNotificationRequest } from '../../types';
 
 const NotificationsPage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { notifications, unreadCount } = useAppSelector((state) => state.notifications);
+  const { user } = useAppSelector((state) => state.auth);
+  const { notifications, unreadCount, allNotifications, selectedNotification } = useAppSelector((state) => state.notifications);
   const { goToIncidentDetail, goToDailyLogDetail, goToProductDetail } = useAppNavigation();
+
+  const [activeTab, setActiveTab] = useState<'my' | 'admin'>('my');
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const isAdmin = user?.role === 'admin' || user?.role === 'manager';
 
   useEffect(() => {
     dispatch(fetchNotifications({}));
-  }, [dispatch]);
+    if (isAdmin) {
+      dispatch(fetchAllNotificationsWithStats({}));
+    }
+  }, [dispatch, isAdmin]);
 
   const handleMarkAsRead = (id: number) => {
     dispatch(markAsRead(id));
@@ -21,58 +47,66 @@ const NotificationsPage: React.FC = () => {
     dispatch(markAllAsRead());
   };
 
-  const handleDelete = (id: number) => {
-    dispatch(deleteNotification(id));
+  const handleClearMyNotifications = () => {
+    if (window.confirm('Are you sure you want to clear all your notifications?')) {
+      dispatch(clearMyNotifications());
+    }
   };
 
-  const handleNotificationClick = (notification: { type: string; referenceId: number | null }) => {
+  const handleNotificationClick = (notification: Notification) => {
     if (!notification.referenceId) return;
 
     switch (notification.type) {
       case 'incident':
         goToIncidentDetail(notification.referenceId);
         break;
-      case 'daily_log':
-      case 'out_of_range':
-        goToDailyLogDetail(notification.referenceId);
+      case 'alert':
+        if (notification.referenceType === 'DailyLog') {
+          goToDailyLogDetail(notification.referenceId);
+        }
         break;
-      case 'low_stock':
+      case 'stock':
         goToProductDetail(notification.referenceId);
         break;
     }
   };
 
-  const getTypeBadge = (type: string) => {
-    switch (type) {
-      case 'incident':
-        return <Badge variant="danger">Incident</Badge>;
-      case 'out_of_range':
-        return <Badge variant="warning">Out of Range</Badge>;
-      case 'low_stock':
-        return <Badge variant="warning">Low Stock</Badge>;
-      case 'inspection':
-        return <Badge variant="info">Inspection</Badge>;
-      default:
-        return <Badge variant="secondary">{type}</Badge>;
+  const handleViewRecipients = (id: number) => {
+    dispatch(fetchNotificationRecipients(id));
+  };
+
+  const handleCloseRecipientsModal = () => {
+    dispatch(clearSelectedNotification());
+  };
+
+  const handleCreateNotification = (data: CreateNotificationRequest) => {
+    dispatch(createNotification(data));
+  };
+
+  const handleDeleteNotification = (id: number) => {
+    if (window.confirm('Are you sure you want to delete this notification? This will remove it for all users.')) {
+      dispatch(deleteNotification(id));
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
       case 'incident': return 'Incident';
-      case 'out_of_range': return 'Out of Range';
-      case 'low_stock': return 'Low Stock';
+      case 'alert': return 'Alert';
+      case 'stock': return 'Stock';
       case 'inspection': return 'Inspection';
+      case 'system': return 'System';
       default: return type;
     }
   };
 
   const getExportData = () => {
-    const headers = ['Title', 'Message', 'Type', 'Status', 'Created'];
+    const headers = ['Title', 'Message', 'Type', 'Priority', 'Status', 'Created'];
     const rows = notifications.map(notif => [
       notif.title,
       notif.message,
       getTypeLabel(notif.type),
+      notif.priority,
       notif.isRead ? 'Read' : 'Unread',
       new Date(notif.createdAt).toLocaleString()
     ]);
@@ -128,35 +162,6 @@ const NotificationsPage: React.FC = () => {
     );
   };
 
-  const getTypeIcon = (type: string) => {
-    switch (type) {
-      case 'incident':
-        return (
-          <svg className="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-        );
-      case 'out_of_range':
-        return (
-          <svg className="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        );
-      case 'low_stock':
-        return (
-          <svg className="h-5 w-5 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-        );
-      default:
-        return (
-          <svg className="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-          </svg>
-        );
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -173,76 +178,101 @@ const NotificationsPage: React.FC = () => {
             onExportCSV={handleExportCSV}
             disabled={notifications.length === 0}
           />
-          {unreadCount > 0 && (
-            <Button variant="outline" onClick={handleMarkAllAsRead}>
-              Mark All as Read
+          {isAdmin && (
+            <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
+              Create Notification
             </Button>
           )}
         </div>
       </div>
 
-      <Card noPadding>
-        {notifications.length === 0 ? (
-          <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-            </svg>
-            <p className="mt-4 text-gray-500">No notifications</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-200">
-            {notifications.map((notification) => (
-              <div
-                key={notification.id}
-                className={`p-4 hover:bg-gray-50 transition-colors ${!notification.isRead ? 'bg-blue-50' : ''}`}
-              >
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 mt-1">
-                    {getTypeIcon(notification.type)}
-                  </div>
-                  <div
-                    className="flex-1 min-w-0 cursor-pointer"
-                    onClick={() => {
-                      if (!notification.isRead) handleMarkAsRead(notification.id);
-                      handleNotificationClick(notification);
-                    }}
-                  >
-                    <div className="flex items-center space-x-2 mb-1">
-                      <p className={`text-sm font-medium ${!notification.isRead ? 'text-gray-900' : 'text-gray-700'}`}>
-                        {notification.title}
-                      </p>
-                      {getTypeBadge(notification.type)}
-                      {!notification.isRead && (
-                        <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
-                      )}
-                    </div>
-                    <p className="text-sm text-gray-500">{notification.message}</p>
-                    <p className="text-xs text-gray-400 mt-1">
-                      {new Date(notification.createdAt).toLocaleString()}
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0 flex space-x-2">
-                    {!notification.isRead && (
-                      <button
-                        onClick={() => handleMarkAsRead(notification.id)}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
-                      >
-                        Mark as read
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDelete(notification.id)}
-                      className="text-red-600 hover:text-red-800 text-sm"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
+      {/* Tabs for Admin/Manager */}
+      {isAdmin && (
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('my')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'my'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              My Notifications
+              {unreadCount > 0 && (
+                <span className="ml-2 bg-blue-100 text-blue-600 py-0.5 px-2 rounded-full text-xs">
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('admin')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'admin'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              All Notifications (Admin)
+              <span className="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">
+                {allNotifications.length}
+              </span>
+            </button>
+          </nav>
+        </div>
+      )}
+
+      {/* My Notifications Tab */}
+      {activeTab === 'my' && (
+        <Card
+          noPadding
+          title="My Notifications"
+          headerActions={
+            <div className="flex gap-2">
+              {unreadCount > 0 && (
+                <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
+                  Mark All as Read
+                </Button>
+              )}
+              {notifications.length > 0 && (
+                <Button variant="outline" size="sm" onClick={handleClearMyNotifications}>
+                  Clear All
+                </Button>
+              )}
+            </div>
+          }
+        >
+          <NotificationList
+            notifications={notifications}
+            onMarkAsRead={handleMarkAsRead}
+            onNotificationClick={handleNotificationClick}
+          />
+        </Card>
+      )}
+
+      {/* Admin Notifications Tab */}
+      {activeTab === 'admin' && isAdmin && (
+        <Card noPadding title="All System Notifications">
+          <AdminNotificationList
+            notifications={allNotifications}
+            onViewRecipients={handleViewRecipients}
+            onDelete={handleDeleteNotification}
+          />
+        </Card>
+      )}
+
+      {/* Recipients Modal */}
+      <NotificationRecipientsModal
+        notification={selectedNotification}
+        onClose={handleCloseRecipientsModal}
+      />
+
+      {/* Create Modal */}
+      <CreateNotificationModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSubmit={handleCreateNotification}
+      />
     </div>
   );
 };

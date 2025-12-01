@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { User, LoginRequest, LoginResponse, AuthState } from '../../types';
 import { setLoading } from './uiSlice';
+import { resetNotifications } from './notificationSlice';
 
 const initialState: AuthState = {
   user: JSON.parse(localStorage.getItem('user') || 'null'),
@@ -35,6 +36,7 @@ export const logout = createAsyncThunk(
     dispatch(setLoading(true));
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    dispatch(resetNotifications());
     dispatch(setLoading(false));
   }
 );

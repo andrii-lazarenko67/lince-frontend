@@ -20,12 +20,17 @@ const IncidentDetailPage: React.FC = () => {
   const [assignedToId, setAssignedToId] = useState('');
   const [newComment, setNewComment] = useState('');
 
+  const isAdmin = user?.role === 'admin' || user?.role === 'manager';
+
   useEffect(() => {
     if (id) {
       dispatch(fetchIncidentById(Number(id)));
     }
-    dispatch(fetchUsers({}));
-  }, [dispatch, id]);
+    // Only fetch users if current user has permission (admin/manager)
+    if (isAdmin) {
+      dispatch(fetchUsers({}));
+    }
+  }, [dispatch, id, isAdmin]);
 
   const handleStatusUpdate = async () => {
     if (id && newStatus) {
@@ -103,7 +108,6 @@ const IncidentDetailPage: React.FC = () => {
     );
   }
 
-  const isManager = user?.role === 'manager';
   const userOptions = users.map(u => ({ value: u.id, label: u.name }));
   const statusOptions = [
     { value: 'open', label: 'Open' },
@@ -125,7 +129,7 @@ const IncidentDetailPage: React.FC = () => {
             <p className="text-gray-500 mt-1">{currentIncident.system?.name}</p>
           </div>
         </div>
-        {isManager && (
+        {isAdmin && (
           <div className="flex space-x-3">
             <Button variant="outline" onClick={() => setIsAssignOpen(true)}>
               Assign
