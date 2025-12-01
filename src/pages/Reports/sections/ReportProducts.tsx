@@ -180,7 +180,7 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
   );
 };
 
-// Line Chart Component
+// Improved Area Line Chart Component
 interface LineChartProps {
   data: { label: string; value: number }[];
   title: string;
@@ -188,50 +188,134 @@ interface LineChartProps {
   color?: string;
 }
 
-const LineChart: React.FC<LineChartProps> = ({ data, title, height = 200, color = '#3b82f6' }) => {
+const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color = '#3b82f6' }) => {
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = React.useState(0);
+
+  React.useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center bg-gray-50 rounded" style={{ height }}>
+        <div className="flex items-center justify-center bg-gray-50 rounded-lg" style={{ height }}>
           <span className="text-gray-400">No data</span>
         </div>
       </div>
     );
   }
 
+  const padding = { top: 20, right: 20, bottom: 35, left: 45 };
+  const chartWidth = Math.max(containerWidth - padding.left - padding.right, 100);
+  const chartHeight = height - padding.top - padding.bottom;
+
   const maxValue = Math.max(...data.map(d => d.value), 1);
-  const chartHeight = height - 40;
+
+  const yTicks = [0, Math.round(maxValue * 0.5), maxValue];
 
   const points = data.map((item, index) => {
-    const x = (index / (data.length - 1 || 1)) * 100;
-    const y = chartHeight - (item.value / maxValue) * chartHeight;
+    const x = padding.left + (index / (data.length - 1 || 1)) * chartWidth;
+    const y = padding.top + chartHeight - (item.value / maxValue) * chartHeight;
     return { x, y, ...item };
   });
 
-  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+  const createSmoothPath = (pts: typeof points) => {
+    if (pts.length < 2) return `M ${pts[0]?.x || 0} ${pts[0]?.y || 0}`;
+    if (pts.length === 2) return `M ${pts[0].x} ${pts[0].y} L ${pts[1].x} ${pts[1].y}`;
+
+    let path = `M ${pts[0].x} ${pts[0].y}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[Math.max(0, i - 1)];
+      const p1 = pts[i];
+      const p2 = pts[i + 1];
+      const p3 = pts[Math.min(pts.length - 1, i + 2)];
+      const tension = 0.3;
+      const cp1x = p1.x + (p2.x - p0.x) * tension;
+      const cp1y = p1.y + (p2.y - p0.y) * tension;
+      const cp2x = p2.x - (p3.x - p1.x) * tension;
+      const cp2y = p2.y - (p3.y - p1.y) * tension;
+      path += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+    }
+    return path;
+  };
+
+  const linePath = createSmoothPath(points);
+  const areaPath = `${linePath} L ${points[points.length - 1].x} ${padding.top + chartHeight} L ${points[0].x} ${padding.top + chartHeight} Z`;
+  const gradientId = `gradient-${color.replace('#', '')}-${Math.random().toString(36).substring(2, 11)}`;
 
   return (
-    <div className="w-full">
+    <div className="w-full" ref={containerRef}>
       <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-      <svg width="100%" height={height} viewBox={`-5 -10 110 ${height}`} preserveAspectRatio="none">
-        {[0, 25, 50, 75, 100].map(percent => (
-          <line key={percent} x1="0" y1={chartHeight * (1 - percent / 100)} x2="100" y2={chartHeight * (1 - percent / 100)} stroke="#e5e7eb" strokeWidth="0.5" />
-        ))}
-        <path d={pathD} fill="none" stroke={color} strokeWidth="2" />
-        {points.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="3" fill={color} />
-        ))}
-      </svg>
-      <div className="flex justify-between mt-2 px-1">
-        {data.length <= 7 ? data.map((item, i) => (
-          <span key={i} className="text-xs text-gray-500">{item.label}</span>
-        )) : (
-          <>
-            <span className="text-xs text-gray-500">{data[0]?.label}</span>
-            <span className="text-xs text-gray-500">{data[data.length - 1]?.label}</span>
-          </>
-        )}
+      {containerWidth > 0 && (
+        <div className="relative">
+          <svg width={containerWidth} height={height} className="overflow-visible">
+            <defs>
+              <linearGradient id={gradientId} x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+                <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+              </linearGradient>
+            </defs>
+            <rect x={padding.left} y={padding.top} width={chartWidth} height={chartHeight} fill="#fafafa" rx="4" />
+            {yTicks.map((tick, i) => {
+              const y = padding.top + chartHeight - (tick / maxValue) * chartHeight;
+              return (
+                <g key={i}>
+                  <line x1={padding.left} y1={y} x2={padding.left + chartWidth} y2={y} stroke="#e5e7eb" strokeWidth="1" strokeDasharray={i === 0 ? "0" : "4,4"} />
+                  <text x={padding.left - 8} y={y + 4} textAnchor="end" style={{ fontSize: '11px', fill: '#9ca3af' }}>{tick}</text>
+                </g>
+              );
+            })}
+            <path d={areaPath} fill={`url(#${gradientId})`} />
+            <path d={linePath} fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            {points.map((p, i) => (
+              <g key={i}>
+                {hoveredIndex === i && (
+                  <line x1={p.x} y1={padding.top} x2={p.x} y2={padding.top + chartHeight} stroke={color} strokeWidth="1" strokeDasharray="4,4" opacity="0.4" />
+                )}
+                <circle cx={p.x} cy={p.y} r="15" fill="transparent" onMouseEnter={() => setHoveredIndex(i)} onMouseLeave={() => setHoveredIndex(null)} style={{ cursor: 'pointer' }} />
+                <circle cx={p.x} cy={p.y} r={hoveredIndex === i ? 6 : 4} fill="white" stroke={color} strokeWidth="2.5" />
+                {hoveredIndex === i && (
+                  <g>
+                    <rect x={p.x - 20} y={p.y - 32} width="40" height="22" rx="4" fill="#1f2937" />
+                    <text x={p.x} y={p.y - 16} textAnchor="middle" style={{ fontSize: '12px', fill: 'white', fontWeight: 'bold' }}>{p.value}</text>
+                  </g>
+                )}
+              </g>
+            ))}
+            {data.length <= 12 ? points.map((p, i) => (
+              <text key={i} x={p.x} y={height - 10} textAnchor="middle" style={{ fontSize: '11px', fill: hoveredIndex === i ? '#374151' : '#9ca3af', fontWeight: hoveredIndex === i ? 600 : 400 }}>{data[i].label}</text>
+            )) : (
+              <>
+                <text x={points[0].x} y={height - 10} textAnchor="start" style={{ fontSize: '11px', fill: '#9ca3af' }}>{data[0]?.label}</text>
+                <text x={points[points.length - 1].x} y={height - 10} textAnchor="end" style={{ fontSize: '11px', fill: '#9ca3af' }}>{data[data.length - 1]?.label}</text>
+              </>
+            )}
+          </svg>
+        </div>
+      )}
+      <div className="flex justify-center gap-6 mt-3 pt-3 border-t border-gray-100">
+        <div className="text-center">
+          <span className="text-xs text-gray-500">Total</span>
+          <p className="text-sm font-semibold" style={{ color }}>{data.reduce((sum, d) => sum + d.value, 0)}</p>
+        </div>
+        <div className="text-center">
+          <span className="text-xs text-gray-500">Average</span>
+          <p className="text-sm font-semibold text-gray-700">{(data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(1)}</p>
+        </div>
+        <div className="text-center">
+          <span className="text-xs text-gray-500">Peak</span>
+          <p className="text-sm font-semibold text-gray-700">{maxValue}</p>
+        </div>
       </div>
     </div>
   );
