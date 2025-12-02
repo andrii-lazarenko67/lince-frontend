@@ -1,4 +1,5 @@
 import React from 'react';
+import { Chip } from '@mui/material';
 
 interface BadgeProps {
   variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info';
@@ -13,26 +14,65 @@ const Badge: React.FC<BadgeProps> = ({
   children,
   className = ''
 }) => {
-  const variantStyles = {
-    primary: 'bg-blue-100 text-blue-800',
-    secondary: 'bg-gray-100 text-gray-800',
-    success: 'bg-green-100 text-green-800',
-    danger: 'bg-red-100 text-red-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    info: 'bg-cyan-100 text-cyan-800'
-  };
-
-  const sizeStyles = {
-    sm: 'px-2 py-0.5 text-xs',
-    md: 'px-2.5 py-1 text-sm'
+  const getColor = (): any => {
+    switch (variant) {
+      case 'primary':
+        return 'primary';
+      case 'secondary':
+        return 'default';
+      case 'success':
+        return 'success';
+      case 'danger':
+        return 'error';
+      case 'warning':
+        return 'warning';
+      case 'info':
+        return 'info';
+      default:
+        return 'default';
+    }
   };
 
   return (
-    <span
-      className={`inline-flex items-center font-medium rounded-full ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
-    >
-      {children}
-    </span>
+    <Chip
+      label={children}
+      color={getColor()}
+      size={size === 'sm' ? 'small' : 'medium'}
+      className={className}
+      sx={{
+        fontWeight: 600,
+        ...(variant === 'primary' && {
+          bgcolor: 'rgba(25, 118, 210, 0.08)',
+          color: 'primary.dark',
+          '&:hover': { bgcolor: 'rgba(25, 118, 210, 0.12)' }
+        }),
+        ...(variant === 'secondary' && {
+          bgcolor: 'rgba(0, 0, 0, 0.06)',
+          color: 'text.primary',
+          '&:hover': { bgcolor: 'rgba(0, 0, 0, 0.08)' }
+        }),
+        ...(variant === 'success' && {
+          bgcolor: 'rgba(46, 125, 50, 0.08)',
+          color: 'success.dark',
+          '&:hover': { bgcolor: 'rgba(46, 125, 50, 0.12)' }
+        }),
+        ...(variant === 'danger' && {
+          bgcolor: 'rgba(211, 47, 47, 0.08)',
+          color: 'error.dark',
+          '&:hover': { bgcolor: 'rgba(211, 47, 47, 0.12)' }
+        }),
+        ...(variant === 'warning' && {
+          bgcolor: 'rgba(237, 108, 2, 0.08)',
+          color: 'warning.dark',
+          '&:hover': { bgcolor: 'rgba(237, 108, 2, 0.12)' }
+        }),
+        ...(variant === 'info' && {
+          bgcolor: 'rgba(2, 136, 209, 0.08)',
+          color: 'info.dark',
+          '&:hover': { bgcolor: 'rgba(2, 136, 209, 0.12)' }
+        })
+      }}
+    />
   );
 };
 

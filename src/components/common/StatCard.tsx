@@ -1,4 +1,7 @@
 import React from 'react';
+import { Card, CardContent, Typography, Box, Avatar } from '@mui/material';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 interface StatCardProps {
   title: string;
@@ -23,37 +26,60 @@ const StatCard: React.FC<StatCardProps> = ({
   className = ''
 }) => {
   return (
-    <div
+    <Card
       onClick={onClick}
-      className={`bg-white rounded-lg shadow p-6 ${onClick ? 'cursor-pointer hover:shadow-md transition-shadow' : ''} ${className}`}
+      className={className}
+      sx={{
+        cursor: onClick ? 'pointer' : 'default',
+        '&:hover': onClick ? { boxShadow: 4 } : {},
+        transition: 'box-shadow 0.3s'
+      }}
     >
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-500">{title}</p>
-          <p className="mt-1 text-3xl font-semibold text-gray-900">{value}</p>
-          {subtitle && <p className="mt-1 text-sm text-gray-500">{subtitle}</p>}
-          {trend && (
-            <p className={`mt-2 text-sm flex items-center ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {trend.isPositive ? (
-                <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                </svg>
-              ) : (
-                <svg className="h-4 w-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              )}
-              {Math.abs(trend.value)}%
-            </p>
+      <CardContent>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+          <Box flex={1}>
+            <Typography variant="body2" color="text.secondary" gutterBottom>
+              {title}
+            </Typography>
+            <Typography variant="h4" component="div" fontWeight="bold" sx={{ my: 1 }}>
+              {value}
+            </Typography>
+            {subtitle && (
+              <Typography variant="body2" color="text.secondary">
+                {subtitle}
+              </Typography>
+            )}
+            {trend && (
+              <Box display="flex" alignItems="center" mt={1}>
+                {trend.isPositive ? (
+                  <TrendingUpIcon sx={{ fontSize: 18, color: 'success.main', mr: 0.5 }} />
+                ) : (
+                  <TrendingDownIcon sx={{ fontSize: 18, color: 'error.main', mr: 0.5 }} />
+                )}
+                <Typography
+                  variant="body2"
+                  color={trend.isPositive ? 'success.main' : 'error.main'}
+                >
+                  {Math.abs(trend.value)}%
+                </Typography>
+              </Box>
+            )}
+          </Box>
+          {icon && (
+            <Avatar
+              sx={{
+                bgcolor: 'primary.light',
+                color: 'primary.main',
+                width: 48,
+                height: 48
+              }}
+            >
+              {icon}
+            </Avatar>
           )}
-        </div>
-        {icon && (
-          <div className="p-3 bg-blue-100 rounded-full text-blue-600">
-            {icon}
-          </div>
-        )}
-      </div>
-    </div>
+        </Box>
+      </CardContent>
+    </Card>
   );
 };
 

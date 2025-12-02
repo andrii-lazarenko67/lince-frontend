@@ -12,6 +12,10 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.5.0",
+    "@mui/material": "^6.3.0",
+    "@mui/icons-material": "^6.3.0",
+    "@emotion/react": "^11.13.5",
+    "@emotion/styled": "^11.13.5",
     "axios": "^1.7.9",
     "jspdf": "^3.0.4",
     "jspdf-autotable": "^5.0.2",

@@ -1,4 +1,14 @@
 import React from 'react';
+import {
+  Table as MuiTable,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography
+} from '@mui/material';
 
 interface Column<T> {
   key: string;
@@ -25,47 +35,49 @@ function Table<T>({
   className = ''
 }: TableProps<T>) {
   return (
-    <div className={`overflow-x-auto ${className}`}>
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-blue-500 text-white">
-          <tr>
+    <TableContainer component={Paper} className={className}>
+      <MuiTable>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: 'primary.main' }}>
             {columns.map((column) => (
-              <th
+              <TableCell
                 key={column.key}
-                className={`px-6 py-3 text-left text-xs font-medium uppercase tracking-wider ${column.className || ''}`}
+                className={column.className}
+                sx={{ color: 'white', fontWeight: 'bold' }}
               >
                 {column.header}
-              </th>
+              </TableCell>
             ))}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+          </TableRow>
+        </TableHead>
+        <TableBody>
           {data.length === 0 ? (
-            <tr>
-              <td colSpan={columns.length} className="px-6 py-8 text-center text-gray-500">
-                {emptyMessage}
-              </td>
-            </tr>
+            <TableRow>
+              <TableCell colSpan={columns.length} align="center" sx={{ py: 4 }}>
+                <Typography color="textSecondary">{emptyMessage}</Typography>
+              </TableCell>
+            </TableRow>
           ) : (
             data.map((item) => (
-              <tr
+              <TableRow
                 key={keyExtractor(item)}
                 onClick={() => onRowClick?.(item)}
-                className={onRowClick ? 'cursor-pointer hover:bg-gray-100' : ''}
+                hover={!!onRowClick}
+                sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
               >
                 {columns.map((column) => (
-                  <td key={column.key} className={`px-6 py-4 whitespace-nowrap ${column.className || ''}`}>
+                  <TableCell key={column.key} className={column.className}>
                     {column.render
                       ? column.render(item)
                       : (item as Record<string, unknown>)[column.key]?.toString() || ''}
-                  </td>
+                  </TableCell>
                 ))}
-              </tr>
+              </TableRow>
             ))
           )}
-        </tbody>
-      </table>
-    </div>
+        </TableBody>
+      </MuiTable>
+    </TableContainer>
   );
 }
 

@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+import { Box } from '@mui/material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { getMe } from '../../store/slices/authSlice';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { GlobalLoader } from '../common';
 
+const DRAWER_WIDTH = 256;
+
 const MainLayout: React.FC = () => {
   const dispatch = useAppDispatch();
   const { token, user } = useAppSelector((state) => state.auth);
-  const { sidebarOpen } = useAppSelector((state) => state.ui);
   const { goToLogin } = useAppNavigation();
 
   useEffect(() => {
@@ -29,24 +31,25 @@ const MainLayout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.100' }}>
       <GlobalLoader />
       <Sidebar />
       <Header />
 
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
-          onClick={() => {}}
-        />
-      )}
-
-      <main className="lg:ml-64 pt-16 min-h-screen">
-        <div className="p-6">
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          minHeight: '100vh',
+          ml: { xs: 0, lg: `${DRAWER_WIDTH}px` },
+          pt: '64px'
+        }}
+      >
+        <Box sx={{ p: 3 }}>
           <Outlet />
-        </div>
-      </main>
-    </div>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

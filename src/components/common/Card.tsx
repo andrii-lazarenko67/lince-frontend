@@ -1,4 +1,5 @@
 import React from 'react';
+import { Card as MuiCard, CardContent, CardHeader, Divider } from '@mui/material';
 
 interface CardProps {
   title?: string;
@@ -18,18 +19,25 @@ const Card: React.FC<CardProps> = ({
   noPadding = false
 }) => {
   return (
-    <div className={`bg-white rounded-lg shadow ${className}`}>
+    <MuiCard className={className} sx={{ boxShadow: 2 }}>
       {(title || headerActions) && (
-        <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <div>
-            {title && <h3 className="text-lg font-semibold text-gray-900">{title}</h3>}
-            {subtitle && <p className="text-sm text-gray-500 mt-1">{subtitle}</p>}
-          </div>
-          {headerActions && <div className="flex items-center gap-2">{headerActions}</div>}
-        </div>
+        <>
+          <CardHeader
+            title={title}
+            subheader={subtitle}
+            action={headerActions}
+            slotProps={{
+              title: { variant: 'h6' },
+              subheader: { variant: 'body2' }
+            }}
+          />
+          <Divider />
+        </>
       )}
-      <div className={noPadding ? '' : 'p-6'}>{children}</div>
-    </div>
+      <CardContent sx={{ padding: noPadding ? 0 : 3 }}>
+        {children}
+      </CardContent>
+    </MuiCard>
   );
 };
 

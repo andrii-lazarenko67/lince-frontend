@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { Box, Typography, FormHelperText } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 interface FileUploadProps {
   name: string;
@@ -51,39 +53,37 @@ const FileUpload: React.FC<FileUploadProps> = ({
   };
 
   return (
-    <div className={`mb-4 ${className}`}>
+    <Box className={className} mb={2}>
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <Typography variant="body2" fontWeight="medium" color="text.secondary" mb={1}>
           {label}
-        </label>
+        </Typography>
       )}
-      <div
+      <Box
         onClick={() => inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:border-blue-400 transition-colors ${
-          error ? 'border-red-500' : 'border-gray-300'
-        }`}
+        sx={{
+          border: 2,
+          borderStyle: 'dashed',
+          borderColor: error ? 'error.main' : 'grey.300',
+          borderRadius: 2,
+          p: 3,
+          textAlign: 'center',
+          cursor: 'pointer',
+          transition: 'border-color 0.3s',
+          '&:hover': {
+            borderColor: 'primary.main'
+          }
+        }}
       >
-        <svg
-          className="mx-auto h-12 w-12 text-gray-400"
-          stroke="currentColor"
-          fill="none"
-          viewBox="0 0 48 48"
-        >
-          <path
-            d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-            strokeWidth={2}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-        <p className="mt-2 text-sm text-gray-600">
+        <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
+        <Typography variant="body2" color="text.secondary">
           Click to upload or drag and drop
-        </p>
-        <p className="mt-1 text-xs text-gray-500">
+        </Typography>
+        <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
           {multiple ? 'Multiple files allowed' : 'Single file'} - Max {maxSize / (1024 * 1024)}MB
-        </p>
+        </Typography>
         <input
           ref={inputRef}
           type="file"
@@ -91,11 +91,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
           accept={accept}
           multiple={multiple}
           onChange={handleFileChange}
-          className="hidden"
+          style={{ display: 'none' }}
         />
-      </div>
-      {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
-    </div>
+      </Box>
+      {error && <FormHelperText error>{error}</FormHelperText>}
+    </Box>
   );
 };
 

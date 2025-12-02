@@ -1,4 +1,5 @@
 import React from 'react';
+import { FormControlLabel, Checkbox as MuiCheckbox } from '@mui/material';
 
 interface CheckboxProps {
   name: string;
@@ -17,26 +18,35 @@ const Checkbox: React.FC<CheckboxProps> = ({
   disabled = false,
   className = ''
 }) => {
-  return (
-    <div className={`flex items-center ${className}`}>
-      <input
-        type="checkbox"
-        id={name}
-        name={name}
-        checked={checked}
-        onChange={onChange}
-        disabled={disabled}
-        className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+  if (label) {
+    return (
+      <FormControlLabel
+        control={
+          <MuiCheckbox
+            id={name}
+            name={name}
+            checked={checked}
+            onChange={onChange}
+            disabled={disabled}
+            size="small"
+          />
+        }
+        label={label}
+        className={className}
       />
-      {label && (
-        <label
-          htmlFor={name}
-          className={`ml-2 block text-sm text-gray-700 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-        >
-          {label}
-        </label>
-      )}
-    </div>
+    );
+  }
+
+  return (
+    <MuiCheckbox
+      id={name}
+      name={name}
+      checked={checked}
+      onChange={onChange}
+      disabled={disabled}
+      size="small"
+      className={className}
+    />
   );
 };
 

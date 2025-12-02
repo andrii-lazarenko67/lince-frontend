@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button as MuiButton } from '@mui/material';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
@@ -21,34 +22,55 @@ const Button: React.FC<ButtonProps> = ({
   children,
   className = ''
 }) => {
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
-
-  const variantStyles = {
-    primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 disabled:bg-blue-300',
-    secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 disabled:bg-gray-300',
-    danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 disabled:bg-red-300',
-    success: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 disabled:bg-green-300',
-    warning: 'bg-yellow-500 text-white hover:bg-yellow-600 focus:ring-yellow-400 disabled:bg-yellow-300',
-    outline: 'border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500 disabled:bg-gray-100'
+  // Map custom variants to MUI variants and colors
+  const getMuiVariant = () => {
+    if (variant === 'outline') return 'outlined';
+    return 'contained';
   };
 
-  const sizeStyles = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+  const getMuiColor = (): any => {
+    switch (variant) {
+      case 'primary':
+        return 'primary';
+      case 'secondary':
+        return 'secondary';
+      case 'danger':
+        return 'error';
+      case 'success':
+        return 'success';
+      case 'warning':
+        return 'warning';
+      case 'outline':
+        return 'primary';
+      default:
+        return 'primary';
+    }
   };
 
-  const widthStyles = fullWidth ? 'w-full' : '';
+  const getMuiSize = () => {
+    switch (size) {
+      case 'sm':
+        return 'small';
+      case 'lg':
+        return 'large';
+      default:
+        return 'medium';
+    }
+  };
 
   return (
-    <button
+    <MuiButton
       type={type}
+      variant={getMuiVariant()}
+      color={getMuiColor()}
+      size={getMuiSize()}
       disabled={disabled}
+      fullWidth={fullWidth}
       onClick={onClick}
-      className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${widthStyles} ${className}`}
+      className={className}
     >
       {children}
-    </button>
+    </MuiButton>
   );
 };
 
