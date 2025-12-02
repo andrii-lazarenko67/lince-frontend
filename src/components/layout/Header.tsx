@@ -7,6 +7,7 @@ import {
   Badge,
   Box,
   Divider,
+  Avatar,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -130,14 +131,31 @@ const Header: React.FC = () => {
 
           {/* User info */}
           {!isMobile && (
-            <Box sx={{ mr: 1.5, textAlign: 'right' }}>
-              <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
-                {user?.name || 'User'}
-              </Typography>
-              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize' }}>
-                {user?.role || 'Role'}
-              </Typography>
-            </Box>
+            <>
+              <Box sx={{ mr: 1.5, textAlign: 'right' }}>
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
+                  {user?.name || 'User'}
+                </Typography>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize' }}>
+                  {user?.role || 'Role'}
+                </Typography>
+              </Box>
+              <Avatar
+                src={user?.avatar || undefined}
+                alt={user?.name || 'User'}
+                sx={{
+                  width: 36,
+                  height: 36,
+                  border: '2px solid rgba(255, 255, 255, 0.3)',
+                  bgcolor: 'rgba(255, 255, 255, 0.2)',
+                  color: 'white',
+                  fontWeight: 600,
+                  fontSize: '0.875rem'
+                }}
+              >
+                {user?.name?.charAt(0).toUpperCase() || 'U'}
+              </Avatar>
+            </>
           )}
 
           {/* Logout */}

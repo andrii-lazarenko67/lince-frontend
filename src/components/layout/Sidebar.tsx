@@ -171,7 +171,10 @@ const Sidebar: React.FC = () => {
       {/* User Profile */}
       <Box sx={{ p: 2, borderTop: 1, borderColor: 'primary.dark' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, bgcolor: 'primary.dark' }}>
-          <Avatar sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', width: 40, height: 40, fontWeight: 700 }}>
+          <Avatar
+            src={user?.avatar || undefined}
+            sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', width: 40, height: 40, fontWeight: 700 }}
+          >
             {user?.name?.charAt(0).toUpperCase() || 'U'}
           </Avatar>
           <Box sx={{ ml: 1.5, flex: 1, minWidth: 0 }}>
