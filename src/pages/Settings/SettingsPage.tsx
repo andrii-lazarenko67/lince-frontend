@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { changePassword, updateProfile } from '../../store/slices/authSlice';
+import { changePassword, updateProfile, uploadAvatar } from '../../store/slices/authSlice';
 import { Card, Button, Input, Alert, Badge } from '../../components/common';
+import { CameraAlt } from '@mui/icons-material';
 
 const SettingsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
@@ -22,6 +24,7 @@ const SettingsPage: React.FC = () => {
   const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>({});
   const [profileSuccessMessage, setProfileSuccessMessage] = useState('');
   const [passwordSuccessMessage, setPasswordSuccessMessage] = useState('');
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
 
   useEffect(() => {
     if (user) {
@@ -125,6 +128,47 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Validate file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert('Please select a valid image file (JPEG, PNG, GIF, or WEBP)');
+        return;
+      }
+
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB');
+        return;
+      }
+
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setAvatarPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      // Upload immediately
+      handleAvatarUpload(file);
+    }
+  };
+
+  const handleAvatarUpload = async (file: File) => {
+    const result = await dispatch(uploadAvatar(file));
+
+    if (uploadAvatar.fulfilled.match(result)) {
+      setProfileSuccessMessage('Avatar updated successfully');
+      setAvatarPreview(null);
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   const getRoleLabel = (role: string) => {
     switch (role) {
       case 'admin': return 'Admin';
@@ -202,15 +246,34 @@ const SettingsPage: React.FC = () => {
           ) : (
             <>
               <div className="flex items-center mb-6">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full mr-4" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mr-4">
-                    <span className="text-blue-600 text-2xl font-bold">
-                      {user?.name?.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                )}
+                <div className="relative mr-4">
+                  {avatarPreview ? (
+                    <img src={avatarPreview} alt="Preview" className="w-16 h-16 rounded-full" />
+                  ) : user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full" />
+                  ) : (
+                    <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 text-2xl font-bold">
+                        {user?.name?.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    onClick={triggerFileInput}
+                    className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1.5 shadow-lg transition-colors"
+                    title="Upload avatar"
+                  >
+                    <CameraAlt style={{ fontSize: 16 }} />
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    onChange={handleAvatarChange}
+                    className="hidden"
+                  />
+                </div>
                 <div>
                   <h3 className="text-lg font-medium text-gray-900">{user?.name}</h3>
                   <Badge variant={getRoleBadgeVariant(user?.role || 'technician')}>

@@ -93,6 +93,32 @@ export const updateProfile = createAsyncThunk(
   }
 );
 
+export const uploadAvatar = createAsyncThunk(
+  'auth/uploadAvatar',
+  async (file: File, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const response = await axiosInstance.put<{ success: boolean; data: User }>('/auth/avatar', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      const user = response.data.data;
+      localStorage.setItem('user', JSON.stringify(user));
+      return user;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to upload avatar');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const authSlice = createSlice({
   name: 'auth',
   initialState,
@@ -125,6 +151,13 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(updateProfile.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(uploadAvatar.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(uploadAvatar.rejected, (state, action) => {
         state.error = action.payload as string;
       });
   }

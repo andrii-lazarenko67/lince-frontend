@@ -172,49 +172,51 @@ const LibraryPage: React.FC = () => {
       </Card>
 
       <Modal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} title="Upload Document" size="lg">
-        <Input
-          type="text"
-          name="title"
-          value={uploadData.title}
-          onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
-          label="Title"
-          placeholder="Enter document title"
-          required
-        />
+        <div className="flex flex-col gap-10">
+          <Input
+            type="text"
+            name="title"
+            value={uploadData.title}
+            onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
+            label="Title"
+            placeholder="Enter document title"
+            required
+          />
 
-        <Select
-          name="category"
-          value={uploadData.category}
-          onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
-          options={categoryOptions}
-          label="Category"
-          placeholder="Select category"
-        />
+          <Select
+            name="category"
+            value={uploadData.category}
+            onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
+            options={categoryOptions}
+            label="Category"
+            placeholder="Select category"
+          />
 
-        <Select
-          name="systemId"
-          value={uploadData.systemId}
-          onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value })}
-          options={systemOptions}
-          label="Related System (Optional)"
-          placeholder="Select system"
-        />
+          <Select
+            name="systemId"
+            value={uploadData.systemId}
+            onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value })}
+            options={systemOptions}
+            label="Related System (Optional)"
+            placeholder="Select system"
+          />
 
-        <TextArea
-          name="description"
-          value={uploadData.description}
-          onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
-          label="Description"
-          placeholder="Enter document description"
-          rows={3}
-        />
+          <TextArea
+            name="description"
+            value={uploadData.description}
+            onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
+            label="Description"
+            placeholder="Enter document description"
+            rows={3}
+          />
 
-        <FileUpload
-          name="file"
-          label="Document File"
-          accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
-          onChange={(files) => setSelectedFile(files[0] || null)}
-        />
+          <FileUpload
+            name="file"
+            label="Document File"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
+            onChange={(files) => setSelectedFile(files[0] || null)}
+          />
+        </div>
 
         {selectedFile && (
           <p className="text-sm text-gray-500 mt-2">

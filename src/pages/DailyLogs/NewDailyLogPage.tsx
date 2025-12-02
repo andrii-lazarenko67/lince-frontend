@@ -112,45 +112,57 @@ const NewDailyLogPage: React.FC = () => {
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card title="Log Information" className="mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Select
-              name="systemId"
-              value={formData.systemId}
-              onChange={handleChange}
-              options={systemOptions}
-              label="System"
-              placeholder="Select system"
-              required
-            />
+        <div className="flex justify-end space-x-3">
+          <Button type="button" variant="danger" onClick={goBack}>
+            Cancel
+          </Button>
+          <Button type="submit" variant="primary">
+            Save Log
+          </Button>
+        </div>
 
-            <Input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              label="Date"
-              required
-            />
+        <Card title="Log Information">
+          <div className="flex flex-col gap-10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <Select
+                name="systemId"
+                value={formData.systemId}
+                onChange={handleChange}
+                options={systemOptions}
+                label="System"
+                placeholder="Select system"
+                required
+              />
 
-            <Select
-              name="shift"
-              value={formData.shift}
+              <Input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleChange}
+                label="Date"
+                required
+              />
+
+              <Select
+                name="shift"
+                value={formData.shift}
+                onChange={handleChange}
+                options={shiftOptions}
+                label="Shift"
+                required
+              />
+            </div>
+
+            <TextArea
+              name="notes"
+              className='mt-20'
+              value={formData.notes}
               onChange={handleChange}
-              options={shiftOptions}
-              label="Shift"
-              required
+              label="General Notes"
+              placeholder="Enter any general notes for this log"
+              rows={2}
             />
           </div>
-
-          <TextArea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            label="General Notes"
-            placeholder="Enter any general notes for this log"
-            rows={2}
-          />
         </Card>
 
         {monitoringPoints.length > 0 && (
@@ -189,15 +201,6 @@ const NewDailyLogPage: React.FC = () => {
             </div>
           </Card>
         )}
-
-        <div className="flex justify-end space-x-3">
-          <Button type="button" variant="outline" onClick={goBack}>
-            Cancel
-          </Button>
-          <Button type="submit" variant="primary">
-            Save Log
-          </Button>
-        </div>
       </form>
     </div>
   );

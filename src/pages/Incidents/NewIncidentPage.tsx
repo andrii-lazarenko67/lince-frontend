@@ -87,49 +87,51 @@ const NewIncidentPage: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <Card title="Incident Information" className="mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select
-              name="systemId"
-              value={formData.systemId}
+          <div className='flex flex-col gap-10'>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Select
+                name="systemId"
+                value={formData.systemId}
+                onChange={handleChange}
+                options={systemOptions}
+                label="System"
+                placeholder="Select system"
+                error={errors.systemId}
+                required
+              />
+
+              <Select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+                options={priorityOptions}
+                label="Priority"
+                required
+              />
+            </div>
+
+            <Input
+              type="text"
+              name="title"
+              value={formData.title}
               onChange={handleChange}
-              options={systemOptions}
-              label="System"
-              placeholder="Select system"
-              error={errors.systemId}
+              label="Title"
+              placeholder="Enter incident title"
+              error={errors.title}
               required
             />
 
-            <Select
-              name="priority"
-              value={formData.priority}
+            <TextArea
+              name="description"
+              value={formData.description}
               onChange={handleChange}
-              options={priorityOptions}
-              label="Priority"
+              label="Description"
+              placeholder="Describe the incident in detail"
+              rows={5}
+              error={errors.description}
               required
             />
           </div>
-
-          <Input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={handleChange}
-            label="Title"
-            placeholder="Enter incident title"
-            error={errors.title}
-            required
-          />
-
-          <TextArea
-            name="description"
-            value={formData.description}
-            onChange={handleChange}
-            label="Description"
-            placeholder="Describe the incident in detail"
-            rows={5}
-            error={errors.description}
-            required
-          />
         </Card>
 
         <Card title="Attachments" className="mb-6">
