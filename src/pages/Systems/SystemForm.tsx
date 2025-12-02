@@ -18,6 +18,7 @@ const systemTypes = [
   { value: 'wtp', label: 'Water Treatment Plant (WTP)' },
   { value: 'wwtp', label: 'Wastewater Treatment Plant (WWTP)' },
   { value: 'effluent', label: 'Effluent System' },
+  { value: 'monitoring_point', label: 'Monitoring Point' },
   { value: 'other', label: 'Other' }
 ];
 
@@ -69,7 +70,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
     } else {
       setFormData({
         name: '',
-        type: '',
+        type: parentId ? 'monitoring_point' : '', // Default type for sub-systems
         location: '',
         description: '',
         parentId: parentId || null
@@ -90,8 +91,11 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.type) newErrors.type = 'Type is required';
+    // Only validate name and type for root systems (not sub-systems)
+    if (!parentId) {
+      if (!formData.name.trim()) newErrors.name = 'Name is required';
+      if (!formData.type) newErrors.type = 'Type is required';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -100,13 +104,26 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
     e.preventDefault();
     if (!validate()) return;
 
+    // Prepare data for submission
+    const submitData = { ...formData };
+
+    // For sub-systems, set default name and type if not provided
+    if (parentId && !system) {
+      if (!submitData.name) {
+        submitData.name = 'Monitoring Point'; // Default name
+      }
+      if (!submitData.type) {
+        submitData.type = 'monitoring_point'; // Already set in useEffect
+      }
+    }
+
     if (system) {
-      const result = await dispatch(updateSystem({ id: system.id, data: formData }));
+      const result = await dispatch(updateSystem({ id: system.id, data: submitData }));
       if (updateSystem.fulfilled.match(result)) {
         onClose();
       }
     } else {
-      const result = await dispatch(createSystem(formData));
+      const result = await dispatch(createSystem(submitData));
       if (createSystem.fulfilled.match(result)) {
         onClose();
       }
@@ -114,28 +131,33 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={system ? 'Edit System' : 'Add New System'} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={system ? 'Edit System' : (parentId ? 'Add Monitoring Point' : 'Add New System')} size="lg">
       <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
-        <Input
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          label="System Name"
-          placeholder="Enter system name"
-          error={errors.name}
-          required
-        />
+        {/* Only show name and type when NOT creating a sub-system */}
+        {!parentId && (
+          <>
+            <Input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              label="System Name"
+              placeholder="Enter system name"
+              error={errors.name}
+              required
+            />
 
-        <Select
-          name="type"
-          value={formData.type}
-          onChange={handleChange}
-          options={systemTypes}
-          label="System Type"
-          placeholder="Select system type"
-          error={errors.type}
-          required
-        />
+            <Select
+              name="type"
+              value={formData.type}
+              onChange={handleChange}
+              options={systemTypes}
+              label="System Type"
+              placeholder="Select system type"
+              error={errors.type}
+              required
+            />
+          </>
+        )}
 
         {!parentId && (
           <div>
