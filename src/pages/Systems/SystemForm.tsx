@@ -86,7 +86,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={system ? 'Edit System' : 'Add New System'} size="lg">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
         <Input
           name="name"
           value={formData.name}
