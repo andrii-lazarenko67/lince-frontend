@@ -202,30 +202,32 @@ const ProductDetailPage: React.FC = () => {
       </div>
 
       <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title="Record Usage">
-        <Select
-          name="systemId"
-          value={usageData.systemId}
-          onChange={(e) => setUsageData({ ...usageData, systemId: e.target.value })}
-          options={systemOptions}
-          label="System"
-          placeholder="Select system"
-        />
-        <Input
-          type="number"
-          name="quantity"
-          value={usageData.quantity}
-          onChange={(e) => setUsageData({ ...usageData, quantity: e.target.value })}
-          label={`Quantity (${currentProduct.unit})`}
-          min={0}
-          step="0.01"
-        />
-        <TextArea
-          name="notes"
-          value={usageData.notes}
-          onChange={(e) => setUsageData({ ...usageData, notes: e.target.value })}
-          label="Notes (Optional)"
-          rows={3}
-        />
+        <div className='flex flex-col gap-10'>
+          <Select
+            name="systemId"
+            value={usageData.systemId}
+            onChange={(e) => setUsageData({ ...usageData, systemId: e.target.value })}
+            options={systemOptions}
+            label="System"
+            placeholder="Select system"
+          />
+          <Input
+            type="number"
+            name="quantity"
+            value={usageData.quantity}
+            onChange={(e) => setUsageData({ ...usageData, quantity: e.target.value })}
+            label={`Quantity (${currentProduct.unit})`}
+            min={0}
+            step="0.01"
+          />
+          <TextArea
+            name="notes"
+            value={usageData.notes}
+            onChange={(e) => setUsageData({ ...usageData, notes: e.target.value })}
+            label="Notes (Optional)"
+            rows={3}
+          />
+        </div>
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={() => setIsUsageOpen(false)}>
             Cancel
