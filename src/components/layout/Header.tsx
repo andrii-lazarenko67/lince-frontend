@@ -28,7 +28,7 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { unreadCount } = useAppSelector((state) => state.notifications);
-  const { goToNotifications, goToSettings, goToLogin } = useAppNavigation();
+  const { goToNotifications, goToSettings, goToLogin, goTo } = useAppNavigation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -131,7 +131,22 @@ const Header: React.FC = () => {
 
           {/* User info */}
           {!isMobile && (
-            <>
+            <Box
+              onClick={() => goTo('/profile')}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                cursor: 'pointer',
+                borderRadius: 2,
+                px: 1,
+                py: 0.5,
+                transition: 'all 0.2s',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.15)',
+                  transform: 'scale(1.02)'
+                }
+              }}
+            >
               <Box sx={{ mr: 1.5, textAlign: 'right' }}>
                 <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
                   {user?.name || 'User'}
@@ -155,7 +170,7 @@ const Header: React.FC = () => {
               >
                 {user?.name?.charAt(0).toUpperCase() || 'U'}
               </Avatar>
-            </>
+            </Box>
           )}
 
           {/* Logout */}
