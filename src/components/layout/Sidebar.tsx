@@ -82,17 +82,41 @@ const Sidebar: React.FC = () => {
   const drawerContent = (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'primary.main' }}>
       {/* Logo Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64, px: 2.5, borderBottom: 1, borderColor: 'primary.dark' }}>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        height: 64,
+        px: 2.5,
+        background: 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+        borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+      }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Avatar sx={{ bgcolor: 'primary.dark', width: 36, height: 36 }}>
-            <InventoryIcon sx={{ color: 'primary.contrastText', fontSize: 22 }} />
+          <Avatar sx={{
+            background: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
+            width: 40,
+            height: 40,
+            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)'
+          }}>
+            <InventoryIcon sx={{ color: 'white', fontSize: 24 }} />
           </Avatar>
-          <Typography variant="h5" fontWeight={700} color="primary.contrastText" letterSpacing={0.5}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: 2
+            }}
+          >
             LINCE
           </Typography>
         </Box>
         {isMobile && (
-          <IconButton onClick={handleCloseSidebar} sx={{ color: 'primary.contrastText' }}>
+          <IconButton onClick={handleCloseSidebar} sx={{ color: '#1e40af' }}>
             <CloseIcon />
           </IconButton>
         )}
