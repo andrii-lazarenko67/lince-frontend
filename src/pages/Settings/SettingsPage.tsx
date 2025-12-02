@@ -156,7 +156,7 @@ const SettingsPage: React.FC = () => {
           )}
 
           {isEditingProfile ? (
-            <form onSubmit={handleSubmitProfile}>
+            <form onSubmit={handleSubmitProfile} className='flex flex-col gap-10'>
               <Input
                 type="text"
                 name="name"
@@ -264,7 +264,7 @@ const SettingsPage: React.FC = () => {
             <Alert type="success" message={passwordSuccessMessage} className="mb-4" />
           )}
 
-          <form onSubmit={handleSubmitPassword}>
+          <form onSubmit={handleSubmitPassword} className='flex flex-col gap-10'>
             <Input
               type="password"
               name="currentPassword"

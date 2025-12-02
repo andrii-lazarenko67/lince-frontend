@@ -1,7 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Provider } from 'react-redux';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 import { store } from './store';
+import theme from './theme';
 import { MainLayout } from './components/layout';
 import { PrivateRoute } from './components/auth';
 import {
@@ -31,8 +34,10 @@ import {
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <Router>
-        <Routes>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Router>
+          <Routes>
           <Route path="/login" element={<LoginPage />} />
 
           <Route element={<PrivateRoute />}>
@@ -75,8 +80,9 @@ const App: React.FC = () => {
 
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="*" element={<Navigate to="/dashboard" replace />} />
-        </Routes>
-      </Router>
+          </Routes>
+        </Router>
+      </ThemeProvider>
     </Provider>
   );
 };

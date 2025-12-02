@@ -3,10 +3,8 @@ import {
   Table as MuiTable,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
-  Paper,
   Typography
 } from '@mui/material';
 
@@ -32,52 +30,66 @@ function Table<T>({
   keyExtractor,
   onRowClick,
   emptyMessage = 'No data available',
-  className = ''
 }: TableProps<T>) {
   return (
-    <TableContainer component={Paper} className={className}>
-      <MuiTable>
-        <TableHead>
-          <TableRow sx={{ backgroundColor: 'primary.main' }}>
-            {columns.map((column) => (
-              <TableCell
-                key={column.key}
-                className={column.className}
-                sx={{ color: 'white', fontWeight: 'bold' }}
-              >
-                {column.header}
-              </TableCell>
-            ))}
+    <MuiTable sx={{ borderCollapse: 'collapse' }}>
+      <TableHead>
+        <TableRow>
+          {columns.map((column) => (
+            <TableCell
+              key={column.key}
+              className={column.className}
+              sx={{
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                fontWeight: 700,
+                borderBottom: 2,
+                borderColor: 'primary.dark'
+              }}
+            >
+              {column.header}
+            </TableCell>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data.length === 0 ? (
+          <TableRow>
+            <TableCell colSpan={columns.length} align="center" sx={{ py: 6, borderBottom: 'none' }}>
+              <Typography color="text.secondary" variant="body2">{emptyMessage}</Typography>
+            </TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {data.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} align="center" sx={{ py: 4 }}>
-                <Typography color="textSecondary">{emptyMessage}</Typography>
-              </TableCell>
+        ) : (
+          data.map((item) => (
+            <TableRow
+              key={keyExtractor(item)}
+              onClick={() => onRowClick?.(item)}
+              hover={!!onRowClick}
+              sx={{
+                cursor: onRowClick ? 'pointer' : 'default',
+                '&:last-child td': {
+                  borderBottom: 'none'
+                },
+                '&:nth-of-type(odd)': {
+                  bgcolor: 'action.hover'
+                },
+                '&:hover': onRowClick ? {
+                  bgcolor: 'action.selected'
+                } : undefined
+              }}
+            >
+              {columns.map((column) => (
+                <TableCell key={column.key} className={column.className}>
+                  {column.render
+                    ? column.render(item)
+                    : (item as Record<string, unknown>)[column.key]?.toString() || ''}
+                </TableCell>
+              ))}
             </TableRow>
-          ) : (
-            data.map((item) => (
-              <TableRow
-                key={keyExtractor(item)}
-                onClick={() => onRowClick?.(item)}
-                hover={!!onRowClick}
-                sx={{ cursor: onRowClick ? 'pointer' : 'default' }}
-              >
-                {columns.map((column) => (
-                  <TableCell key={column.key} className={column.className}>
-                    {column.render
-                      ? column.render(item)
-                      : (item as Record<string, unknown>)[column.key]?.toString() || ''}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          )}
-        </TableBody>
-      </MuiTable>
-    </TableContainer>
+          ))
+        )}
+      </TableBody>
+    </MuiTable>
   );
 }
 

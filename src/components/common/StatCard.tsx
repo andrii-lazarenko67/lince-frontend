@@ -29,55 +29,78 @@ const StatCard: React.FC<StatCardProps> = ({
     <Card
       onClick={onClick}
       className={className}
+      elevation={2}
       sx={{
         cursor: onClick ? 'pointer' : 'default',
-        '&:hover': onClick ? { boxShadow: 4 } : {},
-        transition: 'box-shadow 0.3s'
+        height: '100%',
+        transition: 'all 0.1s ease-in-out',
+        '&:hover': onClick ? {
+          boxShadow: 6,
+          transform: 'translateY(-4px)'
+        } : {},
       }}
     >
-      <CardContent>
-        <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-          <Box flex={1}>
-            <Typography variant="body2" color="text.secondary" gutterBottom>
-              {title}
-            </Typography>
-            <Typography variant="h4" component="div" fontWeight="bold" sx={{ my: 1 }}>
-              {value}
-            </Typography>
-            {subtitle && (
-              <Typography variant="body2" color="text.secondary">
-                {subtitle}
-              </Typography>
-            )}
-            {trend && (
-              <Box display="flex" alignItems="center" mt={1}>
-                {trend.isPositive ? (
-                  <TrendingUpIcon sx={{ fontSize: 18, color: 'success.main', mr: 0.5 }} />
-                ) : (
-                  <TrendingDownIcon sx={{ fontSize: 18, color: 'error.main', mr: 0.5 }} />
-                )}
-                <Typography
-                  variant="body2"
-                  color={trend.isPositive ? 'success.main' : 'error.main'}
-                >
-                  {Math.abs(trend.value)}%
-                </Typography>
-              </Box>
-            )}
-          </Box>
+      <CardContent sx={{ p: 3 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+          <Typography
+            variant="subtitle2"
+            color="text.secondary"
+            fontWeight={600}
+            textTransform="uppercase"
+            letterSpacing={0.5}
+          >
+            {title}
+          </Typography>
           {icon && (
             <Avatar
               sx={{
-                bgcolor: 'primary.light',
-                color: 'primary.main',
-                width: 48,
-                height: 48
+                bgcolor: 'primary.main',
+                color: 'primary.contrastText',
+                width: 56,
+                height: 56,
+                boxShadow: 2
               }}
             >
               {icon}
             </Avatar>
           )}
         </Box>
+
+        <Typography
+          variant="h3"
+          component="div"
+          fontWeight={700}
+          color="text.primary"
+          sx={{ mb: 1 }}
+        >
+          {value}
+        </Typography>
+
+        {subtitle && (
+          <Typography variant="body2" color="text.secondary" sx={{ mb: trend ? 1 : 0 }}>
+            {subtitle}
+          </Typography>
+        )}
+
+        {trend && (
+          <Box display="flex" alignItems="center" mt={1.5}>
+            {trend.isPositive ? (
+              <TrendingUpIcon sx={{ fontSize: 20, color: 'success.main', mr: 0.5 }} />
+            ) : (
+              <TrendingDownIcon sx={{ fontSize: 20, color: 'error.main', mr: 0.5 }} />
+            )}
+            <Typography
+              variant="body2"
+              fontWeight={600}
+              color={trend.isPositive ? 'success.main' : 'error.main'}
+            >
+              {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>
+              vs last period
+            </Typography>
+          </Box>
+        )}
       </CardContent>
     </Card>
   );

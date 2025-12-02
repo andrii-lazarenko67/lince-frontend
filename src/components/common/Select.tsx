@@ -34,7 +34,7 @@ const Select: React.FC<SelectProps> = ({
   className = ''
 }) => {
   return (
-    <FormControl fullWidth variant="outlined" size="small" error={!!error} className={className} sx={{ mb: 2 }}>
+    <FormControl fullWidth variant="outlined" size="small" error={!!error} className={className}>
       {label && (
         <InputLabel id={`${name}-label`}>
           {label}

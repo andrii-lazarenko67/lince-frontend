@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDailyLogs } from '../../store/slices/dailyLogSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, ExportDropdown } from '../../components/common';
+import { Card, Button, ExportDropdown, ViewModeToggle } from '../../components/common';
 import DailyLogsList from "./DailyLogsList"
 import DailyLogFilters from "./DailyLogFilters"
 import DailyLogsChartView from './DailyLogsChartView';
@@ -104,34 +104,10 @@ const DailyLogsPage: React.FC = () => {
           <p className="text-gray-500 mt-1">Record and view daily monitoring data</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
-              Table
-            </button>
-            <button
-              onClick={() => setViewMode('chart')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'chart'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              Charts
-            </button>
-          </div>
+          <ViewModeToggle
+            value={viewMode}
+            onChange={setViewMode}
+          />
           <ExportDropdown
             onExportPDF={handleExportPDF}
             onExportHTML={handleExportHTML}

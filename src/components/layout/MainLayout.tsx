@@ -40,9 +40,10 @@ const MainLayout: React.FC = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          minHeight: '100vh',
           ml: { xs: 0, lg: `${DRAWER_WIDTH}px` },
-          pt: '64px'
+          pt: '64px',
+          height: '100vh',
+          overflow: 'auto'
         }}
       >
         <Box sx={{ p: 3 }}>

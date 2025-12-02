@@ -310,7 +310,7 @@ const UsersPage: React.FC = () => {
       </Card>
 
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingUser ? 'Edit User' : 'Add User'}>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
           <Input
             type="text"
             name="name"

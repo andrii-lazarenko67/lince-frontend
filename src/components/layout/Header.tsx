@@ -53,7 +53,8 @@ const Header: React.FC = () => {
       sx={{
         left: { xs: 0, lg: DRAWER_WIDTH },
         width: { xs: '100%', lg: `calc(100% - ${DRAWER_WIDTH}px)` },
-        bgcolor: 'background.paper',
+        bgcolor: 'rgba(255, 255, 255, 0.4)',
+        backdropFilter: 'blur(12px)',
         borderBottom: 1,
         borderColor: 'divider'
       }}

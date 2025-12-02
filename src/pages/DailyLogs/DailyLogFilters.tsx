@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppSelector } from '../../hooks';
-import { Select, Input, Button } from '../../components/common';
+import { Select, DateInput, Button } from '../../components/common';
 
 interface DailyLogFiltersProps {
   filters: {
@@ -28,33 +28,37 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        <Select
-          name="systemId"
-          value={filters.systemId}
-          onChange={(e) => onChange({ ...filters, systemId: e.target.value })}
-          options={systemOptions}
-          label="System"
-          placeholder="All Systems"
-        />
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <Select
+            name="systemId"
+            value={filters.systemId}
+            onChange={(e) => onChange({ ...filters, systemId: e.target.value })}
+            options={systemOptions}
+            label="System"
+            placeholder="All Systems"
+          />
+        </div>
 
-        <Input
-          type="date"
-          name="startDate"
-          value={filters.startDate}
-          onChange={(e) => onChange({ ...filters, startDate: e.target.value })}
-          label="Start Date"
-        />
+        <div>
+          <DateInput
+            name="startDate"
+            value={filters.startDate}
+            onChange={(e) => onChange({ ...filters, startDate: e.target.value })}
+            label="Start Date"
+          />
+        </div>
 
-        <Input
-          type="date"
-          name="endDate"
-          value={filters.endDate}
-          onChange={(e) => onChange({ ...filters, endDate: e.target.value })}
-          label="End Date"
-        />
+        <div>
+          <DateInput
+            name="endDate"
+            value={filters.endDate}
+            onChange={(e) => onChange({ ...filters, endDate: e.target.value })}
+            label="End Date"
+          />
+        </div>
 
-        <div className="flex space-x-2">
+        <div className="flex space-x-2 items-start">
           <Button variant="primary" onClick={onApply}>
             Apply
           </Button>

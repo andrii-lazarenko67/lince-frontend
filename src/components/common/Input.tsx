@@ -1,5 +1,6 @@
 import React from 'react';
 import { TextField } from '@mui/material';
+import { BorderAll } from '@mui/icons-material';
 
 interface InputProps {
   type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'time' | 'datetime-local' | 'tel' | 'url';
@@ -55,14 +56,11 @@ const Input: React.FC<InputProps> = ({
       size="small"
       className={className}
       autoComplete={autoComplete}
-      slotProps={{
-        htmlInput: {
-          min,
-          max,
-          step
-        }
+      inputProps={{
+        min,
+        max,
+        step
       }}
-      sx={{ mb: 2 }}
     />
   );
 };

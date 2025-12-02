@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspections } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, Input, ExportDropdown } from '../../components/common';
+import { Card, Button, Select, DateInput, ExportDropdown, ViewModeToggle } from '../../components/common';
 import InspectionsList from "./InspectionsList"
 import InspectionsChartView from './InspectionsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
@@ -114,34 +114,10 @@ const InspectionsPage: React.FC = () => {
           <p className="text-gray-500 mt-1">Manage system inspections</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex bg-gray-100 rounded-lg p-1">
-            <button
-              onClick={() => setViewMode('table')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'table'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-              </svg>
-              Table
-            </button>
-            <button
-              onClick={() => setViewMode('chart')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                viewMode === 'chart'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              <svg className="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-              </svg>
-              Charts
-            </button>
-          </div>
+          <ViewModeToggle
+            value={viewMode}
+            onChange={setViewMode}
+          />
           <ExportDropdown
             onExportPDF={handleExportPDF}
             onExportHTML={handleExportHTML}
@@ -157,42 +133,48 @@ const InspectionsPage: React.FC = () => {
       {viewMode === 'table' ? (
         <>
           <div className="bg-white rounded-lg shadow p-4">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-              <Select
-                name="systemId"
-                value={filters.systemId}
-                onChange={(e) => setFilters({ ...filters, systemId: e.target.value })}
-                options={systemOptions}
-                label="System"
-                placeholder="All Systems"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+              <div>
+                <Select
+                  name="systemId"
+                  value={filters.systemId}
+                  onChange={(e) => setFilters({ ...filters, systemId: e.target.value })}
+                  options={systemOptions}
+                  label="System"
+                  placeholder="All Systems"
+                />
+              </div>
 
-              <Select
-                name="status"
-                value={filters.status}
-                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
-                options={statusOptions}
-                label="Status"
-                placeholder="All Statuses"
-              />
+              <div>
+                <Select
+                  name="status"
+                  value={filters.status}
+                  onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                  options={statusOptions}
+                  label="Status"
+                  placeholder="All Statuses"
+                />
+              </div>
 
-              <Input
-                type="date"
-                name="startDate"
-                value={filters.startDate}
-                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                label="Start Date"
-              />
+              <div>
+                <DateInput
+                  name="startDate"
+                  value={filters.startDate}
+                  onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                  label="Start Date"
+                />
+              </div>
 
-              <Input
-                type="date"
-                name="endDate"
-                value={filters.endDate}
-                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                label="End Date"
-              />
+              <div>
+                <DateInput
+                  name="endDate"
+                  value={filters.endDate}
+                  onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                  label="End Date"
+                />
+              </div>
 
-              <div className="flex space-x-2">
+              <div className="flex space-x-2 items-start">
                 <Button variant="primary" onClick={handleApplyFilters}>
                   Apply
                 </Button>
