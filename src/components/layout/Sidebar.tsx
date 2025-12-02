@@ -170,7 +170,23 @@ const Sidebar: React.FC = () => {
 
       {/* User Profile */}
       <Box sx={{ p: 2, borderTop: 1, borderColor: 'primary.dark' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', p: 1.5, borderRadius: 2, bgcolor: 'primary.dark' }}>
+        <Box
+          onClick={() => handleNavClick('/profile')}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            p: 1.5,
+            borderRadius: 2,
+            bgcolor: 'primary.dark',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            '&:hover': {
+              bgcolor: 'primary.light',
+              transform: 'translateY(-2px)',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+            }
+          }}
+        >
           <Avatar
             src={user?.avatar || undefined}
             sx={{ bgcolor: 'secondary.main', color: 'secondary.contrastText', width: 40, height: 40, fontWeight: 700 }}

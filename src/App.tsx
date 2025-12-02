@@ -28,7 +28,8 @@ import {
   DocumentDetailPage,
   UsersPage,
   SettingsPage,
-  NotificationsPage
+  NotificationsPage,
+  ProfilePage
 } from './pages';
 
 const App: React.FC = () => {
@@ -59,6 +60,7 @@ const App: React.FC = () => {
               <Route path="/reports" element={<ReportsPage />} />
 
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
               <Route path="/settings" element={<SettingsPage />} />
             </Route>
           </Route>

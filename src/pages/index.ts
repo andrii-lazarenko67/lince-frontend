@@ -10,3 +10,4 @@ export * from './Library';
 export * from './Users';
 export * from './Settings';
 export * from './Notifications';
+export * from './Profile';
