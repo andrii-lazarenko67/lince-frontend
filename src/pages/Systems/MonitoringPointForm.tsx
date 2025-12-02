@@ -157,7 +157,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
       title={monitoringPoint ? 'Edit Monitoring Point' : 'Add Monitoring Point'}
       size="lg"
     >
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
         <Input
           name="name"
           value={formData.name}
