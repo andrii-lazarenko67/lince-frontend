@@ -162,6 +162,38 @@ const SystemDetailPage: React.FC = () => {
                 </Badge>
               </dd>
             </div>
+            {currentSystem.parent && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Parent System</dt>
+                <dd className="mt-1 text-gray-900">
+                  <button
+                    onClick={() => window.location.href = `/systems/${currentSystem.parent?.id}`}
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {currentSystem.parent.name} ({currentSystem.parent.type})
+                  </button>
+                </dd>
+              </div>
+            )}
+            {currentSystem.children && currentSystem.children.length > 0 && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Sub-Systems</dt>
+                <dd className="mt-1">
+                  <ul className="space-y-1">
+                    {currentSystem.children.map(child => (
+                      <li key={child.id}>
+                        <button
+                          onClick={() => window.location.href = `/systems/${child.id}`}
+                          className="text-blue-600 hover:text-blue-800 underline text-sm"
+                        >
+                          {child.name} ({child.type})
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </dd>
+              </div>
+            )}
             <div>
               <dt className="text-sm font-medium text-gray-500">Location</dt>
               <dd className="mt-1 text-gray-900">{currentSystem.location || '-'}</dd>

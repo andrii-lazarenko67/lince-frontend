@@ -61,7 +61,7 @@ const LoginPage: React.FC = () => {
             />
           )}
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
             <Input
               type="email"
               name="email"

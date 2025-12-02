@@ -11,7 +11,7 @@ const initialState: SystemState = {
 
 export const fetchSystems = createAsyncThunk(
   'systems/fetchAll',
-  async (params: { status?: string; type?: string; search?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { status?: string; type?: string; search?: string; parentId?: string | number | null } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: System[] }>('/systems', { params });

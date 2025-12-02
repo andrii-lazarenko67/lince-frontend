@@ -21,6 +21,19 @@ export interface System {
   location: string | null;
   description: string | null;
   status: SystemStatus;
+  parentId: number | null;
+  parent?: {
+    id: number;
+    name: string;
+    type: string;
+  };
+  children?: Array<{
+    id: number;
+    name: string;
+    type: string;
+    status: SystemStatus;
+    location?: string | null;
+  }>;
   monitoringPoints?: MonitoringPoint[];
   checklistItems?: ChecklistItem[];
   createdAt: string;
@@ -33,6 +46,7 @@ export interface CreateSystemRequest {
   location?: string;
   description?: string;
   status?: SystemStatus;
+  parentId?: number | null;
 }
 
 export interface UpdateSystemRequest {
@@ -41,6 +55,7 @@ export interface UpdateSystemRequest {
   location?: string;
   description?: string;
   status?: SystemStatus;
+  parentId?: number | null;
 }
 
 export interface SystemState {
