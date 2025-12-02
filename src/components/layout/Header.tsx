@@ -53,10 +53,10 @@ const Header: React.FC = () => {
       sx={{
         left: { xs: 0, lg: DRAWER_WIDTH },
         width: { xs: '100%', lg: `calc(100% - ${DRAWER_WIDTH}px)` },
-        bgcolor: 'rgba(255, 255, 255, 0.4)',
+        background: 'linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #1e40af 100%)',
         backdropFilter: 'blur(12px)',
-        borderBottom: 1,
-        borderColor: 'divider'
+        borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.15), 0 2px 4px -2px rgba(0, 0, 0, 0.1)'
       }}
     >
       <Toolbar sx={{ minHeight: 64 }}>
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
           sx={{
             mr: 2,
             display: { lg: 'none' },
-            color: 'text.primary'
+            color: 'white'
           }}
         >
           <MenuIcon />
@@ -79,9 +79,10 @@ const Header: React.FC = () => {
           component="div"
           sx={{
             flexGrow: 1,
-            color: 'text.primary',
+            color: 'white',
             fontWeight: 600,
-            display: { xs: 'none', lg: 'block' }
+            display: { xs: 'none', lg: 'block' },
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}
         >
           Water Treatment Monitoring
@@ -93,10 +94,9 @@ const Header: React.FC = () => {
           <IconButton
             onClick={goToNotifications}
             sx={{
-              color: 'text.secondary',
+              color: 'white',
               '&:hover': {
-                color: 'primary.main',
-                bgcolor: 'action.hover'
+                bgcolor: 'rgba(255, 255, 255, 0.2)'
               }
             }}
           >
@@ -112,10 +112,9 @@ const Header: React.FC = () => {
           <IconButton
             onClick={goToSettings}
             sx={{
-              color: 'text.secondary',
+              color: 'white',
               '&:hover': {
-                color: 'primary.main',
-                bgcolor: 'action.hover'
+                bgcolor: 'rgba(255, 255, 255, 0.2)'
               }
             }}
           >
@@ -126,16 +125,16 @@ const Header: React.FC = () => {
           <Divider
             orientation="vertical"
             flexItem
-            sx={{ mx: 1, height: 32, alignSelf: 'center' }}
+            sx={{ mx: 1, height: 32, alignSelf: 'center', bgcolor: 'rgba(255, 255, 255, 0.3)' }}
           />
 
           {/* User info */}
           {!isMobile && (
             <Box sx={{ mr: 1.5, textAlign: 'right' }}>
-              <Typography variant="body2" sx={{ color: 'text.primary', fontWeight: 600, lineHeight: 1.2 }}>
+              <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
                 {user?.name || 'User'}
               </Typography>
-              <Typography variant="caption" sx={{ color: 'text.secondary', textTransform: 'capitalize' }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize' }}>
                 {user?.role || 'Role'}
               </Typography>
             </Box>
@@ -146,16 +145,15 @@ const Header: React.FC = () => {
             onClick={handleLogout}
             title="Logout"
             sx={{
-              color: 'text.secondary',
+              color: 'white',
               '&:hover': {
-                color: 'error.main',
-                bgcolor: 'action.hover'
+                bgcolor: 'rgba(239, 68, 68, 0.2)'
               }
             }}
           >
             <LogoutIcon />
             {!isMobile && (
-              <Typography variant="body2" sx={{ ml: 0.5, fontWeight: 500 }}>
+              <Typography variant="body2" sx={{ ml: 0.5, fontWeight: 500, color: 'white' }}>
                 Logout
               </Typography>
             )}

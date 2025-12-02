@@ -58,7 +58,7 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
           />
         </div>
 
-        <div className="flex space-x-2 items-start">
+        <div className="flex space-x-4 items-start justify-end">
           <Button variant="primary" onClick={onApply}>
             Apply
           </Button>

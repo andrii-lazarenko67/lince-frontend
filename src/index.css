@@ -11,22 +11,35 @@
   @apply w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin;
 }
 
-/* Custom scrollbar */
+/* Custom scrollbar - Blue themed to match Material UI */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  background: #dbeafe; /* blue-100 */
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded-full;
+  background: #3b82f6; /* blue-500 - primary color */
+  border-radius: 4px;
+  border: 2px solid #dbeafe; /* Creates padding effect */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  background: #2563eb; /* blue-600 */
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #1d4ed8; /* blue-700 */
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #dbeafe;
 }
 
 /* Base styles */
@@ -40,8 +53,4 @@ body {
 /* Form elements */
 input, select, textarea {
   @apply outline-none;
-}
-
-input:focus, select:focus, textarea:focus {
-  @apply ring-2 ring-blue-500 border-blue-500;
 }

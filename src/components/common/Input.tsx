@@ -1,6 +1,5 @@
 import React from 'react';
 import { TextField } from '@mui/material';
-import { BorderAll } from '@mui/icons-material';
 
 interface InputProps {
   type?: 'text' | 'email' | 'password' | 'number' | 'date' | 'time' | 'datetime-local' | 'tel' | 'url';
@@ -21,7 +20,7 @@ interface InputProps {
 }
 
 const Input: React.FC<InputProps> = ({
-  type = 'text',
+  type,
   name,
   value,
   onChange,
@@ -60,6 +59,13 @@ const Input: React.FC<InputProps> = ({
         min,
         max,
         step
+      }}
+      sx={{
+        '& .MuiOutlinedInput-root': {
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderWidth: '1px',
+          }
+        }
       }}
     />
   );

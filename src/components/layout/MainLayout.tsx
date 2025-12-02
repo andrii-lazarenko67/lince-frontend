@@ -1,13 +1,10 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { getMe } from '../../store/slices/authSlice';
 import Sidebar from './Sidebar';
 import Header from './Header';
 import { GlobalLoader } from '../common';
-
-const DRAWER_WIDTH = 256;
 
 const MainLayout: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -31,26 +28,15 @@ const MainLayout: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', bgcolor: 'grey.100' }}>
+    <div className="flex min-h-screen bg-gray-100 max-h-screen">
       <GlobalLoader />
       <Sidebar />
       <Header />
 
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          ml: { xs: 0, lg: `${DRAWER_WIDTH}px` },
-          pt: '64px',
-          height: '100vh',
-          overflow: 'auto'
-        }}
-      >
-        <Box sx={{ p: 3 }}>
-          <Outlet />
-        </Box>
-      </Box>
-    </Box>
+      <main className="flex-grow mt-[64px] lg:ml-64 overflow-auto p-3">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 

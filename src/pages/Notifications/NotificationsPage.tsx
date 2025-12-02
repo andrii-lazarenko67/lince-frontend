@@ -164,14 +164,14 @@ const NotificationsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
           <p className="text-gray-500 mt-1">
             {unreadCount > 0 ? `${unreadCount} unread notification(s)` : 'All caught up!'}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ExportDropdown
             onExportPDF={handleExportPDF}
             onExportHTML={handleExportHTML}

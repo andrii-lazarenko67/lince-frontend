@@ -17,7 +17,7 @@ const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
   onChange,
   tableLabel = 'Table',
   chartLabel = 'Charts',
-  className = ''
+  className = 'w-100'
 }) => {
   return (
     <ToggleButtonGroup
@@ -27,18 +27,32 @@ const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
       size="small"
       className={className}
       sx={{
-        bgcolor: 'background.paper',
+        bgcolor: 'white',
         '& .MuiToggleButton-root': {
           px: 2,
           py: 1,
+          width: '100%',
           textTransform: 'none',
           fontWeight: 500,
-          border: 'none',
+          border: '1px solid',
+          borderColor: 'divider',
+          color: 'text.secondary',
+          '&:not(:first-of-type)': {
+            borderLeft: '1px solid',
+            borderLeftColor: 'divider',
+            marginLeft: '-1px'
+          },
+          '&:hover': {
+            bgcolor: 'action.hover',
+            borderColor: 'divider'
+          },
           '&.Mui-selected': {
             bgcolor: 'primary.main',
             color: 'primary.contrastText',
+            borderColor: 'primary.main',
             '&:hover': {
-              bgcolor: 'primary.dark'
+              bgcolor: 'primary.dark',
+              borderColor: 'primary.dark'
             }
           }
         }
