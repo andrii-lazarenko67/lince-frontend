@@ -238,7 +238,7 @@ const ProductsPage: React.FC = () => {
       )}
 
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingProduct ? 'Edit Product' : 'Add Product'} size="lg">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
           <Input
             type="text"
             name="name"
