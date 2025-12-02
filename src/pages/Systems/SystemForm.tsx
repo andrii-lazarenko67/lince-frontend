@@ -137,31 +137,33 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
           required
         />
 
-        <div>
-          <Select
-            name="parentId"
-            value={formData.parentId?.toString() || ''}
-            onChange={(e) => {
-              const value = e.target.value;
-              setFormData({
-                ...formData,
-                parentId: value ? parseInt(value) : null
-              });
-            }}
-            options={[
-              { value: '', label: 'None (Root System)' },
-              ...availableParentSystems.map(s => ({
-                value: s.id.toString(),
-                label: `${s.name} (${s.type})`
-              }))
-            ]}
-            label="Parent System"
-            placeholder="Select parent system (optional)"
-          />
-          <p className="mt-1 text-sm text-gray-500">
-            Select a parent system to create a sub-system (e.g., tap under reservoir)
-          </p>
-        </div>
+        {!parentId && (
+          <div>
+            <Select
+              name="parentId"
+              value={formData.parentId?.toString() || ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFormData({
+                  ...formData,
+                  parentId: value ? parseInt(value) : null
+                });
+              }}
+              options={[
+                { value: '', label: 'None (Root System)' },
+                ...availableParentSystems.map(s => ({
+                  value: s.id.toString(),
+                  label: `${s.name} (${s.type})`
+                }))
+              ]}
+              label="Parent System"
+              placeholder="Select parent system (optional)"
+            />
+            <p className="mt-1 text-sm text-gray-500">
+              Select a parent system to create a sub-system (e.g., tap under reservoir)
+            </p>
+          </div>
+        )}
 
         <Input
           name="location"

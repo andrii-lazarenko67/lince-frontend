@@ -114,21 +114,101 @@ const systemSlice = createSlice({
         state.error = null;
       })
       .addCase(createSystem.fulfilled, (state, action) => {
-        state.systems.push(action.payload);
+        const newSystem = action.payload;
+        state.systems.push(newSystem);
+
+        // If this system has a parent, update the parent's children array
+        if (newSystem.parentId) {
+          const parentIndex = state.systems.findIndex(s => s.id === newSystem.parentId);
+          if (parentIndex !== -1) {
+            const parent = state.systems[parentIndex];
+            if (!parent.children) {
+              parent.children = [];
+            }
+            parent.children.push({
+              id: newSystem.id,
+              name: newSystem.name,
+              type: newSystem.type,
+              status: newSystem.status
+            });
+          }
+        }
         state.error = null;
       })
       .addCase(updateSystem.fulfilled, (state, action) => {
-        const index = state.systems.findIndex(s => s.id === action.payload.id);
+        const updatedSystem = action.payload;
+        const index = state.systems.findIndex(s => s.id === updatedSystem.id);
+
         if (index !== -1) {
-          state.systems[index] = action.payload;
+          const oldSystem = state.systems[index];
+
+          // If parentId changed, update both old and new parent's children arrays
+          if (oldSystem.parentId !== updatedSystem.parentId) {
+            // Remove from old parent's children
+            if (oldSystem.parentId) {
+              const oldParentIndex = state.systems.findIndex(s => s.id === oldSystem.parentId);
+              if (oldParentIndex !== -1 && state.systems[oldParentIndex].children) {
+                state.systems[oldParentIndex].children = state.systems[oldParentIndex].children!.filter(
+                  c => c.id !== updatedSystem.id
+                );
+              }
+            }
+
+            // Add to new parent's children
+            if (updatedSystem.parentId) {
+              const newParentIndex = state.systems.findIndex(s => s.id === updatedSystem.parentId);
+              if (newParentIndex !== -1) {
+                if (!state.systems[newParentIndex].children) {
+                  state.systems[newParentIndex].children = [];
+                }
+                state.systems[newParentIndex].children!.push({
+                  id: updatedSystem.id,
+                  name: updatedSystem.name,
+                  type: updatedSystem.type,
+                  status: updatedSystem.status
+                });
+              }
+            }
+          } else if (updatedSystem.parentId) {
+            // Same parent, but update child info in parent's children array
+            const parentIndex = state.systems.findIndex(s => s.id === updatedSystem.parentId);
+            if (parentIndex !== -1 && state.systems[parentIndex].children) {
+              const childIndex = state.systems[parentIndex].children!.findIndex(c => c.id === updatedSystem.id);
+              if (childIndex !== -1) {
+                state.systems[parentIndex].children![childIndex] = {
+                  id: updatedSystem.id,
+                  name: updatedSystem.name,
+                  type: updatedSystem.type,
+                  status: updatedSystem.status
+                };
+              }
+            }
+          }
+
+          state.systems[index] = updatedSystem;
         }
-        if (state.currentSystem?.id === action.payload.id) {
-          state.currentSystem = action.payload;
+
+        if (state.currentSystem?.id === updatedSystem.id) {
+          state.currentSystem = updatedSystem;
         }
         state.error = null;
       })
       .addCase(deleteSystem.fulfilled, (state, action) => {
-        state.systems = state.systems.filter(s => s.id !== action.payload);
+        const deletedId = action.payload;
+        const deletedSystem = state.systems.find(s => s.id === deletedId);
+
+        // Remove from parent's children array if it has a parent
+        if (deletedSystem?.parentId) {
+          const parentIndex = state.systems.findIndex(s => s.id === deletedSystem.parentId);
+          if (parentIndex !== -1 && state.systems[parentIndex].children) {
+            state.systems[parentIndex].children = state.systems[parentIndex].children!.filter(
+              c => c.id !== deletedId
+            );
+          }
+        }
+
+        // Remove the system from the systems array
+        state.systems = state.systems.filter(s => s.id !== deletedId);
         state.error = null;
       });
   }
