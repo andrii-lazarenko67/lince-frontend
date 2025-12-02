@@ -57,7 +57,7 @@ const Input: React.FC<InputProps> = ({
         max={max}
         step={step}
         autoComplete={autoComplete}
-        className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed ${
+        className={`w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed ${
           error ? 'border-red-500' : 'border-gray-300'
         }`}
       />

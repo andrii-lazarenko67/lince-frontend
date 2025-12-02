@@ -26,7 +26,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="fixed top-0 right-0 left-0 lg:left-64 z-30 h-16 bg-gradient-to-r from-blue-400/95 via-blue-500/95 to-indigo-500/95 backdrop-blur-md shadow-lg">
+    <header className="fixed top-0 right-0 left-0 lg:left-64 z-30 h-16 bg-gradient-to-r from-blue-400/40 via-blue-500/40 to-indigo-500/40 backdrop-blur-md shadow-lg">
       <div className="flex items-center justify-between h-full px-4">
         {/* Mobile menu button */}
         <button
