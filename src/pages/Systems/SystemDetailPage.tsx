@@ -78,11 +78,13 @@ const SystemDetailPage: React.FC = () => {
     },
     {
       key: 'parameter',
-      header: 'Parameter'
+      header: 'Parameter',
+      render: (point: MonitoringPoint) => point.parameterObj?.name || '-'
     },
     {
       key: 'unit',
-      header: 'Unit'
+      header: 'Unit',
+      render: (point: MonitoringPoint) => point.unitObj?.abbreviation || '-'
     },
     {
       key: 'range',

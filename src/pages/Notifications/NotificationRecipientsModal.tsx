@@ -1,6 +1,6 @@
 import React from 'react';
-import type { NotificationDetail } from '../../../types';
-import { Badge, Button } from '../../../components/common';
+import type { NotificationDetail } from '../../types';
+import { Badge, Button } from '../../components/common';
 
 interface NotificationRecipientsModalProps {
   notification: NotificationDetail | null;

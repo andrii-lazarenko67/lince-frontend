@@ -68,7 +68,7 @@ function Table<T>({
                 key={column.key}
                 className={column.className}
                 sx={{
-                  bgcolor: 'primary.main',
+                  bgcolor: '#15c',
                   color: 'primary.contrastText',
                   fontWeight: 700,
                   borderBottom: 2,

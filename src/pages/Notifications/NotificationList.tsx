@@ -1,6 +1,6 @@
 import React from 'react';
-import type { Notification } from '../../../types';
-import { Badge } from '../../../components/common';
+import type { Notification } from '../../types';
+import { Badge } from '../../components/common';
 
 interface NotificationListProps {
   notifications: Notification[];

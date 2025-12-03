@@ -13,12 +13,11 @@ import {
 } from '../../store/slices/notificationSlice';
 import { Card, Button, ExportDropdown } from '../../components/common';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
-import {
-  NotificationList,
-  AdminNotificationList,
-  NotificationRecipientsModal,
-  CreateNotificationModal
-} from './sections';
+import NotificationList from "./NotificationList"
+import AdminNotificationList from "./AdminNotificationList"
+import NotificationRecipientsModal from "./NotificationRecipientsModal"
+import CreateNotificationModal from './CreateNotificationModal';
+
 import type { Notification, CreateNotificationRequest } from '../../types';
 
 const NotificationsPage: React.FC = () => {

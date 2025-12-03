@@ -1,6 +1,6 @@
 import React from 'react';
-import type { NotificationWithStats } from '../../../types';
-import { Badge, Button } from '../../../components/common';
+import type { NotificationWithStats } from '../../types';
+import { Badge, Button } from '../../components/common';
 
 interface AdminNotificationListProps {
   notifications: NotificationWithStats[];

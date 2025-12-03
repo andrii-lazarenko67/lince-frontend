@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../../hooks';
-import { fetchUsers } from '../../../store/slices/userSlice';
-import { Button, Input } from '../../../components/common';
-import type { CreateNotificationRequest, NotificationType, NotificationPriority } from '../../../types';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchUsers } from '../../store/slices/userSlice';
+import { Button, Input } from '../../components/common';
+import type { CreateNotificationRequest, NotificationType, NotificationPriority } from '../../types';
 
 interface CreateNotificationModalProps {
   isOpen: boolean;
