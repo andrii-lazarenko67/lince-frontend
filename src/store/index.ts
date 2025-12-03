@@ -14,6 +14,10 @@ import librarySlice from './slices/librarySlice';
 import notificationSlice from './slices/notificationSlice';
 import dashboardSlice from './slices/dashboardSlice';
 import reportSlice from './slices/reportSlice';
+import parameterSlice from './slices/parameterSlice';
+import unitSlice from './slices/unitSlice';
+import productDosageSlice from './slices/productDosageSlice';
+import systemPhotoSlice from './slices/systemPhotoSlice';
 
 export const store = configureStore({
   reducer: {
@@ -29,7 +33,11 @@ export const store = configureStore({
     library: librarySlice,
     notifications: notificationSlice,
     dashboard: dashboardSlice,
-    reports: reportSlice
+    reports: reportSlice,
+    parameters: parameterSlice,
+    units: unitSlice,
+    productDosages: productDosageSlice,
+    systemPhotos: systemPhotoSlice
   }
 });
 

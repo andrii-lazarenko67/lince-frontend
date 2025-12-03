@@ -173,7 +173,7 @@ const NewDailyLogPage: React.FC = () => {
                   <div>
                     <p className="text-sm font-medium text-gray-700">{mp.name}</p>
                     <p className="text-xs text-gray-500">
-                      {mp.parameter} ({mp.unit})
+                      {mp.parameterObj?.name || '-'} ({mp.unitObj?.abbreviation || ''})
                       {mp.minValue !== null && mp.maxValue !== null && (
                         <span className="ml-2">Range: {mp.minValue} - {mp.maxValue}</span>
                       )}
@@ -185,7 +185,7 @@ const NewDailyLogPage: React.FC = () => {
                     name={`value-${mp.id}`}
                     value={entries[index]?.value || ''}
                     onChange={(e) => handleEntryChange(index, 'value', e.target.value)}
-                    placeholder={`Enter ${mp.parameter}`}
+                    placeholder={`Enter ${mp.parameterObj?.name || 'value'}`}
                     step="0.01"
                   />
 

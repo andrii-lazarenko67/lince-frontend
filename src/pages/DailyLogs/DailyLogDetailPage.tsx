@@ -30,14 +30,14 @@ const DailyLogDetailPage: React.FC = () => {
     {
       key: 'parameter',
       header: 'Parameter',
-      render: (entry: DailyLogEntry) => entry.monitoringPoint?.parameter || '-'
+      render: (entry: DailyLogEntry) => entry.monitoringPoint?.parameterObj?.name || '-'
     },
     {
       key: 'value',
       header: 'Value',
       render: (entry: DailyLogEntry) => (
         <span className={entry.isOutOfRange ? 'text-red-600 font-medium' : ''}>
-          {entry.value} {entry.monitoringPoint?.unit}
+          {entry.value} {entry.monitoringPoint?.unitObj?.abbreviation || ''}
         </span>
       )
     },

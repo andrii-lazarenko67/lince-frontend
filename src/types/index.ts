@@ -10,3 +10,7 @@ export type * from './library.types';
 export type * from './notification.types';
 export type * from './dashboard.types';
 export type * from './report.types';
+export type * from './parameter.types';
+export type * from './unit.types';
+export type * from './productDosage.types';
+export type * from './systemPhoto.types';

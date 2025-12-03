@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createMonitoringPoint, updateMonitoringPoint } from '../../store/slices/monitoringPointSlice';
+import { fetchParameters } from '../../store/slices/parameterSlice';
+import { fetchUnits } from '../../store/slices/unitSlice';
 import { Input, Select, Button, Modal } from '../../components/common';
 import type { MonitoringPoint, CreateMonitoringPointRequest } from '../../types';
 
@@ -11,36 +13,6 @@ interface MonitoringPointFormProps {
   monitoringPoint?: MonitoringPoint | null;
 }
 
-const parameterOptions = [
-  { value: 'pH', label: 'pH' },
-  { value: 'temperature', label: 'Temperature' },
-  { value: 'turbidity', label: 'Turbidity' },
-  { value: 'chlorine', label: 'Chlorine' },
-  { value: 'conductivity', label: 'Conductivity' },
-  { value: 'dissolved_oxygen', label: 'Dissolved Oxygen' },
-  { value: 'tds', label: 'TDS (Total Dissolved Solids)' },
-  { value: 'hardness', label: 'Hardness' },
-  { value: 'alkalinity', label: 'Alkalinity' },
-  { value: 'pressure', label: 'Pressure' },
-  { value: 'flow_rate', label: 'Flow Rate' },
-  { value: 'other', label: 'Other' }
-];
-
-const unitOptions = [
-  { value: 'pH', label: 'pH' },
-  { value: '°C', label: '°C' },
-  { value: '°F', label: '°F' },
-  { value: 'NTU', label: 'NTU' },
-  { value: 'mg/L', label: 'mg/L' },
-  { value: 'ppm', label: 'ppm' },
-  { value: 'µS/cm', label: 'µS/cm' },
-  { value: 'bar', label: 'bar' },
-  { value: 'psi', label: 'psi' },
-  { value: 'L/min', label: 'L/min' },
-  { value: 'm³/h', label: 'm³/h' },
-  { value: '%', label: '%' }
-];
-
 const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   isOpen,
   onClose,
@@ -48,24 +20,35 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   monitoringPoint
 }) => {
   const dispatch = useAppDispatch();
+  const { parameters } = useAppSelector((state) => state.parameters);
+  const { units } = useAppSelector((state) => state.units);
+
   const [formData, setFormData] = useState<CreateMonitoringPointRequest>({
     systemId: systemId,
     name: '',
-    parameter: '',
-    unit: '',
+    parameterId: 0,
+    unitId: 0,
     minValue: undefined,
     maxValue: undefined,
     alertEnabled: true
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Fetch parameters and units when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      dispatch(fetchParameters());
+      dispatch(fetchUnits());
+    }
+  }, [dispatch, isOpen]);
+
   useEffect(() => {
     if (monitoringPoint) {
       setFormData({
         systemId: systemId,
         name: monitoringPoint.name,
-        parameter: monitoringPoint.parameter,
-        unit: monitoringPoint.unit,
+        parameterId: monitoringPoint.parameterId,
+        unitId: monitoringPoint.unitId,
         minValue: monitoringPoint.minValue ?? undefined,
         maxValue: monitoringPoint.maxValue ?? undefined,
         alertEnabled: monitoringPoint.alertEnabled
@@ -74,8 +57,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
       setFormData({
         systemId: systemId,
         name: '',
-        parameter: '',
-        unit: '',
+        parameterId: 0,
+        unitId: 0,
         minValue: undefined,
         maxValue: undefined,
         alertEnabled: true
@@ -98,6 +81,11 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
         ...formData,
         [name]: value === '' ? undefined : parseFloat(value)
       });
+    } else if (name === 'parameterId' || name === 'unitId') {
+      setFormData({
+        ...formData,
+        [name]: parseInt(value)
+      });
     } else {
       setFormData({
         ...formData,
@@ -113,7 +101,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.parameter) newErrors.parameter = 'Parameter is required';
+    if (!formData.parameterId || formData.parameterId === 0) newErrors.parameterId = 'Parameter is required';
+    if (!formData.unitId || formData.unitId === 0) newErrors.unitId = 'Unit is required';
     if (formData.minValue !== undefined && formData.maxValue !== undefined) {
       if (formData.minValue >= formData.maxValue) {
         newErrors.minValue = 'Min value must be less than max value';
@@ -132,8 +121,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
         id: monitoringPoint.id,
         data: {
           name: formData.name,
-          parameter: formData.parameter,
-          unit: formData.unit,
+          parameterId: formData.parameterId,
+          unitId: formData.unitId,
           minValue: formData.minValue,
           maxValue: formData.maxValue,
           alertEnabled: formData.alertEnabled
@@ -149,6 +138,17 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
       }
     }
   };
+
+  // Generate options from Redux data
+  const parameterOptions = parameters.map(p => ({
+    value: p.id,
+    label: p.name
+  }));
+
+  const unitOptions = units.map(u => ({
+    value: u.id,
+    label: `${u.name} (${u.abbreviation})`
+  }));
 
   return (
     <Modal
@@ -169,24 +169,25 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
         />
 
         <Select
-          name="parameter"
-          value={formData.parameter}
+          name="parameterId"
+          value={formData.parameterId.toString()}
           onChange={handleChange}
           options={parameterOptions}
           label="Parameter"
           placeholder="Select parameter"
-          error={errors.parameter}
+          error={errors.parameterId}
           required
         />
 
         <Select
-          name="unit"
-          value={formData.unit}
+          name="unitId"
+          value={formData.unitId.toString()}
           onChange={handleChange}
           options={unitOptions}
           label="Unit"
           placeholder="Select unit"
-          error={errors.unit}
+          error={errors.unitId}
+          required
         />
 
         <div className="grid grid-cols-2 gap-4">

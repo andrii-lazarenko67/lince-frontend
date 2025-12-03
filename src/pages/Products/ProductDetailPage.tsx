@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProductById, fetchProductUsageHistory, recordProductUsage, updateStock, deleteProduct } from '../../store/slices/productSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Badge, Button, Modal, Input, Select, TextArea, Table } from '../../components/common';
+import ProductDosageSection from '../../components/ProductDosageSection';
 import type { ProductUsage } from '../../types';
 
 const ProductDetailPage: React.FC = () => {
@@ -200,6 +201,8 @@ const ProductDetailPage: React.FC = () => {
           />
         </Card>
       </div>
+
+      <ProductDosageSection productId={currentProduct.id} productName={currentProduct.name} />
 
       <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title="Record Usage">
         <div className='flex flex-col gap-10'>

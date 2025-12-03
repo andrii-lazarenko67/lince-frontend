@@ -6,6 +6,7 @@ import { fetchMonitoringPoints, deleteMonitoringPoint as deleteMonitoringPointAc
 import { Card, Button, Badge, Table, Modal } from '../../components/common';
 import SystemForm from "./SystemForm";
 import MonitoringPointForm from './MonitoringPointForm';
+import PhotoGallery from '../../components/PhotoGallery';
 import type { MonitoringPoint } from '../../types';
 
 const SystemDetailPage: React.FC = () => {
@@ -229,6 +230,8 @@ const SystemDetailPage: React.FC = () => {
           />
         </Card>
       </div>
+
+      <PhotoGallery systemId={currentSystem.id} systemName={currentSystem.name} />
 
       <SystemForm
         isOpen={isEditOpen}
