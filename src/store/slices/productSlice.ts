@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { fetchUnreadCount } from './notificationSlice';
 
 interface RecordUsageRequest {
   systemId: number;
@@ -86,6 +87,10 @@ export const recordProductUsage = createAsyncThunk(
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.post<{ success: boolean; data: ProductUsage }>(`/products/${id}/usage`, data);
+
+      // Refresh notification count (low stock may trigger notification)
+      dispatch(fetchUnreadCount());
+
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

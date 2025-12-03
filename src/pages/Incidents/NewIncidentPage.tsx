@@ -20,7 +20,8 @@ const NewIncidentPage: React.FC = () => {
     systemId: '',
     title: '',
     description: '',
-    priority: 'medium'
+    priority: 'medium',
+    sendNotification: true
   });
   const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -96,7 +97,8 @@ const NewIncidentPage: React.FC = () => {
       title: formData.title,
       description: formData.description,
       priority: formData.priority as IncidentPriority,
-      photos: photos.length > 0 ? photos : undefined
+      photos: photos.length > 0 ? photos : undefined,
+      sendNotification: formData.sendNotification
     }));
 
     if (createIncident.fulfilled.match(result)) {
@@ -174,6 +176,21 @@ const NewIncidentPage: React.FC = () => {
               error={errors.description}
               required
             />
+
+            {/* Send Notification Checkbox */}
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="sendNotification"
+                name="sendNotification"
+                checked={formData.sendNotification}
+                onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
+                Send notification to managers
+              </label>
+            </div>
           </div>
         </Card>
 

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { fetchUnreadCount } from './notificationSlice';
 
 const initialState: IncidentState = {
   incidents: [],
@@ -43,7 +44,7 @@ export const fetchIncidentById = createAsyncThunk(
 
 export const createIncident = createAsyncThunk(
   'incidents/create',
-  async (data: CreateIncidentRequest & { photos?: File[] }, { dispatch, rejectWithValue }) => {
+  async (data: CreateIncidentRequest & { photos?: File[]; sendNotification?: boolean }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const formData = new FormData();
@@ -51,6 +52,10 @@ export const createIncident = createAsyncThunk(
       formData.append('title', data.title);
       formData.append('description', data.description);
       if (data.priority) formData.append('priority', data.priority);
+      // Send notification based on user's choice (checkbox)
+      if (data.sendNotification) {
+        formData.append('sendNotification', 'true');
+      }
 
       if (data.photos) {
         data.photos.forEach(photo => {
@@ -61,6 +66,12 @@ export const createIncident = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: Incident }>('/incidents', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+
+      // Refresh notification count after creating incident (if notification was sent)
+      if (data.sendNotification) {
+        dispatch(fetchUnreadCount());
+      }
+
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
@@ -108,7 +119,11 @@ export const assignIncident = createAsyncThunk(
   async ({ id, assignedToId }: { id: number; assignedToId: number }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.put<{ success: boolean; data: Incident }>(`/incidents/${id}/assign`, { assignedToId });
+      const response = await axiosInstance.put<{ success: boolean; data: Incident }>(`/incidents/${id}/assign`, { assignedTo: assignedToId });
+
+      // Refresh notification count after assigning incident (notification sent to assigned user)
+      dispatch(fetchUnreadCount());
+
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

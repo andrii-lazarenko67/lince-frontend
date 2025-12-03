@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { fetchUnreadCount } from './notificationSlice';
 
 const initialState: DailyLogState = {
   dailyLogs: [],
@@ -63,6 +64,10 @@ export const createDailyLog = createAsyncThunk(
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.post<{ success: boolean; data: DailyLog }>('/daily-logs', data);
+
+      // Refresh notification count (out-of-range values may trigger notifications)
+      dispatch(fetchUnreadCount());
+
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
