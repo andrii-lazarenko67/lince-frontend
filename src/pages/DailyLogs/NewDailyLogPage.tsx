@@ -21,7 +21,8 @@ const NewDailyLogPage: React.FC = () => {
     systemId: '',
     date: new Date().toISOString().split('T')[0],
     shift: 'morning',
-    notes: ''
+    notes: '',
+    sendNotification: false
   });
   const [entries, setEntries] = useState<EntryValue[]>([]);
 
@@ -82,7 +83,8 @@ const NewDailyLogPage: React.FC = () => {
       date: formData.date,
       shift: formData.shift as 'morning' | 'afternoon' | 'night',
       notes: formData.notes || undefined,
-      entries: validEntries
+      entries: validEntries,
+      sendNotification: formData.sendNotification
     }));
 
     if (createDailyLog.fulfilled.match(result)) {
@@ -162,6 +164,21 @@ const NewDailyLogPage: React.FC = () => {
               placeholder="Enter any general notes for this log"
               rows={2}
             />
+
+            {/* Send Notification Checkbox */}
+            <div className="flex items-center mt-4">
+              <input
+                type="checkbox"
+                id="sendNotification"
+                name="sendNotification"
+                checked={formData.sendNotification}
+                onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
+                Send notification to managers (for out-of-range values)
+              </label>
+            </div>
           </div>
         </Card>
 

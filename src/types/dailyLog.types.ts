@@ -40,6 +40,7 @@ export interface CreateDailyLogRequest {
     value: number;
     notes?: string;
   }[];
+  sendNotification?: boolean;
 }
 
 export interface UpdateDailyLogRequest {

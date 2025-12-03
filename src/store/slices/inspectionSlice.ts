@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { fetchUnreadCount } from './notificationSlice';
 
 const initialState: InspectionState = {
   inspections: [],
@@ -69,6 +70,11 @@ export const createInspection = createAsyncThunk(
       if (data.conclusion) formData.append('conclusion', data.conclusion);
       formData.append('items', JSON.stringify(data.items));
 
+      // Send notification based on user's choice (checkbox)
+      if (data.sendNotification) {
+        formData.append('sendNotification', 'true');
+      }
+
       if (data.photos) {
         data.photos.forEach(photo => {
           formData.append('photos', photo);
@@ -78,6 +84,12 @@ export const createInspection = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: Inspection }>('/inspections', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
+
+      // Refresh notification count after creating inspection (if notification was sent)
+      if (data.sendNotification) {
+        dispatch(fetchUnreadCount());
+      }
+
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

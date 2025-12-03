@@ -65,8 +65,10 @@ export const createDailyLog = createAsyncThunk(
       dispatch(setLoading(true));
       const response = await axiosInstance.post<{ success: boolean; data: DailyLog }>('/daily-logs', data);
 
-      // Refresh notification count (out-of-range values may trigger notifications)
-      dispatch(fetchUnreadCount());
+      // Refresh notification count (out-of-range values may trigger notifications if checkbox was checked)
+      if (data.sendNotification) {
+        dispatch(fetchUnreadCount());
+      }
 
       return response.data.data;
     } catch (error: unknown) {

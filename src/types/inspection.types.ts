@@ -52,6 +52,7 @@ export interface CreateInspectionRequest {
     status: InspectionItemStatus;
     comment?: string;
   }[];
+  sendNotification?: boolean;
 }
 
 export interface UpdateInspectionRequest {

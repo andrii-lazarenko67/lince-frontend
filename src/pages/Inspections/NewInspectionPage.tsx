@@ -25,7 +25,8 @@ const NewInspectionPage: React.FC = () => {
   const [formData, setFormData] = useState({
     systemId: '',
     date: new Date().toISOString().split('T')[0],
-    conclusion: ''
+    conclusion: '',
+    sendNotification: false
   });
   const [items, setItems] = useState<ItemValue[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
@@ -124,7 +125,8 @@ const NewInspectionPage: React.FC = () => {
         status: item.status,
         comment: item.comment || undefined
       })),
-      photos: photos.length > 0 ? photos : undefined
+      photos: photos.length > 0 ? photos : undefined,
+      sendNotification: formData.sendNotification
     }));
 
     if (createInspection.fulfilled.match(result)) {
@@ -274,6 +276,21 @@ const NewInspectionPage: React.FC = () => {
             placeholder="Enter inspection conclusion and observations"
             rows={4}
           />
+
+          {/* Send Notification Checkbox */}
+          <div className="flex items-center mt-4">
+            <input
+              type="checkbox"
+              id="sendNotification"
+              name="sendNotification"
+              checked={formData.sendNotification}
+              onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+            />
+            <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
+              Send notification to managers
+            </label>
+          </div>
         </Card>
 
         <div className="flex justify-end space-x-3">
