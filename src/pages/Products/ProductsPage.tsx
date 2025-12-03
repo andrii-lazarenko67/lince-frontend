@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
+import { fetchUnits } from '../../store/slices/unitSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select, ExportDropdown, ViewModeToggle } from '../../components/common';
 import ProductsChartView from './ProductsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
@@ -9,6 +10,7 @@ import type { Product, CreateProductRequest } from '../../types';
 const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.products);
+  const { units } = useAppSelector((state) => state.units);
   const { goToProductDetail } = useAppNavigation();
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
@@ -25,6 +27,7 @@ const ProductsPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchProducts({}));
+    dispatch(fetchUnits());
   }, [dispatch]);
 
   const handleOpenForm = (product?: Product) => {
@@ -199,6 +202,8 @@ const ProductsPage: React.FC = () => {
     { value: 'other', label: 'Other' }
   ];
 
+  const unitOptions = units.map(u => ({ value: u.abbreviation, label: `${u.name} (${u.abbreviation})` }));
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -258,13 +263,13 @@ const ProductsPage: React.FC = () => {
             placeholder="Select type"
           />
 
-          <Input
-            type="text"
+          <Select
             name="unit"
             value={formData.unit}
             onChange={handleChange}
+            options={unitOptions}
             label="Unit"
-            placeholder="e.g., kg, L, units"
+            placeholder="Select unit"
             required
           />
 

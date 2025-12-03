@@ -5,9 +5,11 @@ import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 
 interface RecordUsageRequest {
-  systemId: number;
+  systemId?: number;
   quantity: number;
   notes?: string;
+  type?: 'in' | 'out';
+  date?: string;
 }
 
 const initialState: ProductState = {
@@ -86,7 +88,9 @@ export const recordProductUsage = createAsyncThunk(
   async ({ id, data }: { id: number; data: RecordUsageRequest }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.post<{ success: boolean; data: ProductUsage }>(`/products/${id}/usage`, data);
+      // Default type to 'out' for recording usage (consumption)
+      const requestData = { ...data, type: data.type || 'out' };
+      const response = await axiosInstance.post<{ success: boolean; data: ProductUsage }>(`/products/${id}/usage`, requestData);
 
       // Refresh notification count (low stock may trigger notification)
       dispatch(fetchUnreadCount());
@@ -189,9 +193,26 @@ const productSlice = createSlice({
       })
       .addCase(recordProductUsage.fulfilled, (state, action) => {
         state.usages.unshift(action.payload);
+        const usageType = action.payload.type;
+        const quantity = parseFloat(action.payload.quantity.toString());
+
+        // Update product stock in the products list
         const product = state.products.find(p => p.id === action.payload.productId);
         if (product) {
-          product.currentStock = parseFloat(product.currentStock.toString()) - parseFloat(action.payload.quantity.toString());
+          if (usageType === 'in') {
+            product.currentStock = parseFloat(product.currentStock.toString()) + quantity;
+          } else {
+            product.currentStock = parseFloat(product.currentStock.toString()) - quantity;
+          }
+        }
+
+        // Update current product stock if viewing the same product
+        if (state.currentProduct?.id === action.payload.productId) {
+          if (usageType === 'in') {
+            state.currentProduct.currentStock = parseFloat(state.currentProduct.currentStock.toString()) + quantity;
+          } else {
+            state.currentProduct.currentStock = parseFloat(state.currentProduct.currentStock.toString()) - quantity;
+          }
         }
         state.error = null;
       })

@@ -21,6 +21,7 @@ const ProductDetailPage: React.FC = () => {
   const [usageData, setUsageData] = useState({
     systemId: '',
     quantity: '',
+    type: 'out' as 'in' | 'out',
     notes: ''
   });
 
@@ -39,19 +40,22 @@ const ProductDetailPage: React.FC = () => {
   }, [dispatch, id]);
 
   const handleRecordUsage = async () => {
-    if (id && usageData.systemId && usageData.quantity) {
+    if (id && usageData.quantity) {
       const result = await dispatch(recordProductUsage({
         id: Number(id),
         data: {
-          systemId: Number(usageData.systemId),
+          systemId: usageData.systemId ? Number(usageData.systemId) : undefined,
           quantity: parseFloat(usageData.quantity),
+          type: usageData.type,
           notes: usageData.notes || undefined
         }
       }));
       if (recordProductUsage.fulfilled.match(result)) {
         setIsUsageOpen(false);
-        setUsageData({ systemId: '', quantity: '', notes: '' });
+        setUsageData({ systemId: '', quantity: '', type: 'out', notes: '' });
+        // Refresh product and usage history to show changes immediately
         dispatch(fetchProductById(Number(id)));
+        dispatch(fetchProductUsageHistory({ id: Number(id) }));
       }
     }
   };
@@ -67,6 +71,9 @@ const ProductDetailPage: React.FC = () => {
       if (updateStock.fulfilled.match(result)) {
         setIsStockOpen(false);
         setStockData({ quantity: '', type: 'add', notes: '' });
+        // Refresh product and usage history to show changes immediately
+        dispatch(fetchProductById(Number(id)));
+        dispatch(fetchProductUsageHistory({ id: Number(id) }));
       }
     }
   };
@@ -89,7 +96,16 @@ const ProductDetailPage: React.FC = () => {
     {
       key: 'date',
       header: 'Date',
-      render: (usage: ProductUsage) => new Date(usage.createdAt).toLocaleDateString()
+      render: (usage: ProductUsage) => new Date(usage.date || usage.createdAt).toLocaleDateString()
+    },
+    {
+      key: 'type',
+      header: 'Type',
+      render: (usage: ProductUsage) => (
+        <Badge variant={usage.type === 'in' ? 'success' : 'warning'}>
+          {usage.type === 'in' ? 'Stock In' : 'Stock Out'}
+        </Badge>
+      )
     },
     {
       key: 'system',
@@ -114,6 +130,10 @@ const ProductDetailPage: React.FC = () => {
   ];
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const usageTypeOptions = [
+    { value: 'out', label: 'Stock Out (Usage)' },
+    { value: 'in', label: 'Stock In (Received)' }
+  ];
   const stockTypeOptions = [
     { value: 'add', label: 'Add Stock' },
     { value: 'remove', label: 'Remove Stock' }
@@ -207,11 +227,18 @@ const ProductDetailPage: React.FC = () => {
       <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title="Record Usage">
         <div className='flex flex-col gap-10'>
           <Select
+            name="type"
+            value={usageData.type}
+            onChange={(e) => setUsageData({ ...usageData, type: e.target.value as 'in' | 'out' })}
+            options={usageTypeOptions}
+            label="Type"
+          />
+          <Select
             name="systemId"
             value={usageData.systemId}
             onChange={(e) => setUsageData({ ...usageData, systemId: e.target.value })}
             options={systemOptions}
-            label="System"
+            label="System (Optional)"
             placeholder="Select system"
           />
           <Input
@@ -222,6 +249,7 @@ const ProductDetailPage: React.FC = () => {
             label={`Quantity (${currentProduct.unit})`}
             min={0}
             step="0.01"
+            required
           />
           <TextArea
             name="notes"
@@ -242,36 +270,38 @@ const ProductDetailPage: React.FC = () => {
       </Modal>
 
       <Modal isOpen={isStockOpen} onClose={() => setIsStockOpen(false)} title="Update Stock">
-        <Select
-          name="type"
-          value={stockData.type}
-          onChange={(e) => setStockData({ ...stockData, type: e.target.value })}
-          options={stockTypeOptions}
-          label="Action"
-        />
-        <Input
-          type="number"
-          name="quantity"
-          value={stockData.quantity}
-          onChange={(e) => setStockData({ ...stockData, quantity: e.target.value })}
-          label={`Quantity (${currentProduct.unit})`}
-          min={0}
-          step="0.01"
-        />
-        <TextArea
-          name="notes"
-          value={stockData.notes}
-          onChange={(e) => setStockData({ ...stockData, notes: e.target.value })}
-          label="Notes (Optional)"
-          rows={3}
-        />
-        <div className="flex justify-end space-x-3 mt-6">
-          <Button variant="outline" onClick={() => setIsStockOpen(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleUpdateStock}>
-            Update
-          </Button>
+        <div className="flex flex-col gap-10">
+          <Select
+            name="type"
+            value={stockData.type}
+            onChange={(e) => setStockData({ ...stockData, type: e.target.value })}
+            options={stockTypeOptions}
+            label="Action"
+          />
+          <Input
+            type="number"
+            name="quantity"
+            value={stockData.quantity}
+            onChange={(e) => setStockData({ ...stockData, quantity: e.target.value })}
+            label={`Quantity (${currentProduct.unit})`}
+            min={0}
+            step="0.01"
+          />
+          <TextArea
+            name="notes"
+            value={stockData.notes}
+            onChange={(e) => setStockData({ ...stockData, notes: e.target.value })}
+            label="Notes (Optional)"
+            rows={3}
+          />
+          <div className="flex justify-end space-x-3">
+            <Button variant="outline" onClick={() => setIsStockOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleUpdateStock}>
+              Update
+            </Button>
+          </div>
         </div>
       </Modal>
 
