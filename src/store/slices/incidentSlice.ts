@@ -121,10 +121,10 @@ export const assignIncident = createAsyncThunk(
 
 export const addIncidentComment = createAsyncThunk(
   'incidents/addComment',
-  async ({ id, comment }: { id: number; comment: string }, { dispatch, rejectWithValue }) => {
+  async ({ id, content }: { id: number; content: string }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.post<{ success: boolean; data: IncidentComment }>(`/incidents/${id}/comments`, { comment });
+      const response = await axiosInstance.post<{ success: boolean; data: IncidentComment }>(`/incidents/${id}/comments`, { content });
       return { incidentId: id, comment: response.data.data };
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
@@ -145,6 +145,31 @@ export const deleteIncident = createAsyncThunk(
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       return rejectWithValue(err.response?.data?.message || 'Failed to delete incident');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const addIncidentPhotos = createAsyncThunk(
+  'incidents/addPhotos',
+  async ({ id, photos }: { id: number; photos: File[] }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const formData = new FormData();
+      photos.forEach(photo => {
+        formData.append('photos', photo);
+      });
+
+      const response = await axiosInstance.post<{ success: boolean; data: Incident }>(
+        `/incidents/${id}/photos`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to add photos');
     } finally {
       dispatch(setLoading(false));
     }
@@ -217,6 +242,16 @@ const incidentSlice = createSlice({
       })
       .addCase(deleteIncident.fulfilled, (state, action) => {
         state.incidents = state.incidents.filter(i => i.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(addIncidentPhotos.fulfilled, (state, action) => {
+        if (state.currentIncident && state.currentIncident.id === action.payload.id) {
+          state.currentIncident = { ...state.currentIncident, photos: action.payload.photos };
+        }
+        const index = state.incidents.findIndex(i => i.id === action.payload.id);
+        if (index !== -1) {
+          state.incidents[index] = { ...state.incidents[index], photos: action.payload.photos };
+        }
         state.error = null;
       });
   }

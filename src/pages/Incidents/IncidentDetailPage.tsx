@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchIncidentById, updateIncidentStatus, addIncidentComment, assignIncident } from '../../store/slices/incidentSlice';
+import { fetchIncidentById, updateIncidentStatus, addIncidentComment, assignIncident, addIncidentPhotos } from '../../store/slices/incidentSlice';
 import { fetchUsers } from '../../store/slices/userSlice';
 import { Card, Badge, Button, Modal, Select, TextArea, Input } from '../../components/common';
+import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
+
+interface PhotoPreview {
+  file: File;
+  preview: string;
+}
 
 const IncidentDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -15,22 +21,32 @@ const IncidentDetailPage: React.FC = () => {
 
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
+  const [isAddPhotosOpen, setIsAddPhotosOpen] = useState(false);
   const [newStatus, setNewStatus] = useState('');
   const [resolution, setResolution] = useState('');
   const [assignedToId, setAssignedToId] = useState('');
   const [newComment, setNewComment] = useState('');
+  const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'manager';
+  const canManage = user?.role === 'admin' || user?.role === 'manager';
 
   useEffect(() => {
     if (id) {
       dispatch(fetchIncidentById(Number(id)));
     }
     // Only fetch users if current user has permission (admin/manager)
-    if (isAdmin) {
+    if (canManage) {
       dispatch(fetchUsers({}));
     }
-  }, [dispatch, id, isAdmin]);
+  }, [dispatch, id, canManage]);
+
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoPreviews.forEach(p => URL.revokeObjectURL(p.preview));
+    };
+  }, []);
 
   const handleStatusUpdate = async () => {
     if (id && newStatus) {
@@ -64,12 +80,69 @@ const IncidentDetailPage: React.FC = () => {
     if (id && newComment.trim()) {
       const result = await dispatch(addIncidentComment({
         id: Number(id),
-        comment: newComment
+        content: newComment
       }));
       if (addIncidentComment.fulfilled.match(result)) {
         setNewComment('');
       }
     }
+  };
+
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => {
+      const isValidType = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type);
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+      return isValidType && isValidSize;
+    });
+
+    if (validFiles.length !== files.length) {
+      alert('Some files were skipped. Only images (JPEG, PNG, GIF, WEBP) under 10MB are allowed.');
+    }
+
+    const newPreviews = validFiles.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+
+    setPhotoPreviews(prev => [...prev, ...newPreviews]);
+    e.target.value = '';
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotoPreviews(prev => {
+      const newPreviews = [...prev];
+      URL.revokeObjectURL(newPreviews[index].preview);
+      newPreviews.splice(index, 1);
+      return newPreviews;
+    });
+  };
+
+  const handleAddPhotos = async () => {
+    if (id && photoPreviews.length > 0) {
+      setIsUploading(true);
+      const photos = photoPreviews.map(p => p.file);
+      const result = await dispatch(addIncidentPhotos({
+        id: Number(id),
+        photos
+      }));
+
+      setIsUploading(false);
+      if (addIncidentPhotos.fulfilled.match(result)) {
+        // Cleanup previews
+        photoPreviews.forEach(p => URL.revokeObjectURL(p.preview));
+        setPhotoPreviews([]);
+        setIsAddPhotosOpen(false);
+        // Refetch incident to get updated photos
+        dispatch(fetchIncidentById(Number(id)));
+      }
+    }
+  };
+
+  const handleCloseAddPhotos = () => {
+    photoPreviews.forEach(p => URL.revokeObjectURL(p.preview));
+    setPhotoPreviews([]);
+    setIsAddPhotosOpen(false);
   };
 
   const getStatusBadge = (status: string) => {
@@ -129,7 +202,7 @@ const IncidentDetailPage: React.FC = () => {
             <p className="text-gray-500 mt-1">{currentIncident.system?.name}</p>
           </div>
         </div>
-        {isAdmin && (
+        {canManage && (
           <div className="flex space-x-3">
             <Button variant="outline" onClick={() => setIsAssignOpen(true)}>
               Assign
@@ -188,9 +261,17 @@ const IncidentDetailPage: React.FC = () => {
         </Card>
       </div>
 
-      {currentIncident.photos && currentIncident.photos.length > 0 && (
-        <Card title="Photos">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <Card
+        title="Photos"
+        headerActions={
+          <Button variant="outline" size="sm" onClick={() => setIsAddPhotosOpen(true)}>
+            <AddIcon style={{ fontSize: 18, marginRight: 4 }} />
+            Add Photos
+          </Button>
+        }
+      >
+        {currentIncident.photos && currentIncident.photos.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
             {currentIncident.photos.map((photo) => (
               <a
                 key={photo.id}
@@ -207,8 +288,15 @@ const IncidentDetailPage: React.FC = () => {
               </a>
             ))}
           </div>
-        </Card>
-      )}
+        ) : (
+          <div className="text-center py-8 text-gray-500">
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="mt-2">No photos attached to this incident</p>
+          </div>
+        )}
+      </Card>
 
       <Card title="Comments">
         <div className="space-y-4 mb-4">
@@ -244,35 +332,39 @@ const IncidentDetailPage: React.FC = () => {
         </div>
       </Card>
 
+      {/* Update Status Modal */}
       <Modal isOpen={isStatusOpen} onClose={() => setIsStatusOpen(false)} title="Update Status">
-        <Select
-          name="status"
-          value={newStatus}
-          onChange={(e) => setNewStatus(e.target.value)}
-          options={statusOptions}
-          label="New Status"
-          placeholder="Select status"
-        />
-        {newStatus === 'resolved' && (
-          <TextArea
-            name="resolution"
-            value={resolution}
-            onChange={(e) => setResolution(e.target.value)}
-            label="Resolution"
-            placeholder="Describe how the incident was resolved"
-            rows={4}
+        <div className="flex flex-col gap-10">
+          <Select
+            name="status"
+            value={newStatus}
+            onChange={(e) => setNewStatus(e.target.value)}
+            options={statusOptions}
+            label="New Status"
+            placeholder="Select status"
           />
-        )}
-        <div className="flex justify-end space-x-3 mt-6">
-          <Button variant="outline" onClick={() => setIsStatusOpen(false)}>
-            Cancel
-          </Button>
-          <Button variant="primary" onClick={handleStatusUpdate}>
-            Update
-          </Button>
+          {newStatus === 'resolved' && (
+            <TextArea
+              name="resolution"
+              value={resolution}
+              onChange={(e) => setResolution(e.target.value)}
+              label="Resolution"
+              placeholder="Describe how the incident was resolved"
+              rows={4}
+            />
+          )}
+          <div className="flex justify-end space-x-3 mt-6">
+            <Button variant="outline" onClick={() => setIsStatusOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={handleStatusUpdate}>
+              Update
+            </Button>
+          </div>
         </div>
       </Modal>
 
+      {/* Assign Modal */}
       <Modal isOpen={isAssignOpen} onClose={() => setIsAssignOpen(false)} title="Assign Incident">
         <Select
           name="assignedToId"
@@ -288,6 +380,82 @@ const IncidentDetailPage: React.FC = () => {
           </Button>
           <Button variant="primary" onClick={handleAssign}>
             Assign
+          </Button>
+        </div>
+      </Modal>
+
+      {/* Add Photos Modal */}
+      <Modal isOpen={isAddPhotosOpen} onClose={handleCloseAddPhotos} title="Add Photos">
+        <div className="space-y-4 max-h-96 overflow-y-auto">
+          {/* Photo Upload Area */}
+          <div
+            className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
+            onClick={() => document.getElementById('incident-add-photo-input')?.click()}
+          >
+            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <p className="mt-2 text-sm text-gray-600">Click to upload photos</p>
+            <p className="mt-1 text-xs text-gray-500">JPEG, PNG, GIF, WEBP up to 10MB each</p>
+            <input
+              id="incident-add-photo-input"
+              type="file"
+              accept="image/jpeg,image/png,image/gif,image/webp"
+              multiple
+              onChange={handlePhotosChange}
+              className="hidden"
+              disabled={isUploading}
+            />
+          </div>
+
+          {/* Photo Previews */}
+          {photoPreviews.length > 0 && (
+            <div className="grid grid-cols-3 gap-4">
+              {photoPreviews.map((photo, index) => (
+                <div key={index} className="relative group">
+                  <img
+                    src={photo.preview}
+                    alt={`Preview ${index + 1}`}
+                    className="w-full h-40 object-cover rounded-lg"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePhoto(index)}
+                    disabled={isUploading}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-50"
+                  >
+                    <CloseIcon style={{ fontSize: 16 }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {photoPreviews.length > 0 && (
+            <p className="text-sm text-gray-600">{photoPreviews.length} photo(s) selected</p>
+          )}
+        </div>
+
+        <div className="flex justify-end space-x-3 mt-6">
+          <Button variant="outline" onClick={handleCloseAddPhotos} disabled={isUploading}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onClick={handleAddPhotos}
+            disabled={photoPreviews.length === 0 || isUploading}
+          >
+            {isUploading ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Uploading...
+              </span>
+            ) : (
+              'Upload Photos'
+            )}
           </Button>
         </div>
       </Modal>

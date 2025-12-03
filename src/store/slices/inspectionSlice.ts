@@ -136,6 +136,31 @@ export const deleteInspection = createAsyncThunk(
   }
 );
 
+export const addInspectionPhotos = createAsyncThunk(
+  'inspections/addPhotos',
+  async ({ id, photos }: { id: number; photos: File[] }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const formData = new FormData();
+      photos.forEach(photo => {
+        formData.append('photos', photo);
+      });
+
+      const response = await axiosInstance.post<{ success: boolean; data: Inspection }>(
+        `/inspections/${id}/photos`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to add photos');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const inspectionSlice = createSlice({
   name: 'inspections',
   initialState,
@@ -184,6 +209,18 @@ const inspectionSlice = createSlice({
       })
       .addCase(deleteInspection.fulfilled, (state, action) => {
         state.inspections = state.inspections.filter(i => i.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(addInspectionPhotos.fulfilled, (state, action) => {
+        // Update currentInspection with new photos
+        if (state.currentInspection && state.currentInspection.id === action.payload.id) {
+          state.currentInspection = { ...state.currentInspection, photos: action.payload.photos };
+        }
+        // Update in inspections list
+        const index = state.inspections.findIndex(i => i.id === action.payload.id);
+        if (index !== -1) {
+          state.inspections[index] = { ...state.inspections[index], photos: action.payload.photos };
+        }
         state.error = null;
       });
   }

@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { createInspection, fetchChecklistItems } from '../../store/slices/inspectionSlice';
+import { createInspection, fetchChecklistItems, clearChecklistItems } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, Input, TextArea, FileUpload } from '../../components/common';
+import { Card, Button, Select, Input, TextArea } from '../../components/common';
+import { Close as CloseIcon } from '@mui/icons-material';
 
 interface ItemValue {
   checklistItemId: number;
   status: 'pass' | 'fail' | 'na';
   comment: string;
+}
+
+interface PhotoPreview {
+  file: File;
+  preview: string;
 }
 
 const NewInspectionPage: React.FC = () => {
@@ -22,10 +28,13 @@ const NewInspectionPage: React.FC = () => {
     conclusion: ''
   });
   const [items, setItems] = useState<ItemValue[]>([]);
-  const [photos, setPhotos] = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
 
   useEffect(() => {
     dispatch(fetchSystems({}));
+    return () => {
+      dispatch(clearChecklistItems());
+    };
   }, [dispatch]);
 
   useEffect(() => {
@@ -44,6 +53,13 @@ const NewInspectionPage: React.FC = () => {
     }
   }, [checklistItems]);
 
+  // Cleanup preview URLs on unmount
+  useEffect(() => {
+    return () => {
+      photoPreviews.forEach(p => URL.revokeObjectURL(p.preview));
+    };
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({
       ...formData,
@@ -57,8 +73,36 @@ const NewInspectionPage: React.FC = () => {
     setItems(newItems);
   };
 
-  const handlePhotosChange = (files: File[]) => {
-    setPhotos(files);
+  const handlePhotosChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => {
+      const isValidType = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'].includes(file.type);
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+      return isValidType && isValidSize;
+    });
+
+    if (validFiles.length !== files.length) {
+      alert('Some files were skipped. Only images (JPEG, PNG, GIF, WEBP) under 10MB are allowed.');
+    }
+
+    const newPreviews = validFiles.map(file => ({
+      file,
+      preview: URL.createObjectURL(file)
+    }));
+
+    setPhotoPreviews(prev => [...prev, ...newPreviews]);
+
+    // Reset input to allow selecting same file again
+    e.target.value = '';
+  };
+
+  const handleRemovePhoto = (index: number) => {
+    setPhotoPreviews(prev => {
+      const newPreviews = [...prev];
+      URL.revokeObjectURL(newPreviews[index].preview);
+      newPreviews.splice(index, 1);
+      return newPreviews;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,6 +113,8 @@ const NewInspectionPage: React.FC = () => {
       return;
     }
 
+    const photos = photoPreviews.map(p => p.file);
+
     const result = await dispatch(createInspection({
       systemId: Number(formData.systemId),
       date: formData.date,
@@ -77,10 +123,13 @@ const NewInspectionPage: React.FC = () => {
         checklistItemId: item.checklistItemId,
         status: item.status,
         comment: item.comment || undefined
-      }))
+      })),
+      photos: photos.length > 0 ? photos : undefined
     }));
 
     if (createInspection.fulfilled.match(result)) {
+      // Cleanup previews before navigating
+      photoPreviews.forEach(p => URL.revokeObjectURL(p.preview));
       goToInspections();
     }
   };
@@ -165,27 +214,64 @@ const NewInspectionPage: React.FC = () => {
           </Card>
         )}
 
-        <Card title="Photos & Conclusion" className="mb-6">
-          <FileUpload
-            name="photos"
-            label="Attach Photos"
-            accept="image/*"
-            multiple
-            onChange={handlePhotosChange}
-          />
-
-          {photos.length > 0 && (
-            <div className="mt-2 text-sm text-gray-500">
-              {photos.length} photo(s) selected
+        <Card title="Photos" className="mb-6">
+          <div className="space-y-4">
+            {/* Photo Upload Area */}
+            <div
+              className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-blue-500 transition-colors"
+              onClick={() => document.getElementById('photo-input')?.click()}
+            >
+              <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <p className="mt-2 text-sm text-gray-600">Click to upload photos</p>
+              <p className="mt-1 text-xs text-gray-500">JPEG, PNG, GIF, WEBP up to 10MB each</p>
+              <input
+                id="photo-input"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                multiple
+                onChange={handlePhotosChange}
+                className="hidden"
+              />
             </div>
-          )}
 
+            {/* Photo Previews */}
+            {photoPreviews.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                {photoPreviews.map((photo, index) => (
+                  <div key={index} className="relative group">
+                    <img
+                      src={photo.preview}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-24 object-cover rounded-lg"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemovePhoto(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <CloseIcon style={{ fontSize: 16 }} />
+                    </button>
+                    <p className="text-xs text-gray-500 mt-1 truncate">{photo.file.name}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {photoPreviews.length > 0 && (
+              <p className="text-sm text-gray-600">{photoPreviews.length} photo(s) selected</p>
+            )}
+          </div>
+        </Card>
+
+        <Card title="Conclusion" className="mb-6">
           <TextArea
             name="conclusion"
             value={formData.conclusion}
             onChange={handleChange}
-            label="Conclusion"
-            placeholder="Enter inspection conclusion"
+            label="Inspection Conclusion"
+            placeholder="Enter inspection conclusion and observations"
             rows={4}
           />
         </Card>
