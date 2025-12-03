@@ -1,7 +1,7 @@
 import type { Product } from './product.types';
 import type { System } from './system.types';
 import type { Unit } from './unit.types';
-import type { User } from './user.types';
+import type { User } from './auth.types';
 
 // DosageMode ENUM - EXACT MATCH to backend ENUM('manual', 'automatic')
 export type DosageMode = 'manual' | 'automatic';
