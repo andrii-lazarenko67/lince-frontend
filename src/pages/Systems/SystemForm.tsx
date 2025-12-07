@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch } from '../../hooks';
 import { createSystem, updateSystem } from '../../store/slices/systemSlice';
 import { Input, Select, TextArea, Button, Modal } from '../../components/common';
 import type { System, CreateSystemRequest } from '../../types';
@@ -24,7 +24,6 @@ const systemTypes = [
 
 const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parentId }) => {
   const dispatch = useAppDispatch();
-  const { systems } = useAppSelector((state) => state.systems);
   const [formData, setFormData] = useState<CreateSystemRequest>({
     name: '',
     type: '',
@@ -34,29 +33,6 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Get available parent systems (exclude current system and its children if editing)
-  const getAvailableParentSystems = () => {
-    if (!system) {
-      // When creating new system, all systems can be parents
-      return systems.filter(s => s.status === 'active');
-    }
-
-    // When editing, exclude self and descendants
-    const getDescendants = (systemId: number): number[] => {
-      const descendants: number[] = [systemId];
-      systems.forEach(s => {
-        if (s.parentId === systemId) {
-          descendants.push(...getDescendants(s.id));
-        }
-      });
-      return descendants;
-    };
-
-    const excludedIds = getDescendants(system.id);
-    return systems.filter(s => !excludedIds.includes(s.id) && s.status === 'active');
-  };
-
-  const availableParentSystems = getAvailableParentSystems();
 
   useEffect(() => {
     if (system) {
@@ -159,33 +135,6 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
           </>
         )}
 
-        {!parentId && (
-          <div>
-            <Select
-              name="parentId"
-              value={formData.parentId?.toString() || ''}
-              onChange={(e) => {
-                const value = e.target.value;
-                setFormData({
-                  ...formData,
-                  parentId: value ? parseInt(value) : null
-                });
-              }}
-              options={[
-                { value: '', label: 'None (Root System)' },
-                ...availableParentSystems.map(s => ({
-                  value: s.id.toString(),
-                  label: `${s.name} (${s.type})`
-                }))
-              ]}
-              label="Parent System"
-              placeholder="Select parent system (optional)"
-            />
-            <p className="mt-1 text-sm text-gray-500">
-              Select a parent system to create a sub-system (e.g., tap under reservoir)
-            </p>
-          </div>
-        )}
 
         <Input
           name="location"

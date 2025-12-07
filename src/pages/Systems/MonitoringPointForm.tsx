@@ -98,6 +98,9 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     }
   };
 
+  // Check if range is defined (both min and max values set)
+  const hasRange = formData.minValue !== undefined && formData.maxValue !== undefined;
+
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
@@ -116,6 +119,9 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     e.preventDefault();
     if (!validate()) return;
 
+    // Auto-disable alerts if no range is set
+    const alertEnabled = hasRange ? formData.alertEnabled : false;
+
     if (monitoringPoint) {
       const result = await dispatch(updateMonitoringPoint({
         id: monitoringPoint.id,
@@ -125,14 +131,17 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
           unitId: formData.unitId,
           minValue: formData.minValue,
           maxValue: formData.maxValue,
-          alertEnabled: formData.alertEnabled
+          alertEnabled
         }
       }));
       if (updateMonitoringPoint.fulfilled.match(result)) {
         onClose();
       }
     } else {
-      const result = await dispatch(createMonitoringPoint(formData));
+      const result = await dispatch(createMonitoringPoint({
+        ...formData,
+        alertEnabled
+      }));
       if (createMonitoringPoint.fulfilled.match(result)) {
         onClose();
       }
@@ -196,8 +205,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
             name="minValue"
             value={formData.minValue ?? ''}
             onChange={handleChange}
-            label="Min Value"
-            placeholder="Enter minimum value"
+            label="Min Value (Optional)"
+            placeholder="Leave empty for N/A"
             step="0.01"
             error={errors.minValue}
           />
@@ -207,24 +216,35 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
             name="maxValue"
             value={formData.maxValue ?? ''}
             onChange={handleChange}
-            label="Max Value"
-            placeholder="Enter maximum value"
+            label="Max Value (Optional)"
+            placeholder="Leave empty for N/A"
             step="0.01"
             error={errors.maxValue}
           />
         </div>
+        <p className="text-sm text-gray-500">
+          Leave min/max empty for parameters without a valid range (e.g., Water Meter Reading).
+        </p>
 
         <div className="mt-4">
           <label className="flex items-center space-x-2">
             <input
               type="checkbox"
               name="alertEnabled"
-              checked={formData.alertEnabled}
+              checked={hasRange ? formData.alertEnabled : false}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              disabled={!hasRange}
+              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
             />
-            <span className="text-sm font-medium text-gray-700">Enable alerts when out of range</span>
+            <span className={`text-sm font-medium ${hasRange ? 'text-gray-700' : 'text-gray-400'}`}>
+              Enable alerts when out of range
+            </span>
           </label>
+          {!hasRange && (
+            <p className="text-sm text-gray-400 mt-1 ml-6">
+              Alerts require min and max values to be set.
+            </p>
+          )}
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">

@@ -90,10 +90,10 @@ const SystemDetailPage: React.FC = () => {
       key: 'range',
       header: 'Range',
       render: (point: MonitoringPoint) => (
-        <span>
+        <span className={point.minValue === null || point.maxValue === null ? 'text-gray-400' : ''}>
           {point.minValue !== null && point.maxValue !== null
             ? `${point.minValue} - ${point.maxValue}`
-            : '-'}
+            : 'N/A'}
         </span>
       )
     },
