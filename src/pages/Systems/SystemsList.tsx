@@ -9,11 +9,11 @@ const SystemsList: React.FC = () => {
   const { systems } = useAppSelector((state) => state.systems);
   const { goToSystemDetail } = useAppNavigation();
   const [expandedSystems, setExpandedSystems] = useState<Set<number>>(new Set());
-  const [isSubSystemFormOpen, setIsSubSystemFormOpen] = useState(false);
+  const [isStageFormOpen, setIsStageFormOpen] = useState(false);
   const [selectedParentId, setSelectedParentId] = useState<number | null>(null);
 
-  const handleCloseSubSystemForm = () => {
-    setIsSubSystemFormOpen(false);
+  const handleCloseStageForm = () => {
+    setIsStageFormOpen(false);
     setSelectedParentId(null);
   };
 
@@ -99,7 +99,7 @@ const SystemsList: React.FC = () => {
           <span className="font-medium text-gray-900">{item.name}</span>
           {item.hasChildren && (
             <span className="ml-2 text-xs text-gray-500">
-              ({item.children?.length} sub-system{(item.children?.length || 0) !== 1 ? 's' : ''})
+              ({item.children?.length} stage{(item.children?.length || 0) !== 1 ? 's' : ''})
             </span>
           )}
         </div>
@@ -146,11 +146,11 @@ const SystemsList: React.FC = () => {
             size="sm"
             onClick={() => {
               setSelectedParentId(item.id);
-              setIsSubSystemFormOpen(true);
+              setIsStageFormOpen(true);
             }}
           >
             <Add fontSize="small" className="mr-1" />
-            Sub-System
+            Stage
           </Button>
         </div>
       )
@@ -168,8 +168,8 @@ const SystemsList: React.FC = () => {
       />
 
       <SystemForm
-        isOpen={isSubSystemFormOpen}
-        onClose={handleCloseSubSystemForm}
+        isOpen={isStageFormOpen}
+        onClose={handleCloseStageForm}
         parentId={selectedParentId}
       />
     </>

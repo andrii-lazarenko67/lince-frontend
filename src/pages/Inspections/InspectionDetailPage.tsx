@@ -134,8 +134,30 @@ const InspectionDetailPage: React.FC = () => {
       key: 'status',
       header: 'Result',
       render: (item: InspectionItem) => {
-        const variant = item.status === 'pass' ? 'success' : item.status === 'fail' ? 'danger' : 'secondary';
-        const label = item.status === 'pass' ? 'Passed' : item.status === 'fail' ? 'Failed' : 'N/A';
+        let variant: 'success' | 'danger' | 'secondary' | 'warning' = 'secondary';
+        let label = '';
+
+        switch (item.status) {
+          case 'C':
+            variant = 'success';
+            label = 'C - Conforme';
+            break;
+          case 'NC':
+            variant = 'danger';
+            label = 'NC - No Conforme';
+            break;
+          case 'NA':
+            variant = 'secondary';
+            label = 'NA - No Aplica';
+            break;
+          case 'NV':
+            variant = 'warning';
+            label = 'NV - No Verificado';
+            break;
+          default:
+            label = item.status;
+        }
+
         return <Badge variant={variant}>{label}</Badge>;
       }
     },
@@ -154,7 +176,7 @@ const InspectionDetailPage: React.FC = () => {
     );
   }
 
-  const passedCount = currentInspection.items?.filter(i => i.status === 'pass').length || 0;
+  const conformeCount = currentInspection.items?.filter(i => i.status === 'C').length || 0;
   const totalCount = currentInspection.items?.length || 0;
   const canManage = user?.role === 'manager' || user?.role === 'admin';
 
@@ -204,7 +226,7 @@ const InspectionDetailPage: React.FC = () => {
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">Results</dt>
-              <dd className="mt-1 text-gray-900">{passedCount}/{totalCount} items passed</dd>
+              <dd className="mt-1 text-gray-900">{conformeCount}/{totalCount} items conforme</dd>
             </div>
             {currentInspection.conclusion && (
               <div>

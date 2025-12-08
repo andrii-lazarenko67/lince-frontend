@@ -37,7 +37,8 @@ const DailyLogDetailPage: React.FC = () => {
       header: 'Value',
       render: (entry: DailyLogEntry) => (
         <span className={entry.isOutOfRange ? 'text-red-600 font-medium' : ''}>
-          {entry.value} {entry.monitoringPoint?.unitObj?.abbreviation || ''}
+          {entry.value}
+          {entry.monitoringPoint?.unitObj ? ` ${entry.monitoringPoint.unitObj.abbreviation}` : ''}
         </span>
       )
     },
@@ -46,9 +47,10 @@ const DailyLogDetailPage: React.FC = () => {
       header: 'Expected Range',
       render: (entry: DailyLogEntry) => {
         const mp = entry.monitoringPoint;
-        return mp && mp.minValue !== null && mp.maxValue !== null
-          ? `${mp.minValue} - ${mp.maxValue}`
-          : '-';
+        if (mp && mp.minValue !== null && mp.maxValue !== null) {
+          return `${mp.minValue} - ${mp.maxValue}`;
+        }
+        return <span className="text-gray-400">N/A</span>;
       }
     },
     {
@@ -86,30 +88,74 @@ const DailyLogDetailPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Daily Log Details</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Daily Record Details</h1>
           <p className="text-gray-500 mt-1">
-            {new Date(currentDailyLog.date).toLocaleDateString()} - {currentDailyLog.system?.name}
+            {currentDailyLog.recordType === 'field' ? 'Field Record' : 'Laboratory Record'} - {new Date(currentDailyLog.date).toLocaleDateString()} - {currentDailyLog.system?.name}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Log Information" className="lg:col-span-1">
+        <Card title="Record Information" className="lg:col-span-1">
           <dl className="space-y-4">
+            <div>
+              <dt className="text-sm font-medium text-gray-500">Record Type</dt>
+              <dd className="mt-1">
+                <Badge variant={currentDailyLog.recordType === 'field' ? 'primary' : 'info'}>
+                  {currentDailyLog.recordType === 'field' ? 'Field Record' : 'Laboratory Record'}
+                </Badge>
+              </dd>
+            </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">System</dt>
               <dd className="mt-1 text-gray-900">{currentDailyLog.system?.name}</dd>
             </div>
+            {currentDailyLog.stage && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Stage</dt>
+                <dd className="mt-1 text-gray-900">{currentDailyLog.stage.name}</dd>
+              </div>
+            )}
             <div>
               <dt className="text-sm font-medium text-gray-500">Date</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentDailyLog.date).toLocaleDateString()}
               </dd>
             </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">Shift</dt>
-              <dd className="mt-1 text-gray-900 capitalize">{currentDailyLog.shift}</dd>
-            </div>
+            {currentDailyLog.period && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Period</dt>
+                <dd className="mt-1 text-gray-900">{currentDailyLog.period}</dd>
+              </div>
+            )}
+            {currentDailyLog.time && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">Time</dt>
+                <dd className="mt-1 text-gray-900">{currentDailyLog.time}</dd>
+              </div>
+            )}
+            {currentDailyLog.recordType === 'laboratory' && (
+              <>
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">Laboratory</dt>
+                  <dd className="mt-1 text-gray-900">{currentDailyLog.laboratory}</dd>
+                </div>
+                {currentDailyLog.collectionDate && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Collection Date</dt>
+                    <dd className="mt-1 text-gray-900">
+                      {new Date(currentDailyLog.collectionDate).toLocaleDateString()}
+                    </dd>
+                  </div>
+                )}
+                {currentDailyLog.collectionTime && (
+                  <div>
+                    <dt className="text-sm font-medium text-gray-500">Collection Time</dt>
+                    <dd className="mt-1 text-gray-900">{currentDailyLog.collectionTime}</dd>
+                  </div>
+                )}
+              </>
+            )}
             <div>
               <dt className="text-sm font-medium text-gray-500">Recorded By</dt>
               <dd className="mt-1 text-gray-900">{currentDailyLog.user?.name}</dd>

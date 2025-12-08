@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { fetchUnits } from '../../store/slices/unitSlice';
-import { Card, Button, Table, Badge, Modal, Input, Select, ExportDropdown, ViewModeToggle } from '../../components/common';
+import { Card, Button, Table, Badge, Modal, Input, Select, TextArea, ExportDropdown, ViewModeToggle } from '../../components/common';
 import ProductsChartView from './ProductsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Product, CreateProductRequest } from '../../types';
@@ -22,7 +22,8 @@ const ProductsPage: React.FC = () => {
     unit: '',
     supplier: '',
     currentStock: 0,
-    minStockAlert: 0
+    minStockAlert: 0,
+    description: ''
   });
 
   useEffect(() => {
@@ -39,7 +40,8 @@ const ProductsPage: React.FC = () => {
         unit: product.unit,
         supplier: product.supplier || '',
         currentStock: parseFloat(product.currentStock.toString()),
-        minStockAlert: product.minStockAlert ? parseFloat(product.minStockAlert.toString()) : 0
+        minStockAlert: product.minStockAlert ? parseFloat(product.minStockAlert.toString()) : 0,
+        description: product.description || ''
       });
     } else {
       setEditingProduct(null);
@@ -49,7 +51,8 @@ const ProductsPage: React.FC = () => {
         unit: '',
         supplier: '',
         currentStock: 0,
-        minStockAlert: 0
+        minStockAlert: 0,
+        description: ''
       });
     }
     setIsFormOpen(true);
@@ -259,7 +262,7 @@ const ProductsPage: React.FC = () => {
             value={formData.type || ''}
             onChange={handleChange}
             options={typeOptions}
-            label="Type"
+            label="Type (Optional)"
             placeholder="Select type"
           />
 
@@ -301,8 +304,17 @@ const ProductsPage: React.FC = () => {
             name="supplier"
             value={formData.supplier || ''}
             onChange={handleChange}
-            label="Supplier"
+            label="Supplier (Optional)"
             placeholder="Enter supplier name"
+          />
+
+          <TextArea
+            name="description"
+            value={formData.description || ''}
+            onChange={handleChange}
+            label="Description (Optional)"
+            placeholder="Enter product description"
+            rows={3}
           />
 
           <div className="flex justify-end space-x-3 mt-6">

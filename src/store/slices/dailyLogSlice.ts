@@ -12,7 +12,14 @@ const initialState: DailyLogState = {
 
 export const fetchDailyLogs = createAsyncThunk(
   'dailyLogs/fetchAll',
-  async (params: { systemId?: number; userId?: number; startDate?: string; endDate?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: {
+    systemId?: number;
+    stageId?: number;
+    userId?: number;
+    recordType?: 'field' | 'laboratory';
+    startDate?: string;
+    endDate?: string;
+  } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: DailyLog[] }>('/daily-logs', { params });
@@ -28,10 +35,24 @@ export const fetchDailyLogs = createAsyncThunk(
 
 export const fetchDailyLogsBySystem = createAsyncThunk(
   'dailyLogs/fetchBySystem',
-  async ({ systemId, startDate, endDate }: { systemId: number; startDate?: string; endDate?: string }, { dispatch, rejectWithValue }) => {
+  async ({
+    systemId,
+    stageId,
+    recordType,
+    startDate,
+    endDate
+  }: {
+    systemId: number;
+    stageId?: number;
+    recordType?: 'field' | 'laboratory';
+    startDate?: string;
+    endDate?: string;
+  }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: DailyLog[] }>(`/daily-logs/system/${systemId}`, { params: { startDate, endDate } });
+      const response = await axiosInstance.get<{ success: boolean; data: DailyLog[] }>(`/daily-logs/system/${systemId}`, {
+        params: { stageId, recordType, startDate, endDate }
+      });
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };

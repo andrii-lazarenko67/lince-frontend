@@ -9,6 +9,15 @@ const DailyLogsList: React.FC = () => {
 
   const columns = [
     {
+      key: 'recordType',
+      header: 'Type',
+      render: (log: DailyLog) => (
+        <Badge variant={log.recordType === 'field' ? 'primary' : 'info'}>
+          {log.recordType === 'field' ? 'Field' : 'Lab'}
+        </Badge>
+      )
+    },
+    {
       key: 'date',
       header: 'Date',
       render: (log: DailyLog) => (
@@ -20,7 +29,24 @@ const DailyLogsList: React.FC = () => {
     {
       key: 'system',
       header: 'System',
-      render: (log: DailyLog) => log.system?.name || '-'
+      render: (log: DailyLog) => (
+        <div>
+          <div>{log.system?.name || '-'}</div>
+          {log.stage && (
+            <div className="text-xs text-gray-500">Stage: {log.stage.name}</div>
+          )}
+        </div>
+      )
+    },
+    {
+      key: 'period',
+      header: 'Period',
+      render: (log: DailyLog) => log.period || '-'
+    },
+    {
+      key: 'laboratory',
+      header: 'Laboratory',
+      render: (log: DailyLog) => log.recordType === 'laboratory' ? (log.laboratory || '-') : '-'
     },
     {
       key: 'user',
@@ -34,18 +60,13 @@ const DailyLogsList: React.FC = () => {
         const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
         return (
           <div className="flex items-center space-x-2">
-            <span>{log.entries?.length || 0} entries</span>
+            <span>{log.entries?.length || 0}</span>
             {outOfRange > 0 && (
-              <Badge variant="danger">{outOfRange} out of range</Badge>
+              <Badge variant="danger">{outOfRange} alert</Badge>
             )}
           </div>
         );
       }
-    },
-    {
-      key: 'createdAt',
-      header: 'Created',
-      render: (log: DailyLog) => new Date(log.createdAt).toLocaleString()
     }
   ];
 

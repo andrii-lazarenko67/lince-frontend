@@ -7,7 +7,7 @@ import { Close as CloseIcon } from '@mui/icons-material';
 
 interface ItemValue {
   checklistItemId: number;
-  status: 'pass' | 'fail' | 'na';
+  status: 'C' | 'NC' | 'NA' | 'NV';
   comment: string;
 }
 
@@ -48,7 +48,7 @@ const NewInspectionPage: React.FC = () => {
     if (checklistItems.length > 0) {
       setItems(checklistItems.map(ci => ({
         checklistItemId: ci.id,
-        status: 'na' as const,
+        status: 'NV' as const,
         comment: ''
       })));
     }
@@ -138,9 +138,10 @@ const NewInspectionPage: React.FC = () => {
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
-    { value: 'pass', label: 'Pass' },
-    { value: 'fail', label: 'Fail' },
-    { value: 'na', label: 'N/A' }
+    { value: 'C', label: 'C - Conforme' },
+    { value: 'NC', label: 'NC - No Conforme' },
+    { value: 'NA', label: 'NA - No Aplica' },
+    { value: 'NV', label: 'NV - No Verificado' }
   ];
 
   return (
@@ -193,10 +194,10 @@ const NewInspectionPage: React.FC = () => {
                         <p className="text-sm text-gray-500">{ci.description}</p>
                       )}
                     </div>
-                    <div className="w-32 ml-4">
+                    <div className="w-48 ml-4">
                       <Select
                         name={`status-${ci.id}`}
-                        value={items[index]?.status || 'na'}
+                        value={items[index]?.status || 'NV'}
                         onChange={(e) => handleItemChange(index, 'status', e.target.value)}
                         options={statusOptions}
                       />

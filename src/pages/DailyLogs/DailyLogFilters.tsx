@@ -5,10 +5,12 @@ import { Select, DateInput, Button } from '../../components/common';
 interface DailyLogFiltersProps {
   filters: {
     systemId: string;
+    stageId: string;
+    recordType: string;
     startDate: string;
     endDate: string;
   };
-  onChange: (filters: { systemId: string; startDate: string; endDate: string }) => void;
+  onChange: (filters: { systemId: string; stageId: string; recordType: string; startDate: string; endDate: string }) => void;
   onApply: () => void;
   onClear: () => void;
 }
@@ -21,24 +23,65 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
 }) => {
   const { systems } = useAppSelector((state) => state.systems);
 
-  const systemOptions = systems.map(system => ({
+  // Get main systems (no parent)
+  const mainSystems = systems.filter(s => !s.parentId);
+  const systemOptions = mainSystems.map(system => ({
     value: system.id,
     label: system.name
   }));
 
+  // Get stages (child systems) for selected system
+  const stageOptions = filters.systemId
+    ? systems
+        .filter(s => s.parentId === Number(filters.systemId))
+        .map(stage => ({
+          value: stage.id,
+          label: stage.name
+        }))
+    : [];
+
+  const recordTypeOptions = [
+    { value: 'field', label: 'Field Records' },
+    { value: 'laboratory', label: 'Laboratory Records' }
+  ];
+
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-6">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div>
+          <Select
+            name="recordType"
+            value={filters.recordType}
+            onChange={(e) => onChange({ ...filters, recordType: e.target.value, stageId: '' })}
+            options={recordTypeOptions}
+            label="Record Type"
+            placeholder="All Types"
+          />
+        </div>
+
         <div>
           <Select
             name="systemId"
             value={filters.systemId}
-            onChange={(e) => onChange({ ...filters, systemId: e.target.value })}
+            onChange={(e) => onChange({ ...filters, systemId: e.target.value, stageId: '' })}
             options={systemOptions}
             label="System"
             placeholder="All Systems"
           />
         </div>
+
+        {stageOptions.length > 0 && (
+          <div>
+            <Select
+              name="stageId"
+              value={filters.stageId}
+              onChange={(e) => onChange({ ...filters, stageId: e.target.value })}
+              options={stageOptions}
+              label="Stage"
+              placeholder="All Stages"
+            />
+          </div>
+        )}
 
         <div>
           <DateInput
@@ -58,11 +101,11 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
           />
         </div>
 
-        <div className="flex space-x-4 items-start justify-end">
-          <Button variant="primary" onClick={onApply}>
+        <div className="flex space-x-2 items-end">
+          <Button variant="primary" onClick={onApply} className="flex-1">
             Apply
           </Button>
-          <Button variant="outline" onClick={onClear}>
+          <Button variant="outline" onClick={onClear} className="flex-1">
             Clear
           </Button>
         </div>

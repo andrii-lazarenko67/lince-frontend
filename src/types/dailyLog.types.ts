@@ -14,17 +14,27 @@ export interface DailyLogEntry {
   updatedAt: string;
 }
 
-export type ShiftType = 'morning' | 'afternoon' | 'night';
+export type RecordType = 'field' | 'laboratory';
+export type TimeMode = 'auto' | 'manual';
 
 export interface DailyLog {
   id: number;
   userId: number;
   systemId: number;
+  stageId: number | null;
+  recordType: RecordType;
   date: string;
-  shift: ShiftType;
+  period: string | null;
+  time: string | null;
+  timeMode: TimeMode | null;
+  laboratory: string | null;
+  collectionDate: string | null;
+  collectionTime: string | null;
+  collectionTimeMode: TimeMode | null;
   notes: string | null;
   user?: User;
   system?: System;
+  stage?: System;
   entries?: DailyLogEntry[];
   createdAt: string;
   updatedAt: string;
@@ -32,8 +42,16 @@ export interface DailyLog {
 
 export interface CreateDailyLogRequest {
   systemId: number;
+  stageId?: number | null;
+  recordType: RecordType;
   date: string;
-  shift: ShiftType;
+  period?: string;
+  time?: string;
+  timeMode?: TimeMode;
+  laboratory?: string;
+  collectionDate?: string;
+  collectionTime?: string;
+  collectionTimeMode?: TimeMode;
   notes?: string;
   entries: {
     monitoringPointId: number;

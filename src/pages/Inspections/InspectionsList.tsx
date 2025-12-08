@@ -50,11 +50,15 @@ const InspectionsList: React.FC = () => {
       header: 'Items',
       render: (inspection: Inspection) => {
         const total = inspection.items?.length || 0;
-        const passed = inspection.items?.filter(i => i.status === 'pass').length || 0;
+        const conforme = inspection.items?.filter(i => i.status === 'C').length || 0;
+        const noConforme = inspection.items?.filter(i => i.status === 'NC').length || 0;
         return (
-          <span>
-            {passed}/{total} passed
-          </span>
+          <div className="flex items-center space-x-2">
+            <span>{conforme}/{total} conforme</span>
+            {noConforme > 0 && (
+              <Badge variant="danger">{noConforme} NC</Badge>
+            )}
+          </div>
         );
       }
     },

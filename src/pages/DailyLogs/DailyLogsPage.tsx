@@ -16,6 +16,8 @@ const DailyLogsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
     systemId: '',
+    stageId: '',
+    recordType: '',
     startDate: '',
     endDate: ''
   });
@@ -28,21 +30,27 @@ const DailyLogsPage: React.FC = () => {
   const handleApplyFilters = () => {
     dispatch(fetchDailyLogs({
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
+      stageId: filters.stageId ? Number(filters.stageId) : undefined,
+      recordType: filters.recordType ? (filters.recordType as 'field' | 'laboratory') : undefined,
       startDate: filters.startDate || undefined,
       endDate: filters.endDate || undefined
     }));
   };
 
   const handleClearFilters = () => {
-    setFilters({ systemId: '', startDate: '', endDate: '' });
+    setFilters({ systemId: '', stageId: '', recordType: '', startDate: '', endDate: '' });
     dispatch(fetchDailyLogs({}));
   };
 
   const getExportData = () => {
-    const headers = ['Date', 'System', 'User', 'Entries', 'Notes'];
+    const headers = ['Type', 'Date', 'System', 'Stage', 'Period', 'Laboratory', 'User', 'Entries', 'Notes'];
     const rows = dailyLogs.map(log => [
-      log.date,
+      log.recordType === 'field' ? 'Field' : 'Laboratory',
+      new Date(log.date).toLocaleDateString(),
       log.system?.name || '-',
+      log.stage?.name || '-',
+      log.period || '-',
+      log.recordType === 'laboratory' ? (log.laboratory || '-') : '-',
       log.user?.name || '-',
       log.entries?.length || 0,
       log.notes || '-'

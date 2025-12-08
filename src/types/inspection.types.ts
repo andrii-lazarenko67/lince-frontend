@@ -3,7 +3,7 @@ import type { System, ChecklistItem } from './system.types';
 
 export type { ChecklistItem } from './system.types';
 
-export type InspectionItemStatus = 'pass' | 'fail' | 'na';
+export type InspectionItemStatus = 'C' | 'NC' | 'NA' | 'NV';
 export type InspectionStatus = 'pending' | 'completed' | 'approved';
 
 export interface InspectionItem {
