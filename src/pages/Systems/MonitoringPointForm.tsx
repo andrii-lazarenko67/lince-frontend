@@ -27,7 +27,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     systemId: systemId,
     name: '',
     parameterId: 0,
-    unitId: 0,
+    unitId: null,
     minValue: undefined,
     maxValue: undefined,
     alertEnabled: true
@@ -58,7 +58,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
         systemId: systemId,
         name: '',
         parameterId: 0,
-        unitId: 0,
+        unitId: null,
         minValue: undefined,
         maxValue: undefined,
         alertEnabled: true
@@ -84,7 +84,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     } else if (name === 'parameterId' || name === 'unitId') {
       setFormData({
         ...formData,
-        [name]: parseInt(value)
+        [name]: value === '' ? null : parseInt(value)
       });
     } else {
       setFormData({
@@ -105,7 +105,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.parameterId || formData.parameterId === 0) newErrors.parameterId = 'Parameter is required';
-    if (!formData.unitId || formData.unitId === 0) newErrors.unitId = 'Unit is required';
+    // Unit is now optional - no validation required
     if (formData.minValue !== undefined && formData.maxValue !== undefined) {
       if (formData.minValue >= formData.maxValue) {
         newErrors.minValue = 'Min value must be less than max value';
@@ -190,13 +190,15 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
 
         <Select
           name="unitId"
-          value={formData.unitId.toString()}
+          value={formData.unitId?.toString() || ''}
           onChange={handleChange}
-          options={unitOptions}
-          label="Unit"
-          placeholder="Select unit"
+          options={[
+            { value: '', label: 'None (N/A)' },
+            ...unitOptions
+          ]}
+          label="Unit (Optional)"
+          placeholder="Select unit or leave as N/A"
           error={errors.unitId}
-          required
         />
 
         <div className="grid grid-cols-2 gap-4">

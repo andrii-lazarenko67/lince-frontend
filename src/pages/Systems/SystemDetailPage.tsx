@@ -84,7 +84,11 @@ const SystemDetailPage: React.FC = () => {
     {
       key: 'unit',
       header: 'Unit',
-      render: (point: MonitoringPoint) => point.unitObj?.abbreviation || '-'
+      render: (point: MonitoringPoint) => (
+        <span className={!point.unitObj ? 'text-gray-400' : ''}>
+          {point.unitObj?.abbreviation || 'N/A'}
+        </span>
+      )
     },
     {
       key: 'range',

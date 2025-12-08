@@ -7,7 +7,7 @@ export interface MonitoringPoint {
   systemId: number;
   name: string;
   parameterId: number; // Foreign key to Parameters - REQUIRED
-  unitId: number; // Foreign key to Units - REQUIRED
+  unitId: number | null; // Foreign key to Units - OPTIONAL
   parameterObj?: Parameter; // Associated Parameter object
   unitObj?: Unit; // Associated Unit object
   minValue: number | null;
@@ -21,7 +21,7 @@ export interface CreateMonitoringPointRequest {
   systemId: number;
   name: string;
   parameterId: number; // REQUIRED
-  unitId: number; // REQUIRED
+  unitId?: number | null; // OPTIONAL
   minValue?: number;
   maxValue?: number;
   alertEnabled?: boolean;
@@ -30,7 +30,7 @@ export interface CreateMonitoringPointRequest {
 export interface UpdateMonitoringPointRequest {
   name?: string;
   parameterId?: number;
-  unitId?: number;
+  unitId?: number | null;
   minValue?: number;
   maxValue?: number;
   alertEnabled?: boolean;
