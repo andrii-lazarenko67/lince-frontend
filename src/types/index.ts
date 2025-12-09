@@ -2,6 +2,7 @@ export type * from './api.types';
 export type * from './auth.types';
 export type * from './system.types';
 export type * from './monitoringPoint.types';
+export type { CreateChecklistItemRequest, UpdateChecklistItemRequest, ChecklistItemState } from './checklistItem.types';
 export type * from './dailyLog.types';
 export type * from './inspection.types';
 export type * from './incident.types';

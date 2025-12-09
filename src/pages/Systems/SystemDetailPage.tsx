@@ -3,17 +3,20 @@ import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchSystemById, deleteSystem } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints, deleteMonitoringPoint as deleteMonitoringPointAction } from '../../store/slices/monitoringPointSlice';
+import { fetchChecklistItemsBySystem, deleteChecklistItem as deleteChecklistItemAction } from '../../store/slices/checklistItemSlice';
 import { Card, Button, Badge, Table, Modal } from '../../components/common';
 import SystemForm from "./SystemForm";
 import MonitoringPointForm from './MonitoringPointForm';
+import ChecklistItemForm from './ChecklistItemForm';
 import PhotoGallery from '../../components/PhotoGallery';
-import type { MonitoringPoint } from '../../types';
+import type { MonitoringPoint, ChecklistItem } from '../../types';
 
 const SystemDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentSystem } = useAppSelector((state) => state.systems);
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
+  const { checklistItems } = useAppSelector((state) => state.checklistItems);
   const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToSystems, goToSystemDetail } = useAppNavigation();
 
@@ -23,11 +26,16 @@ const SystemDetailPage: React.FC = () => {
   const [editingMonitoringPoint, setEditingMonitoringPoint] = useState<MonitoringPoint | null>(null);
   const [deletingMonitoringPoint, setDeletingMonitoringPoint] = useState<MonitoringPoint | null>(null);
   const [isDeleteMonitoringPointOpen, setIsDeleteMonitoringPointOpen] = useState(false);
+  const [isChecklistItemFormOpen, setIsChecklistItemFormOpen] = useState(false);
+  const [editingChecklistItem, setEditingChecklistItem] = useState<ChecklistItem | null>(null);
+  const [deletingChecklistItem, setDeletingChecklistItem] = useState<ChecklistItem | null>(null);
+  const [isDeleteChecklistItemOpen, setIsDeleteChecklistItemOpen] = useState(false);
 
   useEffect(() => {
     if (id) {
       dispatch(fetchSystemById(Number(id)));
       dispatch(fetchMonitoringPoints({ systemId: Number(id) }));
+      dispatch(fetchChecklistItemsBySystem(Number(id)));
     }
   }, [dispatch, id]);
 
@@ -65,6 +73,35 @@ const SystemDetailPage: React.FC = () => {
       if (deleteMonitoringPointAction.fulfilled.match(result)) {
         setIsDeleteMonitoringPointOpen(false);
         setDeletingMonitoringPoint(null);
+      }
+    }
+  };
+
+  const handleOpenChecklistItemForm = (item?: ChecklistItem) => {
+    if (item) {
+      setEditingChecklistItem(item);
+    } else {
+      setEditingChecklistItem(null);
+    }
+    setIsChecklistItemFormOpen(true);
+  };
+
+  const handleCloseChecklistItemForm = () => {
+    setIsChecklistItemFormOpen(false);
+    setEditingChecklistItem(null);
+  };
+
+  const handleOpenDeleteChecklistItem = (item: ChecklistItem) => {
+    setDeletingChecklistItem(item);
+    setIsDeleteChecklistItemOpen(true);
+  };
+
+  const handleDeleteChecklistItem = async () => {
+    if (deletingChecklistItem) {
+      const result = await dispatch(deleteChecklistItemAction(deletingChecklistItem.id));
+      if (deleteChecklistItemAction.fulfilled.match(result)) {
+        setIsDeleteChecklistItemOpen(false);
+        setDeletingChecklistItem(null);
       }
     }
   };
@@ -120,6 +157,51 @@ const SystemDetailPage: React.FC = () => {
             Edit
           </Button>
           <Button size="sm" variant="danger" onClick={() => handleOpenDeleteMonitoringPoint(point)}>
+            Delete
+          </Button>
+        </div>
+      )
+    }
+  ];
+
+  const checklistItemColumns = [
+    {
+      key: 'name',
+      header: 'Name',
+      render: (item: ChecklistItem) => (
+        <span className="font-medium text-gray-900">{item.name}</span>
+      )
+    },
+    {
+      key: 'description',
+      header: 'Description',
+      render: (item: ChecklistItem) => (
+        <span className="text-gray-600">{item.description || '-'}</span>
+      )
+    },
+    {
+      key: 'isRequired',
+      header: 'Required',
+      render: (item: ChecklistItem) => (
+        <Badge variant={item.isRequired ? 'warning' : 'secondary'}>
+          {item.isRequired ? 'Required' : 'Optional'}
+        </Badge>
+      )
+    },
+    {
+      key: 'order',
+      header: 'Order',
+      render: (item: ChecklistItem) => item.order
+    },
+    {
+      key: 'actions',
+      header: 'Actions',
+      render: (item: ChecklistItem) => (
+        <div className="flex space-x-2">
+          <Button size="sm" variant="outline" onClick={() => handleOpenChecklistItemForm(item)}>
+            Edit
+          </Button>
+          <Button size="sm" variant="danger" onClick={() => handleOpenDeleteChecklistItem(item)}>
             Delete
           </Button>
         </div>
@@ -219,26 +301,42 @@ const SystemDetailPage: React.FC = () => {
           </dl>
         </Card>
 
-        <Card
-          title="Monitoring Points"
-          className="lg:col-span-2"
-          noPadding
-          headerActions={
-            <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
-              Add Point
-            </Button>
-          }
-        >
-          <Table
-            columns={monitoringPointColumns}
-            data={monitoringPoints}
-            keyExtractor={(point) => point.id}
-            emptyMessage="No monitoring points configured for this system."
-          />
-        </Card>
+        <PhotoGallery systemId={currentSystem.id} systemName={currentSystem.name} className="lg:col-span-2" />
       </div>
 
-      <PhotoGallery systemId={currentSystem.id} systemName={currentSystem.name} />
+      <Card
+        title="Monitoring Points"
+        noPadding
+        headerActions={
+          <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
+            Add Point
+          </Button>
+        }
+      >
+        <Table
+          columns={monitoringPointColumns}
+          data={monitoringPoints}
+          keyExtractor={(point) => point.id}
+          emptyMessage="No monitoring points configured for this system."
+        />
+      </Card>
+
+      <Card
+        title="Checklist Items"
+        noPadding
+        headerActions={
+          <Button variant="primary" size="sm" onClick={() => handleOpenChecklistItemForm()}>
+            Add Item
+          </Button>
+        }
+      >
+        <Table
+          columns={checklistItemColumns}
+          data={checklistItems}
+          keyExtractor={(item) => item.id}
+          emptyMessage="No checklist items configured for this system."
+        />
+      </Card>
 
       <SystemForm
         isOpen={isEditOpen}
@@ -281,6 +379,32 @@ const SystemDetailPage: React.FC = () => {
             Cancel
           </Button>
           <Button variant="danger" onClick={handleDeleteMonitoringPoint} disabled={loading}>
+            {loading ? 'Deleting...' : 'Delete'}
+          </Button>
+        </div>
+      </Modal>
+
+      <ChecklistItemForm
+        isOpen={isChecklistItemFormOpen}
+        onClose={handleCloseChecklistItemForm}
+        systemId={Number(id)}
+        checklistItem={editingChecklistItem}
+      />
+
+      <Modal
+        isOpen={isDeleteChecklistItemOpen}
+        onClose={() => setIsDeleteChecklistItemOpen(false)}
+        title="Delete Checklist Item"
+        size="sm"
+      >
+        <p className="text-gray-600 mb-6">
+          Are you sure you want to delete <strong>{deletingChecklistItem?.name}</strong>? This action cannot be undone.
+        </p>
+        <div className="flex justify-end space-x-3">
+          <Button variant="outline" onClick={() => setIsDeleteChecklistItemOpen(false)} disabled={loading}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleDeleteChecklistItem} disabled={loading}>
             {loading ? 'Deleting...' : 'Delete'}
           </Button>
         </div>

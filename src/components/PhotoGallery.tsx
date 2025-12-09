@@ -13,9 +13,10 @@ import type { SystemPhoto } from '../types/systemPhoto.types';
 interface PhotoGalleryProps {
   systemId: number;
   systemName: string;
+  className?: string;
 }
 
-const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName }) => {
+const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, className }) => {
   const dispatch = useAppDispatch();
   const { photos, error } = useAppSelector((state) => state.systemPhotos);
   const { loading } = useAppSelector((state) => state.ui);
@@ -118,7 +119,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName }) => 
   };
 
   return (
-    <div className="space-y-4">
+    <div className={`space-y-4 ${className || ''}`}>
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
           {error}
@@ -138,11 +139,11 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName }) => 
         ) : photos.length === 0 ? (
           <div className="text-center py-8 text-gray-500">No photos uploaded yet.</div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-2 max-h-72 overflow-y-auto p-1">
             {photos.map((photo) => (
               <div
                 key={photo.id}
-                className="relative group bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+                className="relative group bg-white border rounded overflow-hidden shadow-sm hover:shadow-md transition-shadow"
               >
                 <div
                   className="aspect-square cursor-pointer overflow-hidden bg-gray-100"
@@ -154,35 +155,27 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName }) => 
                     className="w-full h-full object-cover transition-transform group-hover:scale-105"
                   />
                 </div>
-                <div className="p-3">
-                  <p className="text-sm font-medium text-gray-900 truncate" title={photo.originalName}>
+                <div className="p-1.5">
+                  <p className="text-xs font-medium text-gray-900 truncate" title={photo.originalName}>
                     {photo.originalName}
                   </p>
-                  {photo.description && (
-                    <p className="text-xs text-gray-600 mt-1 line-clamp-2" title={photo.description}>
-                      {photo.description}
-                    </p>
-                  )}
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-gray-500">{formatFileSize(photo.fileSize)}</span>
-                    <div className="flex space-x-2">
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-[10px] text-gray-500">{formatFileSize(photo.fileSize)}</span>
+                    <div className="flex space-x-1">
                       <button
                         onClick={() => handleOpenEdit(photo)}
-                        className="text-blue-600 hover:text-blue-800 text-xs"
+                        className="text-blue-600 hover:text-blue-800 text-[10px]"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleOpenDelete(photo)}
-                        className="text-red-600 hover:text-red-800 text-xs"
+                        className="text-red-600 hover:text-red-800 text-[10px]"
                       >
                         Delete
                       </button>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {new Date(photo.createdAt).toLocaleDateString()}
-                  </p>
                 </div>
               </div>
             ))}
