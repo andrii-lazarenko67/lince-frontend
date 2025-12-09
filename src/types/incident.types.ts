@@ -28,6 +28,7 @@ export interface Incident {
   id: number;
   userId: number;
   systemId: number;
+  stageId: number | null;
   title: string;
   description: string;
   priority: IncidentPriority;
@@ -38,6 +39,7 @@ export interface Incident {
   reporter?: User;
   assignee?: User;
   system?: System;
+  stage?: System;
   photos?: IncidentPhoto[];
   comments?: IncidentComment[];
   createdAt: string;
@@ -46,6 +48,7 @@ export interface Incident {
 
 export interface CreateIncidentRequest {
   systemId: number;
+  stageId?: number | null;
   title: string;
   description: string;
   priority?: IncidentPriority;

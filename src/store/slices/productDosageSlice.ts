@@ -6,6 +6,7 @@ import type {
   UpdateProductDosageRequest,
   ProductDosageState
 } from '../../types/productDosage.types';
+import { setLoading } from './uiSlice';
 
 // Initial state with proper TypeScript types - EXACT MATCH
 const initialState: ProductDosageState = {
@@ -14,7 +15,7 @@ const initialState: ProductDosageState = {
   error: null
 };
 
-// Async thunks - following RULE: all backend calls via Redux middleware
+// Async thunks - following RULE: all backend calls via Redux middleware with global loading state
 
 // Fetch all dosages with optional filters
 export const fetchProductDosages = createAsyncThunk<
@@ -22,8 +23,9 @@ export const fetchProductDosages = createAsyncThunk<
   { productId?: number; systemId?: number; startDate?: string; endDate?: string } | undefined
 >(
   'productDosages/fetchAll',
-  async (filters = {}, { rejectWithValue }) => {
+  async (filters = {}, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const params = new URLSearchParams();
       if (filters.productId) params.append('productId', filters.productId.toString());
       if (filters.systemId) params.append('systemId', filters.systemId.toString());
@@ -32,8 +34,11 @@ export const fetchProductDosages = createAsyncThunk<
 
       const response = await axiosInstance.get(`/product-dosages?${params}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch product dosages');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product dosages');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -41,12 +46,16 @@ export const fetchProductDosages = createAsyncThunk<
 // Fetch dosages by product ID
 export const fetchDosagesByProduct = createAsyncThunk<ProductDosage[], number>(
   'productDosages/fetchByProduct',
-  async (productId, { rejectWithValue }) => {
+  async (productId, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.get(`/product-dosages/product/${productId}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch product dosages');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product dosages');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -54,12 +63,16 @@ export const fetchDosagesByProduct = createAsyncThunk<ProductDosage[], number>(
 // Create product dosage
 export const createProductDosage = createAsyncThunk<ProductDosage, CreateProductDosageRequest>(
   'productDosages/create',
-  async (dosageData, { rejectWithValue }) => {
+  async (dosageData, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.post('/product-dosages', dosageData);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create product dosage');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to create product dosage');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -70,12 +83,16 @@ export const updateProductDosage = createAsyncThunk<
   { id: number; data: UpdateProductDosageRequest }
 >(
   'productDosages/update',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.put(`/product-dosages/${id}`, data);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update product dosage');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to update product dosage');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -83,12 +100,16 @@ export const updateProductDosage = createAsyncThunk<
 // Delete product dosage
 export const deleteProductDosage = createAsyncThunk<number, number>(
   'productDosages/delete',
-  async (id, { rejectWithValue }) => {
+  async (id, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       await axiosInstance.delete(`/product-dosages/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete product dosage');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to delete product dosage');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -108,79 +129,54 @@ const productDosageSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch all dosages
     builder
-      .addCase(fetchProductDosages.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchProductDosages.fulfilled, (state, action) => {
+        state.dosages = action.payload;
         state.error = null;
       })
-      .addCase(fetchProductDosages.fulfilled, (state, action) => {
-        state.loading = false;
-        state.dosages = action.payload;
-      })
       .addCase(fetchProductDosages.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Fetch dosages by product
     builder
-      .addCase(fetchDosagesByProduct.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchDosagesByProduct.fulfilled, (state, action) => {
+        state.dosages = action.payload;
         state.error = null;
       })
-      .addCase(fetchDosagesByProduct.fulfilled, (state, action) => {
-        state.loading = false;
-        state.dosages = action.payload;
-      })
       .addCase(fetchDosagesByProduct.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Create dosage
     builder
-      .addCase(createProductDosage.pending, (state) => {
-        state.loading = true;
+      .addCase(createProductDosage.fulfilled, (state, action) => {
+        state.dosages.unshift(action.payload); // Add to beginning (most recent)
         state.error = null;
       })
-      .addCase(createProductDosage.fulfilled, (state, action) => {
-        state.loading = false;
-        state.dosages.unshift(action.payload); // Add to beginning (most recent)
-      })
       .addCase(createProductDosage.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Update dosage
     builder
-      .addCase(updateProductDosage.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(updateProductDosage.fulfilled, (state, action) => {
-        state.loading = false;
         const index = state.dosages.findIndex(d => d.id === action.payload.id);
         if (index !== -1) {
           state.dosages[index] = action.payload;
         }
+        state.error = null;
       })
       .addCase(updateProductDosage.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Delete dosage
     builder
-      .addCase(deleteProductDosage.pending, (state) => {
-        state.loading = true;
+      .addCase(deleteProductDosage.fulfilled, (state, action) => {
+        state.dosages = state.dosages.filter(d => d.id !== action.payload);
         state.error = null;
       })
-      .addCase(deleteProductDosage.fulfilled, (state, action) => {
-        state.loading = false;
-        state.dosages = state.dosages.filter(d => d.id !== action.payload);
-      })
       .addCase(deleteProductDosage.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createSystem, updateSystem } from '../../store/slices/systemSlice';
 import { Input, Select, TextArea, Button, Modal } from '../../components/common';
 import type { System, CreateSystemRequest } from '../../types';
@@ -24,6 +24,7 @@ const systemTypes = [
 
 const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parentId }) => {
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.ui);
   const [formData, setFormData] = useState<CreateSystemRequest>({
     name: '',
     type: '',
@@ -154,11 +155,11 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
         />
 
         <div className="flex justify-end space-x-3 mt-6">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            {system ? 'Update' : 'Create'} System
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? (system ? 'Updating...' : 'Creating...') : (system ? 'Update' : 'Create')} {!loading && 'System'}
           </Button>
         </div>
       </form>

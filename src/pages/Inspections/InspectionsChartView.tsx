@@ -15,15 +15,17 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   const completedCount = inspections.filter(i => i.status === 'completed').length;
   const approvedCount = inspections.filter(i => i.status === 'approved').length;
 
-  // Count all inspection items
-  let totalPass = 0;
-  let totalFail = 0;
-  let totalNA = 0;
+  // Count all inspection items by actual status values (C, NC, NA, NV)
+  let totalC = 0;   // Conforme (Compliant)
+  let totalNC = 0;  // No Conforme (Non-Compliant)
+  let totalNA = 0;  // No Aplica (Not Applicable)
+  let totalNV = 0;  // No Verificado (Not Verified)
   inspections.forEach(i => {
     i.items?.forEach(item => {
-      if (item.status === 'pass') totalPass++;
-      else if (item.status === 'fail') totalFail++;
-      else totalNA++;
+      if (item.status === 'C') totalC++;
+      else if (item.status === 'NC') totalNC++;
+      else if (item.status === 'NA') totalNA++;
+      else if (item.status === 'NV') totalNV++;
     });
   });
 
@@ -34,11 +36,12 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
     { label: 'Approved', value: approvedCount, color: '#22c55e' }
   ];
 
-  // Item results donut
+  // Item results donut - using actual status values
   const itemResultsData = [
-    { label: 'Pass', value: totalPass, color: '#22c55e' },
-    { label: 'Fail', value: totalFail, color: '#ef4444' },
-    { label: 'N/A', value: totalNA, color: '#6b7280' }
+    { label: 'Compliant (C)', value: totalC, color: '#22c55e' },
+    { label: 'Non-Compliant (NC)', value: totalNC, color: '#ef4444' },
+    { label: 'Not Applicable (NA)', value: totalNA, color: '#6b7280' },
+    { label: 'Not Verified (NV)', value: totalNV, color: '#f59e0b' }
   ];
 
   // Inspections by system
@@ -85,15 +88,15 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
     .sort((a, b) => b.value - a.value)
     .slice(0, 8);
 
-  // Item results by system
+  // Item results by system - using actual status values
   const systemItemMap = new Map<string, { pass: number; fail: number; na: number }>();
   inspections.forEach(i => {
     const systemName = i.system?.name || 'Unknown';
     const current = systemItemMap.get(systemName) || { pass: 0, fail: 0, na: 0 };
     i.items?.forEach(item => {
-      if (item.status === 'pass') current.pass++;
-      else if (item.status === 'fail') current.fail++;
-      else current.na++;
+      if (item.status === 'C') current.pass++;
+      else if (item.status === 'NC') current.fail++;
+      else current.na++; // NA and NV count as N/A for the chart
     });
     systemItemMap.set(systemName, current);
   });
@@ -107,7 +110,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   return (
     <div className="space-y-6">
       <Card title="Inspections Overview">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalInspections}</p>
             <p className="text-sm text-blue-700">Total Inspections</p>
@@ -120,9 +123,13 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
             <p className="text-3xl font-bold text-green-600">{approvedCount}</p>
             <p className="text-sm text-green-700">Approved</p>
           </div>
+          <div className="text-center p-4 bg-emerald-50 rounded-lg">
+            <p className="text-3xl font-bold text-emerald-600">{totalC}</p>
+            <p className="text-sm text-emerald-700">Compliant (C)</p>
+          </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
-            <p className="text-3xl font-bold text-red-600">{totalFail}</p>
-            <p className="text-sm text-red-700">Failed Items</p>
+            <p className="text-3xl font-bold text-red-600">{totalNC}</p>
+            <p className="text-sm text-red-700">Non-Compliant (NC)</p>
           </div>
         </div>
       </Card>
@@ -146,7 +153,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
       </Card>
 
       <Card title="Checklist Results by System">
-        <HorizontalBarChart data={itemsBySystemData} title="Pass/Fail/N/A breakdown per system" />
+        <HorizontalBarChart data={itemsBySystemData} title="Compliant/Non-Compliant/Other breakdown per system" />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

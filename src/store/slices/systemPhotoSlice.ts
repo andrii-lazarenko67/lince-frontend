@@ -5,6 +5,7 @@ import type {
   UpdateSystemPhotoRequest,
   SystemPhotoState
 } from '../../types/systemPhoto.types';
+import { setLoading } from './uiSlice';
 
 // Initial state with proper TypeScript types - EXACT MATCH
 const initialState: SystemPhotoState = {
@@ -13,17 +14,21 @@ const initialState: SystemPhotoState = {
   error: null
 };
 
-// Async thunks - following RULE: all backend calls via Redux middleware
+// Async thunks - following RULE: all backend calls via Redux middleware with global loading state
 
 // Fetch photos by system ID
 export const fetchPhotosBySystem = createAsyncThunk<SystemPhoto[], number>(
   'systemPhotos/fetchBySystem',
-  async (systemId, { rejectWithValue }) => {
+  async (systemId, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.get(`/system-photos/system/${systemId}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch system photos');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch system photos');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -31,12 +36,16 @@ export const fetchPhotosBySystem = createAsyncThunk<SystemPhoto[], number>(
 // Fetch single photo by ID
 export const fetchPhotoById = createAsyncThunk<SystemPhoto, number>(
   'systemPhotos/fetchById',
-  async (id, { rejectWithValue }) => {
+  async (id, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.get(`/system-photos/${id}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch photo');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to fetch photo');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -47,8 +56,9 @@ export const uploadSystemPhoto = createAsyncThunk<
   { systemId: number; photo: File; description?: string }
 >(
   'systemPhotos/upload',
-  async ({ systemId, photo, description }, { rejectWithValue }) => {
+  async ({ systemId, photo, description }, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const formData = new FormData();
       formData.append('photo', photo);
       if (description) {
@@ -65,8 +75,11 @@ export const uploadSystemPhoto = createAsyncThunk<
         }
       );
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to upload photo');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to upload photo');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -77,12 +90,16 @@ export const updateSystemPhoto = createAsyncThunk<
   { id: number; data: UpdateSystemPhotoRequest }
 >(
   'systemPhotos/update',
-  async ({ id, data }, { rejectWithValue }) => {
+  async ({ id, data }, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.put(`/system-photos/${id}`, data);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update photo');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to update photo');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -90,12 +107,16 @@ export const updateSystemPhoto = createAsyncThunk<
 // Delete photo
 export const deleteSystemPhoto = createAsyncThunk<number, number>(
   'systemPhotos/delete',
-  async (id, { rejectWithValue }) => {
+  async (id, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       await axiosInstance.delete(`/system-photos/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete photo');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to delete photo');
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
@@ -115,84 +136,59 @@ const systemPhotoSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch photos by system
     builder
-      .addCase(fetchPhotosBySystem.pending, (state) => {
-        state.loading = true;
+      .addCase(fetchPhotosBySystem.fulfilled, (state, action) => {
+        state.photos = action.payload;
         state.error = null;
       })
-      .addCase(fetchPhotosBySystem.fulfilled, (state, action) => {
-        state.loading = false;
-        state.photos = action.payload;
-      })
       .addCase(fetchPhotosBySystem.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Fetch photo by ID
     builder
-      .addCase(fetchPhotoById.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(fetchPhotoById.fulfilled, (state, action) => {
-        state.loading = false;
         const index = state.photos.findIndex(p => p.id === action.payload.id);
         if (index !== -1) {
           state.photos[index] = action.payload;
         } else {
           state.photos.push(action.payload);
         }
+        state.error = null;
       })
       .addCase(fetchPhotoById.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Upload photo
     builder
-      .addCase(uploadSystemPhoto.pending, (state) => {
-        state.loading = true;
+      .addCase(uploadSystemPhoto.fulfilled, (state, action) => {
+        state.photos.unshift(action.payload); // Add to beginning (most recent)
         state.error = null;
       })
-      .addCase(uploadSystemPhoto.fulfilled, (state, action) => {
-        state.loading = false;
-        state.photos.unshift(action.payload); // Add to beginning (most recent)
-      })
       .addCase(uploadSystemPhoto.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Update photo
     builder
-      .addCase(updateSystemPhoto.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
       .addCase(updateSystemPhoto.fulfilled, (state, action) => {
-        state.loading = false;
         const index = state.photos.findIndex(p => p.id === action.payload.id);
         if (index !== -1) {
           state.photos[index] = action.payload;
         }
+        state.error = null;
       })
       .addCase(updateSystemPhoto.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
     // Delete photo
     builder
-      .addCase(deleteSystemPhoto.pending, (state) => {
-        state.loading = true;
+      .addCase(deleteSystemPhoto.fulfilled, (state, action) => {
+        state.photos = state.photos.filter(p => p.id !== action.payload);
         state.error = null;
       })
-      .addCase(deleteSystemPhoto.fulfilled, (state, action) => {
-        state.loading = false;
-        state.photos = state.photos.filter(p => p.id !== action.payload);
-      })
       .addCase(deleteSystemPhoto.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
   }

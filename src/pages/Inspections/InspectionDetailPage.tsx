@@ -111,10 +111,10 @@ const InspectionDetailPage: React.FC = () => {
     switch (status) {
       case 'pending':
         return <Badge variant="warning">Pending</Badge>;
+      case 'completed':
+        return <Badge variant="primary">Completed</Badge>;
       case 'approved':
         return <Badge variant="success">Approved</Badge>;
-      case 'rejected':
-        return <Badge variant="danger">Rejected</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }

@@ -14,7 +14,8 @@ const SystemDetailPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { currentSystem } = useAppSelector((state) => state.systems);
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
-  const { goBack, goToSystems } = useAppNavigation();
+  const { loading } = useAppSelector((state) => state.ui);
+  const { goBack, goToSystems, goToSystemDetail } = useAppNavigation();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -174,7 +175,7 @@ const SystemDetailPage: React.FC = () => {
                 <dt className="text-sm font-medium text-gray-500">Parent System</dt>
                 <dd className="mt-1 text-gray-900">
                   <button
-                    onClick={() => window.location.href = `/systems/${currentSystem.parent?.id}`}
+                    onClick={() => goToSystemDetail(currentSystem.parent!.id)}
                     className="text-blue-600 hover:text-blue-800 underline"
                   >
                     {currentSystem.parent.name} ({currentSystem.parent.type})
@@ -190,7 +191,7 @@ const SystemDetailPage: React.FC = () => {
                     {currentSystem.children.map(child => (
                       <li key={child.id}>
                         <button
-                          onClick={() => window.location.href = `/systems/${child.id}`}
+                          onClick={() => goToSystemDetail(child.id)}
                           className="text-blue-600 hover:text-blue-800 underline text-sm"
                         >
                           {child.name} ({child.type})
@@ -250,11 +251,11 @@ const SystemDetailPage: React.FC = () => {
           Are you sure you want to delete this system? This action cannot be undone.
         </p>
         <div className="flex justify-end space-x-3">
-          <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
+          <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDeleteSystem}>
-            Delete
+          <Button variant="danger" onClick={handleDeleteSystem} disabled={loading}>
+            {loading ? 'Deleting...' : 'Delete'}
           </Button>
         </div>
       </Modal>
@@ -276,11 +277,11 @@ const SystemDetailPage: React.FC = () => {
           Are you sure you want to delete <strong>{deletingMonitoringPoint?.name}</strong>? This action cannot be undone.
         </p>
         <div className="flex justify-end space-x-3">
-          <Button variant="outline" onClick={() => setIsDeleteMonitoringPointOpen(false)}>
+          <Button variant="outline" onClick={() => setIsDeleteMonitoringPointOpen(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDeleteMonitoringPoint}>
-            Delete
+          <Button variant="danger" onClick={handleDeleteMonitoringPoint} disabled={loading}>
+            {loading ? 'Deleting...' : 'Delete'}
           </Button>
         </div>
       </Modal>

@@ -17,7 +17,8 @@ interface PhotoGalleryProps {
 
 const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName }) => {
   const dispatch = useAppDispatch();
-  const { photos, loading, error } = useAppSelector((state) => state.systemPhotos);
+  const { photos, error } = useAppSelector((state) => state.systemPhotos);
+  const { loading } = useAppSelector((state) => state.ui);
 
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);

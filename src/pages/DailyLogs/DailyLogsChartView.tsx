@@ -10,10 +10,24 @@ interface DailyLogsChartViewProps {
 const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) => {
   const totalLogs = dailyLogs.length;
 
-  // Shift counts
-  const morningCount = dailyLogs.filter(l => l.shift === 'morning').length;
-  const afternoonCount = dailyLogs.filter(l => l.shift === 'afternoon').length;
-  const nightCount = dailyLogs.filter(l => l.shift === 'night').length;
+  // Record type counts
+  const fieldCount = dailyLogs.filter(l => l.recordType === 'field').length;
+  const laboratoryCount = dailyLogs.filter(l => l.recordType === 'laboratory').length;
+
+  // Period counts (using period field)
+  const periodMap = new Map<string, number>();
+  dailyLogs.forEach(log => {
+    const period = log.period || 'Not Specified';
+    periodMap.set(period, (periodMap.get(period) || 0) + 1);
+  });
+  const periodColors = ['#f59e0b', '#3b82f6', '#6366f1', '#22c55e', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
+  const periodData = Array.from(periodMap.entries())
+    .map(([label, value], index) => ({
+      label: label.length > 15 ? label.substring(0, 15) + '...' : label,
+      value,
+      color: periodColors[index % periodColors.length]
+    }))
+    .sort((a, b) => b.value - a.value);
 
   // Count entries with out of range values
   let totalEntries = 0;
@@ -26,11 +40,10 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
   });
   const normalCount = totalEntries - outOfRangeCount;
 
-  // Shift donut
-  const shiftData = [
-    { label: 'Morning', value: morningCount, color: '#f59e0b' },
-    { label: 'Afternoon', value: afternoonCount, color: '#3b82f6' },
-    { label: 'Night', value: nightCount, color: '#6366f1' }
+  // Record type donut
+  const recordTypeData = [
+    { label: 'Field', value: fieldCount, color: '#3b82f6' },
+    { label: 'Laboratory', value: laboratoryCount, color: '#8b5cf6' }
   ];
 
   // Entry status donut
@@ -103,10 +116,18 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
   return (
     <div className="space-y-6">
       <Card title="Daily Logs Overview">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalLogs}</p>
             <p className="text-sm text-blue-700">Total Logs</p>
+          </div>
+          <div className="text-center p-4 bg-indigo-50 rounded-lg">
+            <p className="text-3xl font-bold text-indigo-600">{fieldCount}</p>
+            <p className="text-sm text-indigo-700">Field Records</p>
+          </div>
+          <div className="text-center p-4 bg-purple-50 rounded-lg">
+            <p className="text-3xl font-bold text-purple-600">{laboratoryCount}</p>
+            <p className="text-sm text-purple-700">Lab Records</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{totalEntries}</p>
@@ -116,23 +137,25 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
             <p className="text-3xl font-bold text-red-600">{outOfRangeCount}</p>
             <p className="text-sm text-red-700">Out of Range</p>
           </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <p className="text-3xl font-bold text-purple-600">{systemMap.size}</p>
-            <p className="text-sm text-purple-700">Systems Logged</p>
-          </div>
         </div>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Logs by Shift">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Card title="Record Types">
           <div className="flex justify-center py-4">
-            <DonutChart data={shiftData} title="Distribution by shift" size={200} />
+            <DonutChart data={recordTypeData} title="Field vs Laboratory" size={180} />
+          </div>
+        </Card>
+
+        <Card title="By Period">
+          <div className="flex justify-center py-4">
+            <DonutChart data={periodData} title="Distribution by period" size={180} />
           </div>
         </Card>
 
         <Card title="Entry Status">
           <div className="flex justify-center py-4">
-            <DonutChart data={entryStatusData} title="Normal vs Out of Range" size={200} />
+            <DonutChart data={entryStatusData} title="Normal vs Out of Range" size={180} />
           </div>
         </Card>
       </div>

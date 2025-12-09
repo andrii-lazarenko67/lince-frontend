@@ -12,6 +12,7 @@ const ProductDetailPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { currentProduct, usages } = useAppSelector((state) => state.products);
   const { systems } = useAppSelector((state) => state.systems);
+  const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToProducts } = useAppNavigation();
 
   const [isUsageOpen, setIsUsageOpen] = useState(false);
@@ -260,11 +261,11 @@ const ProductDetailPage: React.FC = () => {
           />
         </div>
         <div className="flex justify-end space-x-3 mt-6">
-          <Button variant="outline" onClick={() => setIsUsageOpen(false)}>
+          <Button variant="outline" onClick={() => setIsUsageOpen(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleRecordUsage}>
-            Record
+          <Button variant="primary" onClick={handleRecordUsage} disabled={loading}>
+            {loading ? 'Recording...' : 'Record'}
           </Button>
         </div>
       </Modal>
@@ -295,11 +296,11 @@ const ProductDetailPage: React.FC = () => {
             rows={3}
           />
           <div className="flex justify-end space-x-3">
-            <Button variant="outline" onClick={() => setIsStockOpen(false)}>
+            <Button variant="outline" onClick={() => setIsStockOpen(false)} disabled={loading}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={handleUpdateStock}>
-              Update
+            <Button variant="primary" onClick={handleUpdateStock} disabled={loading}>
+              {loading ? 'Updating...' : 'Update'}
             </Button>
           </div>
         </div>
@@ -310,11 +311,11 @@ const ProductDetailPage: React.FC = () => {
           Are you sure you want to delete this product? This action cannot be undone.
         </p>
         <div className="flex justify-end space-x-3">
-          <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
+          <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDelete}>
-            Delete
+          <Button variant="danger" onClick={handleDelete} disabled={loading}>
+            {loading ? 'Deleting...' : 'Delete'}
           </Button>
         </div>
       </Modal>

@@ -16,6 +16,7 @@ const NewDailyLogPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
+  const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToDailyLogs } = useAppNavigation();
 
   const [recordType, setRecordType] = useState<RecordType>('field');
@@ -185,11 +186,11 @@ const NewDailyLogPage: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="flex justify-end space-x-3 mb-6">
-          <Button type="button" variant="danger" onClick={goBack}>
+          <Button type="button" variant="danger" onClick={goBack} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            Save Record
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? 'Saving...' : 'Save Record'}
           </Button>
         </div>
 

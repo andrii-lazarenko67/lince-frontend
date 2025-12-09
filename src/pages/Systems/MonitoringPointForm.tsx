@@ -22,6 +22,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   const dispatch = useAppDispatch();
   const { parameters } = useAppSelector((state) => state.parameters);
   const { units } = useAppSelector((state) => state.units);
+  const { loading } = useAppSelector((state) => state.ui);
 
   const [formData, setFormData] = useState<CreateMonitoringPointRequest>({
     systemId: systemId,
@@ -250,11 +251,11 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
-          <Button type="button" variant="outline" onClick={onClose}>
+          <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            {monitoringPoint ? 'Update' : 'Create'} Monitoring Point
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? (monitoringPoint ? 'Updating...' : 'Creating...') : `${monitoringPoint ? 'Update' : 'Create'} Monitoring Point`}
           </Button>
         </div>
       </form>

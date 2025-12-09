@@ -99,11 +99,11 @@ const InspectionsPage: React.FC = () => {
     );
   };
 
-  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
     { value: 'pending', label: 'Pending' },
-    { value: 'approved', label: 'Approved' },
-    { value: 'rejected', label: 'Rejected' }
+    { value: 'completed', label: 'Completed' },
+    { value: 'approved', label: 'Approved' }
   ];
 
   return (

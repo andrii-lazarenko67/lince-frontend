@@ -14,10 +14,12 @@ interface PhotoPreview {
 const NewIncidentPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
+  const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToIncidents } = useAppNavigation();
 
   const [formData, setFormData] = useState({
     systemId: '',
+    stageId: '',
     title: '',
     description: '',
     priority: 'medium',
@@ -25,10 +27,24 @@ const NewIncidentPage: React.FC = () => {
   });
   const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
 
   useEffect(() => {
     dispatch(fetchSystems({}));
   }, [dispatch]);
+
+  // Filter stages (child systems) when a system is selected
+  useEffect(() => {
+    if (formData.systemId && systems.length > 0) {
+      const selectedSystemId = Number(formData.systemId);
+      const childSystems = systems.filter(s => s.parentId === selectedSystemId);
+      setAvailableStages(childSystems.map(s => ({ value: s.id, label: s.name })));
+      // Reset stage selection when system changes
+      setFormData(prev => ({ ...prev, stageId: '' }));
+    } else {
+      setAvailableStages([]);
+    }
+  }, [formData.systemId, systems]);
 
   // Cleanup preview URLs on unmount
   useEffect(() => {
@@ -94,6 +110,7 @@ const NewIncidentPage: React.FC = () => {
 
     const result = await dispatch(createIncident({
       systemId: Number(formData.systemId),
+      stageId: formData.stageId ? Number(formData.stageId) : undefined,
       title: formData.title,
       description: formData.description,
       priority: formData.priority as IncidentPriority,
@@ -108,7 +125,7 @@ const NewIncidentPage: React.FC = () => {
     }
   };
 
-  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const priorityOptions = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },
@@ -132,7 +149,7 @@ const NewIncidentPage: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <Card title="Incident Information" className="mb-6">
-          <div className='flex flex-col gap-10'>
+          <div className='flex flex-col gap-6'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Select
                 name="systemId"
@@ -145,6 +162,31 @@ const NewIncidentPage: React.FC = () => {
                 required
               />
 
+              {/* Stage Selection (only if stages available) */}
+              {availableStages.length > 0 && (
+                <Select
+                  name="stageId"
+                  value={formData.stageId}
+                  onChange={handleChange}
+                  options={availableStages}
+                  label="Stage (Optional)"
+                  placeholder="Select stage or leave empty for system-level"
+                />
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleChange}
+                label="Title"
+                placeholder="Enter incident title"
+                error={errors.title}
+                required
+              />
+
               <Select
                 name="priority"
                 value={formData.priority}
@@ -154,17 +196,6 @@ const NewIncidentPage: React.FC = () => {
                 required
               />
             </div>
-
-            <Input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              label="Title"
-              placeholder="Enter incident title"
-              error={errors.title}
-              required
-            />
 
             <TextArea
               name="description"
@@ -194,7 +225,7 @@ const NewIncidentPage: React.FC = () => {
           </div>
         </Card>
 
-        <Card title="Photos" className="mb-6">
+        <Card title="Photos (Optional)" className="mb-6">
           <div className="space-y-4">
             {/* Photo Upload Area */}
             <div
@@ -246,11 +277,11 @@ const NewIncidentPage: React.FC = () => {
         </Card>
 
         <div className="flex justify-end space-x-3">
-          <Button type="button" variant="outline" onClick={goBack}>
+          <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            Submit Incident
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit Incident'}
           </Button>
         </div>
       </form>

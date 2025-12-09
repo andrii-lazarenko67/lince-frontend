@@ -49,6 +49,7 @@ export const createIncident = createAsyncThunk(
       dispatch(setLoading(true));
       const formData = new FormData();
       formData.append('systemId', data.systemId.toString());
+      if (data.stageId) formData.append('stageId', data.stageId.toString());
       formData.append('title', data.title);
       formData.append('description', data.description);
       if (data.priority) formData.append('priority', data.priority);
