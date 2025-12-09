@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface HorizontalBarData {
   label: string;
@@ -14,13 +15,14 @@ interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title, maxItems = 10 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
       </div>
     );
   }
@@ -43,7 +45,7 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title, ma
             >
               <div className="flex justify-between text-xs">
                 <span className="font-medium text-gray-700 truncate" style={{ maxWidth: '60%' }}>{item.label}</span>
-                <span className="text-gray-500">{total} items</span>
+                <span className="text-gray-500">{total} {t('charts.horizontalBar.items')}</span>
               </div>
               <div className="flex h-4 bg-gray-100 rounded overflow-hidden cursor-pointer">
                 <div
@@ -85,15 +87,15 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title, ma
                   <div className="text-white text-xs font-bold mb-2 truncate">{item.label}</div>
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <div className="w-2.5 h-2.5 rounded bg-green-500" />
-                    Pass: <span className="text-green-400 font-semibold">{item.pass} ({passPercent.toFixed(0)}%)</span>
+                    {t('charts.horizontalBar.pass')}: <span className="text-green-400 font-semibold">{item.pass} ({passPercent.toFixed(0)}%)</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <div className="w-2.5 h-2.5 rounded bg-red-500" />
-                    Fail: <span className="text-red-400 font-semibold">{item.fail} ({failPercent.toFixed(0)}%)</span>
+                    {t('charts.horizontalBar.fail')}: <span className="text-red-400 font-semibold">{item.fail} ({failPercent.toFixed(0)}%)</span>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <div className="w-2.5 h-2.5 rounded bg-gray-400" />
-                    N/A: <span className="text-gray-300 font-semibold">{item.na} ({naPercent.toFixed(0)}%)</span>
+                    {t('charts.horizontalBar.na')}: <span className="text-gray-300 font-semibold">{item.na} ({naPercent.toFixed(0)}%)</span>
                   </div>
                 </div>
               )}
@@ -102,9 +104,9 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title, ma
         })}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-green-500" /><span className="text-xs text-gray-600">Pass</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">Fail</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-400" /><span className="text-xs text-gray-600">N/A</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-green-500" /><span className="text-xs text-gray-600">{t('charts.horizontalBar.pass')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('charts.horizontalBar.fail')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-400" /><span className="text-xs text-gray-600">{t('charts.horizontalBar.na')}</span></div>
       </div>
     </div>
   );

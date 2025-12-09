@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FormControl, InputLabel, Select as MuiSelect, MenuItem, FormHelperText } from '@mui/material';
 
 interface Option {
@@ -26,13 +27,15 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   onBlur,
   options,
-  placeholder = 'Select an option',
+  placeholder,
   label,
   error,
   disabled = false,
   required = false,
   className = ''
 }) => {
+  const { t } = useTranslation();
+  const defaultPlaceholder = placeholder || t('common.selectAnOption');
   return (
     <FormControl fullWidth variant="outlined" size="small" error={!!error} className={className}>
       {label && (
@@ -53,7 +56,7 @@ const Select: React.FC<SelectProps> = ({
         required={required}
         displayEmpty={!label}
       >
-        {!label && <MenuItem value="">{placeholder}</MenuItem>}
+        {!label && <MenuItem value="">{defaultPlaceholder}</MenuItem>}
         {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}

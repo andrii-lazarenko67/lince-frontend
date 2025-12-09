@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import {
   fetchNotifications,
@@ -21,6 +22,7 @@ import CreateNotificationModal from './CreateNotificationModal';
 import type { Notification, CreateNotificationRequest } from '../../types';
 
 const NotificationsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { notifications, unreadCount, allNotifications, selectedNotification } = useAppSelector((state) => state.notifications);
@@ -47,7 +49,7 @@ const NotificationsPage: React.FC = () => {
   };
 
   const handleClearMyNotifications = () => {
-    if (window.confirm('Are you sure you want to clear all your notifications?')) {
+    if (window.confirm(t('notifications.confirmClearAll'))) {
       dispatch(clearMyNotifications());
     }
   };
@@ -83,30 +85,30 @@ const NotificationsPage: React.FC = () => {
   };
 
   const handleDeleteNotification = (id: number) => {
-    if (window.confirm('Are you sure you want to delete this notification? This will remove it for all users.')) {
+    if (window.confirm(t('notifications.confirmDelete'))) {
       dispatch(deleteNotification(id));
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'incident': return 'Incident';
-      case 'alert': return 'Alert';
-      case 'stock': return 'Stock';
-      case 'inspection': return 'Inspection';
-      case 'system': return 'System';
+      case 'incident': return t('notifications.types.incident');
+      case 'alert': return t('notifications.types.alert');
+      case 'stock': return t('notifications.types.stock');
+      case 'inspection': return t('notifications.types.inspection');
+      case 'system': return t('notifications.types.system');
       default: return type;
     }
   };
 
   const getExportData = () => {
-    const headers = ['Title', 'Message', 'Type', 'Priority', 'Status', 'Created'];
+    const headers = [t('notifications.export.title'), t('notifications.export.message'), t('notifications.export.type'), t('notifications.export.priority'), t('notifications.export.status'), t('notifications.export.created')];
     const rows = notifications.map(notif => [
       notif.title,
       notif.message,
       getTypeLabel(notif.type),
       notif.priority,
-      notif.isRead ? 'Read' : 'Unread',
+      notif.isRead ? t('notifications.export.read') : t('notifications.export.unread'),
       new Date(notif.createdAt).toLocaleString()
     ]);
     return { headers, rows };
@@ -116,16 +118,16 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Notifications Report',
-        subtitle: 'LINCE Water Treatment System',
+        title: t('notifications.export.reportTitle'),
+        subtitle: t('notifications.export.subtitle'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Notifications', value: String(notifications.length) },
-          { label: 'Unread', value: String(unreadCount) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
+          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Notifications (${notifications.length})`, headers, rows }]
+      [{ title: `${t('notifications.export.notificationsCount', { count: notifications.length })}`, headers, rows }]
     );
   };
 
@@ -133,15 +135,15 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Notifications Report',
+        title: t('notifications.export.reportTitle'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Notifications', value: String(notifications.length) },
-          { label: 'Unread', value: String(unreadCount) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
+          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Notifications (${notifications.length})`, headers, rows }]
+      [{ title: `${t('notifications.export.notificationsCount', { count: notifications.length })}`, headers, rows }]
     );
   };
 
@@ -149,15 +151,15 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Notifications Report',
+        title: t('notifications.export.reportTitle'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Notifications', value: String(notifications.length) },
-          { label: 'Unread', value: String(unreadCount) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
+          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.generated'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'NOTIFICATIONS', headers, rows }]
+      [{ title: t('notifications.export.notificationsUpper'), headers, rows }]
     );
   };
 
@@ -165,9 +167,9 @@ const NotificationsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Notifications</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('notifications.title')}</h1>
           <p className="text-gray-500 mt-1">
-            {unreadCount > 0 ? `${unreadCount} unread notification(s)` : 'All caught up!'}
+            {unreadCount > 0 ? t('notifications.unreadCount', { count: unreadCount }) : t('notifications.allCaughtUp')}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -179,7 +181,7 @@ const NotificationsPage: React.FC = () => {
           />
           {isAdmin && (
             <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
-              Create Notification
+              {t('notifications.createNotification')}
             </Button>
           )}
         </div>
@@ -197,7 +199,7 @@ const NotificationsPage: React.FC = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              My Notifications
+              {t('notifications.tabs.myNotifications')}
               {unreadCount > 0 && (
                 <span className="ml-2 bg-blue-100 text-blue-600 py-0.5 px-2 rounded-full text-xs">
                   {unreadCount}
@@ -212,7 +214,7 @@ const NotificationsPage: React.FC = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              All Notifications (Admin)
+              {t('notifications.tabs.allNotifications')}
               <span className="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">
                 {allNotifications.length}
               </span>
@@ -225,17 +227,17 @@ const NotificationsPage: React.FC = () => {
       {activeTab === 'my' && (
         <Card
           noPadding
-          title="My Notifications"
+          title={t('notifications.myNotificationsCard')}
           headerActions={
             <div className="flex gap-2">
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
-                  Mark All as Read
+                  {t('notifications.markAllRead')}
                 </Button>
               )}
               {notifications.length > 0 && (
                 <Button variant="outline" size="sm" onClick={handleClearMyNotifications}>
-                  Clear All
+                  {t('notifications.clearAll')}
                 </Button>
               )}
             </div>
@@ -251,7 +253,7 @@ const NotificationsPage: React.FC = () => {
 
       {/* Admin Notifications Tab */}
       {activeTab === 'admin' && isAdmin && (
-        <Card noPadding title="All System Notifications">
+        <Card noPadding title={t('notifications.allSystemNotifications')}>
           <AdminNotificationList
             notifications={allNotifications}
             onViewRecipients={handleViewRecipients}

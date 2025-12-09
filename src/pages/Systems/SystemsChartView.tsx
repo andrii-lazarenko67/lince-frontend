@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import { DonutChart, BarChart } from '../../components/charts';
 import type { System } from '../../types';
@@ -8,6 +9,7 @@ interface SystemsChartViewProps {
 }
 
 const SystemsChartView: React.FC<SystemsChartViewProps> = ({ systems }) => {
+  const { t } = useTranslation();
   const totalSystems = systems.length;
 
   // Status counts
@@ -25,15 +27,15 @@ const SystemsChartView: React.FC<SystemsChartViewProps> = ({ systems }) => {
 
   // Status donut
   const statusData = [
-    { label: 'Active', value: activeCount, color: '#22c55e' },
-    { label: 'Inactive', value: inactiveCount, color: '#6b7280' },
-    { label: 'Maintenance', value: maintenanceCount, color: '#f59e0b' }
+    { label: t('systems.active'), value: activeCount, color: '#22c55e' },
+    { label: t('systems.inactive'), value: inactiveCount, color: '#6b7280' },
+    { label: t('systems.maintenance'), value: maintenanceCount, color: '#f59e0b' }
   ];
 
   // Systems by type
   const typeMap = new Map<string, number>();
   systems.forEach(s => {
-    const type = s.type || 'Other';
+    const type = s.type || t('products.other');
     typeMap.set(type, (typeMap.get(type) || 0) + 1);
   });
   const typeColors = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#6366f1'];
@@ -46,7 +48,7 @@ const SystemsChartView: React.FC<SystemsChartViewProps> = ({ systems }) => {
   // Systems by location
   const locationMap = new Map<string, number>();
   systems.forEach(s => {
-    const location = s.location || 'Unknown';
+    const location = s.location || t('common.noData');
     locationMap.set(location, (locationMap.get(location) || 0) + 1);
   });
   const byLocationData = Array.from(locationMap.entries())
@@ -82,56 +84,56 @@ const SystemsChartView: React.FC<SystemsChartViewProps> = ({ systems }) => {
 
   return (
     <div className="space-y-6">
-      <Card title="Systems Overview">
+      <Card title={t('dashboard.overview')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalSystems}</p>
-            <p className="text-sm text-blue-700">Total Systems</p>
+            <p className="text-sm text-blue-700">{t('systems.title')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{activeCount}</p>
-            <p className="text-sm text-green-700">Active</p>
+            <p className="text-sm text-green-700">{t('systems.active')}</p>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
             <p className="text-3xl font-bold text-purple-600">{totalMonitoringPoints}</p>
-            <p className="text-sm text-purple-700">Monitoring Points</p>
+            <p className="text-sm text-purple-700">{t('systems.monitoringPoints')}</p>
           </div>
           <div className="text-center p-4 bg-teal-50 rounded-lg">
             <p className="text-3xl font-bold text-teal-600">{totalChecklistItems}</p>
-            <p className="text-sm text-teal-700">Checklist Items</p>
+            <p className="text-sm text-teal-700">{t('systems.checklistItems')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Status Distribution">
+        <Card title={t('common.status')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={statusData} title="Systems by status" size={200} />
+            <DonutChart data={statusData} title={t('systems.systemStatus')} size={200} />
           </div>
         </Card>
 
-        <Card title="Systems by Type">
+        <Card title={t('systems.systemType')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={byTypeData} title="Distribution by type" size={200} />
+            <DonutChart data={byTypeData} title={t('common.type')} size={200} />
           </div>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Systems by Location">
-          <BarChart data={byLocationData} title="Number of systems per location" height={220} />
+        <Card title={t('common.location')}>
+          <BarChart data={byLocationData} title={t('systems.title')} height={220} />
         </Card>
 
         {monitoringPointsData.length > 0 && (
-          <Card title="Monitoring Points per System">
-            <BarChart data={monitoringPointsData} title="Number of monitoring points" height={220} defaultColor="#8b5cf6" />
+          <Card title={t('systems.monitoringPoints')}>
+            <BarChart data={monitoringPointsData} title={t('systems.monitoringPoints')} height={220} defaultColor="#8b5cf6" />
           </Card>
         )}
       </div>
 
       {checklistItemsData.length > 0 && (
-        <Card title="Checklist Items per System">
-          <BarChart data={checklistItemsData} title="Number of checklist items" height={220} defaultColor="#10b981" />
+        <Card title={t('systems.checklistItems')}>
+          <BarChart data={checklistItemsData} title={t('systems.checklistItems')} height={220} defaultColor="#10b981" />
         </Card>
       )}
     </div>

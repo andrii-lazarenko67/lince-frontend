@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, ExportDropdown, ViewModeToggle } from '../../components/common';
@@ -8,6 +9,7 @@ import SystemsChartView from './SystemsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const SystemsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
@@ -19,15 +21,15 @@ const SystemsPage: React.FC = () => {
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'active': return 'Active';
-      case 'inactive': return 'Inactive';
-      case 'maintenance': return 'Maintenance';
+      case 'active': return t('systems.active');
+      case 'inactive': return t('systems.inactive');
+      case 'maintenance': return t('systems.maintenance');
       default: return status;
     }
   };
 
   const getExportData = () => {
-    const headers = ['Name', 'Location', 'Type', 'Status', 'Created'];
+    const headers = [t('common.name'), t('common.location'), t('common.type'), t('common.status'), t('systems.createdAt')];
     const rows = systems.map(sys => [
       sys.name,
       sys.location || '-',
@@ -42,16 +44,16 @@ const SystemsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Systems Report',
+        title: t('systems.title'),
         subtitle: 'LINCE Water Treatment System',
         filename: `systems-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Systems', value: String(systems.length) },
-          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('systems.title'), value: String(systems.length) },
+          { label: t('systems.active'), value: String(systems.filter(s => s.status === 'active').length) },
+          { label: t('common.date'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Systems (${systems.length})`, headers, rows }]
+      [{ title: `${t('systems.title')} (${systems.length})`, headers, rows }]
     );
   };
 
@@ -59,15 +61,15 @@ const SystemsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Systems Report',
+        title: t('systems.title'),
         filename: `systems-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Systems', value: String(systems.length) },
-          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('systems.title'), value: String(systems.length) },
+          { label: t('systems.active'), value: String(systems.filter(s => s.status === 'active').length) },
+          { label: t('common.date'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Systems (${systems.length})`, headers, rows }]
+      [{ title: `${t('systems.title')} (${systems.length})`, headers, rows }]
     );
   };
 
@@ -75,15 +77,15 @@ const SystemsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Systems Report',
+        title: t('systems.title'),
         filename: `systems-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Systems', value: String(systems.length) },
-          { label: 'Active Systems', value: String(systems.filter(s => s.status === 'active').length) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('systems.title'), value: String(systems.length) },
+          { label: t('systems.active'), value: String(systems.filter(s => s.status === 'active').length) },
+          { label: t('common.date'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'SYSTEMS', headers, rows }]
+      [{ title: t('systems.title').toUpperCase(), headers, rows }]
     );
   };
 
@@ -91,8 +93,8 @@ const SystemsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Systems</h1>
-          <p className="text-gray-500 mt-1">Manage your water treatment systems</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('systems.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('nav.systems')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
@@ -106,7 +108,7 @@ const SystemsPage: React.FC = () => {
             disabled={systems.length === 0}
           />
           <Button variant="primary" onClick={() => setIsFormOpen(true)}>
-            Add System
+            {t('systems.addSystem')}
           </Button>
         </div>
       </div>

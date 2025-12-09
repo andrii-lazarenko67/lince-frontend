@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import type { ReportData } from '../../types';
 
@@ -14,6 +15,7 @@ interface DonutChartProps {
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -21,7 +23,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
     return (
       <div className="flex flex-col items-center">
         <div className="rounded-full bg-gray-100 flex items-center justify-center" style={{ width: size, height: size }}>
-          <span className="text-gray-400 text-sm">No data</span>
+          <span className="text-gray-400 text-sm">{t('common.noData')}</span>
         </div>
         <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       </div>
@@ -84,7 +86,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
           )
         ))}
         <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>Total</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.total')}</text>
 
         {/* Detailed Tooltip */}
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
@@ -105,8 +107,8 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
               <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
               <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={segment.color} style={{ pointerEvents: 'none' }} />
               <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{segment.label}</text>
-              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Count: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
-              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Share: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
             </g>
           );
         })()}
@@ -135,6 +137,7 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, showValues = true }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
   const maxValue = Math.max(...data.map(d => d.value), 1);
@@ -183,10 +186,10 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, showValu
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    Count: <span className="text-white font-semibold">{item.value}</span>
+                    {t('reportDailyLogs.charts.count')}: <span className="text-white font-semibold">{item.value}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    Share: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                    {t('reportDailyLogs.charts.share')}: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
@@ -207,6 +210,7 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color = '#3b82f6' }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(0);
@@ -227,7 +231,7 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
         <div className="flex items-center justify-center bg-gray-50 rounded-lg" style={{ height }}>
-          <span className="text-gray-400">No data</span>
+          <span className="text-gray-400">{t('common.noData')}</span>
         </div>
       </div>
     );
@@ -320,8 +324,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
                       <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
                       <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={color} style={{ pointerEvents: 'none' }} />
                       <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{p.label}</text>
-                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Value: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
-                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Share: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
                     </g>
                   )}
                 </g>
@@ -340,15 +344,15 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       )}
       <div className="flex justify-center gap-6 mt-3 pt-3 border-t border-gray-100">
         <div className="text-center">
-          <span className="text-xs text-gray-500">Total</span>
+          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.total')}</span>
           <p className="text-sm font-semibold" style={{ color }}>{data.reduce((sum, d) => sum + d.value, 0)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">Average</span>
+          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.average')}</span>
           <p className="text-sm font-semibold text-gray-700">{(data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(1)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">Peak</span>
+          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.peak')}</span>
           <p className="text-sm font-semibold text-gray-700">{maxValue}</p>
         </div>
       </div>
@@ -357,20 +361,22 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
 };
 
 const ReportDailyLogs: React.FC<ReportDailyLogsProps> = ({ report }) => {
+  const { t } = useTranslation();
+
   // Calculate readings stats
   const totalReadings = report.dailyLogs.reduce((acc, log) => acc + (log.entries?.length || 0), 0);
   const outOfRangeCount = report.dailyLogs.reduce((acc, log) => acc + (log.entries?.filter(e => e.isOutOfRange).length || 0), 0);
 
   // Readings status donut chart
   const readingsStatusData = [
-    { label: 'Normal', value: totalReadings - outOfRangeCount, color: '#22c55e' },
-    { label: 'Out of Range', value: outOfRangeCount, color: '#ef4444' }
+    { label: t('reportDailyLogs.status.normal'), value: totalReadings - outOfRangeCount, color: '#22c55e' },
+    { label: t('reportDailyLogs.status.outOfRange'), value: outOfRangeCount, color: '#ef4444' }
   ];
 
   // Logs by system bar chart
   const systemLogsMap = new Map<string, number>();
   report.dailyLogs.forEach(log => {
-    const systemName = log.system?.name || 'Unknown';
+    const systemName = log.system?.name || t('common.unknown');
     systemLogsMap.set(systemName, (systemLogsMap.get(systemName) || 0) + 1);
   });
   const logsBySystemData = Array.from(systemLogsMap.entries()).map(([label, value]) => ({
@@ -382,7 +388,7 @@ const ReportDailyLogs: React.FC<ReportDailyLogsProps> = ({ report }) => {
   // Readings by system bar chart
   const systemReadingsMap = new Map<string, { normal: number; outOfRange: number }>();
   report.dailyLogs.forEach(log => {
-    const systemName = log.system?.name || 'Unknown';
+    const systemName = log.system?.name || t('common.unknown');
     const current = systemReadingsMap.get(systemName) || { normal: 0, outOfRange: 0 };
     log.entries?.forEach(entry => {
       if (entry.isOutOfRange) {
@@ -418,7 +424,7 @@ const ReportDailyLogs: React.FC<ReportDailyLogsProps> = ({ report }) => {
   // Logs by user
   const userLogsMap = new Map<string, number>();
   report.dailyLogs.forEach(log => {
-    const userName = log.user?.name || 'Unknown';
+    const userName = log.user?.name || t('common.unknown');
     userLogsMap.set(userName, (userLogsMap.get(userName) || 0) + 1);
   });
   const logsByUserData = Array.from(userLogsMap.entries()).map(([label, value]) => ({
@@ -429,58 +435,58 @@ const ReportDailyLogs: React.FC<ReportDailyLogsProps> = ({ report }) => {
 
   return (
     <div className="space-y-6">
-      <Card title="Daily Logs Overview">
+      <Card title={t('reportDailyLogs.overview.title')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{report.dailyLogs.length}</p>
-            <p className="text-sm text-blue-700">Total Logs</p>
+            <p className="text-sm text-blue-700">{t('reportDailyLogs.overview.totalLogs')}</p>
           </div>
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
             <p className="text-3xl font-bold text-indigo-600">{totalReadings}</p>
-            <p className="text-sm text-indigo-700">Total Readings</p>
+            <p className="text-sm text-indigo-700">{t('reportDailyLogs.overview.totalReadings')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{totalReadings - outOfRangeCount}</p>
-            <p className="text-sm text-green-700">Normal Readings</p>
+            <p className="text-sm text-green-700">{t('reportDailyLogs.overview.normalReadings')}</p>
           </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
             <p className="text-3xl font-bold text-red-600">{outOfRangeCount}</p>
-            <p className="text-sm text-red-700">Out of Range</p>
+            <p className="text-sm text-red-700">{t('reportDailyLogs.overview.outOfRange')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Readings Status">
+        <Card title={t('reportDailyLogs.readingsStatus.title')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={readingsStatusData} title="Normal vs Out of Range" size={200} />
+            <DonutChart data={readingsStatusData} title={t('reportDailyLogs.readingsStatus.chartTitle')} size={200} />
           </div>
         </Card>
 
-        <Card title="Logs by System">
+        <Card title={t('reportDailyLogs.logsBySystem.title')}>
           {logsBySystemData.length > 0 ? (
-            <BarChart data={logsBySystemData} title="Number of logs per system" height={220} />
+            <BarChart data={logsBySystemData} title={t('reportDailyLogs.logsBySystem.chartTitle')} height={220} />
           ) : (
-            <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+            <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
           )}
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Logs Over Time">
-          <LineChart data={logsOverTimeData} title="Daily logs trend" height={200} color="#3b82f6" />
+        <Card title={t('reportDailyLogs.logsOverTime.title')}>
+          <LineChart data={logsOverTimeData} title={t('reportDailyLogs.logsOverTime.chartTitle')} height={200} color="#3b82f6" />
         </Card>
 
-        <Card title="Out of Range Over Time">
-          <LineChart data={outOfRangeOverTimeData} title="Out of range readings trend" height={200} color="#ef4444" />
+        <Card title={t('reportDailyLogs.outOfRangeOverTime.title')}>
+          <LineChart data={outOfRangeOverTimeData} title={t('reportDailyLogs.outOfRangeOverTime.chartTitle')} height={200} color="#ef4444" />
         </Card>
       </div>
 
-      <Card title="Logs by User">
+      <Card title={t('reportDailyLogs.logsByUser.title')}>
         {logsByUserData.length > 0 ? (
-          <BarChart data={logsByUserData} title="Number of logs per user" height={200} />
+          <BarChart data={logsByUserData} title={t('reportDailyLogs.logsByUser.chartTitle')} height={200} />
         ) : (
-          <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+          <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
         )}
       </Card>
     </div>

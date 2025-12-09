@@ -1,14 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import ProfileInfoSection from './ProfileInfoSection';
 import ChangePasswordSection from './ChangePasswordSection';
 
 const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-          <p className="text-gray-500 mt-1">Manage your personal information</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('profile.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('profile.description')}</p>
         </div>
       </div>
 

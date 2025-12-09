@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppNavigation } from '../../hooks';
 import { Card, Badge } from '../../components/common';
 
 const RecentActivitySection: React.FC = () => {
+  const { t } = useTranslation();
   const { recentActivity } = useAppSelector((state) => state.dashboard);
   const { goToDailyLogDetail, goToInspectionDetail, goToIncidentDetail } = useAppNavigation();
 
@@ -23,11 +25,11 @@ const RecentActivitySection: React.FC = () => {
   const getActivityBadge = (type: string) => {
     switch (type) {
       case 'dailyLog':
-        return <Badge variant="primary">Daily Log</Badge>;
+        return <Badge variant="primary">{t('nav.dailyLogs')}</Badge>;
       case 'inspection':
-        return <Badge variant="info">Inspection</Badge>;
+        return <Badge variant="info">{t('nav.inspections')}</Badge>;
       case 'incident':
-        return <Badge variant="danger">Incident</Badge>;
+        return <Badge variant="danger">{t('nav.incidents')}</Badge>;
       default:
         return <Badge variant="secondary">{type}</Badge>;
     }
@@ -38,9 +40,9 @@ const RecentActivitySection: React.FC = () => {
   };
 
   return (
-    <Card title="Recent Activity">
+    <Card title={t('dashboard.recentLogs')}>
       {recentActivity.length === 0 ? (
-        <p className="text-gray-500 text-center py-4">No recent activity</p>
+        <p className="text-gray-500 text-center py-4">{t('common.noData')}</p>
       ) : (
         <div className="space-y-4">
           {recentActivity.map((activity) => (
@@ -57,7 +59,7 @@ const RecentActivitySection: React.FC = () => {
                   {activity.title}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {activity.system} - by {activity.user}
+                  {activity.system} - {activity.user}
                 </p>
               </div>
               <div className="flex-shrink-0 text-xs text-gray-400">

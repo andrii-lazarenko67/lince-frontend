@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
   fetchPhotosBySystem,
@@ -17,6 +18,7 @@ interface PhotoGalleryProps {
 }
 
 const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, className }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { photos, error } = useAppSelector((state) => state.systemPhotos);
   const { loading } = useAppSelector((state) => state.ui);
@@ -127,17 +129,17 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
       )}
 
       <Card
-        title={`Photo Gallery - ${systemName}`}
+        title={`${t('photoGallery.title')} - ${systemName}`}
         headerActions={
           <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
-            Upload Photo
+            {t('photoGallery.uploadPhoto')}
           </Button>
         }
       >
         {loading && photos.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">Loading photos...</div>
+          <div className="text-center py-8 text-gray-500">{t('photoGallery.loadingPhotos')}</div>
         ) : photos.length === 0 ? (
-          <div className="text-center py-8 text-gray-500">No photos uploaded yet.</div>
+          <div className="text-center py-8 text-gray-500">{t('photoGallery.noPhotos')}</div>
         ) : (
           <div className="grid grid-cols-3 gap-2 max-h-72 overflow-y-auto p-1">
             {photos.map((photo) => (
@@ -166,13 +168,13 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
                         onClick={() => handleOpenEdit(photo)}
                         className="text-blue-600 hover:text-blue-800 text-[10px]"
                       >
-                        Edit
+                        {t('common.edit')}
                       </button>
                       <button
                         onClick={() => handleOpenDelete(photo)}
                         className="text-red-600 hover:text-red-800 text-[10px]"
                       >
-                        Delete
+                        {t('common.delete')}
                       </button>
                     </div>
                   </div>
@@ -190,12 +192,12 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
           setIsUploadOpen(false);
           setUploadData({ file: null, description: '' });
         }}
-        title="Upload Photo"
+        title={t('photoGallery.uploadPhoto')}
       >
         <div className="flex flex-col gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Photo
+              {t('photoGallery.selectPhoto')}
             </label>
             <input
               type="file"
@@ -210,7 +212,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
             />
             {uploadData.file && (
               <p className="mt-2 text-sm text-gray-600">
-                Selected: {uploadData.file.name} ({formatFileSize(uploadData.file.size)})
+                {uploadData.file.name} ({formatFileSize(uploadData.file.size)})
               </p>
             )}
           </div>
@@ -219,9 +221,9 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
             name="description"
             value={uploadData.description}
             onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
-            label="Description (Optional)"
+            label={`${t('common.description')} (${t('common.optional')})`}
             rows={3}
-            placeholder="Add a description for this photo"
+            placeholder={t('common.description')}
           />
         </div>
 
@@ -233,10 +235,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
               setUploadData({ file: null, description: '' });
             }}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleUpload} disabled={loading || !uploadData.file}>
-            Upload
+            {t('common.add')}
           </Button>
         </div>
       </Modal>
@@ -248,15 +250,15 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
           setIsEditOpen(false);
           setSelectedPhoto(null);
         }}
-        title="Edit Photo Description"
+        title={t('photoGallery.editDescription')}
       >
         <TextArea
           name="description"
           value={editDescription}
           onChange={(e) => setEditDescription(e.target.value)}
-          label="Description"
+          label={t('common.description')}
           rows={3}
-          placeholder="Add a description for this photo"
+          placeholder={t('common.description')}
         />
 
         <div className="flex justify-end space-x-3 mt-6">
@@ -267,10 +269,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
               setSelectedPhoto(null);
             }}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleUpdateDescription} disabled={loading}>
-            Update
+            {t('common.update')}
           </Button>
         </div>
       </Modal>
@@ -282,11 +284,11 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
           setIsDeleteOpen(false);
           setSelectedPhoto(null);
         }}
-        title="Delete Photo"
+        title={t('photoGallery.deletePhoto')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this photo? This action cannot be undone.
+          {t('photoGallery.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button
@@ -296,10 +298,10 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
               setSelectedPhoto(null);
             }}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </Modal>
@@ -311,7 +313,7 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
           setIsViewOpen(false);
           setSelectedPhoto(null);
         }}
-        title={selectedPhoto?.originalName || 'Photo'}
+        title={selectedPhoto?.originalName || t('photoGallery.title')}
         size="lg"
       >
         {selectedPhoto && (
@@ -323,24 +325,24 @@ const PhotoGallery: React.FC<PhotoGalleryProps> = ({ systemId, systemName, class
             />
             {selectedPhoto.description && (
               <div>
-                <h4 className="text-sm font-medium text-gray-700">Description:</h4>
+                <h4 className="text-sm font-medium text-gray-700">{t('common.description')}:</h4>
                 <p className="text-sm text-gray-600 mt-1">{selectedPhoto.description}</p>
               </div>
             )}
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="text-gray-500">File size:</span>
+                <span className="text-gray-500">{t('common.type')}:</span>
                 <span className="ml-2 text-gray-900">{formatFileSize(selectedPhoto.fileSize)}</span>
               </div>
               <div>
-                <span className="text-gray-500">Uploaded:</span>
+                <span className="text-gray-500">{t('common.date')}:</span>
                 <span className="ml-2 text-gray-900">
                   {new Date(selectedPhoto.createdAt).toLocaleDateString()}
                 </span>
               </div>
               {selectedPhoto.uploader && (
                 <div className="col-span-2">
-                  <span className="text-gray-500">Uploaded by:</span>
+                  <span className="text-gray-500">{t('common.name')}:</span>
                   <span className="ml-2 text-gray-900">{selectedPhoto.uploader.name}</span>
                 </div>
               )}

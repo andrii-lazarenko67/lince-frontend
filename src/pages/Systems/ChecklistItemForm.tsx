@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createChecklistItem, updateChecklistItem } from '../../store/slices/checklistItemSlice';
 import { Input, Button, Modal, TextArea } from '../../components/common';
@@ -17,6 +18,7 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
   systemId,
   checklistItem
 }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.ui);
 
@@ -78,7 +80,7 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.name.trim()) newErrors.name = t('common.required');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -112,7 +114,7 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={checklistItem ? 'Edit Checklist Item' : 'Add Checklist Item'}
+      title={checklistItem ? t('checklistItems.editChecklistItem') : t('checklistItems.addChecklistItem')}
       size="lg"
     >
       <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
@@ -120,8 +122,8 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
           name="name"
           value={formData.name}
           onChange={handleChange}
-          label="Name"
-          placeholder="Enter checklist item name"
+          label={t('common.name')}
+          placeholder={t('common.name')}
           error={errors.name}
           required
         />
@@ -130,8 +132,8 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
           name="description"
           value={formData.description || ''}
           onChange={handleChange}
-          label="Description (Optional)"
-          placeholder="Enter checklist item description"
+          label={`${t('common.description')} (${t('common.optional')})`}
+          placeholder={t('common.description')}
           rows={3}
         />
 
@@ -140,8 +142,8 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
           name="order"
           value={formData.order?.toString() ?? '0'}
           onChange={handleChange}
-          label="Display Order"
-          placeholder="Enter display order"
+          label={t('checklistItems.displayOrder')}
+          placeholder={t('checklistItems.displayOrder')}
           min={0}
         />
 
@@ -155,17 +157,17 @@ const ChecklistItemForm: React.FC<ChecklistItemFormProps> = ({
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <span className="text-sm font-medium text-gray-700">
-              Required item (must be checked during inspection)
+              {t('checklistItems.requiredItem')}
             </span>
           </label>
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
           <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? (checklistItem ? 'Updating...' : 'Creating...') : `${checklistItem ? 'Update' : 'Create'} Checklist Item`}
+            {loading ? t('common.loading') : checklistItem ? t('common.update') : t('common.create')}
           </Button>
         </div>
       </form>

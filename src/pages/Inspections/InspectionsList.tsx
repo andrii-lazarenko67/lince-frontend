@@ -1,20 +1,22 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppNavigation } from '../../hooks';
 import { Table, Badge } from '../../components/common';
 import type { Inspection } from '../../types';
 
 const InspectionsList: React.FC = () => {
+  const { t } = useTranslation();
   const { inspections } = useAppSelector((state) => state.inspections);
   const { goToInspectionDetail } = useAppNavigation();
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="warning">Pending</Badge>;
+        return <Badge variant="warning">{t('inspections.status.pending')}</Badge>;
       case 'approved':
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge variant="success">{t('inspections.status.approved')}</Badge>;
       case 'rejected':
-        return <Badge variant="danger">Rejected</Badge>;
+        return <Badge variant="danger">{t('inspections.status.rejected')}</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -23,7 +25,7 @@ const InspectionsList: React.FC = () => {
   const columns = [
     {
       key: 'date',
-      header: 'Date',
+      header: t('inspections.list.date'),
       render: (inspection: Inspection) => (
         <span className="font-medium text-gray-900">
           {new Date(inspection.date).toLocaleDateString()}
@@ -32,31 +34,31 @@ const InspectionsList: React.FC = () => {
     },
     {
       key: 'system',
-      header: 'System',
+      header: t('inspections.list.system'),
       render: (inspection: Inspection) => inspection.system?.name || '-'
     },
     {
       key: 'user',
-      header: 'Inspector',
+      header: t('inspections.list.inspector'),
       render: (inspection: Inspection) => inspection.user?.name || '-'
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('inspections.list.status'),
       render: (inspection: Inspection) => getStatusBadge(inspection.status)
     },
     {
       key: 'items',
-      header: 'Items',
+      header: t('inspections.list.items'),
       render: (inspection: Inspection) => {
         const total = inspection.items?.length || 0;
         const conforme = inspection.items?.filter(i => i.status === 'C').length || 0;
         const noConforme = inspection.items?.filter(i => i.status === 'NC').length || 0;
         return (
           <div className="flex items-center space-x-2">
-            <span>{conforme}/{total} conforme</span>
+            <span>{conforme}/{total} {t('inspections.list.conforme')}</span>
             {noConforme > 0 && (
-              <Badge variant="danger">{noConforme} NC</Badge>
+              <Badge variant="danger">{noConforme} {t('inspections.list.nc')}</Badge>
             )}
           </div>
         );
@@ -64,7 +66,7 @@ const InspectionsList: React.FC = () => {
     },
     {
       key: 'createdAt',
-      header: 'Created',
+      header: t('inspections.list.created'),
       render: (inspection: Inspection) => new Date(inspection.createdAt).toLocaleString()
     }
   ];
@@ -75,7 +77,7 @@ const InspectionsList: React.FC = () => {
       data={inspections}
       keyExtractor={(inspection) => inspection.id}
       onRowClick={(inspection) => goToInspectionDetail(inspection.id)}
-      emptyMessage="No inspections found. Click 'New Inspection' to create one."
+      emptyMessage={t('inspections.list.emptyMessage')}
     />
   );
 };

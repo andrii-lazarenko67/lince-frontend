@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Table as MuiTable,
   TableBody,
@@ -31,8 +32,10 @@ function Table<T>({
   data,
   keyExtractor,
   onRowClick,
-  emptyMessage = 'No data available',
+  emptyMessage,
 }: TableProps<T>) {
+  const { t } = useTranslation();
+  const defaultEmptyMessage = emptyMessage || t('common.noDataAvailable');
   return (
     <TableContainer
       component={Paper}
@@ -92,7 +95,7 @@ function Table<T>({
                 sx={{ py: 6, borderBottom: 'none' }}
               >
                 <Typography color="text.secondary" variant="body2">
-                  {emptyMessage}
+                  {defaultEmptyMessage}
                 </Typography>
               </TableCell>
             </TableRow>

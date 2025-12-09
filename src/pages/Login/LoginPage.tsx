@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { login } from '../../store/slices/authSlice';
 import { Input, Button, Alert } from '../../components/common';
 import { GlobalLoader } from '../../components/common';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { token, error } = useAppSelector((state) => state.auth);
   const { goToDashboard } = useAppNavigation();
@@ -33,7 +36,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      setFormError('Please fill in all fields');
+      setFormError(t('login.fillAllFields'));
       return;
     }
 
@@ -46,17 +49,20 @@ const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <GlobalLoader />
+      <div className="absolute top-4 right-4">
+        <LanguageSwitcher />
+      </div>
       <div className="max-w-md w-full mx-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-blue-600">LINCE</h1>
-            <p className="text-gray-500 mt-2">Water Treatment Monitoring Platform</p>
+            <h1 className="text-3xl font-bold text-blue-600">{t('login.title')}</h1>
+            <p className="text-gray-500 mt-2">{t('login.subtitle')}</p>
           </div>
 
           {(error || formError) && (
             <Alert
               type="error"
-              message={formError || error || 'An error occurred'}
+              message={formError || error || t('login.errorOccurred')}
               className="mb-4"
             />
           )}
@@ -67,8 +73,8 @@ const LoginPage: React.FC = () => {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              label="Email"
-              placeholder="Enter your email"
+              label={t('login.emailLabel')}
+              placeholder={t('login.emailPlaceholder')}
               required
               autoComplete="email"
             />
@@ -78,19 +84,19 @@ const LoginPage: React.FC = () => {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              label="Password"
-              placeholder="Enter your password"
+              label={t('login.passwordLabel')}
+              placeholder={t('login.passwordPlaceholder')}
               required
               autoComplete="current-password"
             />
 
             <Button type="submit" variant="primary" fullWidth className="mt-6">
-              Sign In
+              {t('login.signInButton')}
             </Button>
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            Water Treatment Monitoring System
+            {t('login.footer')}
           </p>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppNavigation } from '../../hooks';
 import { Card, Badge } from '../../components/common';
 
 const AlertsSection: React.FC = () => {
+  const { t } = useTranslation();
   const { alerts } = useAppSelector((state) => state.dashboard);
   const { goToIncidentDetail, goToProductDetail, goToDailyLogDetail } = useAppNavigation();
 
@@ -23,13 +25,13 @@ const AlertsSection: React.FC = () => {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return <Badge variant="danger">Critical</Badge>;
+        return <Badge variant="danger">{t('incidents.critical')}</Badge>;
       case 'high':
-        return <Badge variant="warning">High</Badge>;
+        return <Badge variant="warning">{t('incidents.high')}</Badge>;
       case 'medium':
-        return <Badge variant="info">Medium</Badge>;
+        return <Badge variant="info">{t('incidents.medium')}</Badge>;
       case 'low':
-        return <Badge variant="secondary">Low</Badge>;
+        return <Badge variant="secondary">{t('incidents.low')}</Badge>;
       default:
         return <Badge variant="secondary">{priority}</Badge>;
     }
@@ -61,9 +63,9 @@ const AlertsSection: React.FC = () => {
   };
 
   return (
-    <Card title="Active Alerts">
+    <Card title={t('monitoringPoints.alerts')}>
       {alerts.length === 0 ? (
-        <p className="text-gray-500 text-center py-4">No active alerts</p>
+        <p className="text-gray-500 text-center py-4">{t('common.noData')}</p>
       ) : (
         <div className="space-y-3">
           {alerts.map((alert, index) => (

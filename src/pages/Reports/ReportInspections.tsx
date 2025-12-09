@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import type { ReportData } from '../../types';
 
@@ -14,6 +15,7 @@ interface DonutChartProps {
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -21,7 +23,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
     return (
       <div className="flex flex-col items-center">
         <div className="rounded-full bg-gray-100 flex items-center justify-center" style={{ width: size, height: size }}>
-          <span className="text-gray-400 text-sm">No data</span>
+          <span className="text-gray-400 text-sm">{t('common.noData')}</span>
         </div>
         <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       </div>
@@ -84,7 +86,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
           )
         ))}
         <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>Total</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('reports.statistics.total')}</text>
 
         {/* Detailed Tooltip */}
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
@@ -204,13 +206,14 @@ interface HorizontalBarChartProps {
 }
 
 const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => {
+  const { t } = useTranslation();
   const [hoveredItem, setHoveredItem] = React.useState<{ index: number; type: 'pass' | 'fail' | 'na' } | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
       </div>
     );
   }
@@ -286,7 +289,7 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title }) 
                       }}
                     />
                     <span className="text-white text-xs font-bold">
-                      {hoveredItem.type === 'pass' ? 'Pass' : hoveredItem.type === 'fail' ? 'Fail' : 'N/A'}
+                      {hoveredItem.type === 'pass' ? t('inspections.charts.compliantC') : hoveredItem.type === 'fail' ? t('inspections.charts.nonCompliantNC') : t('inspections.charts.notApplicableNA')}
                     </span>
                   </div>
                   <div className="text-xs text-gray-400">
@@ -311,9 +314,9 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title }) 
         })}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-green-500" /><span className="text-xs text-gray-600">Pass</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">Fail</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-400" /><span className="text-xs text-gray-600">N/A</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-green-500" /><span className="text-xs text-gray-600">{t('inspections.charts.compliantC')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('inspections.charts.nonCompliantNC')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-gray-400" /><span className="text-xs text-gray-600">{t('inspections.charts.notApplicableNA')}</span></div>
       </div>
     </div>
   );
@@ -328,6 +331,7 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color = '#3b82f6' }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(0);
@@ -348,7 +352,7 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
         <div className="flex items-center justify-center bg-gray-50 rounded-lg" style={{ height }}>
-          <span className="text-gray-400">No data</span>
+          <span className="text-gray-400">{t('common.noData')}</span>
         </div>
       </div>
     );
@@ -478,6 +482,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
 };
 
 const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
+  const { t } = useTranslation();
+
   // Status counts
   const pendingCount = report.inspections.filter(i => i.status === 'pending').length;
   const completedCount = report.inspections.filter(i => i.status === 'completed').length;
@@ -485,9 +491,9 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
 
   // Status donut chart
   const statusData = [
-    { label: 'Approved', value: approvedCount, color: '#22c55e' },
-    { label: 'Completed', value: completedCount, color: '#3b82f6' },
-    { label: 'Pending', value: pendingCount, color: '#eab308' }
+    { label: t('reports.statistics.approved'), value: approvedCount, color: '#22c55e' },
+    { label: t('reports.statistics.completed'), value: completedCount, color: '#3b82f6' },
+    { label: t('reports.statistics.pending'), value: pendingCount, color: '#eab308' }
   ];
 
   // Items status counts
@@ -502,16 +508,16 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
   });
 
   const itemsStatusData = [
-    { label: 'C (Pass)', value: totalPass, color: '#22c55e' },
-    { label: 'NC (Fail)', value: totalFail, color: '#ef4444' },
-    { label: 'NA', value: totalNa, color: '#9ca3af' },
-    { label: 'NV', value: totalNv, color: '#fbbf24' }
+    { label: t('inspections.charts.compliantC'), value: totalPass, color: '#22c55e' },
+    { label: t('inspections.charts.nonCompliantNC'), value: totalFail, color: '#ef4444' },
+    { label: t('inspections.charts.notApplicableNA'), value: totalNa, color: '#9ca3af' },
+    { label: t('inspections.charts.notVerifiedNV'), value: totalNv, color: '#fbbf24' }
   ];
 
   // Inspections by system
   const systemMap = new Map<string, number>();
   report.inspections.forEach(insp => {
-    const systemName = insp.system?.name || 'Unknown';
+    const systemName = insp.system?.name || t('inspections.charts.unknown');
     systemMap.set(systemName, (systemMap.get(systemName) || 0) + 1);
   });
   const bySystemData = Array.from(systemMap.entries()).map(([label, value]) => ({
@@ -523,7 +529,7 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
   // Inspections by user
   const userMap = new Map<string, number>();
   report.inspections.forEach(insp => {
-    const userName = insp.user?.name || 'Unknown';
+    const userName = insp.user?.name || t('inspections.charts.unknown');
     userMap.set(userName, (userMap.get(userName) || 0) + 1);
   });
   const byUserData = Array.from(userMap.entries()).map(([label, value]) => ({
@@ -561,65 +567,65 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
 
   return (
     <div className="space-y-6">
-      <Card title="Inspections Overview">
+      <Card title={t('inspections.charts.overviewCard')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{report.inspections.length}</p>
-            <p className="text-sm text-blue-700">Total Inspections</p>
+            <p className="text-sm text-blue-700">{t('inspections.charts.totalInspections')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{approvedCount}</p>
-            <p className="text-sm text-green-700">Approved</p>
+            <p className="text-sm text-green-700">{t('inspections.charts.approved')}</p>
           </div>
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
             <p className="text-3xl font-bold text-indigo-600">{completedCount}</p>
-            <p className="text-sm text-indigo-700">Completed</p>
+            <p className="text-sm text-indigo-700">{t('reports.statistics.completed')}</p>
           </div>
           <div className="text-center p-4 bg-yellow-50 rounded-lg">
             <p className="text-3xl font-bold text-yellow-600">{pendingCount}</p>
-            <p className="text-sm text-yellow-700">Pending</p>
+            <p className="text-sm text-yellow-700">{t('inspections.charts.pending')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Inspection Status">
+        <Card title={t('inspections.charts.statusDistribution')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={statusData} title="By Status" size={200} />
+            <DonutChart data={statusData} title={t('inspections.charts.inspectionsByStatus')} size={200} />
           </div>
         </Card>
 
-        <Card title="Checklist Items Status">
+        <Card title={t('inspections.charts.checklistResults')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={itemsStatusData} title="Pass / Fail / N/A" size={200} />
+            <DonutChart data={itemsStatusData} title={t('inspections.charts.allChecklistItems')} size={200} />
           </div>
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Inspections by System">
+        <Card title={t('inspections.charts.bySystem')}>
           {bySystemData.length > 0 ? (
-            <BarChart data={bySystemData} title="Number per system" height={220} />
+            <BarChart data={bySystemData} title={t('inspections.charts.inspectionsPerSystem')} height={220} />
           ) : (
-            <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+            <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
           )}
         </Card>
 
-        <Card title="Inspections by User">
+        <Card title={t('inspections.charts.byInspector')}>
           {byUserData.length > 0 ? (
-            <BarChart data={byUserData} title="Number per user" height={220} />
+            <BarChart data={byUserData} title={t('inspections.charts.inspectionsPerInspector')} height={220} />
           ) : (
-            <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+            <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
           )}
         </Card>
       </div>
 
-      <Card title="Inspections Over Time">
-        <LineChart data={overTimeData} title="Inspection trend" height={200} color="#3b82f6" />
+      <Card title={t('inspections.charts.overTime')}>
+        <LineChart data={overTimeData} title={t('inspections.charts.recentTrend')} height={200} color="#3b82f6" />
       </Card>
 
-      <Card title="Checklist Results by System">
-        <HorizontalBarChart data={itemsBySystemData} title="Pass/Fail/N/A breakdown" />
+      <Card title={t('inspections.charts.resultsBySystem')}>
+        <HorizontalBarChart data={itemsBySystemData} title={t('inspections.charts.breakdownPerSystem')} />
       </Card>
     </div>
   );

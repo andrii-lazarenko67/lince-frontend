@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Backdrop, CircularProgress, Paper, Typography, Box } from '@mui/material';
 import { useAppSelector } from '../../hooks';
 
 const GlobalLoader: React.FC = () => {
+  const { t } = useTranslation();
   const { loading } = useAppSelector((state) => state.ui);
 
   if (!loading) return null;
@@ -25,7 +27,7 @@ const GlobalLoader: React.FC = () => {
         <CircularProgress size={48} />
         <Box mt={2}>
           <Typography variant="body1" color="text.secondary">
-            Loading...
+            {t('common.loading')}
           </Typography>
         </Box>
       </Paper>

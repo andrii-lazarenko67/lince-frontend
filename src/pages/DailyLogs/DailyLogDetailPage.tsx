@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDailyLogById } from '../../store/slices/dailyLogSlice';
@@ -6,6 +7,7 @@ import { Card, Badge, Table } from '../../components/common';
 import type { DailyLogEntry } from '../../types';
 
 const DailyLogDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentDailyLog } = useAppSelector((state) => state.dailyLogs);
@@ -20,7 +22,7 @@ const DailyLogDetailPage: React.FC = () => {
   const entryColumns = [
     {
       key: 'monitoringPoint',
-      header: 'Monitoring Point',
+      header: t('dailyLogs.detail.monitoringPoint'),
       render: (entry: DailyLogEntry) => (
         <span className="font-medium text-gray-900">
           {entry.monitoringPoint?.name || '-'}
@@ -29,12 +31,12 @@ const DailyLogDetailPage: React.FC = () => {
     },
     {
       key: 'parameter',
-      header: 'Parameter',
+      header: t('dailyLogs.detail.parameter'),
       render: (entry: DailyLogEntry) => entry.monitoringPoint?.parameterObj?.name || '-'
     },
     {
       key: 'value',
-      header: 'Value',
+      header: t('dailyLogs.detail.value'),
       render: (entry: DailyLogEntry) => (
         <span className={entry.isOutOfRange ? 'text-red-600 font-medium' : ''}>
           {entry.value}
@@ -44,27 +46,27 @@ const DailyLogDetailPage: React.FC = () => {
     },
     {
       key: 'range',
-      header: 'Expected Range',
+      header: t('dailyLogs.detail.expectedRange'),
       render: (entry: DailyLogEntry) => {
         const mp = entry.monitoringPoint;
         if (mp && mp.minValue !== null && mp.maxValue !== null) {
           return `${mp.minValue} - ${mp.maxValue}`;
         }
-        return <span className="text-gray-400">N/A</span>;
+        return <span className="text-gray-400">{t('dailyLogs.detail.na')}</span>;
       }
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('dailyLogs.detail.status'),
       render: (entry: DailyLogEntry) => (
         <Badge variant={entry.isOutOfRange ? 'danger' : 'success'}>
-          {entry.isOutOfRange ? 'Out of Range' : 'Normal'}
+          {entry.isOutOfRange ? t('dailyLogs.detail.outOfRange') : t('dailyLogs.detail.normal')}
         </Badge>
       )
     },
     {
       key: 'notes',
-      header: 'Notes',
+      header: t('dailyLogs.detail.notes'),
       render: (entry: DailyLogEntry) => entry.notes || '-'
     }
   ];
@@ -72,7 +74,7 @@ const DailyLogDetailPage: React.FC = () => {
   if (!currentDailyLog) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Loading daily log details...</p>
+        <p className="text-gray-500">{t('dailyLogs.detail.loading')}</p>
       </div>
     );
   }
@@ -88,61 +90,61 @@ const DailyLogDetailPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Daily Record Details</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('dailyLogs.detail.title')}</h1>
           <p className="text-gray-500 mt-1">
-            {currentDailyLog.recordType === 'field' ? 'Field Record' : 'Laboratory Record'} - {new Date(currentDailyLog.date).toLocaleDateString()} - {currentDailyLog.system?.name}
+            {currentDailyLog.recordType === 'field' ? t('dailyLogs.recordType.field') : t('dailyLogs.recordType.laboratory')} - {new Date(currentDailyLog.date).toLocaleDateString()} - {currentDailyLog.system?.name}
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Record Information" className="lg:col-span-1">
+        <Card title={t('dailyLogs.detail.recordInformation')} className="lg:col-span-1">
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Record Type</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.recordType')}</dt>
               <dd className="mt-1">
                 <Badge variant={currentDailyLog.recordType === 'field' ? 'primary' : 'info'}>
-                  {currentDailyLog.recordType === 'field' ? 'Field Record' : 'Laboratory Record'}
+                  {currentDailyLog.recordType === 'field' ? t('dailyLogs.recordType.field') : t('dailyLogs.recordType.laboratory')}
                 </Badge>
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">System</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.system')}</dt>
               <dd className="mt-1 text-gray-900">{currentDailyLog.system?.name}</dd>
             </div>
             {currentDailyLog.stage && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Stage</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.stage')}</dt>
                 <dd className="mt-1 text-gray-900">{currentDailyLog.stage.name}</dd>
               </div>
             )}
             <div>
-              <dt className="text-sm font-medium text-gray-500">Date</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.date')}</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentDailyLog.date).toLocaleDateString()}
               </dd>
             </div>
             {currentDailyLog.period && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Period</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.period')}</dt>
                 <dd className="mt-1 text-gray-900">{currentDailyLog.period}</dd>
               </div>
             )}
             {currentDailyLog.time && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Time</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.time')}</dt>
                 <dd className="mt-1 text-gray-900">{currentDailyLog.time}</dd>
               </div>
             )}
             {currentDailyLog.recordType === 'laboratory' && (
               <>
                 <div>
-                  <dt className="text-sm font-medium text-gray-500">Laboratory</dt>
+                  <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.laboratory')}</dt>
                   <dd className="mt-1 text-gray-900">{currentDailyLog.laboratory}</dd>
                 </div>
                 {currentDailyLog.collectionDate && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Collection Date</dt>
+                    <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.collectionDate')}</dt>
                     <dd className="mt-1 text-gray-900">
                       {new Date(currentDailyLog.collectionDate).toLocaleDateString()}
                     </dd>
@@ -150,41 +152,41 @@ const DailyLogDetailPage: React.FC = () => {
                 )}
                 {currentDailyLog.collectionTime && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Collection Time</dt>
+                    <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.collectionTime')}</dt>
                     <dd className="mt-1 text-gray-900">{currentDailyLog.collectionTime}</dd>
                   </div>
                 )}
               </>
             )}
             <div>
-              <dt className="text-sm font-medium text-gray-500">Recorded By</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.recordedBy')}</dt>
               <dd className="mt-1 text-gray-900">{currentDailyLog.user?.name}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.status')}</dt>
               <dd className="mt-1">
                 {outOfRangeCount > 0 ? (
-                  <Badge variant="danger">{outOfRangeCount} out of range</Badge>
+                  <Badge variant="danger">{t('dailyLogs.detail.outOfRangeCount', { count: outOfRangeCount })}</Badge>
                 ) : (
-                  <Badge variant="success">All values normal</Badge>
+                  <Badge variant="success">{t('dailyLogs.detail.allNormal')}</Badge>
                 )}
               </dd>
             </div>
             {currentDailyLog.notes && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Notes</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('dailyLogs.detail.notes')}</dt>
                 <dd className="mt-1 text-gray-900">{currentDailyLog.notes}</dd>
               </div>
             )}
           </dl>
         </Card>
 
-        <Card title="Monitoring Entries" className="lg:col-span-2" noPadding>
+        <Card title={t('dailyLogs.detail.monitoringEntries')} className="lg:col-span-2" noPadding>
           <Table
             columns={entryColumns}
             data={currentDailyLog.entries || []}
             keyExtractor={(entry) => entry.id}
-            emptyMessage="No entries recorded for this log."
+            emptyMessage={t('dailyLogs.detail.noEntries')}
           />
         </Card>
       </div>

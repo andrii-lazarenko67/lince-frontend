@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, FormHelperText } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
@@ -23,6 +24,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   className = '',
   maxSize = 10 * 1024 * 1024
 }) => {
+  const { t } = useTranslation();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +32,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     const validFiles = files.filter(file => file.size <= maxSize);
 
     if (validFiles.length !== files.length) {
-      alert(`Some files exceed the maximum size of ${maxSize / (1024 * 1024)}MB`);
+      alert(t('common.fileUpload.sizeExceeded', { size: maxSize / (1024 * 1024) }));
     }
 
     onChange(validFiles);
@@ -42,7 +44,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
     const validFiles = files.filter(file => file.size <= maxSize);
 
     if (validFiles.length !== files.length) {
-      alert(`Some files exceed the maximum size of ${maxSize / (1024 * 1024)}MB`);
+      alert(t('common.fileUpload.sizeExceeded', { size: maxSize / (1024 * 1024) }));
     }
 
     onChange(validFiles);
@@ -79,10 +81,10 @@ const FileUpload: React.FC<FileUploadProps> = ({
       >
         <CloudUploadIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
         <Typography variant="body2" color="text.secondary">
-          Click to upload or drag and drop
+          {t('common.fileUpload.clickOrDrag')}
         </Typography>
         <Typography variant="caption" color="text.secondary" display="block" mt={0.5}>
-          {multiple ? 'Multiple files allowed' : 'Single file'} - Max {maxSize / (1024 * 1024)}MB
+          {multiple ? t('common.fileUpload.multipleFiles') : t('common.fileUpload.singleFile')} - {t('common.fileUpload.maxSize', { size: maxSize / (1024 * 1024) })}
         </Typography>
         <input
           ref={inputRef}

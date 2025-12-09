@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDocuments, uploadDocument, searchDocuments } from '../../store/slices/librarySlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -6,6 +7,7 @@ import { Card, Button, Input, Select, Table, Badge, Modal, TextArea, FileUpload 
 import type { Document } from '../../types';
 
 const LibraryPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { documents } = useAppSelector((state) => state.library);
   const { systems } = useAppSelector((state) => state.systems);
@@ -42,7 +44,7 @@ const LibraryPage: React.FC = () => {
 
   const handleUpload = async () => {
     if (!selectedFile || !uploadData.title || !uploadData.category) {
-      alert('Please provide a title, category, and select a file');
+      alert(t('library.validationRequired'));
       return;
     }
 
@@ -64,59 +66,59 @@ const LibraryPage: React.FC = () => {
   const getCategoryBadge = (category: string) => {
     switch (category) {
       case 'manual':
-        return <Badge variant="primary">Manual</Badge>;
+        return <Badge variant="primary">{t('library.categories.manual')}</Badge>;
       case 'sop':
-        return <Badge variant="info">SOP</Badge>;
+        return <Badge variant="info">{t('library.categories.sop')}</Badge>;
       case 'datasheet':
-        return <Badge variant="warning">Datasheet</Badge>;
+        return <Badge variant="warning">{t('library.categories.datasheet')}</Badge>;
       case 'report':
-        return <Badge variant="success">Report</Badge>;
+        return <Badge variant="success">{t('library.categories.report')}</Badge>;
       default:
-        return <Badge variant="secondary">{category || 'Other'}</Badge>;
+        return <Badge variant="secondary">{category || t('library.categories.other')}</Badge>;
     }
   };
 
   const columns = [
     {
       key: 'title',
-      header: 'Title',
+      header: t('library.table.title'),
       render: (doc: Document) => (
         <span className="font-medium text-gray-900">{doc.title}</span>
       )
     },
     {
       key: 'category',
-      header: 'Category',
+      header: t('library.table.category'),
       render: (doc: Document) => getCategoryBadge(doc.category || '')
     },
     {
       key: 'system',
-      header: 'System',
+      header: t('library.table.system'),
       render: (doc: Document) => doc.system?.name || '-'
     },
     {
       key: 'fileType',
-      header: 'Type',
+      header: t('library.table.type'),
       render: (doc: Document) => doc.fileType?.toUpperCase() || '-'
     },
     {
       key: 'version',
-      header: 'Version',
+      header: t('library.table.version'),
       render: (doc: Document) => doc.version || '1'
     },
     {
       key: 'updatedAt',
-      header: 'Last Updated',
+      header: t('library.table.lastUpdated'),
       render: (doc: Document) => new Date(doc.updatedAt).toLocaleDateString()
     }
   ];
 
   const categoryOptions = [
-    { value: 'manual', label: 'Manual' },
-    { value: 'sop', label: 'SOP' },
-    { value: 'datasheet', label: 'Datasheet' },
-    { value: 'report', label: 'Report' },
-    { value: 'other', label: 'Other' }
+    { value: 'manual', label: t('library.categories.manual') },
+    { value: 'sop', label: t('library.categories.sop') },
+    { value: 'datasheet', label: t('library.categories.datasheet') },
+    { value: 'report', label: t('library.categories.report') },
+    { value: 'other', label: t('library.categories.other') }
   ];
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
@@ -125,11 +127,11 @@ const LibraryPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Document Library</h1>
-          <p className="text-gray-500 mt-1">Manage manuals, SOPs, and documents</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('library.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('library.description')}</p>
         </div>
         <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
-          Upload Document
+          {t('library.uploadDocument')}
         </Button>
       </div>
 
@@ -141,8 +143,8 @@ const LibraryPage: React.FC = () => {
               name="search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search documents..."
-              label="Search"
+              placeholder={t('library.searchPlaceholder')}
+              label={t('library.search')}
             />
           </div>
 
@@ -151,12 +153,12 @@ const LibraryPage: React.FC = () => {
             value={categoryFilter}
             onChange={(e) => handleFilterChange(e.target.value)}
             options={categoryOptions}
-            label="Category"
-            placeholder="All Categories"
+            label={t('library.categoryLabel')}
+            placeholder={t('library.allCategories')}
           />
 
           <Button variant="primary" onClick={handleSearch}>
-            Search
+            {t('library.searchButton')}
           </Button>
         </div>
       </div>
@@ -167,19 +169,19 @@ const LibraryPage: React.FC = () => {
           data={documents}
           keyExtractor={(doc) => doc.id}
           onRowClick={(doc) => goToDocumentDetail(doc.id)}
-          emptyMessage="No documents found. Click 'Upload Document' to add one."
+          emptyMessage={t('library.emptyMessage')}
         />
       </Card>
 
-      <Modal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} title="Upload Document" size="lg">
+      <Modal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} title={t('library.uploadDocument')} size="lg">
         <div className="flex flex-col gap-10">
           <Input
             type="text"
             name="title"
             value={uploadData.title}
             onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
-            label="Title"
-            placeholder="Enter document title"
+            label={t('library.modal.title')}
+            placeholder={t('library.modal.titlePlaceholder')}
             required
           />
 
@@ -188,8 +190,8 @@ const LibraryPage: React.FC = () => {
             value={uploadData.category}
             onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
             options={categoryOptions}
-            label="Category"
-            placeholder="Select category"
+            label={t('library.modal.category')}
+            placeholder={t('library.modal.categoryPlaceholder')}
           />
 
           <Select
@@ -197,22 +199,22 @@ const LibraryPage: React.FC = () => {
             value={uploadData.systemId}
             onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value })}
             options={systemOptions}
-            label="Related System (Optional)"
-            placeholder="Select system"
+            label={t('library.modal.relatedSystem')}
+            placeholder={t('library.modal.systemPlaceholder')}
           />
 
           <TextArea
             name="description"
             value={uploadData.description}
             onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
-            label="Description"
-            placeholder="Enter document description"
+            label={t('library.modal.description')}
+            placeholder={t('library.modal.descriptionPlaceholder')}
             rows={3}
           />
 
           <FileUpload
             name="file"
-            label="Document File"
+            label={t('library.modal.documentFile')}
             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
             onChange={(files) => setSelectedFile(files[0] || null)}
           />
@@ -220,16 +222,16 @@ const LibraryPage: React.FC = () => {
 
         {selectedFile && (
           <p className="text-sm text-gray-500 mt-2">
-            Selected: {selectedFile.name}
+            {t('library.modal.selected')}: {selectedFile.name}
           </p>
         )}
 
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={() => setIsUploadOpen(false)}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleUpload}>
-            Upload
+            {t('library.modal.upload')}
           </Button>
         </div>
       </Modal>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createMonitoringPoint, updateMonitoringPoint } from '../../store/slices/monitoringPointSlice';
 import { fetchParameters } from '../../store/slices/parameterSlice';
@@ -19,6 +20,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   systemId,
   monitoringPoint
 }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { parameters } = useAppSelector((state) => state.parameters);
   const { units } = useAppSelector((state) => state.units);
@@ -104,12 +106,12 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.parameterId || formData.parameterId === 0) newErrors.parameterId = 'Parameter is required';
+    if (!formData.name.trim()) newErrors.name = t('common.required');
+    if (!formData.parameterId || formData.parameterId === 0) newErrors.parameterId = t('common.required');
     // Unit is now optional - no validation required
     if (formData.minValue !== undefined && formData.maxValue !== undefined) {
       if (formData.minValue >= formData.maxValue) {
-        newErrors.minValue = 'Min value must be less than max value';
+        newErrors.minValue = t('monitoringPoints.validation.minLessThanMax');
       }
     }
     setErrors(newErrors);
@@ -164,7 +166,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={monitoringPoint ? 'Edit Monitoring Point' : 'Add Monitoring Point'}
+      title={monitoringPoint ? t('monitoringPoints.editMonitoringPoint') : t('monitoringPoints.addMonitoringPoint')}
       size="lg"
     >
       <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
@@ -172,8 +174,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
           name="name"
           value={formData.name}
           onChange={handleChange}
-          label="Name"
-          placeholder="Enter monitoring point name"
+          label={t('common.name')}
+          placeholder={t('common.name')}
           error={errors.name}
           required
         />
@@ -183,8 +185,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
           value={formData.parameterId.toString()}
           onChange={handleChange}
           options={parameterOptions}
-          label="Parameter"
-          placeholder="Select parameter"
+          label={t('monitoringPoints.parameter')}
+          placeholder={t('monitoringPoints.parameter')}
           error={errors.parameterId}
           required
         />
@@ -194,11 +196,11 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
           value={formData.unitId?.toString() || ''}
           onChange={handleChange}
           options={[
-            { value: '', label: 'None (N/A)' },
+            { value: '', label: `${t('common.optional')} (N/A)` },
             ...unitOptions
           ]}
-          label="Unit (Optional)"
-          placeholder="Select unit or leave as N/A"
+          label={`${t('monitoringPoints.unit')} (${t('common.optional')})`}
+          placeholder={t('monitoringPoints.unit')}
           error={errors.unitId}
         />
 
@@ -208,8 +210,8 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
             name="minValue"
             value={formData.minValue ?? ''}
             onChange={handleChange}
-            label="Min Value (Optional)"
-            placeholder="Leave empty for N/A"
+            label={`${t('monitoringPoints.minValue')} (${t('common.optional')})`}
+            placeholder={t('common.optional')}
             step="0.01"
             error={errors.minValue}
           />
@@ -219,14 +221,14 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
             name="maxValue"
             value={formData.maxValue ?? ''}
             onChange={handleChange}
-            label="Max Value (Optional)"
-            placeholder="Leave empty for N/A"
+            label={`${t('monitoringPoints.maxValue')} (${t('common.optional')})`}
+            placeholder={t('common.optional')}
             step="0.01"
             error={errors.maxValue}
           />
         </div>
         <p className="text-sm text-gray-500">
-          Leave min/max empty for parameters without a valid range (e.g., Water Meter Reading).
+          {t('monitoringPoints.range')}
         </p>
 
         <div className="mt-4">
@@ -240,22 +242,22 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50"
             />
             <span className={`text-sm font-medium ${hasRange ? 'text-gray-700' : 'text-gray-400'}`}>
-              Enable alerts when out of range
+              {t('monitoringPoints.alertEnabled')}
             </span>
           </label>
           {!hasRange && (
             <p className="text-sm text-gray-400 mt-1 ml-6">
-              Alerts require min and max values to be set.
+              {t('monitoringPoints.alerts')}
             </p>
           )}
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
           <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? (monitoringPoint ? 'Updating...' : 'Creating...') : `${monitoringPoint ? 'Update' : 'Create'} Monitoring Point`}
+            {loading ? t('common.loading') : monitoringPoint ? t('common.update') : t('common.create')}
           </Button>
         </div>
       </form>

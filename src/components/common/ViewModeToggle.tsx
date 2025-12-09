@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ToggleButtonGroup, ToggleButton } from '@mui/material';
 import { TableChart as TableChartIcon, BarChart as BarChartIcon } from '@mui/icons-material';
 
@@ -15,10 +16,13 @@ interface ViewModeToggleProps {
 const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
   value,
   onChange,
-  tableLabel = 'Table',
-  chartLabel = 'Charts',
+  tableLabel,
+  chartLabel,
   className = 'w-100'
 }) => {
+  const { t } = useTranslation();
+  const defaultTableLabel = tableLabel || t('common.viewMode.table');
+  const defaultChartLabel = chartLabel || t('common.viewMode.charts');
   return (
     <ToggleButtonGroup
       value={value}
@@ -60,11 +64,11 @@ const ViewModeToggle: React.FC<ViewModeToggleProps> = ({
     >
       <ToggleButton value="table">
         <TableChartIcon sx={{ fontSize: 18, mr: 0.5 }} />
-        {tableLabel}
+        {defaultTableLabel}
       </ToggleButton>
       <ToggleButton value="chart">
         <BarChartIcon sx={{ fontSize: 18, mr: 0.5 }} />
-        {chartLabel}
+        {defaultChartLabel}
       </ToggleButton>
     </ToggleButtonGroup>
   );

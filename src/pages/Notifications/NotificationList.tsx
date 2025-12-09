@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Notification } from '../../types';
 import { Badge } from '../../components/common';
 
@@ -13,18 +14,20 @@ const NotificationList: React.FC<NotificationListProps> = ({
   onMarkAsRead,
   onNotificationClick
 }) => {
+  const { t } = useTranslation();
+
   const getTypeBadge = (type: string) => {
     switch (type) {
       case 'incident':
-        return <Badge variant="danger">Incident</Badge>;
+        return <Badge variant="danger">{t('notifications.types.incident')}</Badge>;
       case 'alert':
-        return <Badge variant="warning">Alert</Badge>;
+        return <Badge variant="warning">{t('notifications.types.alert')}</Badge>;
       case 'stock':
-        return <Badge variant="warning">Stock</Badge>;
+        return <Badge variant="warning">{t('notifications.types.stock')}</Badge>;
       case 'inspection':
-        return <Badge variant="info">Inspection</Badge>;
+        return <Badge variant="info">{t('notifications.types.inspection')}</Badge>;
       case 'system':
-        return <Badge variant="secondary">System</Badge>;
+        return <Badge variant="secondary">{t('notifications.types.system')}</Badge>;
       default:
         return <Badge variant="secondary">{type}</Badge>;
     }
@@ -68,13 +71,13 @@ const NotificationList: React.FC<NotificationListProps> = ({
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return <Badge variant="danger">Critical</Badge>;
+        return <Badge variant="danger">{t('notifications.priority.critical')}</Badge>;
       case 'high':
-        return <Badge variant="warning">High</Badge>;
+        return <Badge variant="warning">{t('notifications.priority.high')}</Badge>;
       case 'medium':
-        return <Badge variant="info">Medium</Badge>;
+        return <Badge variant="info">{t('notifications.priority.medium')}</Badge>;
       case 'low':
-        return <Badge variant="secondary">Low</Badge>;
+        return <Badge variant="secondary">{t('notifications.priority.low')}</Badge>;
       default:
         return null;
     }
@@ -86,7 +89,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
         <svg className="mx-auto h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
         </svg>
-        <p className="mt-4 text-gray-500">No notifications</p>
+        <p className="mt-4 text-gray-500">{t('notifications.list.noNotifications')}</p>
       </div>
     );
   }
@@ -133,7 +136,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                   }}
                   className="text-blue-600 hover:text-blue-800 text-sm"
                 >
-                  Mark as read
+                  {t('notifications.list.markAsRead')}
                 </button>
               )}
             </div>

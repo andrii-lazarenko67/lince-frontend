@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector } from '../../hooks';
 import { Select, DateInput, Button } from '../../components/common';
 
@@ -21,6 +22,7 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
   onApply,
   onClear
 }) => {
+  const { t } = useTranslation();
   const { systems } = useAppSelector((state) => state.systems);
 
   // Get main systems (no parent)
@@ -41,8 +43,8 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
     : [];
 
   const recordTypeOptions = [
-    { value: 'field', label: 'Field Records' },
-    { value: 'laboratory', label: 'Laboratory Records' }
+    { value: 'field', label: t('dailyLogs.filters.fieldRecords') },
+    { value: 'laboratory', label: t('dailyLogs.filters.laboratoryRecords') }
   ];
 
   return (
@@ -54,8 +56,8 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
             value={filters.recordType}
             onChange={(e) => onChange({ ...filters, recordType: e.target.value, stageId: '' })}
             options={recordTypeOptions}
-            label="Record Type"
-            placeholder="All Types"
+            label={t('dailyLogs.filters.recordType')}
+            placeholder={t('dailyLogs.filters.allTypes')}
           />
         </div>
 
@@ -65,8 +67,8 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
             value={filters.systemId}
             onChange={(e) => onChange({ ...filters, systemId: e.target.value, stageId: '' })}
             options={systemOptions}
-            label="System"
-            placeholder="All Systems"
+            label={t('dailyLogs.filters.system')}
+            placeholder={t('dailyLogs.filters.allSystems')}
           />
         </div>
 
@@ -77,8 +79,8 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
               value={filters.stageId}
               onChange={(e) => onChange({ ...filters, stageId: e.target.value })}
               options={stageOptions}
-              label="Stage"
-              placeholder="All Stages"
+              label={t('dailyLogs.filters.stage')}
+              placeholder={t('dailyLogs.filters.allStages')}
             />
           </div>
         )}
@@ -88,7 +90,7 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
             name="startDate"
             value={filters.startDate}
             onChange={(e) => onChange({ ...filters, startDate: e.target.value })}
-            label="Start Date"
+            label={t('dailyLogs.filters.startDate')}
           />
         </div>
 
@@ -97,16 +99,16 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
             name="endDate"
             value={filters.endDate}
             onChange={(e) => onChange({ ...filters, endDate: e.target.value })}
-            label="End Date"
+            label={t('dailyLogs.filters.endDate')}
           />
         </div>
 
         <div className="flex space-x-2 items-end">
           <Button variant="primary" onClick={onApply} className="flex-1">
-            Apply
+            {t('dailyLogs.filters.apply')}
           </Button>
           <Button variant="outline" onClick={onClear} className="flex-1">
-            Clear
+            {t('dailyLogs.filters.clear')}
           </Button>
         </div>
       </div>

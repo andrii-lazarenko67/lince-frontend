@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import { DonutChart, BarChart, LineChart } from '../../components/charts';
 import type { Incident } from '../../types';
@@ -8,6 +9,7 @@ interface IncidentsChartViewProps {
 }
 
 const IncidentsChartView: React.FC<IncidentsChartViewProps> = ({ incidents }) => {
+  const { t } = useTranslation();
   const totalIncidents = incidents.length;
 
   // Status counts
@@ -23,23 +25,23 @@ const IncidentsChartView: React.FC<IncidentsChartViewProps> = ({ incidents }) =>
 
   // Status donut
   const statusData = [
-    { label: 'Open', value: openCount, color: '#ef4444' },
-    { label: 'In Progress', value: inProgressCount, color: '#f59e0b' },
-    { label: 'Resolved', value: resolvedCount, color: '#22c55e' }
+    { label: t('incidents.charts.statusOpen'), value: openCount, color: '#ef4444' },
+    { label: t('incidents.charts.statusInProgress'), value: inProgressCount, color: '#f59e0b' },
+    { label: t('incidents.charts.statusResolved'), value: resolvedCount, color: '#22c55e' }
   ];
 
   // Priority donut
   const priorityData = [
-    { label: 'Critical', value: criticalCount, color: '#dc2626' },
-    { label: 'High', value: highCount, color: '#f59e0b' },
-    { label: 'Medium', value: mediumCount, color: '#3b82f6' },
-    { label: 'Low', value: lowCount, color: '#6b7280' }
+    { label: t('incidents.charts.priorityCritical'), value: criticalCount, color: '#dc2626' },
+    { label: t('incidents.charts.priorityHigh'), value: highCount, color: '#f59e0b' },
+    { label: t('incidents.charts.priorityMedium'), value: mediumCount, color: '#3b82f6' },
+    { label: t('incidents.charts.priorityLow'), value: lowCount, color: '#6b7280' }
   ];
 
   // Incidents by system
   const systemMap = new Map<string, number>();
   incidents.forEach(i => {
-    const systemName = i.system?.name || 'Unknown';
+    const systemName = i.system?.name || t('incidents.charts.unknown');
     systemMap.set(systemName, (systemMap.get(systemName) || 0) + 1);
   });
   const bySystemData = Array.from(systemMap.entries())
@@ -68,7 +70,7 @@ const IncidentsChartView: React.FC<IncidentsChartViewProps> = ({ incidents }) =>
   // Incidents by reporter
   const reporterMap = new Map<string, number>();
   incidents.forEach(i => {
-    const reporterName = i.reporter?.name || 'Unknown';
+    const reporterName = i.reporter?.name || t('incidents.charts.unknown');
     reporterMap.set(reporterName, (reporterMap.get(reporterName) || 0) + 1);
   });
   const byReporterData = Array.from(reporterMap.entries())
@@ -82,52 +84,52 @@ const IncidentsChartView: React.FC<IncidentsChartViewProps> = ({ incidents }) =>
 
   return (
     <div className="space-y-6">
-      <Card title="Incidents Overview">
+      <Card title={t('incidents.charts.overviewCard')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalIncidents}</p>
-            <p className="text-sm text-blue-700">Total Incidents</p>
+            <p className="text-sm text-blue-700">{t('incidents.charts.totalIncidents')}</p>
           </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
             <p className="text-3xl font-bold text-red-600">{openCount}</p>
-            <p className="text-sm text-red-700">Open</p>
+            <p className="text-sm text-red-700">{t('incidents.charts.open')}</p>
           </div>
           <div className="text-center p-4 bg-yellow-50 rounded-lg">
             <p className="text-3xl font-bold text-yellow-600">{inProgressCount}</p>
-            <p className="text-sm text-yellow-700">In Progress</p>
+            <p className="text-sm text-yellow-700">{t('incidents.charts.inProgress')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{resolvedCount}</p>
-            <p className="text-sm text-green-700">Resolved</p>
+            <p className="text-sm text-green-700">{t('incidents.charts.resolved')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Status Distribution">
+        <Card title={t('incidents.charts.statusDistribution')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={statusData} title="Incidents by status" size={200} />
+            <DonutChart data={statusData} title={t('incidents.charts.statusByStatus')} size={200} />
           </div>
         </Card>
 
-        <Card title="Priority Distribution">
+        <Card title={t('incidents.charts.priorityDistribution')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={priorityData} title="Incidents by priority" size={200} />
+            <DonutChart data={priorityData} title={t('incidents.charts.priorityByPriority')} size={200} />
           </div>
         </Card>
       </div>
 
-      <Card title="Incidents Over Time">
-        <LineChart data={overTimeData} title="Recent incidents trend" height={220} color="#ef4444" />
+      <Card title={t('incidents.charts.overTime')}>
+        <LineChart data={overTimeData} title={t('incidents.charts.recentTrend')} height={220} color="#ef4444" />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Incidents by System">
-          <BarChart data={bySystemData} title="Number of incidents per system" height={220} />
+        <Card title={t('incidents.charts.bySystem')}>
+          <BarChart data={bySystemData} title={t('incidents.charts.incidentsPerSystem')} height={220} />
         </Card>
 
-        <Card title="Incidents by Reporter">
-          <BarChart data={byReporterData} title="Number of incidents per reporter" height={220} />
+        <Card title={t('incidents.charts.byReporter')}>
+          <BarChart data={byReporterData} title={t('incidents.charts.incidentsPerReporter')} height={220} />
         </Card>
       </div>
     </div>

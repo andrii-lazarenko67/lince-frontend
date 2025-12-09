@@ -1,8 +1,10 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppNavigation } from '../../hooks';
 import { StatCard } from '../../components/common';
 
 const StatsSection: React.FC = () => {
+  const { t } = useTranslation();
   const { stats } = useAppSelector((state) => state.dashboard);
   const { goToSystems, goToDailyLogs, goToIncidents, goToInspections, goToProducts, goToNotifications } = useAppNavigation();
 
@@ -11,9 +13,9 @@ const StatsSection: React.FC = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatCard
-        title="Active Systems"
+        title={t('dashboard.activeSystems')}
         value={stats.systems.total}
-        subtitle={`${stats.systems.active} active`}
+        subtitle={`${stats.systems.active} ${t('systems.active')}`}
         onClick={goToSystems}
         icon={
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,9 +25,9 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Daily Logs"
+        title={t('nav.dailyLogs')}
         value={stats.dailyLogs.today}
-        subtitle={`${stats.dailyLogs.thisWeek} this week`}
+        subtitle={`${stats.dailyLogs.thisWeek} ${t('dashboard.recentLogs')}`}
         onClick={goToDailyLogs}
         icon={
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -35,9 +37,9 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Open Incidents"
+        title={t('dashboard.openIncidents')}
         value={stats.incidents.open}
-        subtitle={`${stats.incidents.thisWeek} this week`}
+        subtitle={`${stats.incidents.thisWeek} ${t('dashboard.recentLogs')}`}
         onClick={goToIncidents}
         icon={
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -47,9 +49,9 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Pending Inspections"
+        title={t('dashboard.pendingInspections')}
         value={stats.inspections.pending}
-        subtitle={`${stats.inspections.thisWeek} this week`}
+        subtitle={`${stats.inspections.thisWeek} ${t('dashboard.recentLogs')}`}
         onClick={goToInspections}
         icon={
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -59,7 +61,7 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Low Stock Products"
+        title={t('products.minimumStock')}
         value={stats.products.lowStock}
         onClick={goToProducts}
         icon={
@@ -70,7 +72,7 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Out of Range Today"
+        title={t('dailyLogs.outOfRange')}
         value={stats.alerts.outOfRangeToday}
         onClick={goToNotifications}
         icon={
@@ -81,7 +83,7 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Unread Notifications"
+        title={t('monitoringPoints.alerts')}
         value={stats.alerts.unreadNotifications}
         onClick={goToNotifications}
         icon={
@@ -92,7 +94,7 @@ const StatsSection: React.FC = () => {
       />
 
       <StatCard
-        title="Active Users"
+        title={t('users.title')}
         value={stats.users.total}
         icon={
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

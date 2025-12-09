@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Dialog, DialogTitle, DialogContent, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -17,6 +18,7 @@ const Modal: React.FC<ModalProps> = ({
   size = 'md',
   children
 }) => {
+  const { t } = useTranslation();
   const getMaxWidth = () => {
     switch (size) {
       case 'sm':
@@ -43,7 +45,7 @@ const Modal: React.FC<ModalProps> = ({
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           {title}
           <IconButton
-            aria-label="close"
+            aria-label={t('common.close')}
             onClick={onClose}
             sx={{ color: (theme) => theme.palette.grey[500] }}
           >

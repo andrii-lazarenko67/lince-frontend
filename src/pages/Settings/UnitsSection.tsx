@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchUnits,
@@ -11,6 +12,7 @@ import { Card, Button, Table, Modal, Input, Badge } from '../../components/commo
 import type { Unit, CreateUnitRequest, UpdateUnitRequest } from '../../types/unit.types';
 
 const UnitsSection: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { units, loading, error } = useAppSelector((state) => state.units);
@@ -61,7 +63,7 @@ const UnitsSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.abbreviation.trim()) {
-      alert('Unit name and abbreviation are required');
+      alert(t('settings.units.validationRequired'));
       return;
     }
 
@@ -96,31 +98,31 @@ const UnitsSection: React.FC = () => {
   const columns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('settings.units.name'),
       render: (unit: Unit) => <span className="font-medium">{unit.name}</span>
     },
     {
       key: 'abbreviation',
-      header: 'Abbreviation',
+      header: t('settings.units.abbreviation'),
       render: (unit: Unit) => <code className="bg-gray-100 px-2 py-1 rounded">{unit.abbreviation}</code>
     },
     {
       key: 'category',
-      header: 'Category',
+      header: t('settings.units.category'),
       render: (unit: Unit) => unit.category || '-'
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('settings.units.type'),
       render: (unit: Unit) => (
         <Badge variant={unit.isSystemDefault ? 'info' : 'success'}>
-          {unit.isSystemDefault ? 'System Default' : 'Custom'}
+          {unit.isSystemDefault ? t('settings.units.systemDefault') : t('settings.units.custom')}
         </Badge>
       )
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('settings.units.actions'),
       render: (unit: Unit) => (
         <div className="flex space-x-2">
           {canManage && (
@@ -130,14 +132,14 @@ const UnitsSection: React.FC = () => {
                 className="text-blue-600 hover:text-blue-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
                 disabled={unit.isSystemDefault}
               >
-                Edit
+                {t('common.edit')}
               </button>
               <button
                 onClick={() => handleOpenDelete(unit)}
                 className="text-red-600 hover:text-red-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
                 disabled={unit.isSystemDefault}
               >
-                Delete
+                {t('common.delete')}
               </button>
             </>
           )}
@@ -155,13 +157,13 @@ const UnitsSection: React.FC = () => {
       )}
 
       <Card
-        title="Units"
-        subtitle="Manage measurement units for monitoring points"
+        title={t('settings.units.title')}
+        subtitle={t('settings.units.subtitle')}
         noPadding
         headerActions={
           canManage ? (
             <Button variant="primary" onClick={handleOpenCreate}>
-              Add Unit
+              {t('settings.units.addUnit')}
             </Button>
           ) : undefined
         }
@@ -175,7 +177,7 @@ const UnitsSection: React.FC = () => {
             columns={columns}
             data={units}
             keyExtractor={(unit) => unit.id}
-            emptyMessage="No units found. Add your first unit to get started."
+            emptyMessage={t('settings.units.emptyMessage')}
           />
         )}
       </Card>
@@ -187,15 +189,15 @@ const UnitsSection: React.FC = () => {
           setIsModalOpen(false);
           setSelectedUnit(null);
         }}
-        title={selectedUnit ? 'Edit Unit' : 'Add Unit'}
+        title={selectedUnit ? t('settings.units.editUnit') : t('settings.units.addUnit')}
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             name="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            label="Unit Name"
-            placeholder="e.g., Degrees Celsius, Milligrams per liter"
+            label={t('settings.units.unitName')}
+            placeholder={t('settings.units.namePlaceholder')}
             required
           />
 
@@ -203,8 +205,8 @@ const UnitsSection: React.FC = () => {
             name="abbreviation"
             value={formData.abbreviation}
             onChange={(e) => setFormData({ ...formData, abbreviation: e.target.value })}
-            label="Abbreviation"
-            placeholder="e.g., °C, mg/L, L/h"
+            label={t('settings.units.abbreviationLabel')}
+            placeholder={t('settings.units.abbreviationPlaceholder')}
             required
           />
 
@@ -212,8 +214,8 @@ const UnitsSection: React.FC = () => {
             name="category"
             value={formData.category || ''}
             onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-            label="Category (Optional)"
-            placeholder="e.g., temperature, concentration, flow_rate"
+            label={t('settings.units.categoryOptional')}
+            placeholder={t('settings.units.categoryPlaceholder')}
           />
 
           <div className="flex justify-end space-x-3 mt-4">
@@ -225,10 +227,10 @@ const UnitsSection: React.FC = () => {
                 setSelectedUnit(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" variant="primary" disabled={loading}>
-              {selectedUnit ? 'Update' : 'Create'}
+              {selectedUnit ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>
@@ -241,12 +243,14 @@ const UnitsSection: React.FC = () => {
           setIsDeleteOpen(false);
           setSelectedUnit(null);
         }}
-        title="Delete Unit"
+        title={t('settings.units.deleteUnit')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{selectedUnit?.name} ({selectedUnit?.abbreviation})</strong>?
-          This action cannot be undone and will fail if the unit is currently in use.
+          {t('settings.units.deleteConfirm', {
+            name: selectedUnit?.name,
+            abbreviation: selectedUnit?.abbreviation
+          })}
         </p>
         <div className="flex justify-end space-x-3">
           <Button
@@ -256,10 +260,10 @@ const UnitsSection: React.FC = () => {
               setSelectedUnit(null);
             }}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </Modal>

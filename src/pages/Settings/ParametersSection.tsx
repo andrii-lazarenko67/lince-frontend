@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchParameters,
@@ -11,6 +12,7 @@ import { Card, Button, Table, Modal, Input, TextArea, Badge } from '../../compon
 import type { Parameter, CreateParameterRequest, UpdateParameterRequest } from '../../types/parameter.types';
 
 const ParametersSection: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { parameters, loading, error } = useAppSelector((state) => state.parameters);
@@ -59,7 +61,7 @@ const ParametersSection: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim()) {
-      alert('Parameter name is required');
+      alert(t('settings.parameters.nameRequired'));
       return;
     }
 
@@ -94,26 +96,26 @@ const ParametersSection: React.FC = () => {
   const columns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('settings.parameters.name'),
       render: (param: Parameter) => <span className="font-medium">{param.name}</span>
     },
     {
       key: 'description',
-      header: 'Description',
+      header: t('settings.parameters.description'),
       render: (param: Parameter) => param.description || '-'
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('settings.parameters.type'),
       render: (param: Parameter) => (
         <Badge variant={param.isSystemDefault ? 'info' : 'success'}>
-          {param.isSystemDefault ? 'System Default' : 'Custom'}
+          {param.isSystemDefault ? t('settings.parameters.systemDefault') : t('settings.parameters.custom')}
         </Badge>
       )
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('settings.parameters.actions'),
       render: (param: Parameter) => (
         <div className="flex space-x-2">
           {canManage && (
@@ -123,14 +125,14 @@ const ParametersSection: React.FC = () => {
                 className="text-blue-600 hover:text-blue-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
                 disabled={param.isSystemDefault}
               >
-                Edit
+                {t('common.edit')}
               </button>
               <button
                 onClick={() => handleOpenDelete(param)}
                 className="text-red-600 hover:text-red-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed"
                 disabled={param.isSystemDefault}
               >
-                Delete
+                {t('common.delete')}
               </button>
             </>
           )}
@@ -148,13 +150,13 @@ const ParametersSection: React.FC = () => {
       )}
 
       <Card
-        title="Parameters"
-        subtitle="Manage measurement parameters for monitoring points"
+        title={t('settings.parameters.title')}
+        subtitle={t('settings.parameters.subtitle')}
         noPadding
         headerActions={
           canManage ? (
             <Button variant="primary" onClick={handleOpenCreate}>
-              Add Parameter
+              {t('settings.parameters.addParameter')}
             </Button>
           ) : undefined
         }
@@ -168,7 +170,7 @@ const ParametersSection: React.FC = () => {
             columns={columns}
             data={parameters}
             keyExtractor={(param) => param.id}
-            emptyMessage="No parameters found. Add your first parameter to get started."
+            emptyMessage={t('settings.parameters.emptyMessage')}
           />
         )}
       </Card>
@@ -180,15 +182,15 @@ const ParametersSection: React.FC = () => {
           setIsModalOpen(false);
           setSelectedParam(null);
         }}
-        title={selectedParam ? 'Edit Parameter' : 'Add Parameter'}
+        title={selectedParam ? t('settings.parameters.editParameter') : t('settings.parameters.addParameter')}
       >
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             name="name"
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-            label="Parameter Name"
-            placeholder="e.g., pH, Temperature, Pressure"
+            label={t('settings.parameters.parameterName')}
+            placeholder={t('settings.parameters.namePlaceholder')}
             required
           />
 
@@ -196,8 +198,8 @@ const ParametersSection: React.FC = () => {
             name="description"
             value={formData.description || ''}
             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-            label="Description (Optional)"
-            placeholder="Describe what this parameter measures"
+            label={t('settings.parameters.descriptionOptional')}
+            placeholder={t('settings.parameters.descriptionPlaceholder')}
             rows={3}
           />
 
@@ -210,10 +212,10 @@ const ParametersSection: React.FC = () => {
                 setSelectedParam(null);
               }}
             >
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" variant="primary" disabled={loading}>
-              {selectedParam ? 'Update' : 'Create'}
+              {selectedParam ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>
@@ -226,12 +228,11 @@ const ParametersSection: React.FC = () => {
           setIsDeleteOpen(false);
           setSelectedParam(null);
         }}
-        title="Delete Parameter"
+        title={t('settings.parameters.deleteParameter')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{selectedParam?.name}</strong>?
-          This action cannot be undone and will fail if the parameter is currently in use.
+          {t('settings.parameters.deleteConfirm', { name: selectedParam?.name })}
         </p>
         <div className="flex justify-end space-x-3">
           <Button
@@ -241,10 +242,10 @@ const ParametersSection: React.FC = () => {
               setSelectedParam(null);
             }}
           >
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </Modal>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Drawer,
   Box,
@@ -29,6 +30,7 @@ import {
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { useLocation } from 'react-router-dom';
 import { toggleSidebar } from '../../store/slices/uiSlice';
+import LanguageSwitcher from '../LanguageSwitcher';
 
 interface NavItem {
   name: string;
@@ -40,6 +42,7 @@ interface NavItem {
 const DRAWER_WIDTH = 256;
 
 const Sidebar: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { sidebarOpen } = useAppSelector((state) => state.ui);
@@ -60,16 +63,16 @@ const Sidebar: React.FC = () => {
   };
 
   const navItems: NavItem[] = [
-    { name: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
-    { name: 'Systems', path: '/systems', icon: <StorageIcon />, roles: ['manager'] },
-    { name: 'Daily Logs', path: '/daily-logs', icon: <AssignmentIcon /> },
-    { name: 'Inspections', path: '/inspections', icon: <PlaylistAddCheckIcon /> },
-    { name: 'Incidents', path: '/incidents', icon: <WarningIcon /> },
-    { name: 'Products', path: '/products', icon: <InventoryIcon />, roles: ['manager'] },
-    { name: 'Reports', path: '/reports', icon: <AssessmentIcon /> },
-    { name: 'Library', path: '/library', icon: <FolderOpenIcon />, roles: ['manager'] },
-    { name: 'Users', path: '/users', icon: <PeopleIcon />, roles: ['manager'] },
-    { name: 'Settings', path: '/settings', icon: <SettingsIcon /> }
+    { name: t('nav.dashboard'), path: '/dashboard', icon: <DashboardIcon /> },
+    { name: t('nav.systems'), path: '/systems', icon: <StorageIcon />, roles: ['manager'] },
+    { name: t('nav.dailyLogs'), path: '/daily-logs', icon: <AssignmentIcon /> },
+    { name: t('nav.inspections'), path: '/inspections', icon: <PlaylistAddCheckIcon /> },
+    { name: t('nav.incidents'), path: '/incidents', icon: <WarningIcon /> },
+    { name: t('nav.products'), path: '/products', icon: <InventoryIcon />, roles: ['manager'] },
+    { name: t('nav.reports'), path: '/reports', icon: <AssessmentIcon /> },
+    { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager'] },
+    { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['manager'] },
+    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon /> }
   ];
 
   const filteredNavItems = navItems.filter(item => {
@@ -168,8 +171,11 @@ const Sidebar: React.FC = () => {
         </List>
       </Box>
 
-      {/* User Profile */}
-      <Box sx={{ p: 2, borderTop: 1, borderColor: 'primary.dark' }}>
+      {/* User Profile & Language Switcher */}
+      <Box sx={{ p: 2, borderTop: 1, borderColor: 'primary.dark', display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+          <LanguageSwitcher />
+        </Box>
         <Box
           onClick={() => handleNavClick('/profile')}
           sx={{

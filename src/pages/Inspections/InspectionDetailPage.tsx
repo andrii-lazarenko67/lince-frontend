@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspectionById, approveInspection, addInspectionPhotos } from '../../store/slices/inspectionSlice';
 import { Card, Badge, Table, Button, Modal, TextArea } from '../../components/common';
@@ -12,6 +13,7 @@ interface PhotoPreview {
 }
 
 const InspectionDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentInspection } = useAppSelector((state) => state.inspections);
@@ -59,7 +61,7 @@ const InspectionDetailPage: React.FC = () => {
     });
 
     if (validFiles.length !== files.length) {
-      alert('Some files were skipped. Only images (JPEG, PNG, GIF, WEBP) under 10MB are allowed.');
+      alert(t('inspections.detail.photoValidationError'));
     }
 
     const newPreviews = validFiles.map(file => ({
@@ -110,11 +112,11 @@ const InspectionDetailPage: React.FC = () => {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
-        return <Badge variant="warning">Pending</Badge>;
+        return <Badge variant="warning">{t('inspections.detail.statusPending')}</Badge>;
       case 'completed':
-        return <Badge variant="primary">Completed</Badge>;
+        return <Badge variant="primary">{t('inspections.detail.statusCompleted')}</Badge>;
       case 'approved':
-        return <Badge variant="success">Approved</Badge>;
+        return <Badge variant="success">{t('inspections.detail.statusApproved')}</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -123,7 +125,7 @@ const InspectionDetailPage: React.FC = () => {
   const itemColumns = [
     {
       key: 'name',
-      header: 'Item',
+      header: t('inspections.detail.itemColumn'),
       render: (item: InspectionItem) => (
         <span className="font-medium text-gray-900">
           {item.checklistItem?.name || '-'}
@@ -132,7 +134,7 @@ const InspectionDetailPage: React.FC = () => {
     },
     {
       key: 'status',
-      header: 'Result',
+      header: t('inspections.detail.resultColumn'),
       render: (item: InspectionItem) => {
         let variant: 'success' | 'danger' | 'secondary' | 'warning' = 'secondary';
         let label = '';
@@ -140,19 +142,19 @@ const InspectionDetailPage: React.FC = () => {
         switch (item.status) {
           case 'C':
             variant = 'success';
-            label = 'C - Conforme';
+            label = t('inspections.detail.statusConforme');
             break;
           case 'NC':
             variant = 'danger';
-            label = 'NC - No Conforme';
+            label = t('inspections.detail.statusNoConforme');
             break;
           case 'NA':
             variant = 'secondary';
-            label = 'NA - No Aplica';
+            label = t('inspections.detail.statusNoAplica');
             break;
           case 'NV':
             variant = 'warning';
-            label = 'NV - No Verificado';
+            label = t('inspections.detail.statusNoVerificado');
             break;
           default:
             label = item.status;
@@ -163,7 +165,7 @@ const InspectionDetailPage: React.FC = () => {
     },
     {
       key: 'comment',
-      header: 'Comment',
+      header: t('inspections.detail.commentColumn'),
       render: (item: InspectionItem) => item.comment || '-'
     }
   ];
@@ -171,7 +173,7 @@ const InspectionDetailPage: React.FC = () => {
   if (!currentInspection) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Loading inspection details...</p>
+        <p className="text-gray-500">{t('inspections.detail.loading')}</p>
       </div>
     );
   }
@@ -190,7 +192,7 @@ const InspectionDetailPage: React.FC = () => {
             </svg>
           </button>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Inspection Details</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('inspections.detail.title')}</h1>
             <p className="text-gray-500 mt-1">
               {new Date(currentInspection.date).toLocaleDateString()} - {currentInspection.system?.name}
             </p>
@@ -198,67 +200,67 @@ const InspectionDetailPage: React.FC = () => {
         </div>
         {canManage && currentInspection.status === 'pending' && (
           <Button variant="success" onClick={() => setIsApproveOpen(true)}>
-            Approve Inspection
+            {t('inspections.detail.approveButton')}
           </Button>
         )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Inspection Information" className="lg:col-span-1">
+        <Card title={t('inspections.detail.informationCard')} className="lg:col-span-1">
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">System</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.systemLabel')}</dt>
               <dd className="mt-1 text-gray-900">{currentInspection.system?.name}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Date</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.dateLabel')}</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentInspection.date).toLocaleDateString()}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Inspector</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.inspectorLabel')}</dt>
               <dd className="mt-1 text-gray-900">{currentInspection.user?.name}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.statusLabel')}</dt>
               <dd className="mt-1">{getStatusBadge(currentInspection.status)}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Results</dt>
-              <dd className="mt-1 text-gray-900">{conformeCount}/{totalCount} items conforme</dd>
+              <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.resultsLabel')}</dt>
+              <dd className="mt-1 text-gray-900">{t('inspections.detail.resultsCount', { conforme: conformeCount, total: totalCount })}</dd>
             </div>
             {currentInspection.conclusion && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Conclusion</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.conclusionLabel')}</dt>
                 <dd className="mt-1 text-gray-900">{currentInspection.conclusion}</dd>
               </div>
             )}
             {currentInspection.managerNotes && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Manager Notes</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.managerNotesLabel')}</dt>
                 <dd className="mt-1 text-gray-900">{currentInspection.managerNotes}</dd>
               </div>
             )}
           </dl>
         </Card>
 
-        <Card title="Checklist Items" className="lg:col-span-2" noPadding>
+        <Card title={t('inspections.detail.checklistCard')} className="lg:col-span-2" noPadding>
           <Table
             columns={itemColumns}
             data={currentInspection.items || []}
             keyExtractor={(item) => item.id}
-            emptyMessage="No checklist items for this inspection."
+            emptyMessage={t('inspections.detail.noChecklistItems')}
           />
         </Card>
       </div>
 
       <Card
-        title="Photos"
+        title={t('inspections.detail.photosCard')}
         headerActions={
           <Button variant="outline" size="sm" onClick={() => setIsAddPhotosOpen(true)}>
             <AddIcon style={{ fontSize: 18, marginRight: 4 }} />
-            Add Photos
+            {t('inspections.detail.addPhotosButton')}
           </Button>
         }
       >
@@ -274,7 +276,7 @@ const InspectionDetailPage: React.FC = () => {
               >
                 <img
                   src={photo.url}
-                  alt="Inspection photo"
+                  alt={t('inspections.detail.photoAlt')}
                   className="w-full h-32 object-cover rounded-lg hover:opacity-75 transition-opacity"
                 />
               </a>
@@ -285,33 +287,33 @@ const InspectionDetailPage: React.FC = () => {
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="mt-2">No photos attached to this inspection</p>
+            <p className="mt-2">{t('inspections.detail.noPhotos')}</p>
           </div>
         )}
       </Card>
 
       {/* Approve Modal */}
-      <Modal isOpen={isApproveOpen} onClose={() => setIsApproveOpen(false)} title="Approve Inspection">
+      <Modal isOpen={isApproveOpen} onClose={() => setIsApproveOpen(false)} title={t('inspections.detail.approveModalTitle')}>
         <TextArea
           name="managerNotes"
           value={managerNotes}
           onChange={(e) => setManagerNotes(e.target.value)}
-          label="Manager Notes (Optional)"
-          placeholder="Add any notes for this inspection"
+          label={t('inspections.detail.managerNotesField')}
+          placeholder={t('inspections.detail.managerNotesPlaceholder')}
           rows={4}
         />
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={() => setIsApproveOpen(false)}>
-            Cancel
+            {t('inspections.detail.cancelButton')}
           </Button>
           <Button variant="success" onClick={handleApprove}>
-            Approve
+            {t('inspections.detail.approveModalButton')}
           </Button>
         </div>
       </Modal>
 
       {/* Add Photos Modal */}
-      <Modal isOpen={isAddPhotosOpen} onClose={handleCloseAddPhotos} title="Add Photos">
+      <Modal isOpen={isAddPhotosOpen} onClose={handleCloseAddPhotos} title={t('inspections.detail.addPhotosModalTitle')}>
         <div className="space-y-4 max-h-96 overflow-y-auto">
           {/* Photo Upload Area */}
           <div
@@ -321,8 +323,8 @@ const InspectionDetailPage: React.FC = () => {
             <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
-            <p className="mt-2 text-sm text-gray-600">Click to upload photos</p>
-            <p className="mt-1 text-xs text-gray-500">JPEG, PNG, GIF, WEBP up to 10MB each</p>
+            <p className="mt-2 text-sm text-gray-600">{t('inspections.detail.uploadPrompt')}</p>
+            <p className="mt-1 text-xs text-gray-500">{t('inspections.detail.uploadFormats')}</p>
             <input
               id="add-photo-input"
               type="file"
@@ -341,7 +343,7 @@ const InspectionDetailPage: React.FC = () => {
                 <div key={index} className="relative group">
                   <img
                     src={photo.preview}
-                    alt={`Preview ${index + 1}`}
+                    alt={t('inspections.detail.previewAlt', { index: index + 1 })}
                     className="w-full h-40 object-cover rounded-lg"
                   />
                   <button
@@ -358,13 +360,13 @@ const InspectionDetailPage: React.FC = () => {
           )}
 
           {photoPreviews.length > 0 && (
-            <p className="text-sm text-gray-600">{photoPreviews.length} photo(s) selected</p>
+            <p className="text-sm text-gray-600">{t('inspections.detail.photosSelected', { count: photoPreviews.length })}</p>
           )}
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={handleCloseAddPhotos} disabled={isUploading}>
-            Cancel
+            {t('inspections.detail.cancelButton')}
           </Button>
           <Button
             variant="primary"
@@ -377,10 +379,10 @@ const InspectionDetailPage: React.FC = () => {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                Uploading...
+                {t('inspections.detail.uploadingButton')}
               </span>
             ) : (
-              'Upload Photos'
+              t('inspections.detail.uploadPhotosButton')
             )}
           </Button>
         </div>

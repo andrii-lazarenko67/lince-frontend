@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { generateReport } from '../../store/slices/reportSlice';
@@ -18,6 +19,7 @@ import {
 import type { ReportType, ReportData } from '../../types';
 
 const ReportsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { currentReport, isGenerating } = useAppSelector((state) => state.reports);
@@ -68,8 +70,8 @@ const ReportsPage: React.FC = () => {
   const getReportSections = (report: ReportData) => {
     return {
       dailyLogs: {
-        title: `Daily Logs (${report.dailyLogs.length})`,
-        headers: ['Date', 'System', 'User', 'Entries', 'Notes'],
+        title: `${t('reports.sections.dailyLogs')} (${report.dailyLogs.length})`,
+        headers: [t('reports.headers.date'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.entries'), t('reports.headers.notes')],
         rows: report.dailyLogs.map(log => [
           log.date,
           log.system?.name || '-',
@@ -79,8 +81,8 @@ const ReportsPage: React.FC = () => {
         ])
       },
       inspections: {
-        title: `Inspections (${report.inspections.length})`,
-        headers: ['Date', 'System', 'User', 'Status', 'Conclusion', 'Items'],
+        title: `${t('reports.sections.inspections')} (${report.inspections.length})`,
+        headers: [t('reports.headers.date'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.status'), t('reports.headers.conclusion'), t('reports.headers.items')],
         rows: report.inspections.map(insp => [
           new Date(insp.date).toLocaleDateString(),
           insp.system?.name || '-',
@@ -91,8 +93,8 @@ const ReportsPage: React.FC = () => {
         ])
       },
       incidents: {
-        title: `Incidents (${report.incidents.length})`,
-        headers: ['Title', 'System', 'Priority', 'Status', 'Reporter', 'Assignee', 'Created'],
+        title: `${t('reports.sections.incidents')} (${report.incidents.length})`,
+        headers: [t('reports.headers.title'), t('reports.headers.system'), t('reports.headers.priority'), t('reports.headers.status'), t('reports.headers.reporter'), t('reports.headers.assignee'), t('reports.headers.created')],
         rows: report.incidents.map(inc => [
           inc.title,
           inc.system?.name || '-',
@@ -104,8 +106,8 @@ const ReportsPage: React.FC = () => {
         ])
       },
       products: {
-        title: `Products (${report.products.length})`,
-        headers: ['Name', 'Type', 'Current Stock', 'Unit', 'Min Alert', 'Supplier'],
+        title: `${t('reports.sections.products')} (${report.products.length})`,
+        headers: [t('reports.headers.name'), t('reports.headers.type'), t('reports.headers.currentStock'), t('reports.headers.unit'), t('reports.headers.minAlert'), t('reports.headers.supplier')],
         rows: report.products.map(prod => [
           prod.name,
           prod.type,
@@ -116,8 +118,8 @@ const ReportsPage: React.FC = () => {
         ])
       },
       productUsages: {
-        title: `Product Usages (${report.productUsages.length})`,
-        headers: ['Date', 'Product', 'Type', 'Quantity', 'System', 'User', 'Notes'],
+        title: `${t('reports.sections.productUsages')} (${report.productUsages.length})`,
+        headers: [t('reports.headers.date'), t('reports.headers.product'), t('reports.headers.type'), t('reports.headers.quantity'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.notes')],
         rows: report.productUsages.map(usage => [
           new Date(usage.date).toLocaleDateString(),
           usage.product?.name || '-',
@@ -158,12 +160,12 @@ const ReportsPage: React.FC = () => {
 
     exportToHtml(
       {
-        title: 'LINCE Water Treatment Report',
+        title: t('reports.export.title'),
         filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
         metadata: [
-          { label: 'Report Type', value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
-          { label: 'Period', value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: 'Generated', value: new Date(report.generatedAt).toLocaleString() }
+          { label: t('reports.export.reportType'), value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
+          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
+          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toLocaleString() }
         ]
       },
       htmlSections
@@ -177,21 +179,21 @@ const ReportsPage: React.FC = () => {
     const sections = getReportSections(report);
 
     const csvSections: CsvSection[] = [
-      { title: 'DAILY LOGS', headers: sections.dailyLogs.headers, rows: sections.dailyLogs.rows },
-      { title: 'INSPECTIONS', headers: sections.inspections.headers, rows: sections.inspections.rows },
-      { title: 'INCIDENTS', headers: sections.incidents.headers, rows: sections.incidents.rows },
-      { title: 'PRODUCTS', headers: sections.products.headers, rows: sections.products.rows },
-      { title: 'PRODUCT USAGES', headers: sections.productUsages.headers, rows: sections.productUsages.rows }
+      { title: t('reports.sections.dailyLogsUpper'), headers: sections.dailyLogs.headers, rows: sections.dailyLogs.rows },
+      { title: t('reports.sections.inspectionsUpper'), headers: sections.inspections.headers, rows: sections.inspections.rows },
+      { title: t('reports.sections.incidentsUpper'), headers: sections.incidents.headers, rows: sections.incidents.rows },
+      { title: t('reports.sections.productsUpper'), headers: sections.products.headers, rows: sections.products.rows },
+      { title: t('reports.sections.productUsagesUpper'), headers: sections.productUsages.headers, rows: sections.productUsages.rows }
     ];
 
     exportToCsv(
       {
-        title: 'LINCE Water Treatment Report',
+        title: t('reports.export.title'),
         filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
         metadata: [
-          { label: 'Type', value: report.type },
-          { label: 'Period', value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: 'Generated', value: new Date(report.generatedAt).toISOString() }
+          { label: t('reports.export.type'), value: report.type },
+          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
+          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toISOString() }
         ]
       },
       csvSections
@@ -214,13 +216,13 @@ const ReportsPage: React.FC = () => {
 
     exportToPdf(
       {
-        title: 'LINCE Water Treatment Report',
-        subtitle: `${report.type.charAt(0).toUpperCase() + report.type.slice(1)} Report`,
+        title: t('reports.export.title'),
+        subtitle: `${report.type.charAt(0).toUpperCase() + report.type.slice(1)} ${t('reports.export.report')}`,
         filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
         metadata: [
-          { label: 'Report Type', value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
-          { label: 'Period', value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: 'Generated', value: new Date(report.generatedAt).toLocaleString() }
+          { label: t('reports.export.reportType'), value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
+          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
+          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toLocaleString() }
         ]
       },
       pdfSections
@@ -231,8 +233,8 @@ const ReportsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
-          <p className="text-gray-500 mt-1">Generate and export monitoring reports</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('reports.description')}</p>
         </div>
       </div>
 

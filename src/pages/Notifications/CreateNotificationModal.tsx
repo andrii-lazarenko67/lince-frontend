@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers } from '../../store/slices/userSlice';
 import { Button, Input } from '../../components/common';
@@ -15,6 +16,7 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
   onClose,
   onSubmit
 }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { users } = useAppSelector((state) => state.users);
 
@@ -61,10 +63,10 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.message.trim()) newErrors.message = 'Message is required';
+    if (!formData.title.trim()) newErrors.title = t('notifications.create.titleRequired');
+    if (!formData.message.trim()) newErrors.message = t('notifications.create.messageRequired');
     if (!formData.sendToAll && formData.recipientIds.length === 0) {
-      newErrors.recipients = 'Select at least one recipient or send to all';
+      newErrors.recipients = t('notifications.create.recipientsRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -102,7 +104,7 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
       <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-hidden">
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-900">Create Notification</h2>
+            <h2 className="text-xl font-semibold text-gray-900">{t('notifications.create.title')}</h2>
             <button
               onClick={onClose}
               className="text-gray-400 hover:text-gray-500"
@@ -118,32 +120,32 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('notifications.create.type')}</label>
                 <select
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="system">System</option>
-                  <option value="alert">Alert</option>
-                  <option value="incident">Incident</option>
-                  <option value="inspection">Inspection</option>
-                  <option value="stock">Stock</option>
+                  <option value="system">{t('notifications.types.system')}</option>
+                  <option value="alert">{t('notifications.types.alert')}</option>
+                  <option value="incident">{t('notifications.types.incident')}</option>
+                  <option value="inspection">{t('notifications.types.inspection')}</option>
+                  <option value="stock">{t('notifications.types.stock')}</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('notifications.create.priority')}</label>
                 <select
                   name="priority"
                   value={formData.priority}
                   onChange={handleChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
+                  <option value="low">{t('notifications.priority.low')}</option>
+                  <option value="medium">{t('notifications.priority.medium')}</option>
+                  <option value="high">{t('notifications.priority.high')}</option>
+                  <option value="critical">{t('notifications.priority.critical')}</option>
                 </select>
               </div>
             </div>
@@ -151,21 +153,21 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
             <Input
               type="text"
               name="title"
-              label="Title"
+              label={t('notifications.create.notificationTitle')}
               value={formData.title}
               onChange={handleChange}
-              placeholder="Enter notification title"
+              placeholder={t('notifications.create.titlePlaceholder')}
               error={errors.title}
               required
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('notifications.create.message')}</label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={handleChange}
-                placeholder="Enter notification message"
+                placeholder={t('notifications.create.messagePlaceholder')}
                 rows={4}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.message ? 'border-red-500' : 'border-gray-300'
@@ -177,7 +179,7 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Recipients</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('notifications.create.recipients')}</label>
               <div className="mb-3">
                 <label className="flex items-center">
                   <input
@@ -186,7 +188,7 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
                     onChange={handleSendToAllToggle}
                     className="h-4 w-4 text-blue-600 rounded border-gray-300"
                   />
-                  <span className="ml-2 text-sm text-gray-700">Send to all users</span>
+                  <span className="ml-2 text-sm text-gray-700">{t('notifications.create.sendToAll')}</span>
                 </label>
               </div>
 
@@ -220,10 +222,10 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
 
         <div className="p-6 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
           <Button variant="outline" onClick={onClose}>
-            Cancel
+            {t('notifications.create.cancel')}
           </Button>
           <Button variant="primary" onClick={handleSubmit}>
-            Create Notification
+            {t('notifications.create.createButton')}
           </Button>
         </div>
       </div>

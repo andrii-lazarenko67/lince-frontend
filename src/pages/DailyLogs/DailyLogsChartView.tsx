@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import { DonutChart, BarChart, LineChart } from '../../components/charts';
 import type { DailyLog } from '../../types';
@@ -8,6 +9,7 @@ interface DailyLogsChartViewProps {
 }
 
 const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) => {
+  const { t } = useTranslation();
   const totalLogs = dailyLogs.length;
 
   // Record type counts
@@ -17,7 +19,7 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
   // Period counts (using period field)
   const periodMap = new Map<string, number>();
   dailyLogs.forEach(log => {
-    const period = log.period || 'Not Specified';
+    const period = log.period || t('dailyLogs.chart.notSpecified');
     periodMap.set(period, (periodMap.get(period) || 0) + 1);
   });
   const periodColors = ['#f59e0b', '#3b82f6', '#6366f1', '#22c55e', '#ef4444', '#8b5cf6', '#ec4899', '#14b8a6'];
@@ -42,20 +44,20 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
 
   // Record type donut
   const recordTypeData = [
-    { label: 'Field', value: fieldCount, color: '#3b82f6' },
-    { label: 'Laboratory', value: laboratoryCount, color: '#8b5cf6' }
+    { label: t('dailyLogs.chart.field'), value: fieldCount, color: '#3b82f6' },
+    { label: t('dailyLogs.chart.laboratory'), value: laboratoryCount, color: '#8b5cf6' }
   ];
 
   // Entry status donut
   const entryStatusData = [
-    { label: 'Normal', value: normalCount, color: '#22c55e' },
-    { label: 'Out of Range', value: outOfRangeCount, color: '#ef4444' }
+    { label: t('dailyLogs.chart.normal'), value: normalCount, color: '#22c55e' },
+    { label: t('dailyLogs.chart.outOfRange'), value: outOfRangeCount, color: '#ef4444' }
   ];
 
   // Logs by system
   const systemMap = new Map<string, number>();
   dailyLogs.forEach(log => {
-    const systemName = log.system?.name || 'Unknown';
+    const systemName = log.system?.name || t('dailyLogs.chart.unknown');
     systemMap.set(systemName, (systemMap.get(systemName) || 0) + 1);
   });
   const bySystemData = Array.from(systemMap.entries())
@@ -84,7 +86,7 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
   // Logs by operator
   const operatorMap = new Map<string, number>();
   dailyLogs.forEach(log => {
-    const operatorName = log.user?.name || 'Unknown';
+    const operatorName = log.user?.name || t('dailyLogs.chart.unknown');
     operatorMap.set(operatorName, (operatorMap.get(operatorName) || 0) + 1);
   });
   const byOperatorData = Array.from(operatorMap.entries())
@@ -99,7 +101,7 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
   // Out of range by system
   const systemOutOfRangeMap = new Map<string, number>();
   dailyLogs.forEach(log => {
-    const systemName = log.system?.name || 'Unknown';
+    const systemName = log.system?.name || t('dailyLogs.chart.unknown');
     const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
     systemOutOfRangeMap.set(systemName, (systemOutOfRangeMap.get(systemName) || 0) + outOfRange);
   });
@@ -115,68 +117,68 @@ const DailyLogsChartView: React.FC<DailyLogsChartViewProps> = ({ dailyLogs }) =>
 
   return (
     <div className="space-y-6">
-      <Card title="Daily Logs Overview">
+      <Card title={t('dailyLogs.chart.overview')}>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalLogs}</p>
-            <p className="text-sm text-blue-700">Total Logs</p>
+            <p className="text-sm text-blue-700">{t('dailyLogs.chart.totalLogs')}</p>
           </div>
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
             <p className="text-3xl font-bold text-indigo-600">{fieldCount}</p>
-            <p className="text-sm text-indigo-700">Field Records</p>
+            <p className="text-sm text-indigo-700">{t('dailyLogs.chart.fieldRecords')}</p>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
             <p className="text-3xl font-bold text-purple-600">{laboratoryCount}</p>
-            <p className="text-sm text-purple-700">Lab Records</p>
+            <p className="text-sm text-purple-700">{t('dailyLogs.chart.labRecords')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{totalEntries}</p>
-            <p className="text-sm text-green-700">Total Entries</p>
+            <p className="text-sm text-green-700">{t('dailyLogs.chart.totalEntries')}</p>
           </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
             <p className="text-3xl font-bold text-red-600">{outOfRangeCount}</p>
-            <p className="text-sm text-red-700">Out of Range</p>
+            <p className="text-sm text-red-700">{t('dailyLogs.chart.outOfRange')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Record Types">
+        <Card title={t('dailyLogs.chart.recordTypes')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={recordTypeData} title="Field vs Laboratory" size={180} />
+            <DonutChart data={recordTypeData} title={t('dailyLogs.chart.fieldVsLab')} size={180} />
           </div>
         </Card>
 
-        <Card title="By Period">
+        <Card title={t('dailyLogs.chart.byPeriod')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={periodData} title="Distribution by period" size={180} />
+            <DonutChart data={periodData} title={t('dailyLogs.chart.distributionByPeriod')} size={180} />
           </div>
         </Card>
 
-        <Card title="Entry Status">
+        <Card title={t('dailyLogs.chart.entryStatus')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={entryStatusData} title="Normal vs Out of Range" size={180} />
+            <DonutChart data={entryStatusData} title={t('dailyLogs.chart.normalVsOutOfRange')} size={180} />
           </div>
         </Card>
       </div>
 
-      <Card title="Daily Logs Over Time">
-        <LineChart data={overTimeData} title="Recent logging activity" height={220} color="#3b82f6" />
+      <Card title={t('dailyLogs.chart.overTime')}>
+        <LineChart data={overTimeData} title={t('dailyLogs.chart.recentActivity')} height={220} color="#3b82f6" />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Logs by System">
-          <BarChart data={bySystemData} title="Number of logs per system" height={220} />
+        <Card title={t('dailyLogs.chart.bySystem')}>
+          <BarChart data={bySystemData} title={t('dailyLogs.chart.logsPerSystem')} height={220} />
         </Card>
 
-        <Card title="Logs by Operator">
-          <BarChart data={byOperatorData} title="Number of logs per operator" height={220} />
+        <Card title={t('dailyLogs.chart.byOperator')}>
+          <BarChart data={byOperatorData} title={t('dailyLogs.chart.logsPerOperator')} height={220} />
         </Card>
       </div>
 
       {outOfRangeBySystemData.length > 0 && (
-        <Card title="Out of Range Entries by System">
-          <BarChart data={outOfRangeBySystemData} title="Number of out-of-range entries per system" height={220} defaultColor="#ef4444" />
+        <Card title={t('dailyLogs.chart.outOfRangeBySystem')}>
+          <BarChart data={outOfRangeBySystemData} title={t('dailyLogs.chart.outOfRangeEntriesPerSystem')} height={220} defaultColor="#ef4444" />
         </Card>
       )}
     </div>

@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDocumentById, deleteDocument, uploadNewVersion } from '../../store/slices/librarySlice';
 import { Card, Badge, Button, Modal, FileUpload } from '../../components/common';
 
 const DocumentDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentDocument } = useAppSelector((state) => state.library);
@@ -45,15 +47,15 @@ const DocumentDetailPage: React.FC = () => {
   const getCategoryBadge = (category: string) => {
     switch (category) {
       case 'manual':
-        return <Badge variant="primary">Manual</Badge>;
+        return <Badge variant="primary">{t('library.categories.manual')}</Badge>;
       case 'sop':
-        return <Badge variant="info">SOP</Badge>;
+        return <Badge variant="info">{t('library.categories.sop')}</Badge>;
       case 'datasheet':
-        return <Badge variant="warning">Datasheet</Badge>;
+        return <Badge variant="warning">{t('library.categories.datasheet')}</Badge>;
       case 'report':
-        return <Badge variant="success">Report</Badge>;
+        return <Badge variant="success">{t('library.categories.report')}</Badge>;
       default:
-        return <Badge variant="secondary">{category || 'Other'}</Badge>;
+        return <Badge variant="secondary">{category || t('library.categories.other')}</Badge>;
     }
   };
 
@@ -68,7 +70,7 @@ const DocumentDetailPage: React.FC = () => {
   if (!currentDocument) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Loading document details...</p>
+        <p className="text-gray-500">{t('library.detail.loading')}</p>
       </div>
     );
   }
@@ -89,7 +91,7 @@ const DocumentDetailPage: React.FC = () => {
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={() => setIsVersionOpen(true)}>
-            Upload New Version
+            {t('library.detail.uploadNewVersion')}
           </Button>
           <a
             href={currentDocument.fileUrl}
@@ -97,53 +99,53 @@ const DocumentDetailPage: React.FC = () => {
             rel="noopener noreferrer"
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-blue-600 hover:bg-blue-700"
           >
-            Download
+            {t('library.detail.download')}
           </a>
           <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            Delete
+            {t('library.detail.delete')}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Document Details">
+        <Card title={t('library.detail.documentDetails')}>
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Category</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.category')}</dt>
               <dd className="mt-1">{getCategoryBadge(currentDocument.category || '')}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Version</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.version')}</dt>
               <dd className="mt-1 text-gray-900">{currentDocument.version || '1'}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">File Type</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.fileType')}</dt>
               <dd className="mt-1 text-gray-900">{currentDocument.fileType?.toUpperCase() || '-'}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">File Size</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.fileSize')}</dt>
               <dd className="mt-1 text-gray-900">
                 {currentDocument.fileSize ? formatFileSize(currentDocument.fileSize) : '-'}
               </dd>
             </div>
             {currentDocument.system && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Related System</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('library.detail.relatedSystem')}</dt>
                 <dd className="mt-1 text-gray-900">{currentDocument.system.name}</dd>
               </div>
             )}
             <div>
-              <dt className="text-sm font-medium text-gray-500">Uploaded By</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.uploadedBy')}</dt>
               <dd className="mt-1 text-gray-900">{currentDocument.uploader?.name || '-'}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Created At</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.createdAt')}</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentDocument.createdAt).toLocaleString()}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Last Updated</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('library.detail.lastUpdated')}</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentDocument.updatedAt).toLocaleString()}
               </dd>
@@ -151,17 +153,17 @@ const DocumentDetailPage: React.FC = () => {
           </dl>
         </Card>
 
-        <Card title="Description" className="lg:col-span-2">
+        <Card title={t('library.detail.descriptionTitle')} className="lg:col-span-2">
           {currentDocument.description ? (
             <p className="text-gray-700 whitespace-pre-wrap">{currentDocument.description}</p>
           ) : (
-            <p className="text-gray-500 italic">No description provided</p>
+            <p className="text-gray-500 italic">{t('library.detail.noDescription')}</p>
           )}
         </Card>
       </div>
 
       {currentDocument.fileType && ['jpg', 'jpeg', 'png', 'gif'].includes(currentDocument.fileType.toLowerCase()) && (
-        <Card title="Preview">
+        <Card title={t('library.detail.preview')}>
           <img
             src={currentDocument.fileUrl}
             alt={currentDocument.title}
@@ -171,7 +173,7 @@ const DocumentDetailPage: React.FC = () => {
       )}
 
       {currentDocument.fileType === 'pdf' && (
-        <Card title="Preview">
+        <Card title={t('library.detail.preview')}>
           <iframe
             src={currentDocument.fileUrl}
             title={currentDocument.title}
@@ -180,41 +182,41 @@ const DocumentDetailPage: React.FC = () => {
         </Card>
       )}
 
-      <Modal isOpen={isVersionOpen} onClose={() => setIsVersionOpen(false)} title="Upload New Version">
+      <Modal isOpen={isVersionOpen} onClose={() => setIsVersionOpen(false)} title={t('library.detail.uploadNewVersion')}>
         <p className="text-gray-600 mb-4">
-          Upload a new version of this document. The current version ({currentDocument.version || '1'}) will be archived.
+          {t('library.detail.versionUploadMessage', { version: currentDocument.version || '1' })}
         </p>
         <FileUpload
           name="file"
-          label="New Document File"
+          label={t('library.detail.newDocumentFile')}
           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
           onChange={(files) => setNewVersionFile(files[0] || null)}
         />
         {newVersionFile && (
           <p className="text-sm text-gray-500 mt-2">
-            Selected: {newVersionFile.name}
+            {t('library.modal.selected')}: {newVersionFile.name}
           </p>
         )}
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={() => setIsVersionOpen(false)}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleUploadVersion}>
-            Upload
+            {t('library.modal.upload')}
           </Button>
         </div>
       </Modal>
 
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete Document" size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('library.detail.deleteDocument')} size="sm">
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this document? This action cannot be undone.
+          {t('library.detail.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </Modal>

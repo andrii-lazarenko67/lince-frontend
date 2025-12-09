@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface StockLevelData {
   label: string;
@@ -14,13 +15,14 @@ interface StockLevelChartProps {
 }
 
 const StockLevelChart: React.FC<StockLevelChartProps> = ({ data, title, maxItems = 10 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
       </div>
     );
   }
@@ -83,15 +85,15 @@ const StockLevelChart: React.FC<StockLevelChartProps> = ({ data, title, maxItems
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    Stock: <span className="text-white font-semibold">{item.current} {item.unit}</span>
+                    {t('charts.stockLevel.stock')}: <span className="text-white font-semibold">{item.current} {item.unit}</span>
                   </div>
                   {item.min !== null && (
                     <div className="text-xs text-gray-400">
-                      Min Alert: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
+                      {t('charts.stockLevel.minAlert')}: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
                     </div>
                   )}
                   <div className="text-xs text-gray-400">
-                    Share: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                    {t('charts.stockLevel.share')}: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
@@ -100,9 +102,9 @@ const StockLevelChart: React.FC<StockLevelChartProps> = ({ data, title, maxItems
         })}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">Normal</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">Low Stock</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">Min Alert</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">{t('charts.stockLevel.normal')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('charts.stockLevel.lowStock')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">{t('charts.stockLevel.minAlert')}</span></div>
       </div>
     </div>
   );

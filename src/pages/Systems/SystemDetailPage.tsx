@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchSystemById, deleteSystem } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints, deleteMonitoringPoint as deleteMonitoringPointAction } from '../../store/slices/monitoringPointSlice';
@@ -12,6 +13,7 @@ import PhotoGallery from '../../components/PhotoGallery';
 import type { MonitoringPoint, ChecklistItem } from '../../types';
 
 const SystemDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentSystem } = useAppSelector((state) => state.systems);
@@ -109,19 +111,19 @@ const SystemDetailPage: React.FC = () => {
   const monitoringPointColumns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('common.name'),
       render: (point: MonitoringPoint) => (
         <span className="font-medium text-gray-900">{point.name}</span>
       )
     },
     {
       key: 'parameter',
-      header: 'Parameter',
+      header: t('monitoringPoints.parameter'),
       render: (point: MonitoringPoint) => point.parameterObj?.name || '-'
     },
     {
       key: 'unit',
-      header: 'Unit',
+      header: t('monitoringPoints.unit'),
       render: (point: MonitoringPoint) => (
         <span className={!point.unitObj ? 'text-gray-400' : ''}>
           {point.unitObj?.abbreviation || 'N/A'}
@@ -130,7 +132,7 @@ const SystemDetailPage: React.FC = () => {
     },
     {
       key: 'range',
-      header: 'Range',
+      header: t('monitoringPoints.range'),
       render: (point: MonitoringPoint) => (
         <span className={point.minValue === null || point.maxValue === null ? 'text-gray-400' : ''}>
           {point.minValue !== null && point.maxValue !== null
@@ -141,23 +143,23 @@ const SystemDetailPage: React.FC = () => {
     },
     {
       key: 'alertEnabled',
-      header: 'Alerts',
+      header: t('monitoringPoints.alerts'),
       render: (point: MonitoringPoint) => (
         <Badge variant={point.alertEnabled ? 'primary' : 'secondary'}>
-          {point.alertEnabled ? 'Enabled' : 'Disabled'}
+          {point.alertEnabled ? t('monitoringPoints.enabled') : t('monitoringPoints.disabled')}
         </Badge>
       )
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('common.actions'),
       render: (point: MonitoringPoint) => (
         <div className="flex space-x-2">
           <Button size="sm" variant="outline" onClick={() => handleOpenMonitoringPointForm(point)}>
-            Edit
+            {t('common.edit')}
           </Button>
           <Button size="sm" variant="danger" onClick={() => handleOpenDeleteMonitoringPoint(point)}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       )
@@ -167,42 +169,42 @@ const SystemDetailPage: React.FC = () => {
   const checklistItemColumns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('common.name'),
       render: (item: ChecklistItem) => (
         <span className="font-medium text-gray-900">{item.name}</span>
       )
     },
     {
       key: 'description',
-      header: 'Description',
+      header: t('common.description'),
       render: (item: ChecklistItem) => (
         <span className="text-gray-600">{item.description || '-'}</span>
       )
     },
     {
       key: 'isRequired',
-      header: 'Required',
+      header: t('common.required'),
       render: (item: ChecklistItem) => (
         <Badge variant={item.isRequired ? 'warning' : 'secondary'}>
-          {item.isRequired ? 'Required' : 'Optional'}
+          {item.isRequired ? t('common.required') : t('common.optional')}
         </Badge>
       )
     },
     {
       key: 'order',
-      header: 'Order',
+      header: t('checklistItems.displayOrder'),
       render: (item: ChecklistItem) => item.order
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('common.actions'),
       render: (item: ChecklistItem) => (
         <div className="flex space-x-2">
           <Button size="sm" variant="outline" onClick={() => handleOpenChecklistItemForm(item)}>
-            Edit
+            {t('common.edit')}
           </Button>
           <Button size="sm" variant="danger" onClick={() => handleOpenDeleteChecklistItem(item)}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       )
@@ -212,7 +214,7 @@ const SystemDetailPage: React.FC = () => {
   if (!currentSystem) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Loading system details...</p>
+        <p className="text-gray-500">{t('common.loading')}</p>
       </div>
     );
   }
@@ -233,28 +235,28 @@ const SystemDetailPage: React.FC = () => {
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={() => setIsEditOpen(true)}>
-            Edit
+            {t('common.edit')}
           </Button>
           <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="System Details" className="lg:col-span-1">
+        <Card title={t('systems.systemDetails')} className="lg:col-span-1">
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('common.status')}</dt>
               <dd className="mt-1">
                 <Badge variant={currentSystem.status === 'active' ? 'success' : 'secondary'}>
-                  {currentSystem.status}
+                  {currentSystem.status === 'active' ? t('systems.active') : currentSystem.status === 'inactive' ? t('systems.inactive') : t('systems.maintenance')}
                 </Badge>
               </dd>
             </div>
             {currentSystem.parent && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Parent System</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('systems.parentSystem')}</dt>
                 <dd className="mt-1 text-gray-900">
                   <button
                     onClick={() => goToSystemDetail(currentSystem.parent!.id)}
@@ -267,7 +269,7 @@ const SystemDetailPage: React.FC = () => {
             )}
             {currentSystem.children && currentSystem.children.length > 0 && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Sub-Systems</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('systems.subSystems')}</dt>
                 <dd className="mt-1">
                   <ul className="space-y-1">
                     {currentSystem.children.map(child => (
@@ -285,15 +287,15 @@ const SystemDetailPage: React.FC = () => {
               </div>
             )}
             <div>
-              <dt className="text-sm font-medium text-gray-500">Location</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('common.location')}</dt>
               <dd className="mt-1 text-gray-900">{currentSystem.location || '-'}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Description</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('common.description')}</dt>
               <dd className="mt-1 text-gray-900">{currentSystem.description || '-'}</dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Created At</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('systems.createdAt')}</dt>
               <dd className="mt-1 text-gray-900">
                 {new Date(currentSystem.createdAt).toLocaleDateString()}
               </dd>
@@ -305,11 +307,11 @@ const SystemDetailPage: React.FC = () => {
       </div>
 
       <Card
-        title="Monitoring Points"
+        title={t('systems.monitoringPoints')}
         noPadding
         headerActions={
           <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
-            Add Point
+            {t('systems.addPoint')}
           </Button>
         }
       >
@@ -317,16 +319,16 @@ const SystemDetailPage: React.FC = () => {
           columns={monitoringPointColumns}
           data={monitoringPoints}
           keyExtractor={(point) => point.id}
-          emptyMessage="No monitoring points configured for this system."
+          emptyMessage={t('monitoringPoints.noMonitoringPoints')}
         />
       </Card>
 
       <Card
-        title="Checklist Items"
+        title={t('systems.checklistItems')}
         noPadding
         headerActions={
           <Button variant="primary" size="sm" onClick={() => handleOpenChecklistItemForm()}>
-            Add Item
+            {t('systems.addItem')}
           </Button>
         }
       >
@@ -334,7 +336,7 @@ const SystemDetailPage: React.FC = () => {
           columns={checklistItemColumns}
           data={checklistItems}
           keyExtractor={(item) => item.id}
-          emptyMessage="No checklist items configured for this system."
+          emptyMessage={t('checklistItems.noChecklistItems')}
         />
       </Card>
 
@@ -344,16 +346,16 @@ const SystemDetailPage: React.FC = () => {
         system={currentSystem}
       />
 
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete System" size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('systems.deleteSystem')} size="sm">
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this system? This action cannot be undone.
+          {t('systems.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeleteSystem} disabled={loading}>
-            {loading ? 'Deleting...' : 'Delete'}
+            {loading ? t('common.loading') : t('common.delete')}
           </Button>
         </div>
       </Modal>
@@ -368,18 +370,18 @@ const SystemDetailPage: React.FC = () => {
       <Modal
         isOpen={isDeleteMonitoringPointOpen}
         onClose={() => setIsDeleteMonitoringPointOpen(false)}
-        title="Delete Monitoring Point"
+        title={t('monitoringPoints.deleteMonitoringPoint')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{deletingMonitoringPoint?.name}</strong>? This action cannot be undone.
+          {t('monitoringPoints.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteMonitoringPointOpen(false)} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeleteMonitoringPoint} disabled={loading}>
-            {loading ? 'Deleting...' : 'Delete'}
+            {loading ? t('common.loading') : t('common.delete')}
           </Button>
         </div>
       </Modal>
@@ -394,18 +396,18 @@ const SystemDetailPage: React.FC = () => {
       <Modal
         isOpen={isDeleteChecklistItemOpen}
         onClose={() => setIsDeleteChecklistItemOpen(false)}
-        title="Delete Checklist Item"
+        title={t('checklistItems.deleteChecklistItem')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{deletingChecklistItem?.name}</strong>? This action cannot be undone.
+          {t('checklistItems.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteChecklistItemOpen(false)} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDeleteChecklistItem} disabled={loading}>
-            {loading ? 'Deleting...' : 'Delete'}
+            {loading ? t('common.loading') : t('common.delete')}
           </Button>
         </div>
       </Modal>

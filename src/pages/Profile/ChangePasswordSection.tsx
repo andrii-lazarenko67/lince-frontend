@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch } from '../../hooks';
 import { changePassword } from '../../store/slices/authSlice';
 import { Card, Button, Input, Alert } from '../../components/common';
 
 const ChangePasswordSection: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
 
   const [loading, setLoading] = useState(false);
@@ -28,11 +30,11 @@ const ChangePasswordSection: React.FC = () => {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.currentPassword) newErrors.currentPassword = 'Current password is required';
-    if (!formData.newPassword) newErrors.newPassword = 'New password is required';
-    if (formData.newPassword.length < 6) newErrors.newPassword = 'Password must be at least 6 characters';
+    if (!formData.currentPassword) newErrors.currentPassword = t('profile.password.currentRequired');
+    if (!formData.newPassword) newErrors.newPassword = t('profile.password.newRequired');
+    if (formData.newPassword.length < 6) newErrors.newPassword = t('profile.password.minLength');
     if (formData.newPassword !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = t('profile.password.passwordsNoMatch');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -50,7 +52,7 @@ const ChangePasswordSection: React.FC = () => {
     setLoading(false);
 
     if (changePassword.fulfilled.match(result)) {
-      setSuccessMessage('Password changed successfully');
+      setSuccessMessage(t('profile.password.passwordChanged'));
       setFormData({
         currentPassword: '',
         newPassword: '',
@@ -60,7 +62,7 @@ const ChangePasswordSection: React.FC = () => {
   };
 
   return (
-    <Card title="Change Password">
+    <Card title={t('profile.password.title')}>
       {successMessage && (
         <Alert type="success" message={successMessage} className="mb-4" />
       )}
@@ -71,8 +73,8 @@ const ChangePasswordSection: React.FC = () => {
           name="currentPassword"
           value={formData.currentPassword}
           onChange={handleChange}
-          label="Current Password"
-          placeholder="Enter current password"
+          label={t('profile.password.currentPassword')}
+          placeholder={t('profile.password.currentPlaceholder')}
           error={errors.currentPassword}
           required
         />
@@ -82,8 +84,8 @@ const ChangePasswordSection: React.FC = () => {
           name="newPassword"
           value={formData.newPassword}
           onChange={handleChange}
-          label="New Password"
-          placeholder="Enter new password"
+          label={t('profile.password.newPassword')}
+          placeholder={t('profile.password.newPlaceholder')}
           error={errors.newPassword}
           required
         />
@@ -93,14 +95,14 @@ const ChangePasswordSection: React.FC = () => {
           name="confirmPassword"
           value={formData.confirmPassword}
           onChange={handleChange}
-          label="Confirm New Password"
-          placeholder="Confirm new password"
+          label={t('profile.password.confirmPassword')}
+          placeholder={t('profile.password.confirmPlaceholder')}
           error={errors.confirmPassword}
           required
         />
 
         <Button type="submit" variant="primary" className="mt-4" disabled={loading}>
-          Update Password
+          {t('profile.password.updatePassword')}
         </Button>
       </form>
     </Card>

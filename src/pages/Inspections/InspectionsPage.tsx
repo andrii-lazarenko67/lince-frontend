@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspections } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -8,6 +9,7 @@ import InspectionsChartView from './InspectionsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const InspectionsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { inspections } = useAppSelector((state) => state.inspections);
@@ -41,7 +43,7 @@ const InspectionsPage: React.FC = () => {
   };
 
   const getExportData = () => {
-    const headers = ['Date', 'System', 'Inspector', 'Status', 'Conclusion', 'Items'];
+    const headers = [t('inspections.export.date'), t('inspections.export.system'), t('inspections.export.inspector'), t('inspections.export.status'), t('inspections.export.conclusion'), t('inspections.export.items')];
     const rows = inspections.map(insp => [
       new Date(insp.date).toLocaleDateString(),
       insp.system?.name || '-',
@@ -57,15 +59,15 @@ const InspectionsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Inspections Report',
-        subtitle: 'LINCE Water Treatment System',
+        title: t('inspections.export.title'),
+        subtitle: t('inspections.export.subtitle'),
         filename: `inspections-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Inspections', value: String(inspections.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('inspections.export.totalInspections'), value: String(inspections.length) },
+          { label: t('inspections.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Inspections (${inspections.length})`, headers, rows }]
+      [{ title: `${t('inspections.export.inspections')} (${inspections.length})`, headers, rows }]
     );
   };
 
@@ -73,14 +75,14 @@ const InspectionsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Inspections Report',
+        title: t('inspections.export.title'),
         filename: `inspections-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Inspections', value: String(inspections.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('inspections.export.totalInspections'), value: String(inspections.length) },
+          { label: t('inspections.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Inspections (${inspections.length})`, headers, rows }]
+      [{ title: `${t('inspections.export.inspections')} (${inspections.length})`, headers, rows }]
     );
   };
 
@@ -88,30 +90,30 @@ const InspectionsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Inspections Report',
+        title: t('inspections.export.title'),
         filename: `inspections-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Inspections', value: String(inspections.length) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('inspections.export.totalInspections'), value: String(inspections.length) },
+          { label: t('inspections.export.generated'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'INSPECTIONS', headers, rows }]
+      [{ title: t('inspections.export.inspectionsUpper'), headers, rows }]
     );
   };
 
   const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
-    { value: 'pending', label: 'Pending' },
-    { value: 'completed', label: 'Completed' },
-    { value: 'approved', label: 'Approved' }
+    { value: 'pending', label: t('inspections.filters.pending') },
+    { value: 'completed', label: t('inspections.filters.completed') },
+    { value: 'approved', label: t('inspections.filters.approved') }
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Inspections</h1>
-          <p className="text-gray-500 mt-1">Manage system inspections</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('inspections.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('inspections.description')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
@@ -125,7 +127,7 @@ const InspectionsPage: React.FC = () => {
             disabled={inspections.length === 0}
           />
           <Button variant="primary" onClick={goToNewInspection}>
-            New Inspection
+            {t('inspections.newInspection')}
           </Button>
         </div>
       </div>
@@ -140,8 +142,8 @@ const InspectionsPage: React.FC = () => {
                   value={filters.systemId}
                   onChange={(e) => setFilters({ ...filters, systemId: e.target.value })}
                   options={systemOptions}
-                  label="System"
-                  placeholder="All Systems"
+                  label={t('inspections.filters.system')}
+                  placeholder={t('inspections.filters.allSystems')}
                 />
               </div>
 
@@ -151,8 +153,8 @@ const InspectionsPage: React.FC = () => {
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                   options={statusOptions}
-                  label="Status"
-                  placeholder="All Statuses"
+                  label={t('inspections.filters.status')}
+                  placeholder={t('inspections.filters.allStatuses')}
                 />
               </div>
 
@@ -161,7 +163,7 @@ const InspectionsPage: React.FC = () => {
                   name="startDate"
                   value={filters.startDate}
                   onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  label="Start Date"
+                  label={t('inspections.filters.startDate')}
                 />
               </div>
 
@@ -170,16 +172,16 @@ const InspectionsPage: React.FC = () => {
                   name="endDate"
                   value={filters.endDate}
                   onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  label="End Date"
+                  label={t('inspections.filters.endDate')}
                 />
               </div>
 
               <div className="flex space-x-4 items-start justify-end">
                 <Button variant="primary" onClick={handleApplyFilters}>
-                  Apply
+                  {t('inspections.filters.apply')}
                 </Button>
                 <Button variant="outline" onClick={handleClearFilters}>
-                  Clear
+                  {t('inspections.filters.clear')}
                 </Button>
               </div>
             </div>

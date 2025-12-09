@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createDailyLog } from '../../store/slices/dailyLogSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -13,6 +14,7 @@ interface EntryValue {
 }
 
 const NewDailyLogPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
@@ -118,12 +120,12 @@ const NewDailyLogPage: React.FC = () => {
     e.preventDefault();
 
     if (!formData.systemId) {
-      alert('Please select a system');
+      alert(t('dailyLogs.new.selectSystem'));
       return;
     }
 
     if (recordType === 'laboratory' && !formData.laboratory) {
-      alert('Please enter the laboratory name for laboratory records');
+      alert(t('dailyLogs.new.enterLaboratory'));
       return;
     }
 
@@ -134,7 +136,7 @@ const NewDailyLogPage: React.FC = () => {
     }));
 
     if (validEntries.length === 0) {
-      alert('Please enter at least one value');
+      alert(t('dailyLogs.new.enterOneValue'));
       return;
     }
 
@@ -162,12 +164,12 @@ const NewDailyLogPage: React.FC = () => {
 
   const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const recordTypeOptions = [
-    { value: 'field', label: 'Field Record (Field Analyses)' },
-    { value: 'laboratory', label: 'External Record (Laboratory Analyses)' }
+    { value: 'field', label: t('dailyLogs.new.fieldRecord') },
+    { value: 'laboratory', label: t('dailyLogs.new.laboratoryRecord') }
   ];
   const timeModeOptions = [
-    { value: 'manual', label: 'Manual' },
-    { value: 'auto', label: 'Automatic (Current Time)' }
+    { value: 'manual', label: t('dailyLogs.new.manual') },
+    { value: 'auto', label: t('dailyLogs.new.automatic') }
   ];
 
   return (
@@ -179,42 +181,42 @@ const NewDailyLogPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">New Daily Record</h1>
-          <p className="text-gray-500 mt-1">Record {recordType === 'field' ? 'field analyses' : 'laboratory analyses'} data</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('dailyLogs.new.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('dailyLogs.new.description', { type: recordType === 'field' ? t('dailyLogs.new.fieldAnalyses') : t('dailyLogs.new.laboratoryAnalyses') })}</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
         <div className="flex justify-end space-x-3 mb-6">
           <Button type="button" variant="danger" onClick={goBack} disabled={loading}>
-            Cancel
+            {t('dailyLogs.new.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Saving...' : 'Save Record'}
+            {loading ? t('dailyLogs.new.saving') : t('dailyLogs.new.saveRecord')}
           </Button>
         </div>
 
         {/* Record Type Selection */}
-        <Card title="Record Type">
+        <Card title={t('dailyLogs.new.recordType')}>
           <div className="flex flex-col gap-6">
             <Select
               name="recordType"
               value={recordType}
               onChange={(e) => setRecordType(e.target.value as RecordType)}
               options={recordTypeOptions}
-              label="Record Type"
+              label={t('dailyLogs.new.recordType')}
               required
             />
             <p className="text-sm text-gray-600">
               {recordType === 'field'
-                ? 'Field Record: For field analyses performed on-site'
-                : 'External Record: For laboratory analyses performed by external labs'}
+                ? t('dailyLogs.new.fieldRecordInfo')
+                : t('dailyLogs.new.laboratoryRecordInfo')}
             </p>
           </div>
         </Card>
 
         {/* Record Information */}
-        <Card title="Record Information" className="mt-6">
+        <Card title={t('dailyLogs.new.recordInformation')} className="mt-6">
           <div className="flex flex-col gap-6">
             {/* System Selection */}
             <Select
@@ -222,8 +224,8 @@ const NewDailyLogPage: React.FC = () => {
               value={formData.systemId}
               onChange={handleChange}
               options={systemOptions}
-              label="System"
-              placeholder="Select system"
+              label={t('dailyLogs.new.system')}
+              placeholder={t('dailyLogs.new.selectSystem')}
               required
             />
 
@@ -234,8 +236,8 @@ const NewDailyLogPage: React.FC = () => {
                 value={formData.stageId}
                 onChange={handleChange}
                 options={availableStages}
-                label="Stage (Optional)"
-                placeholder="Select stage or leave empty for system-level record"
+                label={t('dailyLogs.new.stage')}
+                placeholder={t('dailyLogs.new.stageOptional')}
               />
             )}
 
@@ -245,7 +247,7 @@ const NewDailyLogPage: React.FC = () => {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              label={recordType === 'field' ? 'Date' : 'Record Date'}
+              label={recordType === 'field' ? t('dailyLogs.new.date') : t('dailyLogs.new.recordDate')}
               required
             />
 
@@ -255,8 +257,8 @@ const NewDailyLogPage: React.FC = () => {
               name="period"
               value={formData.period}
               onChange={handleChange}
-              label="Period (Optional)"
-              placeholder="e.g., Morning, Afternoon, Night, Shift 1, etc."
+              label={t('dailyLogs.new.period')}
+              placeholder={t('dailyLogs.new.periodPlaceholder')}
             />
 
             {/* Time (Optional) */}
@@ -270,7 +272,7 @@ const NewDailyLogPage: React.FC = () => {
                   className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                 />
                 <label htmlFor="timeEnabled" className="ml-2 block text-sm text-gray-700">
-                  Record Time
+                  {t('dailyLogs.new.recordTime')}
                 </label>
               </div>
               {formData.timeEnabled && (
@@ -280,14 +282,14 @@ const NewDailyLogPage: React.FC = () => {
                     value={formData.timeMode}
                     onChange={handleChange}
                     options={timeModeOptions}
-                    label="Time Mode"
+                    label={t('dailyLogs.new.timeMode')}
                   />
                   <Input
                     type="time"
                     name="time"
                     value={formData.time}
                     onChange={handleChange}
-                    label="Time"
+                    label={t('dailyLogs.new.time')}
                     disabled={formData.timeMode === 'auto'}
                   />
                 </div>
@@ -302,8 +304,8 @@ const NewDailyLogPage: React.FC = () => {
                   name="laboratory"
                   value={formData.laboratory}
                   onChange={handleChange}
-                  label="Laboratory"
-                  placeholder="Enter laboratory name"
+                  label={t('dailyLogs.new.laboratory')}
+                  placeholder={t('dailyLogs.new.laboratoryPlaceholder')}
                   required
                 />
 
@@ -312,7 +314,7 @@ const NewDailyLogPage: React.FC = () => {
                   name="collectionDate"
                   value={formData.collectionDate}
                   onChange={handleChange}
-                  label="Collection Date"
+                  label={t('dailyLogs.new.collectionDate')}
                   required
                 />
 
@@ -326,7 +328,7 @@ const NewDailyLogPage: React.FC = () => {
                       className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                     />
                     <label htmlFor="collectionTimeEnabled" className="ml-2 block text-sm text-gray-700">
-                      Record Collection Time
+                      {t('dailyLogs.new.recordCollectionTime')}
                     </label>
                   </div>
                   {formData.collectionTimeEnabled && (
@@ -336,14 +338,14 @@ const NewDailyLogPage: React.FC = () => {
                         value={formData.collectionTimeMode}
                         onChange={handleChange}
                         options={timeModeOptions}
-                        label="Collection Time Mode"
+                        label={t('dailyLogs.new.collectionTimeMode')}
                       />
                       <Input
                         type="time"
                         name="collectionTime"
                         value={formData.collectionTime}
                         onChange={handleChange}
-                        label="Collection Time"
+                        label={t('dailyLogs.new.collectionTime')}
                         disabled={formData.collectionTimeMode === 'auto'}
                       />
                     </div>
@@ -356,8 +358,8 @@ const NewDailyLogPage: React.FC = () => {
               name="notes"
               value={formData.notes}
               onChange={handleChange}
-              label="General Notes (Optional)"
-              placeholder="Enter any general notes for this record"
+              label={t('dailyLogs.new.generalNotes')}
+              placeholder={t('dailyLogs.new.generalNotesPlaceholder')}
               rows={3}
             />
 
@@ -372,7 +374,7 @@ const NewDailyLogPage: React.FC = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
-                Send notification to managers (for out-of-range values)
+                {t('dailyLogs.new.sendNotification')}
               </label>
             </div>
           </div>
@@ -380,7 +382,7 @@ const NewDailyLogPage: React.FC = () => {
 
         {/* Monitoring Values */}
         {monitoringPoints.length > 0 && (
-          <Card title="Monitoring Values" className="mt-6">
+          <Card title={t('dailyLogs.new.monitoringValues')} className="mt-6">
             <div className="space-y-4">
               {monitoringPoints.map((mp, index) => (
                 <div key={mp.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
@@ -388,12 +390,12 @@ const NewDailyLogPage: React.FC = () => {
                     <p className="text-sm font-medium text-gray-700">{mp.name}</p>
                     <p className="text-xs text-gray-500">
                       {mp.parameterObj?.name || '-'}
-                      {mp.unitObj ? ` (${mp.unitObj.abbreviation})` : ' (N/A)'}
+                      {mp.unitObj ? ` (${mp.unitObj.abbreviation})` : ` (${t('dailyLogs.new.na')})`}
                       {' | '}
                       {mp.minValue !== null && mp.maxValue !== null ? (
-                        <span>Range: {mp.minValue} - {mp.maxValue}</span>
+                        <span>{t('dailyLogs.new.range')}: {mp.minValue} - {mp.maxValue}</span>
                       ) : (
-                        <span className="text-gray-400">Range: N/A</span>
+                        <span className="text-gray-400">{t('dailyLogs.new.range')}: {t('dailyLogs.new.na')}</span>
                       )}
                     </p>
                   </div>
@@ -403,7 +405,7 @@ const NewDailyLogPage: React.FC = () => {
                     name={`value-${mp.id}`}
                     value={entries[index]?.value || ''}
                     onChange={(e) => handleEntryChange(index, 'value', e.target.value)}
-                    placeholder={`Enter ${mp.parameterObj?.name || 'value'}`}
+                    placeholder={t('dailyLogs.new.enterValue', { name: mp.parameterObj?.name || t('dailyLogs.new.value') })}
                     step="0.01"
                   />
 
@@ -412,7 +414,7 @@ const NewDailyLogPage: React.FC = () => {
                     name={`notes-${mp.id}`}
                     value={entries[index]?.notes || ''}
                     onChange={(e) => handleEntryChange(index, 'notes', e.target.value)}
-                    placeholder="Notes (optional)"
+                    placeholder={t('dailyLogs.new.notesOptional')}
                   />
                 </div>
               ))}
@@ -423,8 +425,7 @@ const NewDailyLogPage: React.FC = () => {
         {formData.systemId && monitoringPoints.length === 0 && (
           <Card className="mt-6">
             <p className="text-gray-500 text-center py-8">
-              No monitoring points configured for this {formData.stageId ? 'stage' : 'system'}.
-              Please configure monitoring points first.
+              {t('dailyLogs.new.noMonitoringPoints', { type: formData.stageId ? t('dailyLogs.new.stageType') : t('dailyLogs.new.systemType') })}
             </p>
           </Card>
         )}

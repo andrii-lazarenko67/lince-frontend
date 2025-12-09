@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { fetchUnits } from '../../store/slices/unitSlice';
@@ -8,6 +9,7 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Product, CreateProductRequest } from '../../types';
 
 const ProductsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.products);
   const { units } = useAppSelector((state) => state.units);
@@ -91,14 +93,14 @@ const ProductsPage: React.FC = () => {
   };
 
   const getExportData = () => {
-    const headers = ['Name', 'Type', 'Current Stock', 'Unit', 'Min. Alert', 'Status', 'Supplier'];
+    const headers = [t('products.export.name'), t('products.export.type'), t('products.export.currentStock'), t('products.export.unit'), t('products.export.minAlert'), t('products.export.status'), t('products.export.supplier')];
     const rows = products.map(prod => [
       prod.name,
       prod.type || '-',
       prod.currentStock,
       prod.unit,
       prod.minStockAlert || '-',
-      isLowStock(prod) ? 'Low Stock' : 'In Stock',
+      isLowStock(prod) ? t('products.export.lowStock') : t('products.export.inStock'),
       prod.supplier || '-'
     ]);
     return { headers, rows };
@@ -108,16 +110,16 @@ const ProductsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Products Report',
-        subtitle: 'LINCE Water Treatment System',
+        title: t('products.export.title'),
+        subtitle: t('products.export.subtitle'),
         filename: `products-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Products', value: String(products.length) },
-          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('products.export.totalProducts'), value: String(products.length) },
+          { label: t('products.export.lowStockItems'), value: String(products.filter(p => isLowStock(p)).length) },
+          { label: t('products.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Products (${products.length})`, headers, rows }]
+      [{ title: `${t('products.export.products')} (${products.length})`, headers, rows }]
     );
   };
 
@@ -125,15 +127,15 @@ const ProductsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Products Report',
+        title: t('products.export.title'),
         filename: `products-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Products', value: String(products.length) },
-          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('products.export.totalProducts'), value: String(products.length) },
+          { label: t('products.export.lowStockItems'), value: String(products.filter(p => isLowStock(p)).length) },
+          { label: t('products.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Products (${products.length})`, headers, rows }]
+      [{ title: `${t('products.export.products')} (${products.length})`, headers, rows }]
     );
   };
 
@@ -141,34 +143,34 @@ const ProductsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Products Report',
+        title: t('products.export.title'),
         filename: `products-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Products', value: String(products.length) },
-          { label: 'Low Stock Items', value: String(products.filter(p => isLowStock(p)).length) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('products.export.totalProducts'), value: String(products.length) },
+          { label: t('products.export.lowStockItems'), value: String(products.filter(p => isLowStock(p)).length) },
+          { label: t('products.export.generated'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'PRODUCTS', headers, rows }]
+      [{ title: t('products.export.productsUpper'), headers, rows }]
     );
   };
 
   const columns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('products.list.name'),
       render: (product: Product) => (
         <span className="font-medium text-gray-900">{product.name}</span>
       )
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('products.list.type'),
       render: (product: Product) => product.type || '-'
     },
     {
       key: 'stock',
-      header: 'Current Stock',
+      header: t('products.list.currentStock'),
       render: (product: Product) => (
         <span className={isLowStock(product) ? 'text-red-600 font-medium' : ''}>
           {product.currentStock} {product.unit}
@@ -177,32 +179,32 @@ const ProductsPage: React.FC = () => {
     },
     {
       key: 'minStock',
-      header: 'Min. Alert',
+      header: t('products.list.minAlert'),
       render: (product: Product) => product.minStockAlert ? `${product.minStockAlert} ${product.unit}` : '-'
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('products.list.status'),
       render: (product: Product) => (
         isLowStock(product) ? (
-          <Badge variant="danger">Low Stock</Badge>
+          <Badge variant="danger">{t('products.list.lowStock')}</Badge>
         ) : (
-          <Badge variant="success">In Stock</Badge>
+          <Badge variant="success">{t('products.list.inStock')}</Badge>
         )
       )
     },
     {
       key: 'supplier',
-      header: 'Supplier',
+      header: t('products.list.supplier'),
       render: (product: Product) => product.supplier || '-'
     }
   ];
 
   const typeOptions = [
-    { value: 'chemical', label: 'Chemical' },
-    { value: 'equipment', label: 'Equipment' },
-    { value: 'consumable', label: 'Consumable' },
-    { value: 'other', label: 'Other' }
+    { value: 'chemical', label: t('products.types.chemical') },
+    { value: 'equipment', label: t('products.types.equipment') },
+    { value: 'consumable', label: t('products.types.consumable') },
+    { value: 'other', label: t('products.types.other') }
   ];
 
   const unitOptions = units.map(u => ({ value: u.abbreviation, label: `${u.name} (${u.abbreviation})` }));
@@ -211,8 +213,8 @@ const ProductsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Products</h1>
-          <p className="text-gray-500 mt-1">Manage chemical products and inventory</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('products.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('products.description')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
@@ -226,7 +228,7 @@ const ProductsPage: React.FC = () => {
             disabled={products.length === 0}
           />
           <Button variant="primary" onClick={() => handleOpenForm()}>
-            Add Product
+            {t('products.addProduct')}
           </Button>
         </div>
       </div>
@@ -238,22 +240,22 @@ const ProductsPage: React.FC = () => {
             data={products}
             keyExtractor={(product) => product.id}
             onRowClick={(product) => goToProductDetail(product.id)}
-            emptyMessage="No products found. Click 'Add Product' to create one."
+            emptyMessage={t('products.emptyMessage')}
           />
         </Card>
       ) : (
         <ProductsChartView products={products} />
       )}
 
-      <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingProduct ? 'Edit Product' : 'Add Product'} size="lg">
+      <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingProduct ? t('products.form.editProduct') : t('products.form.addProduct')} size="lg">
         <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
           <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            label="Product Name"
-            placeholder="Enter product name"
+            label={t('products.form.name')}
+            placeholder={t('products.form.namePlaceholder')}
             required
           />
 
@@ -262,8 +264,8 @@ const ProductsPage: React.FC = () => {
             value={formData.type || ''}
             onChange={handleChange}
             options={typeOptions}
-            label="Type (Optional)"
-            placeholder="Select type"
+            label={t('products.form.type')}
+            placeholder={t('products.form.selectType')}
           />
 
           <Select
@@ -271,8 +273,8 @@ const ProductsPage: React.FC = () => {
             value={formData.unit}
             onChange={handleChange}
             options={unitOptions}
-            label="Unit"
-            placeholder="Select unit"
+            label={t('products.form.unit')}
+            placeholder={t('products.form.selectUnit')}
             required
           />
 
@@ -282,7 +284,7 @@ const ProductsPage: React.FC = () => {
               name="currentStock"
               value={formData.currentStock ?? 0}
               onChange={handleChange}
-              label="Current Stock"
+              label={t('products.form.currentStock')}
               min={0}
               step="0.01"
               required
@@ -293,7 +295,7 @@ const ProductsPage: React.FC = () => {
               name="minStockAlert"
               value={formData.minStockAlert || 0}
               onChange={handleChange}
-              label="Min. Stock Alert"
+              label={t('products.form.minStockAlert')}
               min={0}
               step="0.01"
             />
@@ -304,25 +306,25 @@ const ProductsPage: React.FC = () => {
             name="supplier"
             value={formData.supplier || ''}
             onChange={handleChange}
-            label="Supplier (Optional)"
-            placeholder="Enter supplier name"
+            label={t('products.form.supplier')}
+            placeholder={t('products.form.supplierPlaceholder')}
           />
 
           <TextArea
             name="description"
             value={formData.description || ''}
             onChange={handleChange}
-            label="Description (Optional)"
-            placeholder="Enter product description"
+            label={t('products.form.description')}
+            placeholder={t('products.form.descriptionPlaceholder')}
             rows={3}
           />
 
           <div className="flex justify-end space-x-3 mt-6">
             <Button type="button" variant="outline" onClick={handleCloseForm}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" variant="primary">
-              {editingProduct ? 'Update' : 'Create'} Product
+              {editingProduct ? t('common.update') : t('common.create')} {t('products.form.product')}
             </Button>
           </div>
         </form>

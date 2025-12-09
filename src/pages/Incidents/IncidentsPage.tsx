@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchIncidents } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -8,6 +9,7 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Incident } from '../../types';
 
 const IncidentsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { incidents } = useAppSelector((state) => state.incidents);
@@ -43,7 +45,15 @@ const IncidentsPage: React.FC = () => {
   };
 
   const getExportData = () => {
-    const headers = ['Title', 'System', 'Priority', 'Status', 'Reporter', 'Assignee', 'Created'];
+    const headers = [
+      t('incidents.page.exportHeaders.title'),
+      t('incidents.page.exportHeaders.system'),
+      t('incidents.page.exportHeaders.priority'),
+      t('incidents.page.exportHeaders.status'),
+      t('incidents.page.exportHeaders.reporter'),
+      t('incidents.page.exportHeaders.assignee'),
+      t('incidents.page.exportHeaders.created')
+    ];
     const rows = incidents.map(inc => [
       inc.title,
       inc.system?.name || '-',
@@ -60,15 +70,15 @@ const IncidentsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Incidents Report',
-        subtitle: 'LINCE Water Treatment System',
+        title: t('incidents.page.exportTitle'),
+        subtitle: t('incidents.page.exportSubtitle'),
         filename: `incidents-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Incidents', value: String(incidents.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('incidents.page.exportMetadata.total'), value: String(incidents.length) },
+          { label: t('incidents.page.exportMetadata.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Incidents (${incidents.length})`, headers, rows }]
+      [{ title: t('incidents.page.exportSectionTitle', { count: incidents.length }), headers, rows }]
     );
   };
 
@@ -76,14 +86,14 @@ const IncidentsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Incidents Report',
+        title: t('incidents.page.exportTitle'),
         filename: `incidents-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Incidents', value: String(incidents.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('incidents.page.exportMetadata.total'), value: String(incidents.length) },
+          { label: t('incidents.page.exportMetadata.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Incidents (${incidents.length})`, headers, rows }]
+      [{ title: t('incidents.page.exportSectionTitle', { count: incidents.length }), headers, rows }]
     );
   };
 
@@ -91,25 +101,25 @@ const IncidentsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Incidents Report',
+        title: t('incidents.page.exportTitle'),
         filename: `incidents-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Incidents', value: String(incidents.length) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('incidents.page.exportMetadata.total'), value: String(incidents.length) },
+          { label: t('incidents.page.exportMetadata.generated'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'INCIDENTS', headers, rows }]
+      [{ title: t('incidents.page.exportCSVTitle'), headers, rows }]
     );
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'open':
-        return <Badge variant="danger">Open</Badge>;
+        return <Badge variant="danger">{t('incidents.page.statusOpen')}</Badge>;
       case 'in_progress':
-        return <Badge variant="warning">In Progress</Badge>;
+        return <Badge variant="warning">{t('incidents.page.statusInProgress')}</Badge>;
       case 'resolved':
-        return <Badge variant="success">Resolved</Badge>;
+        return <Badge variant="success">{t('incidents.page.statusResolved')}</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -118,13 +128,13 @@ const IncidentsPage: React.FC = () => {
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return <Badge variant="danger">Critical</Badge>;
+        return <Badge variant="danger">{t('incidents.page.priorityCritical')}</Badge>;
       case 'high':
-        return <Badge variant="warning">High</Badge>;
+        return <Badge variant="warning">{t('incidents.page.priorityHigh')}</Badge>;
       case 'medium':
-        return <Badge variant="info">Medium</Badge>;
+        return <Badge variant="info">{t('incidents.page.priorityMedium')}</Badge>;
       case 'low':
-        return <Badge variant="secondary">Low</Badge>;
+        return <Badge variant="secondary">{t('incidents.page.priorityLow')}</Badge>;
       default:
         return <Badge variant="secondary">{priority}</Badge>;
     }
@@ -133,57 +143,57 @@ const IncidentsPage: React.FC = () => {
   const columns = [
     {
       key: 'title',
-      header: 'Title',
+      header: t('incidents.page.columnTitle'),
       render: (incident: Incident) => (
         <span className="font-medium text-gray-900">{incident.title}</span>
       )
     },
     {
       key: 'system',
-      header: 'System',
+      header: t('incidents.page.columnSystem'),
       render: (incident: Incident) => incident.system?.name || '-'
     },
     {
       key: 'priority',
-      header: 'Priority',
+      header: t('incidents.page.columnPriority'),
       render: (incident: Incident) => getPriorityBadge(incident.priority)
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('incidents.page.columnStatus'),
       render: (incident: Incident) => getStatusBadge(incident.status)
     },
     {
       key: 'reporter',
-      header: 'Reporter',
+      header: t('incidents.page.columnReporter'),
       render: (incident: Incident) => incident.reporter?.name || '-'
     },
     {
       key: 'createdAt',
-      header: 'Created',
+      header: t('incidents.page.columnCreated'),
       render: (incident: Incident) => new Date(incident.createdAt).toLocaleString()
     }
   ];
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
-    { value: 'open', label: 'Open' },
-    { value: 'in_progress', label: 'In Progress' },
-    { value: 'resolved', label: 'Resolved' }
+    { value: 'open', label: t('incidents.page.statusOpen') },
+    { value: 'in_progress', label: t('incidents.page.statusInProgress') },
+    { value: 'resolved', label: t('incidents.page.statusResolved') }
   ];
   const priorityOptions = [
-    { value: 'critical', label: 'Critical' },
-    { value: 'high', label: 'High' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'low', label: 'Low' }
+    { value: 'critical', label: t('incidents.page.priorityCritical') },
+    { value: 'high', label: t('incidents.page.priorityHigh') },
+    { value: 'medium', label: t('incidents.page.priorityMedium') },
+    { value: 'low', label: t('incidents.page.priorityLow') }
   ];
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Incidents</h1>
-          <p className="text-gray-500 mt-1">Track and manage system incidents</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('incidents.page.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('incidents.page.subtitle')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
@@ -197,7 +207,7 @@ const IncidentsPage: React.FC = () => {
             disabled={incidents.length === 0}
           />
           <Button variant="primary" onClick={goToNewIncident}>
-            Report Incident
+            {t('incidents.page.reportButton')}
           </Button>
         </div>
       </div>
@@ -212,8 +222,8 @@ const IncidentsPage: React.FC = () => {
                   value={filters.systemId}
                   onChange={(e) => setFilters({ ...filters, systemId: e.target.value })}
                   options={systemOptions}
-                  label="System"
-                  placeholder="All Systems"
+                  label={t('incidents.page.filterSystem')}
+                  placeholder={t('incidents.page.filterSystemPlaceholder')}
                 />
               </div>
 
@@ -223,8 +233,8 @@ const IncidentsPage: React.FC = () => {
                   value={filters.status}
                   onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                   options={statusOptions}
-                  label="Status"
-                  placeholder="All Statuses"
+                  label={t('incidents.page.filterStatus')}
+                  placeholder={t('incidents.page.filterStatusPlaceholder')}
                 />
               </div>
 
@@ -234,8 +244,8 @@ const IncidentsPage: React.FC = () => {
                   value={filters.priority}
                   onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
                   options={priorityOptions}
-                  label="Priority"
-                  placeholder="All Priorities"
+                  label={t('incidents.page.filterPriority')}
+                  placeholder={t('incidents.page.filterPriorityPlaceholder')}
                 />
               </div>
 
@@ -244,7 +254,7 @@ const IncidentsPage: React.FC = () => {
                   name="startDate"
                   value={filters.startDate}
                   onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-                  label="Start Date"
+                  label={t('incidents.page.filterStartDate')}
                 />
               </div>
 
@@ -253,16 +263,16 @@ const IncidentsPage: React.FC = () => {
                   name="endDate"
                   value={filters.endDate}
                   onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-                  label="End Date"
+                  label={t('incidents.page.filterEndDate')}
                 />
               </div>
 
               <div className="flex space-x-4 items-start justify-end">
                 <Button variant="primary" onClick={handleApplyFilters}>
-                  Apply
+                  {t('incidents.page.applyButton')}
                 </Button>
                 <Button variant="outline" onClick={handleClearFilters}>
-                  Clear
+                  {t('incidents.page.clearButton')}
                 </Button>
               </div>
             </div>
@@ -274,7 +284,7 @@ const IncidentsPage: React.FC = () => {
               data={incidents}
               keyExtractor={(incident) => incident.id}
               onRowClick={(incident) => goToIncidentDetail(incident.id)}
-              emptyMessage="No incidents found. Click 'Report Incident' to create one."
+              emptyMessage={t('incidents.page.emptyMessage')}
             />
           </Card>
         </>

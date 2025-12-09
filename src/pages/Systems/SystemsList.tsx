@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppSelector, useAppNavigation } from '../../hooks';
 import { Table, Badge, Button } from '../../components/common';
 import { ChevronRight, ExpandMore, AccountTree, Add } from '@mui/icons-material';
@@ -6,6 +7,7 @@ import type { System } from '../../types';
 import SystemForm from './SystemForm';
 
 const SystemsList: React.FC = () => {
+  const { t } = useTranslation();
   const { systems } = useAppSelector((state) => state.systems);
   const { goToSystemDetail } = useAppNavigation();
   const [expandedSystems, setExpandedSystems] = useState<Set<number>>(new Set());
@@ -76,7 +78,7 @@ const SystemsList: React.FC = () => {
   const columns = [
     {
       key: 'name',
-      header: 'Name',
+      header: t('common.name'),
       render: (item: System & { level: number; hasChildren: boolean }) => (
         <div className="flex items-center" style={{ paddingLeft: `${item.level * 24}px` }}>
           {item.hasChildren && (
@@ -99,7 +101,7 @@ const SystemsList: React.FC = () => {
           <span className="font-medium text-gray-900">{item.name}</span>
           {item.hasChildren && (
             <span className="ml-2 text-xs text-gray-500">
-              ({item.children?.length} stage{(item.children?.length || 0) !== 1 ? 's' : ''})
+              ({item.children?.length} {item.children?.length === 1 ? t('inspections.stage') : t('inspections.stage')})
             </span>
           )}
         </div>
@@ -107,38 +109,38 @@ const SystemsList: React.FC = () => {
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('common.type'),
       render: (system: System) => (
         <span className="capitalize">{system.type}</span>
       )
     },
     {
       key: 'location',
-      header: 'Location',
+      header: t('common.location'),
       render: (system: System) => system.location || '-'
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('common.status'),
       render: (system: System) => (
         <Badge variant={system.status === 'active' ? 'success' : 'secondary'}>
-          {system.status}
+          {system.status === 'active' ? t('systems.active') : system.status === 'inactive' ? t('systems.inactive') : t('systems.maintenance')}
         </Badge>
       )
     },
     {
       key: 'monitoringPoints',
-      header: 'Monitoring Points',
+      header: t('systems.monitoringPoints'),
       render: (system: System) => system.monitoringPoints?.length || 0
     },
     {
       key: 'createdAt',
-      header: 'Created',
+      header: t('systems.createdAt'),
       render: (system: System) => new Date(system.createdAt).toLocaleDateString()
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('common.actions'),
       render: (item: System & { level: number; hasChildren: boolean }) => (
         <div onClick={(e) => e.stopPropagation()}>
           <Button
@@ -150,7 +152,7 @@ const SystemsList: React.FC = () => {
             }}
           >
             <Add fontSize="small" className="mr-1" />
-            Stage
+            {t('inspections.stage')}
           </Button>
         </div>
       )
@@ -164,7 +166,7 @@ const SystemsList: React.FC = () => {
         data={hierarchicalSystems}
         keyExtractor={(system) => system.id}
         onRowClick={(system) => goToSystemDetail(system.id)}
-        emptyMessage="No systems found. Click 'Add System' to create one."
+        emptyMessage={t('systems.noSystems')}
       />
 
       <SystemForm

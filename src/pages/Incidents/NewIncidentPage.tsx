@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createIncident } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -12,6 +13,7 @@ interface PhotoPreview {
 }
 
 const NewIncidentPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { loading } = useAppSelector((state) => state.ui);
@@ -72,7 +74,7 @@ const NewIncidentPage: React.FC = () => {
     });
 
     if (validFiles.length !== files.length) {
-      alert('Some files were skipped. Only images (JPEG, PNG, GIF, WEBP) under 10MB are allowed.');
+      alert(t('incidents.new.photoValidationError'));
     }
 
     const newPreviews = validFiles.map(file => ({
@@ -95,9 +97,9 @@ const NewIncidentPage: React.FC = () => {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.systemId) newErrors.systemId = 'System is required';
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    if (!formData.systemId) newErrors.systemId = t('incidents.new.errorSystemRequired');
+    if (!formData.title.trim()) newErrors.title = t('incidents.new.errorTitleRequired');
+    if (!formData.description.trim()) newErrors.description = t('incidents.new.errorDescriptionRequired');
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -127,10 +129,10 @@ const NewIncidentPage: React.FC = () => {
 
   const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const priorityOptions = [
-    { value: 'low', label: 'Low' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'high', label: 'High' },
-    { value: 'critical', label: 'Critical' }
+    { value: 'low', label: t('incidents.new.priorityLow') },
+    { value: 'medium', label: t('incidents.new.priorityMedium') },
+    { value: 'high', label: t('incidents.new.priorityHigh') },
+    { value: 'critical', label: t('incidents.new.priorityCritical') }
   ];
 
   return (
@@ -142,13 +144,13 @@ const NewIncidentPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Report Incident</h1>
-          <p className="text-gray-500 mt-1">Create a new incident report</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('incidents.new.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('incidents.new.subtitle')}</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card title="Incident Information" className="mb-6">
+        <Card title={t('incidents.new.informationCard')} className="mb-6">
           <div className='flex flex-col gap-6'>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Select
@@ -156,8 +158,8 @@ const NewIncidentPage: React.FC = () => {
                 value={formData.systemId}
                 onChange={handleChange}
                 options={systemOptions}
-                label="System"
-                placeholder="Select system"
+                label={t('incidents.new.systemLabel')}
+                placeholder={t('incidents.new.systemPlaceholder')}
                 error={errors.systemId}
                 required
               />
@@ -169,8 +171,8 @@ const NewIncidentPage: React.FC = () => {
                   value={formData.stageId}
                   onChange={handleChange}
                   options={availableStages}
-                  label="Stage (Optional)"
-                  placeholder="Select stage or leave empty for system-level"
+                  label={t('incidents.new.stageLabel')}
+                  placeholder={t('incidents.new.stagePlaceholder')}
                 />
               )}
             </div>
@@ -181,8 +183,8 @@ const NewIncidentPage: React.FC = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                label="Title"
-                placeholder="Enter incident title"
+                label={t('incidents.new.titleLabel')}
+                placeholder={t('incidents.new.titlePlaceholder')}
                 error={errors.title}
                 required
               />
@@ -192,7 +194,7 @@ const NewIncidentPage: React.FC = () => {
                 value={formData.priority}
                 onChange={handleChange}
                 options={priorityOptions}
-                label="Priority"
+                label={t('incidents.new.priorityLabel')}
                 required
               />
             </div>
@@ -201,8 +203,8 @@ const NewIncidentPage: React.FC = () => {
               name="description"
               value={formData.description}
               onChange={handleChange}
-              label="Description"
-              placeholder="Describe the incident in detail"
+              label={t('incidents.new.descriptionLabel')}
+              placeholder={t('incidents.new.descriptionPlaceholder')}
               rows={5}
               error={errors.description}
               required
@@ -219,13 +221,13 @@ const NewIncidentPage: React.FC = () => {
                 className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
               />
               <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
-                Send notification to managers
+                {t('incidents.new.sendNotificationLabel')}
               </label>
             </div>
           </div>
         </Card>
 
-        <Card title="Photos (Optional)" className="mb-6">
+        <Card title={t('incidents.new.photosCard')} className="mb-6">
           <div className="space-y-4">
             {/* Photo Upload Area */}
             <div
@@ -235,8 +237,8 @@ const NewIncidentPage: React.FC = () => {
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <p className="mt-2 text-sm text-gray-600">Click to upload photos</p>
-              <p className="mt-1 text-xs text-gray-500">JPEG, PNG, GIF, WEBP up to 10MB each</p>
+              <p className="mt-2 text-sm text-gray-600">{t('incidents.new.uploadPrompt')}</p>
+              <p className="mt-1 text-xs text-gray-500">{t('incidents.new.uploadFormats')}</p>
               <input
                 id="incident-photo-input"
                 type="file"
@@ -254,7 +256,7 @@ const NewIncidentPage: React.FC = () => {
                   <div key={index} className="relative group">
                     <img
                       src={photo.preview}
-                      alt={`Preview ${index + 1}`}
+                      alt={t('incidents.new.previewAlt', { index: index + 1 })}
                       className="w-full h-32 object-cover rounded-lg"
                     />
                     <button
@@ -271,17 +273,17 @@ const NewIncidentPage: React.FC = () => {
             )}
 
             {photoPreviews.length > 0 && (
-              <p className="text-sm text-gray-600">{photoPreviews.length} photo(s) selected</p>
+              <p className="text-sm text-gray-600">{t('incidents.new.photosSelected', { count: photoPreviews.length })}</p>
             )}
           </div>
         </Card>
 
         <div className="flex justify-end space-x-3">
           <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
-            Cancel
+            {t('incidents.new.cancelButton')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Submitting...' : 'Submit Incident'}
+            {loading ? t('incidents.new.submittingButton') : t('incidents.new.submitButton')}
           </Button>
         </div>
       </form>

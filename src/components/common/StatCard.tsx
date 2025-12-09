@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, Typography, Box, Avatar } from '@mui/material';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
@@ -25,6 +26,7 @@ const StatCard: React.FC<StatCardProps> = ({
   onClick,
   className = ''
 }) => {
+  const { t } = useTranslation();
   return (
     <Card
       onClick={onClick}
@@ -97,7 +99,7 @@ const StatCard: React.FC<StatCardProps> = ({
               {trend.isPositive ? '+' : '-'}{Math.abs(trend.value)}%
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>
-              vs last period
+              {t('common.statCard.vsLastPeriod')}
             </Typography>
           </Box>
         )}

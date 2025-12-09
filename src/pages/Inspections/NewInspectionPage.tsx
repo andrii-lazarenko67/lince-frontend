@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createInspection, fetchChecklistItems, clearChecklistItems } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -17,6 +18,7 @@ interface PhotoPreview {
 }
 
 const NewInspectionPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { checklistItems } = useAppSelector((state) => state.inspections);
@@ -103,7 +105,7 @@ const NewInspectionPage: React.FC = () => {
     });
 
     if (validFiles.length !== files.length) {
-      alert('Some files were skipped. Only images (JPEG, PNG, GIF, WEBP) under 10MB are allowed.');
+      alert(t('inspections.new.filesSkipped'));
     }
 
     const newPreviews = validFiles.map(file => ({
@@ -130,7 +132,7 @@ const NewInspectionPage: React.FC = () => {
     e.preventDefault();
 
     if (!formData.systemId) {
-      alert('Please select a system');
+      alert(t('inspections.new.selectSystem'));
       return;
     }
 
@@ -159,10 +161,10 @@ const NewInspectionPage: React.FC = () => {
 
   const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
-    { value: 'C', label: 'C - Conforme' },
-    { value: 'NC', label: 'NC - No Conforme' },
-    { value: 'NA', label: 'NA - No Aplica' },
-    { value: 'NV', label: 'NV - No Verificado' }
+    { value: 'C', label: t('inspections.new.conforme') },
+    { value: 'NC', label: t('inspections.new.noConforme') },
+    { value: 'NA', label: t('inspections.new.noAplica') },
+    { value: 'NV', label: t('inspections.new.noVerificado') }
   ];
 
   return (
@@ -174,13 +176,13 @@ const NewInspectionPage: React.FC = () => {
           </svg>
         </button>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">New Inspection</h1>
-          <p className="text-gray-500 mt-1">Create a new system inspection</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('inspections.new.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('inspections.new.description')}</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card title="Inspection Information" className="mb-6">
+        <Card title={t('inspections.new.inspectionInformation')} className="mb-6">
           <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Select
@@ -188,8 +190,8 @@ const NewInspectionPage: React.FC = () => {
                 value={formData.systemId}
                 onChange={handleChange}
                 options={systemOptions}
-                label="System"
-                placeholder="Select system"
+                label={t('inspections.new.system')}
+                placeholder={t('inspections.new.selectSystem')}
                 required
               />
 
@@ -200,8 +202,8 @@ const NewInspectionPage: React.FC = () => {
                   value={formData.stageId}
                   onChange={handleChange}
                   options={availableStages}
-                  label="Stage (Optional)"
-                  placeholder="Select stage or leave empty for system-level inspection"
+                  label={t('inspections.new.stage')}
+                  placeholder={t('inspections.new.stageOptional')}
                 />
               )}
             </div>
@@ -211,14 +213,14 @@ const NewInspectionPage: React.FC = () => {
               name="date"
               value={formData.date}
               onChange={handleChange}
-              label="Date"
+              label={t('inspections.new.date')}
               required
             />
           </div>
         </Card>
 
         {checklistItems.length > 0 && (
-          <Card title="Checklist Items" className="mb-6">
+          <Card title={t('inspections.new.checklistItems')} className="mb-6">
             <div className="space-y-4">
               {checklistItems.map((ci, index) => (
                 <div key={ci.id} className="p-4 bg-gray-50 rounded-lg">
@@ -244,7 +246,7 @@ const NewInspectionPage: React.FC = () => {
                     name={`comment-${ci.id}`}
                     value={items[index]?.comment || ''}
                     onChange={(e) => handleItemChange(index, 'comment', e.target.value)}
-                    placeholder="Comment (optional)"
+                    placeholder={t('inspections.new.commentOptional')}
                   />
                 </div>
               ))}
@@ -252,7 +254,7 @@ const NewInspectionPage: React.FC = () => {
           </Card>
         )}
 
-        <Card title="Photos" className="mb-6">
+        <Card title={t('inspections.new.photos')} className="mb-6">
           <div className="space-y-4">
             {/* Photo Upload Area */}
             <div
@@ -262,8 +264,8 @@ const NewInspectionPage: React.FC = () => {
               <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
-              <p className="mt-2 text-sm text-gray-600">Click to upload photos</p>
-              <p className="mt-1 text-xs text-gray-500">JPEG, PNG, GIF, WEBP up to 10MB each</p>
+              <p className="mt-2 text-sm text-gray-600">{t('inspections.new.clickToUpload')}</p>
+              <p className="mt-1 text-xs text-gray-500">{t('inspections.new.fileTypes')}</p>
               <input
                 id="photo-input"
                 type="file"
@@ -281,7 +283,7 @@ const NewInspectionPage: React.FC = () => {
                   <div key={index} className="relative group">
                     <img
                       src={photo.preview}
-                      alt={`Preview ${index + 1}`}
+                      alt={`${t('inspections.new.preview')} ${index + 1}`}
                       className="w-full h-24 object-cover rounded-lg"
                     />
                     <button
@@ -298,18 +300,18 @@ const NewInspectionPage: React.FC = () => {
             )}
 
             {photoPreviews.length > 0 && (
-              <p className="text-sm text-gray-600">{photoPreviews.length} photo(s) selected</p>
+              <p className="text-sm text-gray-600">{t('inspections.new.photosSelected', { count: photoPreviews.length })}</p>
             )}
           </div>
         </Card>
 
-        <Card title="Conclusion" className="mb-6">
+        <Card title={t('inspections.new.conclusion')} className="mb-6">
           <TextArea
             name="conclusion"
             value={formData.conclusion}
             onChange={handleChange}
-            label="Inspection Conclusion"
-            placeholder="Enter inspection conclusion and observations"
+            label={t('inspections.new.inspectionConclusion')}
+            placeholder={t('inspections.new.conclusionPlaceholder')}
             rows={4}
           />
 
@@ -324,17 +326,17 @@ const NewInspectionPage: React.FC = () => {
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
             <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
-              Send notification to managers
+              {t('inspections.new.sendNotification')}
             </label>
           </div>
         </Card>
 
         <div className="flex justify-end space-x-3">
           <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
-            Cancel
+            {t('inspections.new.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? 'Submitting...' : 'Submit Inspection'}
+            {loading ? t('inspections.new.submitting') : t('inspections.new.submitInspection')}
           </Button>
         </div>
       </form>

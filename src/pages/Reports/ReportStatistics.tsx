@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import type { ReportData } from '../../types';
 import ReportDailyLogs from './ReportDailyLogs';
@@ -17,6 +18,7 @@ interface CircularChartProps {
 }
 
 const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -27,7 +29,7 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
           className="rounded-full bg-gray-100 flex items-center justify-center"
           style={{ width: size, height: size }}
         >
-          <span className="text-gray-400 text-sm">No data</span>
+          <span className="text-gray-400 text-sm">{t('common.noData')}</span>
         </div>
         <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       </div>
@@ -114,7 +116,7 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
           textAnchor="middle"
           style={{ fontSize: '12px', fill: '#9ca3af' }}
         >
-          Total
+          {t('reports.statistics.total')}
         </text>
         {/* Tooltip - detailed content */}
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
@@ -213,14 +215,15 @@ const CircularChart: React.FC<CircularChartProps> = ({ data, title, size = 160 }
 type TabType = 'overview' | 'dailyLogs' | 'inspections' | 'incidents' | 'products';
 
 const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<TabType>('overview');
 
   const tabs: { id: TabType; label: string; count: number }[] = [
-    { id: 'overview', label: 'Overview', count: 0 },
-    { id: 'dailyLogs', label: 'Daily Logs', count: report.dailyLogs.length },
-    { id: 'inspections', label: 'Inspections', count: report.inspections.length },
-    { id: 'incidents', label: 'Incidents', count: report.incidents.length },
-    { id: 'products', label: 'Products', count: report.products.length }
+    { id: 'overview', label: t('reports.statistics.overview'), count: 0 },
+    { id: 'dailyLogs', label: t('reports.statistics.dailyLogs'), count: report.dailyLogs.length },
+    { id: 'inspections', label: t('reports.statistics.inspections'), count: report.inspections.length },
+    { id: 'incidents', label: t('reports.statistics.incidents'), count: report.incidents.length },
+    { id: 'products', label: t('reports.statistics.products'), count: report.products.length }
   ];
 
   // Calculate daily logs stats
@@ -233,8 +236,8 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   }, 0);
 
   const dailyLogsChartData = [
-    { label: 'Normal', value: totalReadings - outOfRangeCount, color: '#22c55e' },
-    { label: 'Out of Range', value: outOfRangeCount, color: '#ef4444' }
+    { label: t('reports.statistics.normal'), value: totalReadings - outOfRangeCount, color: '#22c55e' },
+    { label: t('reports.statistics.outOfRange'), value: outOfRangeCount, color: '#ef4444' }
   ];
 
   // Calculate inspection stats
@@ -243,9 +246,9 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   const pendingInspections = report.inspections.filter(i => i.status === 'pending').length;
 
   const inspectionsChartData = [
-    { label: 'Approved', value: approvedInspections, color: '#22c55e' },
-    { label: 'Completed', value: completedInspections, color: '#3b82f6' },
-    { label: 'Pending', value: pendingInspections, color: '#eab308' }
+    { label: t('reports.statistics.approved'), value: approvedInspections, color: '#22c55e' },
+    { label: t('reports.statistics.completed'), value: completedInspections, color: '#3b82f6' },
+    { label: t('reports.statistics.pending'), value: pendingInspections, color: '#eab308' }
   ];
 
   // Calculate incident stats
@@ -255,10 +258,10 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   const closedIncidents = report.incidents.filter(i => i.status === 'closed').length;
 
   const incidentsStatusChartData = [
-    { label: 'Open', value: openIncidents, color: '#ef4444' },
-    { label: 'In Progress', value: inProgressIncidents, color: '#eab308' },
-    { label: 'Resolved', value: resolvedIncidents, color: '#22c55e' },
-    { label: 'Closed', value: closedIncidents, color: '#6b7280' }
+    { label: t('reports.statistics.open'), value: openIncidents, color: '#ef4444' },
+    { label: t('reports.statistics.inProgress'), value: inProgressIncidents, color: '#eab308' },
+    { label: t('reports.statistics.resolved'), value: resolvedIncidents, color: '#22c55e' },
+    { label: t('reports.statistics.closed'), value: closedIncidents, color: '#6b7280' }
   ];
 
   // Incident priority chart
@@ -268,10 +271,10 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   const lowIncidents = report.incidents.filter(i => i.priority === 'low').length;
 
   const incidentsPriorityChartData = [
-    { label: 'Critical', value: criticalIncidents, color: '#dc2626' },
-    { label: 'High', value: highIncidents, color: '#f97316' },
-    { label: 'Medium', value: mediumIncidents, color: '#eab308' },
-    { label: 'Low', value: lowIncidents, color: '#22c55e' }
+    { label: t('reports.statistics.critical'), value: criticalIncidents, color: '#dc2626' },
+    { label: t('reports.statistics.high'), value: highIncidents, color: '#f97316' },
+    { label: t('reports.statistics.medium'), value: mediumIncidents, color: '#eab308' },
+    { label: t('reports.statistics.low'), value: lowIncidents, color: '#22c55e' }
   ];
 
   // Calculate product stats
@@ -281,8 +284,8 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   const normalStockProducts = report.products.length - lowStockProducts;
 
   const productsStockChartData = [
-    { label: 'Normal Stock', value: normalStockProducts, color: '#22c55e' },
-    { label: 'Low Stock', value: lowStockProducts, color: '#ef4444' }
+    { label: t('reports.statistics.normalStock'), value: normalStockProducts, color: '#22c55e' },
+    { label: t('reports.statistics.lowStock'), value: lowStockProducts, color: '#ef4444' }
   ];
 
   // Product usage chart
@@ -290,37 +293,37 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
   const stockOut = report.productUsages.filter(u => u.type === 'out').length;
 
   const productUsageChartData = [
-    { label: 'Stock In', value: stockIn, color: '#22c55e' },
-    { label: 'Stock Out', value: stockOut, color: '#8b5cf6' }
+    { label: t('reports.statistics.stockIn'), value: stockIn, color: '#22c55e' },
+    { label: t('reports.statistics.stockOut'), value: stockOut, color: '#8b5cf6' }
   ];
 
   const renderOverview = () => (
-    <Card title={`Report Statistics (${report.period.startDate} to ${report.period.endDate})`}>
+    <Card title={t('reports.statistics.reportPeriod', { start: report.period.startDate, end: report.period.endDate })}>
       <div className="space-y-8">
         {/* Daily Logs Section */}
         <div className="border-b border-gray-200 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-gray-700">Daily Logs</h4>
+            <h4 className="text-sm font-semibold text-gray-700">{t('reports.statistics.dailyLogs')}</h4>
             <button
               onClick={() => setActiveTab('dailyLogs')}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
-              View Details →
+              {t('reports.statistics.viewDetails')} →
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <CircularChart
               data={dailyLogsChartData}
-              title="Readings Status"
+              title={t('reports.statistics.readingsStatus')}
             />
             <div className="flex flex-col justify-center space-y-2">
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">{report.dailyLogs.length}</p>
-                <p className="text-xs text-blue-700">Total Logs</p>
+                <p className="text-xs text-blue-700">{t('reports.statistics.totalLogs')}</p>
               </div>
               <div className="text-center p-3 bg-indigo-50 rounded-lg">
                 <p className="text-2xl font-bold text-indigo-600">{totalReadings}</p>
-                <p className="text-xs text-indigo-700">Total Readings</p>
+                <p className="text-xs text-indigo-700">{t('reports.statistics.totalReadings')}</p>
               </div>
             </div>
           </div>
@@ -329,29 +332,29 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
         {/* Inspections Section */}
         <div className="border-b border-gray-200 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-gray-700">Inspections</h4>
+            <h4 className="text-sm font-semibold text-gray-700">{t('reports.statistics.inspections')}</h4>
             <button
               onClick={() => setActiveTab('inspections')}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
-              View Details →
+              {t('reports.statistics.viewDetails')} →
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <CircularChart
               data={inspectionsChartData}
-              title="Inspection Status"
+              title={t('reports.statistics.inspectionStatus')}
             />
             <div className="flex flex-col justify-center space-y-2">
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">{report.inspections.length}</p>
-                <p className="text-xs text-blue-700">Total Inspections</p>
+                <p className="text-xs text-blue-700">{t('reports.statistics.totalInspections')}</p>
               </div>
               <div className="text-center p-3 bg-indigo-50 rounded-lg">
                 <p className="text-2xl font-bold text-indigo-600">
                   {report.inspections.reduce((acc, i) => acc + (i.items?.length || 0), 0)}
                 </p>
-                <p className="text-xs text-indigo-700">Items Checked</p>
+                <p className="text-xs text-indigo-700">{t('reports.statistics.itemsChecked')}</p>
               </div>
             </div>
           </div>
@@ -360,22 +363,22 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
         {/* Incidents Section */}
         <div className="border-b border-gray-200 pb-6">
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-gray-700">Incidents</h4>
+            <h4 className="text-sm font-semibold text-gray-700">{t('reports.statistics.incidents')}</h4>
             <button
               onClick={() => setActiveTab('incidents')}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
-              View Details →
+              {t('reports.statistics.viewDetails')} →
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <CircularChart
               data={incidentsStatusChartData}
-              title="By Status"
+              title={t('reports.statistics.incidentsByStatus')}
             />
             <CircularChart
               data={incidentsPriorityChartData}
-              title="By Priority"
+              title={t('reports.statistics.incidentsByPriority')}
             />
           </div>
         </div>
@@ -383,35 +386,35 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
         {/* Products Section */}
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h4 className="text-sm font-semibold text-gray-700">Products & Usage</h4>
+            <h4 className="text-sm font-semibold text-gray-700">{t('reports.statistics.products')}</h4>
             <button
               onClick={() => setActiveTab('products')}
               className="text-sm text-blue-600 hover:text-blue-800 font-medium"
             >
-              View Details →
+              {t('reports.statistics.viewDetails')} →
             </button>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
             <CircularChart
               data={productsStockChartData}
-              title="Stock Status"
+              title={t('reports.statistics.stockStatus')}
             />
             <CircularChart
               data={productUsageChartData}
-              title="Usage Transactions"
+              title={t('reports.statistics.usageTransactions')}
             />
             <div className="flex flex-col justify-center space-y-2">
               <div className="text-center p-3 bg-green-50 rounded-lg">
                 <p className="text-2xl font-bold text-green-600">
                   {report.productUsages.filter(u => u.type === 'in').reduce((acc, u) => acc + Number(u.quantity), 0)}
                 </p>
-                <p className="text-xs text-green-700">Total Qty In</p>
+                <p className="text-xs text-green-700">{t('reports.statistics.totalQtyIn')}</p>
               </div>
               <div className="text-center p-3 bg-purple-50 rounded-lg">
                 <p className="text-2xl font-bold text-purple-600">
                   {report.productUsages.filter(u => u.type === 'out').reduce((acc, u) => acc + Number(u.quantity), 0)}
                 </p>
-                <p className="text-xs text-purple-700">Total Qty Out</p>
+                <p className="text-xs text-purple-700">{t('reports.statistics.totalQtyOut')}</p>
               </div>
             </div>
           </div>
@@ -420,9 +423,9 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
         {/* Report Info */}
         <div className="pt-4 border-t border-gray-200">
           <p className="text-xs text-gray-500">
-            Report Type: <span className="font-medium capitalize">{report.type}</span>
+            {t('reports.statistics.reportType')}: <span className="font-medium capitalize">{report.type}</span>
             {' | '}
-            Generated: <span className="font-medium">{new Date(report.generatedAt).toLocaleString()}</span>
+            {t('reports.statistics.generated')}: <span className="font-medium">{new Date(report.generatedAt).toLocaleString()}</span>
           </p>
         </div>
       </div>

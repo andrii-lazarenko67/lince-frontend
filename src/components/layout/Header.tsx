@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   AppBar,
   Toolbar,
@@ -25,6 +26,7 @@ import { fetchUnreadCount } from '../../store/slices/notificationSlice';
 const DRAWER_WIDTH = 256;
 
 const Header: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { unreadCount } = useAppSelector((state) => state.notifications);
@@ -86,7 +88,7 @@ const Header: React.FC = () => {
             textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
           }}
         >
-          Water Treatment Monitoring
+          {t('login.subtitle')}
         </Typography>
 
         {/* Right side actions */}
@@ -176,7 +178,7 @@ const Header: React.FC = () => {
           {/* Logout */}
           <IconButton
             onClick={handleLogout}
-            title="Logout"
+            title={t('common.signOut')}
             sx={{
               color: 'white',
               '&:hover': {
@@ -187,7 +189,7 @@ const Header: React.FC = () => {
             <LogoutIcon />
             {!isMobile && (
               <Typography variant="body2" sx={{ ml: 0.5, fontWeight: 500, color: 'white' }}>
-                Logout
+                {t('common.signOut')}
               </Typography>
             )}
           </IconButton>

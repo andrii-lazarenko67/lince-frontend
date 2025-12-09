@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import {
   fetchDosagesByProduct,
@@ -18,6 +19,7 @@ interface ProductDosageSectionProps {
 }
 
 const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, productName }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { dosages, loading, error } = useAppSelector((state) => state.productDosages);
   const { units } = useAppSelector((state) => state.units);
@@ -90,11 +92,11 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
   const handleSubmit = async () => {
     // Validation
     if (!formData.value || formData.value <= 0) {
-      alert('Please enter a valid dosage value');
+      alert(t('productDosage.validation.validValue'));
       return;
     }
     if (!formData.unitId) {
-      alert('Please select a unit');
+      alert(t('productDosage.validation.selectUnit'));
       return;
     }
 
@@ -139,59 +141,59 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
   const dosageColumns = [
     {
       key: 'recordedAt',
-      header: 'Date',
+      header: t('productDosage.table.date'),
       render: (dosage: ProductDosage) => new Date(dosage.recordedAt).toLocaleDateString()
     },
     {
       key: 'value',
-      header: 'Dosage',
+      header: t('productDosage.table.dosage'),
       render: (dosage: ProductDosage) => `${dosage.value} ${dosage.unit?.abbreviation || ''}`
     },
     {
       key: 'dosageMode',
-      header: 'Mode',
+      header: t('productDosage.table.mode'),
       render: (dosage: ProductDosage) => (
         <Badge variant={dosage.dosageMode === 'automatic' ? 'info' : 'secondary'}>
-          {dosage.dosageMode === 'automatic' ? 'Automatic' : 'Manual'}
+          {dosage.dosageMode === 'automatic' ? t('productDosage.mode.automatic') : t('productDosage.mode.manual')}
         </Badge>
       )
     },
     {
       key: 'frequency',
-      header: 'Frequency',
+      header: t('productDosage.table.frequency'),
       render: (dosage: ProductDosage) => dosage.frequency || '-'
     },
     {
       key: 'system',
-      header: 'System',
+      header: t('productDosage.table.system'),
       render: (dosage: ProductDosage) => dosage.system?.name || '-'
     },
     {
       key: 'recorder',
-      header: 'Recorded By',
+      header: t('productDosage.table.recordedBy'),
       render: (dosage: ProductDosage) => dosage.recorder?.name || '-'
     },
     {
       key: 'notes',
-      header: 'Notes',
+      header: t('productDosage.table.notes'),
       render: (dosage: ProductDosage) => dosage.notes || '-'
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('productDosage.table.actions'),
       render: (dosage: ProductDosage) => (
         <div className="flex space-x-2">
           <button
             onClick={() => handleOpenEdit(dosage)}
             className="text-blue-600 hover:text-blue-800 text-sm"
           >
-            Edit
+            {t('productDosage.table.edit')}
           </button>
           <button
             onClick={() => handleOpenDelete(dosage)}
             className="text-red-600 hover:text-red-800 text-sm"
           >
-            Delete
+            {t('productDosage.table.delete')}
           </button>
         </div>
       )
@@ -204,13 +206,13 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
   }));
 
   const systemOptions = [
-    { value: '', label: 'None - General dosage' },
+    { value: '', label: t('productDosage.form.noneGeneral') },
     ...systems.map(s => ({ value: s.id, label: s.name }))
   ];
 
   const dosageModeOptions: { value: DosageMode; label: string }[] = [
-    { value: 'manual', label: 'Manual' },
-    { value: 'automatic', label: 'Automatic' }
+    { value: 'manual', label: t('productDosage.mode.manual') },
+    { value: 'automatic', label: t('productDosage.mode.automatic') }
   ];
 
   return (
@@ -222,11 +224,11 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
       )}
 
       <Card
-        title={`Dosage History - ${productName}`}
+        title={`${t('productDosage.card.title')} - ${productName}`}
         noPadding
         headerActions={
           <Button variant="primary" onClick={handleOpenCreate}>
-            Add Dosage Record
+            {t('productDosage.card.addButton')}
           </Button>
         }
       >
@@ -239,7 +241,7 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             columns={dosageColumns}
             data={dosages}
             keyExtractor={(dosage) => dosage.id}
-            emptyMessage="No dosage records found for this product."
+            emptyMessage={t('productDosage.card.emptyMessage')}
           />
         )}
       </Card>
@@ -250,7 +252,7 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
           setIsModalOpen(false);
           resetForm();
         }}
-        title={selectedDosage ? 'Edit Dosage Record' : 'Add Dosage Record'}
+        title={selectedDosage ? t('productDosage.modal.editTitle') : t('productDosage.modal.addTitle')}
       >
         <div className="flex flex-col gap-4">
           <Input
@@ -258,7 +260,7 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             name="value"
             value={formData.value.toString()}
             onChange={(e) => setFormData({ ...formData, value: parseFloat(e.target.value) || 0 })}
-            label="Dosage Value"
+            label={t('productDosage.form.dosageValue')}
             min={0}
             step="0.01"
             required
@@ -269,8 +271,8 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             value={formData.unitId.toString()}
             onChange={(e) => setFormData({ ...formData, unitId: parseInt(e.target.value) })}
             options={unitOptions}
-            label="Unit"
-            placeholder="Select unit"
+            label={t('productDosage.form.unit')}
+            placeholder={t('productDosage.form.selectUnit')}
             required
           />
 
@@ -279,7 +281,7 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             value={formData.dosageMode}
             onChange={(e) => setFormData({ ...formData, dosageMode: e.target.value as DosageMode })}
             options={dosageModeOptions}
-            label="Dosage Mode"
+            label={t('productDosage.form.dosageMode')}
             required
           />
 
@@ -288,8 +290,8 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             name="frequency"
             value={formData.frequency || ''}
             onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
-            label="Frequency (Optional)"
-            placeholder="e.g., Daily, Hourly, Per batch"
+            label={t('productDosage.form.frequency')}
+            placeholder={t('productDosage.form.frequencyPlaceholder')}
           />
 
           <Select
@@ -297,16 +299,16 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
             value={formData.systemId?.toString() || ''}
             onChange={(e) => setFormData({ ...formData, systemId: e.target.value ? parseInt(e.target.value) : null })}
             options={systemOptions}
-            label="System (Optional)"
+            label={t('productDosage.form.system')}
           />
 
           <TextArea
             name="notes"
             value={formData.notes || ''}
             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-            label="Notes (Optional)"
+            label={t('productDosage.form.notes')}
             rows={3}
-            placeholder="Additional notes about this dosage"
+            placeholder={t('productDosage.form.notesPlaceholder')}
           />
         </div>
 
@@ -318,10 +320,10 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
               resetForm();
             }}
           >
-            Cancel
+            {t('productDosage.modal.cancel')}
           </Button>
           <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-            {selectedDosage ? 'Update' : 'Create'}
+            {selectedDosage ? t('productDosage.modal.update') : t('productDosage.modal.create')}
           </Button>
         </div>
       </Modal>
@@ -332,11 +334,11 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
           setIsDeleteOpen(false);
           setSelectedDosage(null);
         }}
-        title="Delete Dosage Record"
+        title={t('productDosage.delete.title')}
         size="sm"
       >
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this dosage record? This action cannot be undone.
+          {t('productDosage.delete.confirmation')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button
@@ -346,10 +348,10 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
               setSelectedDosage(null);
             }}
           >
-            Cancel
+            {t('productDosage.delete.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            Delete
+            {t('productDosage.delete.delete')}
           </Button>
         </div>
       </Modal>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchDailyLogs } from '../../store/slices/dailyLogSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -9,6 +10,7 @@ import DailyLogsChartView from './DailyLogsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const DailyLogsPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { dailyLogs } = useAppSelector((state) => state.dailyLogs);
   const { goToNewDailyLog } = useAppNavigation();
@@ -43,9 +45,9 @@ const DailyLogsPage: React.FC = () => {
   };
 
   const getExportData = () => {
-    const headers = ['Type', 'Date', 'System', 'Stage', 'Period', 'Laboratory', 'User', 'Entries', 'Notes'];
+    const headers = [t('dailyLogs.export.type'), t('dailyLogs.export.date'), t('dailyLogs.export.system'), t('dailyLogs.export.stage'), t('dailyLogs.export.period'), t('dailyLogs.export.laboratory'), t('dailyLogs.export.user'), t('dailyLogs.export.entries'), t('dailyLogs.export.notes')];
     const rows = dailyLogs.map(log => [
-      log.recordType === 'field' ? 'Field' : 'Laboratory',
+      log.recordType === 'field' ? t('dailyLogs.recordType.field') : t('dailyLogs.recordType.laboratory'),
       new Date(log.date).toLocaleDateString(),
       log.system?.name || '-',
       log.stage?.name || '-',
@@ -62,15 +64,15 @@ const DailyLogsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: 'Daily Logs Report',
-        subtitle: 'LINCE Water Treatment System',
+        title: t('dailyLogs.export.title'),
+        subtitle: t('dailyLogs.export.subtitle'),
         filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Records', value: String(dailyLogs.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('dailyLogs.export.totalRecords'), value: String(dailyLogs.length) },
+          { label: t('dailyLogs.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Daily Logs (${dailyLogs.length})`, headers, rows }]
+      [{ title: `${t('dailyLogs.export.dailyLogs')} (${dailyLogs.length})`, headers, rows }]
     );
   };
 
@@ -78,14 +80,14 @@ const DailyLogsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: 'Daily Logs Report',
+        title: t('dailyLogs.export.title'),
         filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Records', value: String(dailyLogs.length) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('dailyLogs.export.totalRecords'), value: String(dailyLogs.length) },
+          { label: t('dailyLogs.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `Daily Logs (${dailyLogs.length})`, headers, rows }]
+      [{ title: `${t('dailyLogs.export.dailyLogs')} (${dailyLogs.length})`, headers, rows }]
     );
   };
 
@@ -93,14 +95,14 @@ const DailyLogsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: 'Daily Logs Report',
+        title: t('dailyLogs.export.title'),
         filename: `daily-logs-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Total Records', value: String(dailyLogs.length) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('dailyLogs.export.totalRecords'), value: String(dailyLogs.length) },
+          { label: t('dailyLogs.export.generated'), value: new Date().toISOString() }
         ]
       },
-      [{ title: 'DAILY LOGS', headers, rows }]
+      [{ title: t('dailyLogs.export.dailyLogsUpper'), headers, rows }]
     );
   };
 
@@ -108,8 +110,8 @@ const DailyLogsPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Daily Logs</h1>
-          <p className="text-gray-500 mt-1">Record and view daily monitoring data</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('dailyLogs.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('dailyLogs.description')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
@@ -123,7 +125,7 @@ const DailyLogsPage: React.FC = () => {
             disabled={dailyLogs.length === 0}
           />
           <Button variant="primary" onClick={goToNewDailyLog}>
-            New Log
+            {t('dailyLogs.newLog')}
           </Button>
         </div>
       </div>

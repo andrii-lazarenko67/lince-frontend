@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button, Menu, MenuItem, ListItemIcon, ListItemText } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
@@ -19,6 +20,7 @@ const ExportDropdown: React.FC<ExportDropdownProps> = ({
   onExportCSV,
   disabled = false
 }) => {
+  const { t } = useTranslation();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -44,7 +46,7 @@ const ExportDropdown: React.FC<ExportDropdownProps> = ({
         startIcon={<FileDownloadIcon />}
         endIcon={<KeyboardArrowDownIcon />}
       >
-        Export
+        {t('common.export')}
       </Button>
 
       <Menu
@@ -64,19 +66,19 @@ const ExportDropdown: React.FC<ExportDropdownProps> = ({
           <ListItemIcon>
             <PictureAsPdfIcon fontSize="small" color="error" />
           </ListItemIcon>
-          <ListItemText>Export PDF</ListItemText>
+          <ListItemText>{t('common.export')} PDF</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => handleExport(onExportHTML)}>
           <ListItemIcon>
             <CodeIcon fontSize="small" color="warning" />
           </ListItemIcon>
-          <ListItemText>Export HTML</ListItemText>
+          <ListItemText>{t('common.export')} HTML</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => handleExport(onExportCSV)}>
           <ListItemIcon>
             <TableChartIcon fontSize="small" color="success" />
           </ListItemIcon>
-          <ListItemText>Export CSV</ListItemText>
+          <ListItemText>{t('common.export')} CSV</ListItemText>
         </MenuItem>
       </Menu>
     </>

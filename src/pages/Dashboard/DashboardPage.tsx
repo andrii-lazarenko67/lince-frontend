@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchDashboardData } from '../../store/slices/dashboardSlice';
 import { ExportDropdown, ViewModeToggle } from '../../components/common';
@@ -9,6 +10,7 @@ import AlertsSection from './AlertsSection';
 import DashboardChartView from './DashboardChartView';
 
 const DashboardPage: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { stats, recentActivity, alerts } = useAppSelector((state) => state.dashboard);
@@ -20,18 +22,18 @@ const DashboardPage: React.FC = () => {
 
   const getActivityTypeLabel = (type: string) => {
     switch (type) {
-      case 'dailyLog': return 'Daily Log';
-      case 'inspection': return 'Inspection';
-      case 'incident': return 'Incident';
+      case 'dailyLog': return t('nav.dailyLogs');
+      case 'inspection': return t('nav.inspections');
+      case 'incident': return t('nav.incidents');
       default: return type;
     }
   };
 
   const getAlertTypeLabel = (type: string) => {
     switch (type) {
-      case 'incident': return 'Incident';
-      case 'stock': return 'Low Stock';
-      case 'alert': return 'Alert';
+      case 'incident': return t('nav.incidents');
+      case 'stock': return t('products.minimumStock');
+      case 'alert': return t('monitoringPoints.alerts');
       default: return type;
     }
   };
@@ -42,21 +44,21 @@ const DashboardPage: React.FC = () => {
     // Stats Summary Section
     if (stats) {
       sections.push({
-        title: 'Statistics Summary',
-        headers: ['Metric', 'Value'],
+        title: t('dashboard.overview'),
+        headers: [t('common.name'), t('dailyLogs.value')],
         rows: [
-          ['Total Systems', String(stats.systems.total)],
-          ['Active Systems', String(stats.systems.active)],
-          ['Total Users', String(stats.users.total)],
-          ['Daily Logs Today', String(stats.dailyLogs.today)],
-          ['Daily Logs This Week', String(stats.dailyLogs.thisWeek)],
-          ['Open Incidents', String(stats.incidents.open)],
-          ['Incidents This Week', String(stats.incidents.thisWeek)],
-          ['Pending Inspections', String(stats.inspections.pending)],
-          ['Inspections This Week', String(stats.inspections.thisWeek)],
-          ['Low Stock Products', String(stats.products.lowStock)],
-          ['Unread Notifications', String(stats.alerts.unreadNotifications)],
-          ['Out of Range Today', String(stats.alerts.outOfRangeToday)]
+          [t('systems.title'), String(stats.systems.total)],
+          [t('dashboard.activeSystems'), String(stats.systems.active)],
+          [t('users.title'), String(stats.users.total)],
+          [t('nav.dailyLogs'), String(stats.dailyLogs.today)],
+          [t('nav.dailyLogs'), String(stats.dailyLogs.thisWeek)],
+          [t('dashboard.openIncidents'), String(stats.incidents.open)],
+          [t('incidents.title'), String(stats.incidents.thisWeek)],
+          [t('dashboard.pendingInspections'), String(stats.inspections.pending)],
+          [t('inspections.title'), String(stats.inspections.thisWeek)],
+          [t('products.minimumStock'), String(stats.products.lowStock)],
+          [t('monitoringPoints.alerts'), String(stats.alerts.unreadNotifications)],
+          [t('dailyLogs.outOfRange'), String(stats.alerts.outOfRangeToday)]
         ]
       });
     }
@@ -64,8 +66,8 @@ const DashboardPage: React.FC = () => {
     // Recent Activity Section
     if (recentActivity.length > 0) {
       sections.push({
-        title: `Recent Activity (${recentActivity.length})`,
-        headers: ['Type', 'Title', 'System', 'User', 'Status', 'Date'],
+        title: `${t('dashboard.recentLogs')} (${recentActivity.length})`,
+        headers: [t('common.type'), t('common.name'), t('dailyLogs.system'), t('users.title'), t('common.status'), t('common.date')],
         rows: recentActivity.map(activity => [
           getActivityTypeLabel(activity.type),
           activity.title,
@@ -80,8 +82,8 @@ const DashboardPage: React.FC = () => {
     // Alerts Section
     if (alerts.length > 0) {
       sections.push({
-        title: `Alerts (${alerts.length})`,
-        headers: ['Type', 'Priority', 'Title', 'Message', 'Created'],
+        title: `${t('monitoringPoints.alerts')} (${alerts.length})`,
+        headers: [t('common.type'), t('incidents.severity'), t('common.name'), t('common.description'), t('systems.createdAt')],
         rows: alerts.map(alert => [
           getAlertTypeLabel(alert.type),
           alert.priority,
@@ -99,13 +101,13 @@ const DashboardPage: React.FC = () => {
     const sections = getExportSections();
     exportToPdf(
       {
-        title: 'Dashboard Report',
+        title: t('dashboard.title'),
         subtitle: 'LINCE Water Treatment System',
         filename: `dashboard-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Open Incidents', value: String(stats?.incidents.open || 0) },
-          { label: 'Low Stock Items', value: String(stats?.products.lowStock || 0) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('dashboard.openIncidents'), value: String(stats?.incidents.open || 0) },
+          { label: t('products.minimumStock'), value: String(stats?.products.lowStock || 0) },
+          { label: t('common.date'), value: new Date().toLocaleString() }
         ]
       },
       sections
@@ -116,12 +118,12 @@ const DashboardPage: React.FC = () => {
     const sections = getExportSections();
     exportToHtml(
       {
-        title: 'Dashboard Report',
+        title: t('dashboard.title'),
         filename: `dashboard-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Open Incidents', value: String(stats?.incidents.open || 0) },
-          { label: 'Low Stock Items', value: String(stats?.products.lowStock || 0) },
-          { label: 'Generated', value: new Date().toLocaleString() }
+          { label: t('dashboard.openIncidents'), value: String(stats?.incidents.open || 0) },
+          { label: t('products.minimumStock'), value: String(stats?.products.lowStock || 0) },
+          { label: t('common.date'), value: new Date().toLocaleString() }
         ]
       },
       sections
@@ -132,12 +134,12 @@ const DashboardPage: React.FC = () => {
     const sections = getExportSections();
     exportToCsv(
       {
-        title: 'Dashboard Report',
+        title: t('dashboard.title'),
         filename: `dashboard-${new Date().toISOString().split('T')[0]}`,
         metadata: [
-          { label: 'Open Incidents', value: String(stats?.incidents.open || 0) },
-          { label: 'Low Stock Items', value: String(stats?.products.lowStock || 0) },
-          { label: 'Generated', value: new Date().toISOString() }
+          { label: t('dashboard.openIncidents'), value: String(stats?.incidents.open || 0) },
+          { label: t('products.minimumStock'), value: String(stats?.products.lowStock || 0) },
+          { label: t('common.date'), value: new Date().toISOString() }
         ]
       },
       sections
@@ -148,14 +150,14 @@ const DashboardPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-500 mt-1">Welcome back, {user?.name || 'User'}</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('dashboard.welcome')}, {user?.name || t('users.title')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
           <ViewModeToggle
             value={viewMode}
             onChange={setViewMode}
-            tableLabel="Cards"
+            tableLabel={t('dashboard.overview')}
           />
           <ExportDropdown
             onExportPDF={handleExportPDF}

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import { DonutChart, BarChart, LineChart, HorizontalBarChart } from '../../components/charts';
 import type { Inspection } from '../../types';
@@ -8,6 +9,7 @@ interface InspectionsChartViewProps {
 }
 
 const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections }) => {
+  const { t } = useTranslation();
   const totalInspections = inspections.length;
 
   // Status counts
@@ -31,23 +33,23 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
 
   // Status donut
   const statusData = [
-    { label: 'Pending', value: pendingCount, color: '#f59e0b' },
-    { label: 'Completed', value: completedCount, color: '#3b82f6' },
-    { label: 'Approved', value: approvedCount, color: '#22c55e' }
+    { label: t('inspections.charts.statusPending'), value: pendingCount, color: '#f59e0b' },
+    { label: t('inspections.charts.statusCompleted'), value: completedCount, color: '#3b82f6' },
+    { label: t('inspections.charts.statusApproved'), value: approvedCount, color: '#22c55e' }
   ];
 
   // Item results donut - using actual status values
   const itemResultsData = [
-    { label: 'Compliant (C)', value: totalC, color: '#22c55e' },
-    { label: 'Non-Compliant (NC)', value: totalNC, color: '#ef4444' },
-    { label: 'Not Applicable (NA)', value: totalNA, color: '#6b7280' },
-    { label: 'Not Verified (NV)', value: totalNV, color: '#f59e0b' }
+    { label: t('inspections.charts.compliantC'), value: totalC, color: '#22c55e' },
+    { label: t('inspections.charts.nonCompliantNC'), value: totalNC, color: '#ef4444' },
+    { label: t('inspections.charts.notApplicableNA'), value: totalNA, color: '#6b7280' },
+    { label: t('inspections.charts.notVerifiedNV'), value: totalNV, color: '#f59e0b' }
   ];
 
   // Inspections by system
   const systemMap = new Map<string, number>();
   inspections.forEach(i => {
-    const systemName = i.system?.name || 'Unknown';
+    const systemName = i.system?.name || t('inspections.charts.unknown');
     systemMap.set(systemName, (systemMap.get(systemName) || 0) + 1);
   });
   const bySystemData = Array.from(systemMap.entries())
@@ -76,7 +78,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   // Inspections by inspector
   const inspectorMap = new Map<string, number>();
   inspections.forEach(i => {
-    const inspectorName = i.user?.name || 'Unknown';
+    const inspectorName = i.user?.name || t('inspections.charts.unknown');
     inspectorMap.set(inspectorName, (inspectorMap.get(inspectorName) || 0) + 1);
   });
   const byInspectorData = Array.from(inspectorMap.entries())
@@ -91,7 +93,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   // Item results by system - using actual status values
   const systemItemMap = new Map<string, { pass: number; fail: number; na: number }>();
   inspections.forEach(i => {
-    const systemName = i.system?.name || 'Unknown';
+    const systemName = i.system?.name || t('inspections.charts.unknown');
     const current = systemItemMap.get(systemName) || { pass: 0, fail: 0, na: 0 };
     i.items?.forEach(item => {
       if (item.status === 'C') current.pass++;
@@ -109,60 +111,60 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
 
   return (
     <div className="space-y-6">
-      <Card title="Inspections Overview">
+      <Card title={t('inspections.charts.overviewCard')}>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalInspections}</p>
-            <p className="text-sm text-blue-700">Total Inspections</p>
+            <p className="text-sm text-blue-700">{t('inspections.charts.totalInspections')}</p>
           </div>
           <div className="text-center p-4 bg-yellow-50 rounded-lg">
             <p className="text-3xl font-bold text-yellow-600">{pendingCount}</p>
-            <p className="text-sm text-yellow-700">Pending</p>
+            <p className="text-sm text-yellow-700">{t('inspections.charts.pending')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{approvedCount}</p>
-            <p className="text-sm text-green-700">Approved</p>
+            <p className="text-sm text-green-700">{t('inspections.charts.approved')}</p>
           </div>
           <div className="text-center p-4 bg-emerald-50 rounded-lg">
             <p className="text-3xl font-bold text-emerald-600">{totalC}</p>
-            <p className="text-sm text-emerald-700">Compliant (C)</p>
+            <p className="text-sm text-emerald-700">{t('inspections.charts.compliant')}</p>
           </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
             <p className="text-3xl font-bold text-red-600">{totalNC}</p>
-            <p className="text-sm text-red-700">Non-Compliant (NC)</p>
+            <p className="text-sm text-red-700">{t('inspections.charts.nonCompliant')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Status Distribution">
+        <Card title={t('inspections.charts.statusDistribution')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={statusData} title="Inspections by status" size={200} />
+            <DonutChart data={statusData} title={t('inspections.charts.inspectionsByStatus')} size={200} />
           </div>
         </Card>
 
-        <Card title="Checklist Results">
+        <Card title={t('inspections.charts.checklistResults')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={itemResultsData} title="All checklist items" size={200} />
+            <DonutChart data={itemResultsData} title={t('inspections.charts.allChecklistItems')} size={200} />
           </div>
         </Card>
       </div>
 
-      <Card title="Inspections Over Time">
-        <LineChart data={overTimeData} title="Recent inspections trend" height={220} color="#3b82f6" />
+      <Card title={t('inspections.charts.overTime')}>
+        <LineChart data={overTimeData} title={t('inspections.charts.recentTrend')} height={220} color="#3b82f6" />
       </Card>
 
-      <Card title="Checklist Results by System">
-        <HorizontalBarChart data={itemsBySystemData} title="Compliant/Non-Compliant/Other breakdown per system" />
+      <Card title={t('inspections.charts.resultsBySystem')}>
+        <HorizontalBarChart data={itemsBySystemData} title={t('inspections.charts.breakdownPerSystem')} />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Inspections by System">
-          <BarChart data={bySystemData} title="Number of inspections per system" height={220} />
+        <Card title={t('inspections.charts.bySystem')}>
+          <BarChart data={bySystemData} title={t('inspections.charts.inspectionsPerSystem')} height={220} />
         </Card>
 
-        <Card title="Inspections by Inspector">
-          <BarChart data={byInspectorData} title="Number of inspections per inspector" height={220} />
+        <Card title={t('inspections.charts.byInspector')}>
+          <BarChart data={byInspectorData} title={t('inspections.charts.inspectionsPerInspector')} height={220} />
         </Card>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import type { NotificationDetail } from '../../types';
 import { Badge, Button } from '../../components/common';
 
@@ -11,20 +12,22 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
   notification,
   onClose
 }) => {
+  const { t } = useTranslation();
+
   if (!notification) return null;
 
   const getTypeBadge = (type: string) => {
     switch (type) {
       case 'incident':
-        return <Badge variant="danger">Incident</Badge>;
+        return <Badge variant="danger">{t('notifications.types.incident')}</Badge>;
       case 'alert':
-        return <Badge variant="warning">Alert</Badge>;
+        return <Badge variant="warning">{t('notifications.types.alert')}</Badge>;
       case 'stock':
-        return <Badge variant="warning">Stock</Badge>;
+        return <Badge variant="warning">{t('notifications.types.stock')}</Badge>;
       case 'inspection':
-        return <Badge variant="info">Inspection</Badge>;
+        return <Badge variant="info">{t('notifications.types.inspection')}</Badge>;
       case 'system':
-        return <Badge variant="secondary">System</Badge>;
+        return <Badge variant="secondary">{t('notifications.types.system')}</Badge>;
       default:
         return <Badge variant="secondary">{type}</Badge>;
     }
@@ -33,13 +36,13 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
   const getPriorityBadge = (priority: string) => {
     switch (priority) {
       case 'critical':
-        return <Badge variant="danger">Critical</Badge>;
+        return <Badge variant="danger">{t('notifications.priority.critical')}</Badge>;
       case 'high':
-        return <Badge variant="warning">High</Badge>;
+        return <Badge variant="warning">{t('notifications.priority.high')}</Badge>;
       case 'medium':
-        return <Badge variant="info">Medium</Badge>;
+        return <Badge variant="info">{t('notifications.priority.medium')}</Badge>;
       case 'low':
-        return <Badge variant="secondary">Low</Badge>;
+        return <Badge variant="secondary">{t('notifications.priority.low')}</Badge>;
       default:
         return null;
     }
@@ -48,11 +51,11 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
   const getRoleBadge = (role: string) => {
     switch (role) {
       case 'admin':
-        return <Badge variant="danger">Admin</Badge>;
+        return <Badge variant="danger">{t('notifications.recipients.roleAdmin')}</Badge>;
       case 'manager':
-        return <Badge variant="primary">Manager</Badge>;
+        return <Badge variant="primary">{t('notifications.recipients.roleManager')}</Badge>;
       case 'technician':
-        return <Badge variant="secondary">Technician</Badge>;
+        return <Badge variant="secondary">{t('notifications.recipients.roleTechnician')}</Badge>;
       default:
         return <Badge variant="secondary">{role}</Badge>;
     }
@@ -81,8 +84,8 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
           </div>
           <p className="mt-3 text-gray-600">{notification.message}</p>
           <p className="mt-2 text-sm text-gray-500">
-            Created: {new Date(notification.createdAt).toLocaleString()}
-            {notification.createdBy && ` by ${notification.createdBy.name}`}
+            {t('notifications.recipients.created')}: {new Date(notification.createdAt).toLocaleString()}
+            {notification.createdBy && ` ${t('notifications.recipients.by')} ${notification.createdBy.name}`}
           </p>
         </div>
 
@@ -94,10 +97,10 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
                 <svg className="h-5 w-5 text-green-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                Read ({notification.readCount})
+                {t('notifications.recipients.read')} ({notification.readCount})
               </h3>
               {notification.readBy.length === 0 ? (
-                <p className="text-gray-500 text-sm">No one has read this notification yet</p>
+                <p className="text-gray-500 text-sm">{t('notifications.recipients.noOneRead')}</p>
               ) : (
                 <ul className="space-y-2">
                   {notification.readBy.map((user) => (
@@ -119,10 +122,10 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
                 <svg className="h-5 w-5 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
-                Unread ({notification.unreadCount})
+                {t('notifications.recipients.unread')} ({notification.unreadCount})
               </h3>
               {notification.unreadBy.length === 0 ? (
-                <p className="text-gray-500 text-sm">Everyone has read this notification</p>
+                <p className="text-gray-500 text-sm">{t('notifications.recipients.everyoneRead')}</p>
               ) : (
                 <ul className="space-y-2">
                   {notification.unreadBy.map((user) => (
@@ -143,12 +146,12 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
         <div className="p-6 border-t border-gray-200 bg-gray-50">
           <div className="flex justify-between items-center">
             <div className="text-sm text-gray-500">
-              Total: {notification.totalRecipients} recipients |{' '}
-              <span className="text-green-600">{notification.readCount} read</span> |{' '}
-              <span className="text-red-600">{notification.unreadCount} unread</span>
+              {t('notifications.recipients.total')}: {notification.totalRecipients} {t('notifications.recipients.recipientsLabel')} |{' '}
+              <span className="text-green-600">{notification.readCount} {t('notifications.recipients.readLower')}</span> |{' '}
+              <span className="text-red-600">{notification.unreadCount} {t('notifications.recipients.unreadLower')}</span>
             </div>
             <Button variant="outline" onClick={onClose}>
-              Close
+              {t('notifications.recipients.close')}
             </Button>
           </div>
         </div>

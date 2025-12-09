@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchUsers, createUser, updateUser, deleteUser } from '../../store/slices/userSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
 import type { User, CreateUserRequest } from '../../types';
 
 const UsersList: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { users } = useAppSelector((state) => state.users);
 
@@ -67,11 +69,11 @@ const UsersList: React.FC = () => {
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!editingUser && !formData.password) newErrors.password = 'Password is required';
+    if (!formData.name.trim()) newErrors.name = t('users.form.nameRequired');
+    if (!formData.email.trim()) newErrors.email = t('users.form.emailRequired');
+    if (!editingUser && !formData.password) newErrors.password = t('users.form.passwordRequired');
     if (!editingUser && formData.password && formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = t('users.form.passwordLength');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -116,9 +118,9 @@ const UsersList: React.FC = () => {
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case 'admin': return 'Admin';
-      case 'manager': return 'Manager';
-      case 'technician': return 'Technician';
+      case 'admin': return t('users.roles.admin');
+      case 'manager': return t('users.roles.manager');
+      case 'technician': return t('users.roles.technician');
       default: return role;
     }
   };
@@ -134,14 +136,14 @@ const UsersList: React.FC = () => {
   const columns = [
     {
       key: 'id',
-      header: 'ID',
+      header: t('users.list.id'),
       render: (user: User) => (
         <span className="text-gray-500 text-sm">#{user.id}</span>
       )
     },
     {
       key: 'name',
-      header: 'Name',
+      header: t('users.list.name'),
       render: (user: User) => (
         <div className="flex items-center">
           {user.avatar ? (
@@ -159,7 +161,7 @@ const UsersList: React.FC = () => {
     },
     {
       key: 'email',
-      header: 'Email',
+      header: t('users.list.email'),
       render: (user: User) => (
         <a href={`mailto:${user.email}`} className="text-blue-600 hover:underline">
           {user.email}
@@ -168,12 +170,12 @@ const UsersList: React.FC = () => {
     },
     {
       key: 'phone',
-      header: 'Phone',
+      header: t('users.list.phone'),
       render: (user: User) => user.phone || '-'
     },
     {
       key: 'role',
-      header: 'Role',
+      header: t('users.list.role'),
       render: (user: User) => (
         <Badge variant={getRoleBadgeVariant(user.role) as 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info'}>
           {getRoleLabel(user.role)}
@@ -182,33 +184,33 @@ const UsersList: React.FC = () => {
     },
     {
       key: 'status',
-      header: 'Status',
+      header: t('users.list.status'),
       render: (user: User) => (
         <Badge variant={user.isActive ? 'success' : 'danger'}>
-          {user.isActive ? 'Active' : 'Inactive'}
+          {user.isActive ? t('users.status.active') : t('users.status.inactive')}
         </Badge>
       )
     },
     {
       key: 'lastLogin',
-      header: 'Last Login',
-      render: (user: User) => user.lastLogin ? new Date(user.lastLogin).toLocaleString() : 'Never'
+      header: t('users.list.lastLogin'),
+      render: (user: User) => user.lastLogin ? new Date(user.lastLogin).toLocaleString() : t('users.list.never')
     },
     {
       key: 'createdAt',
-      header: 'Created',
+      header: t('users.list.created'),
       render: (user: User) => new Date(user.createdAt).toLocaleDateString()
     },
     {
       key: 'actions',
-      header: 'Actions',
+      header: t('users.list.actions'),
       render: (user: User) => (
         <div className="flex space-x-2">
           <Button size="sm" variant="outline" onClick={() => handleOpenForm(user)}>
-            Edit
+            {t('common.edit')}
           </Button>
           <Button size="sm" variant="danger" onClick={() => { setDeletingUser(user); setIsDeleteOpen(true); }}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       )
@@ -216,20 +218,20 @@ const UsersList: React.FC = () => {
   ];
 
   const roleOptions = [
-    { value: 'technician', label: 'Technician' },
-    { value: 'manager', label: 'Manager' },
-    { value: 'admin', label: 'Admin' }
+    { value: 'technician', label: t('users.roles.technician') },
+    { value: 'manager', label: t('users.roles.manager') },
+    { value: 'admin', label: t('users.roles.admin') }
   ];
 
   return (
     <>
       <Card
-        title="Users"
-        subtitle="System users and their roles"
+        title={t('users.list.title')}
+        subtitle={t('users.list.subtitle')}
         noPadding
         headerActions={
           <Button variant="primary" onClick={() => handleOpenForm()}>
-            Add User
+            {t('users.list.addUser')}
           </Button>
         }
       >
@@ -242,21 +244,21 @@ const UsersList: React.FC = () => {
             columns={columns}
             data={users}
             keyExtractor={(user) => user.id}
-            emptyMessage="No users found. Click 'Add User' to create one."
+            emptyMessage={t('users.list.emptyMessage')}
           />
         )}
       </Card>
 
       {/* Create/Edit Modal */}
-      <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingUser ? 'Edit User' : 'Add User'}>
+      <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingUser ? t('users.form.editUser') : t('users.form.addUser')}>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             type="text"
             name="name"
             value={formData.name}
             onChange={handleChange}
-            label="Name"
-            placeholder="Enter user name"
+            label={t('users.form.name')}
+            placeholder={t('users.form.namePlaceholder')}
             error={errors.name}
             required
           />
@@ -266,8 +268,8 @@ const UsersList: React.FC = () => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            label="Email"
-            placeholder="Enter email address"
+            label={t('users.form.email')}
+            placeholder={t('users.form.emailPlaceholder')}
             error={errors.email}
             required
           />
@@ -278,8 +280,8 @@ const UsersList: React.FC = () => {
               name="password"
               value={formData.password || ''}
               onChange={handleChange}
-              label="Password"
-              placeholder="Enter password"
+              label={t('users.form.password')}
+              placeholder={t('users.form.passwordPlaceholder')}
               error={errors.password}
               required
             />
@@ -290,8 +292,8 @@ const UsersList: React.FC = () => {
             name="phone"
             value={formData.phone || ''}
             onChange={handleChange}
-            label="Phone"
-            placeholder="Enter phone number (optional)"
+            label={t('users.form.phone')}
+            placeholder={t('users.form.phonePlaceholder')}
           />
 
           <Select
@@ -299,32 +301,32 @@ const UsersList: React.FC = () => {
             value={formData.role}
             onChange={handleChange}
             options={roleOptions}
-            label="Role"
+            label={t('users.form.role')}
             required
           />
 
           <div className="flex justify-end space-x-3 mt-4">
             <Button type="button" variant="outline" onClick={handleCloseForm}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" variant="primary" disabled={loading}>
-              {editingUser ? 'Update' : 'Create'}
+              {editingUser ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>
       </Modal>
 
       {/* Delete Modal */}
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete User" size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('users.form.deleteUser')} size="sm">
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete <strong>{deletingUser?.name}</strong>? This action cannot be undone.
+          {t('users.form.deleteConfirm', { name: deletingUser?.name })}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteOpen(false)}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </Modal>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
 import type { ReportData } from '../../types';
 
@@ -14,6 +15,7 @@ interface DonutChartProps {
 }
 
 const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -21,7 +23,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
     return (
       <div className="flex flex-col items-center">
         <div className="rounded-full bg-gray-100 flex items-center justify-center" style={{ width: size, height: size }}>
-          <span className="text-gray-400 text-sm">No data</span>
+          <span className="text-gray-400 text-sm">{t('common.noData')}</span>
         </div>
         <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       </div>
@@ -84,7 +86,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
           )
         ))}
         <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>Total</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('reports.statistics.total')}</text>
 
         {/* Detailed Tooltip */}
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
@@ -133,13 +135,14 @@ interface HorizontalBarChartProps {
 }
 
 const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
       </div>
     );
   }
@@ -220,9 +223,9 @@ const StockLevelChart: React.FC<HorizontalBarChartProps> = ({ data, title }) => 
         })}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">Normal</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">Low Stock</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">Min Alert</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">{t('reports.statistics.normal')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('reports.statistics.lowStock')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">{t('products.minStockAlert')}</span></div>
       </div>
     </div>
   );
@@ -236,13 +239,14 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.noData')}</div>
       </div>
     );
   }
@@ -318,6 +322,7 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color = '#3b82f6' }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(0);
@@ -338,7 +343,7 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
         <div className="flex items-center justify-center bg-gray-50 rounded-lg" style={{ height }}>
-          <span className="text-gray-400">No data</span>
+          <span className="text-gray-400">{t('common.noData')}</span>
         </div>
       </div>
     );
@@ -468,6 +473,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
 };
 
 const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
+  const { t } = useTranslation();
+
   // Calculate totals
   const totalProducts = report.products.length;
   const lowStockCount = report.products.filter(p =>
@@ -482,14 +489,14 @@ const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
 
   // Stock status donut
   const stockStatusData = [
-    { label: 'Normal', value: totalProducts - lowStockCount, color: '#22c55e' },
-    { label: 'Low Stock', value: lowStockCount, color: '#ef4444' }
+    { label: t('reports.statistics.normal'), value: totalProducts - lowStockCount, color: '#22c55e' },
+    { label: t('reports.statistics.lowStock'), value: lowStockCount, color: '#ef4444' }
   ];
 
   // Usage type donut
   const usageTypeData = [
-    { label: 'Stock In', value: stockInCount, color: '#22c55e' },
-    { label: 'Stock Out', value: stockOutCount, color: '#8b5cf6' }
+    { label: t('reports.statistics.stockIn'), value: stockInCount, color: '#22c55e' },
+    { label: t('reports.statistics.stockOut'), value: stockOutCount, color: '#8b5cf6' }
   ];
 
   // Stock levels horizontal bar
@@ -570,67 +577,67 @@ const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
 
   return (
     <div className="space-y-6">
-      <Card title="Products & Usage Overview">
+      <Card title={t('reports.statistics.products')}>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-4 bg-blue-50 rounded-lg">
             <p className="text-3xl font-bold text-blue-600">{totalProducts}</p>
-            <p className="text-sm text-blue-700">Total Products</p>
+            <p className="text-sm text-blue-700">{t('products.chart.totalProducts')}</p>
           </div>
           <div className="text-center p-4 bg-red-50 rounded-lg">
             <p className="text-3xl font-bold text-red-600">{lowStockCount}</p>
-            <p className="text-sm text-red-700">Low Stock</p>
+            <p className="text-sm text-red-700">{t('reports.statistics.lowStock')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <p className="text-3xl font-bold text-green-600">{totalQtyIn}</p>
-            <p className="text-sm text-green-700">Total Qty In</p>
+            <p className="text-sm text-green-700">{t('reports.statistics.totalQtyIn')}</p>
           </div>
           <div className="text-center p-4 bg-purple-50 rounded-lg">
             <p className="text-3xl font-bold text-purple-600">{totalQtyOut}</p>
-            <p className="text-sm text-purple-700">Total Qty Out</p>
+            <p className="text-sm text-purple-700">{t('reports.statistics.totalQtyOut')}</p>
           </div>
         </div>
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Stock Status">
+        <Card title={t('reports.statistics.stockStatus')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={stockStatusData} title="Normal vs Low Stock" size={200} />
+            <DonutChart data={stockStatusData} title={t('products.stockDistribution')} size={200} />
           </div>
         </Card>
 
-        <Card title="Usage Transactions">
+        <Card title={t('reports.statistics.usageTransactions')}>
           <div className="flex justify-center py-4">
-            <DonutChart data={usageTypeData} title="Stock In vs Out" size={200} />
+            <DonutChart data={usageTypeData} title={t('reports.statistics.stockIn') + ' / ' + t('reports.statistics.stockOut')} size={200} />
           </div>
         </Card>
       </div>
 
-      <Card title="Current Stock Levels">
-        <StockLevelChart data={stockLevelData} title="Product stock levels with min alert thresholds" />
+      <Card title={t('products.chart.stockLevels')}>
+        <StockLevelChart data={stockLevelData} title={t('products.chart.currentVsMinimum')} />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Top Products by Usage">
-          <BarChart data={usageByProductData} title="Quantity used per product" height={220} />
+        <Card title={t('reports.products.product')}>
+          <BarChart data={usageByProductData} title={t('reports.products.quantity')} height={220} />
         </Card>
 
-        <Card title="Usage by System">
-          <BarChart data={usageBySystemData} title="Quantity used per system" height={220} />
+        <Card title={t('common.location')}>
+          <BarChart data={usageBySystemData} title={t('reports.products.quantity')} height={220} />
         </Card>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card title="Stock In Over Time">
-          <LineChart data={stockInOverTimeData} title="Quantity added trend" height={200} color="#22c55e" />
+        <Card title={t('reports.statistics.stockIn')}>
+          <LineChart data={stockInOverTimeData} title={t('reports.statistics.stockIn')} height={200} color="#22c55e" />
         </Card>
 
-        <Card title="Stock Out Over Time">
-          <LineChart data={stockOutOverTimeData} title="Quantity used trend" height={200} color="#8b5cf6" />
+        <Card title={t('reports.statistics.stockOut')}>
+          <LineChart data={stockOutOverTimeData} title={t('reports.statistics.stockOut')} height={200} color="#8b5cf6" />
         </Card>
       </div>
 
-      <Card title="Products by Type">
-        <BarChart data={byTypeData} title="Number of products per type" height={200} />
+      <Card title={t('products.category')}>
+        <BarChart data={byTypeData} title={t('products.categoryDistribution')} height={200} />
       </Card>
     </div>
   );

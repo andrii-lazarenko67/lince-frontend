@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProductById, fetchProductUsageHistory, recordProductUsage, updateStock, deleteProduct } from '../../store/slices/productSlice';
@@ -8,6 +9,7 @@ import ProductDosageSection from '../../components/ProductDosageSection';
 import type { ProductUsage } from '../../types';
 
 const ProductDetailPage: React.FC = () => {
+  const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
   const { currentProduct, usages } = useAppSelector((state) => state.products);
@@ -96,54 +98,54 @@ const ProductDetailPage: React.FC = () => {
   const usageColumns = [
     {
       key: 'date',
-      header: 'Date',
+      header: t('products.detail.date'),
       render: (usage: ProductUsage) => new Date(usage.date || usage.createdAt).toLocaleDateString()
     },
     {
       key: 'type',
-      header: 'Type',
+      header: t('products.detail.type'),
       render: (usage: ProductUsage) => (
         <Badge variant={usage.type === 'in' ? 'success' : 'warning'}>
-          {usage.type === 'in' ? 'Stock In' : 'Stock Out'}
+          {usage.type === 'in' ? t('products.detail.stockIn') : t('products.detail.stockOut')}
         </Badge>
       )
     },
     {
       key: 'system',
-      header: 'System',
+      header: t('products.detail.system'),
       render: (usage: ProductUsage) => usage.system?.name || '-'
     },
     {
       key: 'quantity',
-      header: 'Quantity',
+      header: t('products.detail.quantity'),
       render: (usage: ProductUsage) => `${usage.quantity} ${currentProduct?.unit || ''}`
     },
     {
       key: 'user',
-      header: 'Recorded By',
+      header: t('products.detail.recordedBy'),
       render: (usage: ProductUsage) => usage.user?.name || '-'
     },
     {
       key: 'notes',
-      header: 'Notes',
+      header: t('products.detail.notes'),
       render: (usage: ProductUsage) => usage.notes || '-'
     }
   ];
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
   const usageTypeOptions = [
-    { value: 'out', label: 'Stock Out (Usage)' },
-    { value: 'in', label: 'Stock In (Received)' }
+    { value: 'out', label: t('products.detail.stockOutUsage') },
+    { value: 'in', label: t('products.detail.stockInReceived') }
   ];
   const stockTypeOptions = [
-    { value: 'add', label: 'Add Stock' },
-    { value: 'remove', label: 'Remove Stock' }
+    { value: 'add', label: t('products.detail.addStock') },
+    { value: 'remove', label: t('products.detail.removeStock') }
   ];
 
   if (!currentProduct) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">Loading product details...</p>
+        <p className="text-gray-500">{t('products.detail.loading')}</p>
       </div>
     );
   }
@@ -159,95 +161,95 @@ const ProductDetailPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{currentProduct.name}</h1>
-            <p className="text-gray-500 mt-1">{currentProduct.type || 'Product'}</p>
+            <p className="text-gray-500 mt-1">{currentProduct.type || t('products.detail.product')}</p>
           </div>
         </div>
         <div className="flex space-x-3">
           <Button variant="outline" onClick={() => setIsStockOpen(true)}>
-            Update Stock
+            {t('products.detail.updateStock')}
           </Button>
           <Button variant="primary" onClick={() => setIsUsageOpen(true)}>
-            Record Usage
+            {t('products.detail.recordUsage')}
           </Button>
           <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            Delete
+            {t('common.delete')}
           </Button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title="Product Details">
+        <Card title={t('products.detail.productDetails')}>
           <dl className="space-y-4">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Status</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('products.detail.status')}</dt>
               <dd className="mt-1">
                 {isLowStock() ? (
-                  <Badge variant="danger">Low Stock</Badge>
+                  <Badge variant="danger">{t('products.list.lowStock')}</Badge>
                 ) : (
-                  <Badge variant="success">In Stock</Badge>
+                  <Badge variant="success">{t('products.list.inStock')}</Badge>
                 )}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Current Stock</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('products.detail.currentStock')}</dt>
               <dd className="mt-1 text-2xl font-semibold text-gray-900">
                 {currentProduct.currentStock} {currentProduct.unit}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Min. Stock Alert</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('products.detail.minStockAlert')}</dt>
               <dd className="mt-1 text-gray-900">
-                {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit}` : 'Not set'}
+                {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit}` : t('products.detail.notSet')}
               </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Supplier</dt>
+              <dt className="text-sm font-medium text-gray-500">{t('products.detail.supplier')}</dt>
               <dd className="mt-1 text-gray-900">{currentProduct.supplier || '-'}</dd>
             </div>
             {currentProduct.description && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">Description</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.description')}</dt>
                 <dd className="mt-1 text-gray-900">{currentProduct.description}</dd>
               </div>
             )}
           </dl>
         </Card>
 
-        <Card title="Usage History" className="lg:col-span-2" noPadding>
+        <Card title={t('products.detail.usageHistory')} className="lg:col-span-2" noPadding>
           <Table
             columns={usageColumns}
             data={usages}
             keyExtractor={(usage) => usage.id}
-            emptyMessage="No usage recorded for this product."
+            emptyMessage={t('products.detail.noUsage')}
           />
         </Card>
       </div>
 
       <ProductDosageSection productId={currentProduct.id} productName={currentProduct.name} />
 
-      <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title="Record Usage">
+      <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title={t('products.detail.recordUsage')}>
         <div className='flex flex-col gap-10'>
           <Select
             name="type"
             value={usageData.type}
             onChange={(e) => setUsageData({ ...usageData, type: e.target.value as 'in' | 'out' })}
             options={usageTypeOptions}
-            label="Type"
+            label={t('products.detail.type')}
           />
           <Select
             name="systemId"
             value={usageData.systemId}
             onChange={(e) => setUsageData({ ...usageData, systemId: e.target.value })}
             options={systemOptions}
-            label="System (Optional)"
-            placeholder="Select system"
+            label={t('products.detail.systemOptional')}
+            placeholder={t('products.detail.selectSystem')}
           />
           <Input
             type="number"
             name="quantity"
             value={usageData.quantity}
             onChange={(e) => setUsageData({ ...usageData, quantity: e.target.value })}
-            label={`Quantity (${currentProduct.unit})`}
+            label={`${t('products.detail.quantity')} (${currentProduct.unit})`}
             min={0}
             step="0.01"
             required
@@ -256,35 +258,35 @@ const ProductDetailPage: React.FC = () => {
             name="notes"
             value={usageData.notes}
             onChange={(e) => setUsageData({ ...usageData, notes: e.target.value })}
-            label="Notes (Optional)"
+            label={t('products.detail.notesOptional')}
             rows={3}
           />
         </div>
         <div className="flex justify-end space-x-3 mt-6">
           <Button variant="outline" onClick={() => setIsUsageOpen(false)} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleRecordUsage} disabled={loading}>
-            {loading ? 'Recording...' : 'Record'}
+            {loading ? t('products.detail.recording') : t('products.detail.record')}
           </Button>
         </div>
       </Modal>
 
-      <Modal isOpen={isStockOpen} onClose={() => setIsStockOpen(false)} title="Update Stock">
+      <Modal isOpen={isStockOpen} onClose={() => setIsStockOpen(false)} title={t('products.detail.updateStock')}>
         <div className="flex flex-col gap-10">
           <Select
             name="type"
             value={stockData.type}
             onChange={(e) => setStockData({ ...stockData, type: e.target.value })}
             options={stockTypeOptions}
-            label="Action"
+            label={t('products.detail.action')}
           />
           <Input
             type="number"
             name="quantity"
             value={stockData.quantity}
             onChange={(e) => setStockData({ ...stockData, quantity: e.target.value })}
-            label={`Quantity (${currentProduct.unit})`}
+            label={`${t('products.detail.quantity')} (${currentProduct.unit})`}
             min={0}
             step="0.01"
           />
@@ -292,30 +294,30 @@ const ProductDetailPage: React.FC = () => {
             name="notes"
             value={stockData.notes}
             onChange={(e) => setStockData({ ...stockData, notes: e.target.value })}
-            label="Notes (Optional)"
+            label={t('products.detail.notesOptional')}
             rows={3}
           />
           <div className="flex justify-end space-x-3">
             <Button variant="outline" onClick={() => setIsStockOpen(false)} disabled={loading}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button variant="primary" onClick={handleUpdateStock} disabled={loading}>
-              {loading ? 'Updating...' : 'Update'}
+              {loading ? t('products.detail.updating') : t('common.update')}
             </Button>
           </div>
         </div>
       </Modal>
 
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title="Delete Product" size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('products.detail.deleteProduct')} size="sm">
         <p className="text-gray-600 mb-6">
-          Are you sure you want to delete this product? This action cannot be undone.
+          {t('products.detail.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
           <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            {loading ? 'Deleting...' : 'Delete'}
+            {loading ? t('products.detail.deleting') : t('common.delete')}
           </Button>
         </div>
       </Modal>

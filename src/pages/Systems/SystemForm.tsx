@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { createSystem, updateSystem } from '../../store/slices/systemSlice';
 import { Input, Select, TextArea, Button, Modal } from '../../components/common';
@@ -11,20 +12,21 @@ interface SystemFormProps {
   parentId?: number | null;
 }
 
-const systemTypes = [
-  { value: 'pool', label: 'Swimming Pool' },
-  { value: 'cooling_tower', label: 'Cooling Tower' },
-  { value: 'boiler', label: 'Boiler' },
-  { value: 'wtp', label: 'Water Treatment Plant (WTP)' },
-  { value: 'wwtp', label: 'Wastewater Treatment Plant (WWTP)' },
-  { value: 'effluent', label: 'Effluent System' },
-  { value: 'monitoring_point', label: 'Monitoring Point' },
-  { value: 'other', label: 'Other' }
-];
-
 const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parentId }) => {
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { loading } = useAppSelector((state) => state.ui);
+
+  const systemTypes = [
+    { value: 'pool', label: t('systems.pool') },
+    { value: 'cooling_tower', label: t('systems.coolingTower') },
+    { value: 'boiler', label: t('systems.boiler') },
+    { value: 'wtp', label: t('systems.wtp') },
+    { value: 'wwtp', label: t('systems.wwtp') },
+    { value: 'effluent', label: t('systems.effluent') },
+    { value: 'monitoring_point', label: t('systems.monitoringPoint') },
+    { value: 'other', label: t('products.other') }
+  ];
   const [formData, setFormData] = useState<CreateSystemRequest>({
     name: '',
     type: '',
@@ -70,8 +72,8 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
     const newErrors: Record<string, string> = {};
     // Only validate name and type for root systems (not sub-systems)
     if (!parentId) {
-      if (!formData.name.trim()) newErrors.name = 'Name is required';
-      if (!formData.type) newErrors.type = 'Type is required';
+      if (!formData.name.trim()) newErrors.name = t('common.required');
+      if (!formData.type) newErrors.type = t('common.required');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -108,7 +110,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title={system ? 'Edit System' : (parentId ? 'Add Monitoring Point' : 'Add New System')} size="lg">
+    <Modal isOpen={isOpen} onClose={onClose} title={system ? t('systems.editSystem') : (parentId ? t('systems.addPoint') : t('systems.addSystem'))} size="lg">
       <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
         {/* Only show name and type when NOT creating a sub-system */}
         {!parentId && (
@@ -117,8 +119,8 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
               name="name"
               value={formData.name}
               onChange={handleChange}
-              label="System Name"
-              placeholder="Enter system name"
+              label={t('common.name')}
+              placeholder={t('common.name')}
               error={errors.name}
               required
             />
@@ -128,8 +130,8 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
               value={formData.type}
               onChange={handleChange}
               options={systemTypes}
-              label="System Type"
-              placeholder="Select system type"
+              label={t('systems.systemType')}
+              placeholder={t('systems.systemType')}
               error={errors.type}
               required
             />
@@ -141,25 +143,25 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
           name="location"
           value={formData.location || ''}
           onChange={handleChange}
-          label="Location"
-          placeholder="Enter location"
+          label={t('common.location')}
+          placeholder={t('common.location')}
         />
 
         <TextArea
           name="description"
           value={formData.description || ''}
           onChange={handleChange}
-          label="Description"
-          placeholder="Enter system description"
+          label={t('common.description')}
+          placeholder={t('common.description')}
           rows={3}
         />
 
         <div className="flex justify-end space-x-3 mt-6">
           <Button type="button" variant="outline" onClick={onClose} disabled={loading}>
-            Cancel
+            {t('common.cancel')}
           </Button>
           <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? (system ? 'Updating...' : 'Creating...') : (system ? 'Update' : 'Create')} {!loading && 'System'}
+            {loading ? t('common.loading') : system ? t('common.update') : t('common.create')}
           </Button>
         </div>
       </form>
