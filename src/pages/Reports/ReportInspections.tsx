@@ -491,19 +491,21 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
   ];
 
   // Items status counts
-  let totalPass = 0, totalFail = 0, totalNa = 0;
+  let totalPass = 0, totalFail = 0, totalNa = 0, totalNv = 0;
   report.inspections.forEach(insp => {
     insp.items?.forEach(item => {
-      if (item.status === 'pass') totalPass++;
-      else if (item.status === 'fail') totalFail++;
-      else if (item.status === 'na') totalNa++;
+      if (item.status === 'C') totalPass++;
+      else if (item.status === 'NC') totalFail++;
+      else if (item.status === 'NA') totalNa++;
+      else if (item.status === 'NV') totalNv++;
     });
   });
 
   const itemsStatusData = [
-    { label: 'Pass', value: totalPass, color: '#22c55e' },
-    { label: 'Fail', value: totalFail, color: '#ef4444' },
-    { label: 'N/A', value: totalNa, color: '#9ca3af' }
+    { label: 'C (Pass)', value: totalPass, color: '#22c55e' },
+    { label: 'NC (Fail)', value: totalFail, color: '#ef4444' },
+    { label: 'NA', value: totalNa, color: '#9ca3af' },
+    { label: 'NV', value: totalNv, color: '#fbbf24' }
   ];
 
   // Inspections by system
@@ -546,9 +548,9 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
     const systemName = insp.system?.name || 'Unknown';
     const current = systemItemsMap.get(systemName) || { pass: 0, fail: 0, na: 0 };
     insp.items?.forEach(item => {
-      if (item.status === 'pass') current.pass++;
-      else if (item.status === 'fail') current.fail++;
-      else current.na++;
+      if (item.status === 'C') current.pass++;
+      else if (item.status === 'NC') current.fail++;
+      else if (item.status === 'NA' || item.status === 'NV') current.na++;
     });
     systemItemsMap.set(systemName, current);
   });
