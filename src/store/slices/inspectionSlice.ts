@@ -66,6 +66,7 @@ export const createInspection = createAsyncThunk(
       dispatch(setLoading(true));
       const formData = new FormData();
       formData.append('systemId', data.systemId.toString());
+      if (data.stageId) formData.append('stageId', data.stageId.toString());
       if (data.date) formData.append('date', data.date);
       if (data.conclusion) formData.append('conclusion', data.conclusion);
       formData.append('items', JSON.stringify(data.items));

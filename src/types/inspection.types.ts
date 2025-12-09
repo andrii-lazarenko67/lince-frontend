@@ -31,12 +31,14 @@ export interface Inspection {
   id: number;
   userId: number;
   systemId: number;
+  stageId: number | null;
   date: string;
   status: InspectionStatus;
   conclusion: string | null;
   managerNotes: string | null;
   user?: User;
   system?: System;
+  stage?: System;
   items?: InspectionItem[];
   photos?: InspectionPhoto[];
   createdAt: string;
@@ -45,6 +47,7 @@ export interface Inspection {
 
 export interface CreateInspectionRequest {
   systemId: number;
+  stageId?: number;
   date?: string;
   conclusion?: string;
   items: {

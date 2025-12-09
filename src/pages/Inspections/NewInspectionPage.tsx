@@ -20,16 +20,19 @@ const NewInspectionPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { checklistItems } = useAppSelector((state) => state.inspections);
+  const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToInspections } = useAppNavigation();
 
   const [formData, setFormData] = useState({
     systemId: '',
+    stageId: '',
     date: new Date().toISOString().split('T')[0],
     conclusion: '',
     sendNotification: false
   });
   const [items, setItems] = useState<ItemValue[]>([]);
   const [photoPreviews, setPhotoPreviews] = useState<PhotoPreview[]>([]);
+  const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
 
   useEffect(() => {
     dispatch(fetchSystems({}));
@@ -38,11 +41,28 @@ const NewInspectionPage: React.FC = () => {
     };
   }, [dispatch]);
 
+  // Filter stages (child systems) when a system is selected
   useEffect(() => {
-    if (formData.systemId) {
+    if (formData.systemId && systems.length > 0) {
+      const selectedSystemId = Number(formData.systemId);
+      const childSystems = systems.filter(s => s.parentId === selectedSystemId);
+      setAvailableStages(childSystems.map(s => ({ value: s.id, label: s.name })));
+
+      // Reset stage selection when system changes
+      setFormData(prev => ({ ...prev, stageId: '' }));
+    } else {
+      setAvailableStages([]);
+    }
+  }, [formData.systemId, systems]);
+
+  // Fetch checklist items when system or stage changes
+  useEffect(() => {
+    if (formData.stageId) {
+      dispatch(fetchChecklistItems(Number(formData.stageId)));
+    } else if (formData.systemId) {
       dispatch(fetchChecklistItems(Number(formData.systemId)));
     }
-  }, [dispatch, formData.systemId]);
+  }, [dispatch, formData.systemId, formData.stageId]);
 
   useEffect(() => {
     if (checklistItems.length > 0) {
@@ -118,6 +138,7 @@ const NewInspectionPage: React.FC = () => {
 
     const result = await dispatch(createInspection({
       systemId: Number(formData.systemId),
+      stageId: formData.stageId ? Number(formData.stageId) : undefined,
       date: formData.date,
       conclusion: formData.conclusion || undefined,
       items: items.map(item => ({
@@ -136,7 +157,7 @@ const NewInspectionPage: React.FC = () => {
     }
   };
 
-  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
     { value: 'C', label: 'C - Conforme' },
     { value: 'NC', label: 'NC - No Conforme' },
@@ -160,16 +181,30 @@ const NewInspectionPage: React.FC = () => {
 
       <form onSubmit={handleSubmit}>
         <Card title="Inspection Information" className="mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Select
-              name="systemId"
-              value={formData.systemId}
-              onChange={handleChange}
-              options={systemOptions}
-              label="System"
-              placeholder="Select system"
-              required
-            />
+          <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Select
+                name="systemId"
+                value={formData.systemId}
+                onChange={handleChange}
+                options={systemOptions}
+                label="System"
+                placeholder="Select system"
+                required
+              />
+
+              {/* Stage Selection (only if stages available) */}
+              {availableStages.length > 0 && (
+                <Select
+                  name="stageId"
+                  value={formData.stageId}
+                  onChange={handleChange}
+                  options={availableStages}
+                  label="Stage (Optional)"
+                  placeholder="Select stage or leave empty for system-level inspection"
+                />
+              )}
+            </div>
 
             <Input
               type="date"
@@ -295,11 +330,11 @@ const NewInspectionPage: React.FC = () => {
         </Card>
 
         <div className="flex justify-end space-x-3">
-          <Button type="button" variant="outline" onClick={goBack}>
+          <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
             Cancel
           </Button>
-          <Button type="submit" variant="primary">
-            Submit Inspection
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? 'Submitting...' : 'Submit Inspection'}
           </Button>
         </div>
       </form>
