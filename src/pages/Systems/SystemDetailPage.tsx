@@ -24,6 +24,7 @@ const SystemDetailPage: React.FC = () => {
 
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isMonitoringPointFormOpen, setIsMonitoringPointFormOpen] = useState(false);
   const [editingMonitoringPoint, setEditingMonitoringPoint] = useState<MonitoringPoint | null>(null);
   const [deletingMonitoringPoint, setDeletingMonitoringPoint] = useState<MonitoringPoint | null>(null);
@@ -43,9 +44,12 @@ const SystemDetailPage: React.FC = () => {
 
   const handleDeleteSystem = async () => {
     if (id) {
+      setDeleteError(null);
       const result = await dispatch(deleteSystem(Number(id)));
       if (deleteSystem.fulfilled.match(result)) {
         goToSystems();
+      } else if (deleteSystem.rejected.match(result)) {
+        setDeleteError(result.payload as string || t('systems.deleteFailed'));
       }
     }
   };
@@ -346,15 +350,30 @@ const SystemDetailPage: React.FC = () => {
         system={currentSystem}
       />
 
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('systems.deleteSystem')} size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={() => { setIsDeleteOpen(false); setDeleteError(null); }} title={t('systems.deleteSystem')} size="sm">
+        {deleteError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {deleteError}
+          </div>
+        )}
+        {currentSystem?.children && currentSystem.children.length > 0 && (
+          <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 rounded mb-4">
+            <p className="font-semibold">{t('systems.deleteWarning')}</p>
+            <p className="text-sm mt-1">{t('systems.deleteSubSystemsFirst', { count: currentSystem.children.length })}</p>
+          </div>
+        )}
         <p className="text-gray-600 mb-6">
           {t('systems.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
-          <Button variant="outline" onClick={() => setIsDeleteOpen(false)} disabled={loading}>
+          <Button variant="outline" onClick={() => { setIsDeleteOpen(false); setDeleteError(null); }} disabled={loading}>
             {t('common.cancel')}
           </Button>
-          <Button variant="danger" onClick={handleDeleteSystem} disabled={loading}>
+          <Button
+            variant="danger"
+            onClick={handleDeleteSystem}
+            disabled={loading || (currentSystem?.children && currentSystem.children.length > 0)}
+          >
             {loading ? t('common.loading') : t('common.delete')}
           </Button>
         </div>

@@ -34,6 +34,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
     description: '',
     parentId: null
   });
+  const [customType, setCustomType] = useState<string>('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
 
@@ -46,6 +47,14 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
         description: system.description || '',
         parentId: system.parentId || null
       });
+      // Check if the type is a custom type (not in the predefined list)
+      const isPredefinedType = systemTypes.some(st => st.value === system.type);
+      if (!isPredefinedType && system.type) {
+        setCustomType(system.type);
+        setFormData(prev => ({ ...prev, type: 'other' }));
+      } else {
+        setCustomType('');
+      }
     } else {
       setFormData({
         name: '',
@@ -54,6 +63,7 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
         description: '',
         parentId: parentId || null
       });
+      setCustomType('');
     }
     setErrors({});
   }, [system, isOpen, parentId]);
@@ -74,6 +84,9 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
     if (!parentId) {
       if (!formData.name.trim()) newErrors.name = t('common.required');
       if (!formData.type) newErrors.type = t('common.required');
+      if (formData.type === 'other' && !customType.trim()) {
+        newErrors.customType = t('systems.customTypeRequired');
+      }
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -85,6 +98,11 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
 
     // Prepare data for submission
     const submitData = { ...formData };
+
+    // If 'other' is selected, use the custom type
+    if (submitData.type === 'other' && customType.trim()) {
+      submitData.type = customType.trim();
+    }
 
     // For sub-systems, set default name and type if not provided
     if (parentId && !system) {
@@ -135,6 +153,23 @@ const SystemForm: React.FC<SystemFormProps> = ({ isOpen, onClose, system, parent
               error={errors.type}
               required
             />
+
+            {formData.type === 'other' && (
+              <Input
+                name="customType"
+                value={customType}
+                onChange={(e) => {
+                  setCustomType(e.target.value);
+                  if (errors.customType) {
+                    setErrors({ ...errors, customType: '' });
+                  }
+                }}
+                label={t('systems.customType')}
+                placeholder={t('systems.customTypePlaceholder')}
+                error={errors.customType}
+                required
+              />
+            )}
           </>
         )}
 

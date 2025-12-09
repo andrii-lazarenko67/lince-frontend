@@ -24,15 +24,17 @@ const DailyLogDetailPage: React.FC = () => {
       key: 'monitoringPoint',
       header: t('dailyLogs.detail.monitoringPoint'),
       render: (entry: DailyLogEntry) => (
-        <span className="font-medium text-gray-900">
-          {entry.monitoringPoint?.name || '-'}
-        </span>
+        <div>
+          <span className="font-medium text-gray-900">
+            {entry.monitoringPoint?.name || '-'}
+          </span>
+          {entry.monitoringPoint?.parameterObj && (
+            <span className="text-xs text-gray-500 ml-2">
+              ({entry.monitoringPoint.parameterObj.name})
+            </span>
+          )}
+        </div>
       )
-    },
-    {
-      key: 'parameter',
-      header: t('dailyLogs.detail.parameter'),
-      render: (entry: DailyLogEntry) => entry.monitoringPoint?.parameterObj?.name || '-'
     },
     {
       key: 'value',

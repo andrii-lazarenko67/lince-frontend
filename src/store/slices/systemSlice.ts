@@ -210,6 +210,9 @@ const systemSlice = createSlice({
         // Remove the system from the systems array
         state.systems = state.systems.filter(s => s.id !== deletedId);
         state.error = null;
+      })
+      .addCase(deleteSystem.rejected, (state, action) => {
+        state.error = action.payload as string;
       });
   }
 });
