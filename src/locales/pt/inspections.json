@@ -20,6 +20,7 @@
     "noInspections": "Nenhuma inspeção encontrada",
     "list": {
       "system": "Sistema",
+      "stage": "Etapa",
       "date": "Data",
       "inspector": "Inspetor",
       "status": "Status",
@@ -88,6 +89,7 @@
     "detail": {
       "title": "Detalhes da Inspeção",
       "loading": "Carregando...",
+      "deleteConfirm": "Tem certeza que deseja excluir esta inspeção? Esta ação não pode ser desfeita.",
       "photoValidationError": "Alguns arquivos são inválidos (devem ser JPG, PNG, GIF ou WebP, e menores que 10MB)",
       "statusPending": "Pendente",
       "statusCompleted": "Concluída",
@@ -102,6 +104,7 @@
       "approveButton": "Aprovar Inspeção",
       "informationCard": "Informações da Inspeção",
       "systemLabel": "Sistema",
+      "stageLabel": "Etapa",
       "dateLabel": "Data",
       "inspectorLabel": "Inspetor",
       "statusLabel": "Status",

@@ -38,6 +38,11 @@ const InspectionsList: React.FC = () => {
       render: (inspection: Inspection) => inspection.system?.name || '-'
     },
     {
+      key: 'stage',
+      header: t('inspections.list.stage'),
+      render: (inspection: Inspection) => inspection.stage?.name || '-'
+    },
+    {
       key: 'user',
       header: t('inspections.list.inspector'),
       render: (inspection: Inspection) => inspection.user?.name || '-'

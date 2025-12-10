@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchInspectionById, approveInspection, addInspectionPhotos } from '../../store/slices/inspectionSlice';
+import { fetchInspectionById, approveInspection, addInspectionPhotos, deleteInspection } from '../../store/slices/inspectionSlice';
 import { Card, Badge, Table, Button, Modal, TextArea } from '../../components/common';
-import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
+import { Close as CloseIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import type { InspectionItem } from '../../types';
 
 interface PhotoPreview {
@@ -109,6 +109,17 @@ const InspectionDetailPage: React.FC = () => {
     setIsAddPhotosOpen(false);
   };
 
+  const handleDelete = async () => {
+    if (!id) return;
+
+    if (window.confirm(t('inspections.detail.deleteConfirm'))) {
+      const result = await dispatch(deleteInspection(Number(id)));
+      if (deleteInspection.fulfilled.match(result)) {
+        goBack();
+      }
+    }
+  };
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'pending':
@@ -181,6 +192,12 @@ const InspectionDetailPage: React.FC = () => {
   const conformeCount = currentInspection.items?.filter(i => i.status === 'C').length || 0;
   const totalCount = currentInspection.items?.length || 0;
   const canManage = user?.role === 'manager' || user?.role === 'admin';
+  const canDelete = user?.role === 'manager' || currentInspection.userId === user?.id;
+
+  // Build system/stage display text
+  const systemStageDisplay = currentInspection.stage
+    ? `${currentInspection.system?.name} / ${currentInspection.stage.name}`
+    : currentInspection.system?.name;
 
   return (
     <div className="space-y-6">
@@ -194,15 +211,23 @@ const InspectionDetailPage: React.FC = () => {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{t('inspections.detail.title')}</h1>
             <p className="text-gray-500 mt-1">
-              {new Date(currentInspection.date).toLocaleDateString()} - {currentInspection.system?.name}
+              {new Date(currentInspection.date).toLocaleDateString()} - {systemStageDisplay}
             </p>
           </div>
         </div>
-        {canManage && currentInspection.status === 'pending' && (
-          <Button variant="success" onClick={() => setIsApproveOpen(true)}>
-            {t('inspections.detail.approveButton')}
-          </Button>
-        )}
+        <div className="flex gap-3">
+          {canDelete && (
+            <Button variant="danger" onClick={handleDelete}>
+              <DeleteIcon style={{ fontSize: 18, marginRight: 4 }} />
+              {t('common.delete')}
+            </Button>
+          )}
+          {canManage && currentInspection.status === 'pending' && (
+            <Button variant="success" onClick={() => setIsApproveOpen(true)}>
+              {t('inspections.detail.approveButton')}
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -212,6 +237,12 @@ const InspectionDetailPage: React.FC = () => {
               <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.systemLabel')}</dt>
               <dd className="mt-1 text-gray-900">{currentInspection.system?.name}</dd>
             </div>
+            {currentInspection.stage && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.stageLabel')}</dt>
+                <dd className="mt-1 text-gray-900">{currentInspection.stage.name}</dd>
+              </div>
+            )}
             <div>
               <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.dateLabel')}</dt>
               <dd className="mt-1 text-gray-900">
