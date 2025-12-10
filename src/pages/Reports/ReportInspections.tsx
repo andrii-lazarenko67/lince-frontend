@@ -487,11 +487,11 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
   // Status counts
   const pendingCount = report.inspections.filter(i => i.status === 'pending').length;
   const completedCount = report.inspections.filter(i => i.status === 'completed').length;
-  const approvedCount = report.inspections.filter(i => i.status === 'approved').length;
+  const viewedCount = report.inspections.filter(i => i.status === 'viewed').length;
 
   // Status donut chart
   const statusData = [
-    { label: t('reports.statistics.approved'), value: approvedCount, color: '#22c55e' },
+    { label: t('reports.statistics.viewed'), value: viewedCount, color: '#22c55e' },
     { label: t('reports.statistics.completed'), value: completedCount, color: '#3b82f6' },
     { label: t('reports.statistics.pending'), value: pendingCount, color: '#eab308' }
   ];
@@ -574,8 +574,8 @@ const ReportInspections: React.FC<ReportInspectionsProps> = ({ report }) => {
             <p className="text-sm text-blue-700">{t('inspections.charts.totalInspections')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <p className="text-3xl font-bold text-green-600">{approvedCount}</p>
-            <p className="text-sm text-green-700">{t('inspections.charts.approved')}</p>
+            <p className="text-3xl font-bold text-green-600">{viewedCount}</p>
+            <p className="text-sm text-green-700">{t('inspections.charts.viewed')}</p>
           </div>
           <div className="text-center p-4 bg-indigo-50 rounded-lg">
             <p className="text-3xl font-bold text-indigo-600">{completedCount}</p>

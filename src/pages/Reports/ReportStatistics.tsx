@@ -242,11 +242,11 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
 
   // Calculate inspection stats
   const completedInspections = report.inspections.filter(i => i.status === 'completed').length;
-  const approvedInspections = report.inspections.filter(i => i.status === 'approved').length;
+  const viewedInspections = report.inspections.filter(i => i.status === 'viewed').length;
   const pendingInspections = report.inspections.filter(i => i.status === 'pending').length;
 
   const inspectionsChartData = [
-    { label: t('reports.statistics.approved'), value: approvedInspections, color: '#22c55e' },
+    { label: t('reports.statistics.viewed'), value: viewedInspections, color: '#22c55e' },
     { label: t('reports.statistics.completed'), value: completedInspections, color: '#3b82f6' },
     { label: t('reports.statistics.pending'), value: pendingInspections, color: '#eab308' }
   ];

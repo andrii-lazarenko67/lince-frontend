@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchInspectionById, approveInspection, addInspectionPhotos, deleteInspection } from '../../store/slices/inspectionSlice';
+import { fetchInspectionById, markInspectionAsViewed, addInspectionPhotos, deleteInspection } from '../../store/slices/inspectionSlice';
 import { Card, Badge, Table, Button, Modal, TextArea } from '../../components/common';
 import { Close as CloseIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import type { InspectionItem } from '../../types';
@@ -39,13 +39,13 @@ const InspectionDetailPage: React.FC = () => {
     };
   }, []);
 
-  const handleApprove = async () => {
+  const handleMarkAsViewed = async () => {
     if (id) {
-      const result = await dispatch(approveInspection({
+      const result = await dispatch(markInspectionAsViewed({
         id: Number(id),
         managerNotes: managerNotes || undefined
       }));
-      if (approveInspection.fulfilled.match(result)) {
+      if (markInspectionAsViewed.fulfilled.match(result)) {
         setIsApproveOpen(false);
         setManagerNotes('');
       }
@@ -126,8 +126,8 @@ const InspectionDetailPage: React.FC = () => {
         return <Badge variant="warning">{t('inspections.detail.statusPending')}</Badge>;
       case 'completed':
         return <Badge variant="primary">{t('inspections.detail.statusCompleted')}</Badge>;
-      case 'approved':
-        return <Badge variant="success">{t('inspections.detail.statusApproved')}</Badge>;
+      case 'viewed':
+        return <Badge variant="success">{t('inspections.detail.statusViewed')}</Badge>;
       default:
         return <Badge variant="secondary">{status}</Badge>;
     }
@@ -222,9 +222,9 @@ const InspectionDetailPage: React.FC = () => {
               {t('common.delete')}
             </Button>
           )}
-          {canManage && currentInspection.status === 'pending' && (
+          {canManage && currentInspection.status !== 'viewed' && (
             <Button variant="success" onClick={() => setIsApproveOpen(true)}>
-              {t('inspections.detail.approveButton')}
+              {t('inspections.detail.markAsViewedButton')}
             </Button>
           )}
         </div>
@@ -323,8 +323,8 @@ const InspectionDetailPage: React.FC = () => {
         )}
       </Card>
 
-      {/* Approve Modal */}
-      <Modal isOpen={isApproveOpen} onClose={() => setIsApproveOpen(false)} title={t('inspections.detail.approveModalTitle')}>
+      {/* Mark as Viewed Modal */}
+      <Modal isOpen={isApproveOpen} onClose={() => setIsApproveOpen(false)} title={t('inspections.detail.markAsViewedModalTitle')}>
         <TextArea
           name="managerNotes"
           value={managerNotes}
@@ -337,8 +337,8 @@ const InspectionDetailPage: React.FC = () => {
           <Button variant="outline" onClick={() => setIsApproveOpen(false)}>
             {t('inspections.detail.cancelButton')}
           </Button>
-          <Button variant="success" onClick={handleApprove}>
-            {t('inspections.detail.approveModalButton')}
+          <Button variant="success" onClick={handleMarkAsViewed}>
+            {t('inspections.detail.markAsViewedModalButton')}
           </Button>
         </div>
       </Modal>

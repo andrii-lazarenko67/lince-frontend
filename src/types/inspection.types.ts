@@ -4,7 +4,7 @@ import type { System, ChecklistItem } from './system.types';
 export type { ChecklistItem } from './system.types';
 
 export type InspectionItemStatus = 'C' | 'NC' | 'NA' | 'NV';
-export type InspectionStatus = 'pending' | 'completed' | 'approved';
+export type InspectionStatus = 'pending' | 'completed' | 'viewed';
 
 export interface InspectionItem {
   id: number;
@@ -36,9 +36,12 @@ export interface Inspection {
   status: InspectionStatus;
   conclusion: string | null;
   managerNotes: string | null;
+  viewedBy: number | null;
+  viewedAt: string | null;
   user?: User;
   system?: System;
   stage?: System;
+  viewedByUser?: User;
   items?: InspectionItem[];
   photos?: InspectionPhoto[];
   createdAt: string;

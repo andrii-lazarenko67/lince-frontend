@@ -105,7 +105,7 @@ const InspectionsPage: React.FC = () => {
   const statusOptions = [
     { value: 'pending', label: t('inspections.filters.pending') },
     { value: 'completed', label: t('inspections.filters.completed') },
-    { value: 'approved', label: t('inspections.filters.approved') }
+    { value: 'viewed', label: t('inspections.filters.viewed') }
   ];
 
   return (

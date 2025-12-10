@@ -105,7 +105,7 @@
       "total": "Total",
       "normal": "Normal",
       "outOfRange": "Out of Range",
-      "approved": "Approved",
+      "viewed": "Viewed",
       "completed": "Completed",
       "pending": "Pending",
       "open": "Open",
@@ -149,7 +149,7 @@
       "itemsChecked": "Items",
       "pending": "Pending",
       "completed": "Completed",
-      "approved": "Approved",
+      "viewed": "Viewed",
       "compliant": "Compliant",
       "nonCompliant": "Non-Compliant",
       "noInspections": "No inspections in this report"

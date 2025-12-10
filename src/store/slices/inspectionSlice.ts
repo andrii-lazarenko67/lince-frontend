@@ -117,16 +117,16 @@ export const updateInspection = createAsyncThunk(
   }
 );
 
-export const approveInspection = createAsyncThunk(
-  'inspections/approve',
+export const markInspectionAsViewed = createAsyncThunk(
+  'inspections/markAsViewed',
   async ({ id, managerNotes }: { id: number; managerNotes?: string }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.put<{ success: boolean; data: Inspection }>(`/inspections/${id}/approve`, { managerNotes });
+      const response = await axiosInstance.put<{ success: boolean; data: Inspection }>(`/inspections/${id}/mark-viewed`, { managerNotes });
       return response.data.data;
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to approve inspection');
+      return rejectWithValue(err.response?.data?.message || 'Failed to mark inspection as viewed');
     } finally {
       dispatch(setLoading(false));
     }
@@ -213,7 +213,7 @@ const inspectionSlice = createSlice({
         }
         state.error = null;
       })
-      .addCase(approveInspection.fulfilled, (state, action) => {
+      .addCase(markInspectionAsViewed.fulfilled, (state, action) => {
         const index = state.inspections.findIndex(i => i.id === action.payload.id);
         if (index !== -1) {
           state.inspections[index] = action.payload;

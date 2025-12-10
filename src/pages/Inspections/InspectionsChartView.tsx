@@ -15,7 +15,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   // Status counts
   const pendingCount = inspections.filter(i => i.status === 'pending').length;
   const completedCount = inspections.filter(i => i.status === 'completed').length;
-  const approvedCount = inspections.filter(i => i.status === 'approved').length;
+  const viewedCount = inspections.filter(i => i.status === 'viewed').length;
 
   // Count all inspection items by actual status values (C, NC, NA, NV)
   let totalC = 0;   // Conforme (Compliant)
@@ -35,7 +35,7 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
   const statusData = [
     { label: t('inspections.charts.statusPending'), value: pendingCount, color: '#f59e0b' },
     { label: t('inspections.charts.statusCompleted'), value: completedCount, color: '#3b82f6' },
-    { label: t('inspections.charts.statusApproved'), value: approvedCount, color: '#22c55e' }
+    { label: t('inspections.charts.statusViewed'), value: viewedCount, color: '#22c55e' }
   ];
 
   // Item results donut - using actual status values
@@ -122,8 +122,8 @@ const InspectionsChartView: React.FC<InspectionsChartViewProps> = ({ inspections
             <p className="text-sm text-yellow-700">{t('inspections.charts.pending')}</p>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
-            <p className="text-3xl font-bold text-green-600">{approvedCount}</p>
-            <p className="text-sm text-green-700">{t('inspections.charts.approved')}</p>
+            <p className="text-3xl font-bold text-green-600">{viewedCount}</p>
+            <p className="text-sm text-green-700">{t('inspections.charts.viewed')}</p>
           </div>
           <div className="text-center p-4 bg-emerald-50 rounded-lg">
             <p className="text-3xl font-bold text-emerald-600">{totalC}</p>

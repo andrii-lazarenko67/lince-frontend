@@ -13,8 +13,8 @@ const InspectionsList: React.FC = () => {
     switch (status) {
       case 'pending':
         return <Badge variant="warning">{t('inspections.status.pending')}</Badge>;
-      case 'approved':
-        return <Badge variant="success">{t('inspections.status.approved')}</Badge>;
+      case 'viewed':
+        return <Badge variant="success">{t('inspections.status.viewed')}</Badge>;
       case 'rejected':
         return <Badge variant="danger">{t('inspections.status.rejected')}</Badge>;
       default:
