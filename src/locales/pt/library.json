@@ -59,6 +59,8 @@
       "customCategoryPlaceholder": "Digite o nome da categoria personalizada",
       "relatedSystem": "Sistema Relacionado (Opcional)",
       "systemPlaceholder": "Selecione o sistema",
+      "relatedStage": "Etapa Relacionada (Opcional)",
+      "stagePlaceholder": "Selecione a etapa",
       "description": "Descrição",
       "descriptionPlaceholder": "Digite a descrição do documento",
       "documentFile": "Arquivo do Documento",

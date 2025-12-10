@@ -20,15 +20,29 @@ const LibraryPage: React.FC = () => {
     title: '',
     category: '',
     description: '',
-    systemId: ''
+    systemId: '',
+    stageId: ''
   });
   const [customCategory, setCustomCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
 
   useEffect(() => {
     dispatch(fetchDocuments({}));
     dispatch(fetchSystems({}));
   }, [dispatch]);
+
+  // Filter stages (child systems) when a system is selected
+  useEffect(() => {
+    if (uploadData.systemId && systems.length > 0) {
+      const selectedSystemId = Number(uploadData.systemId);
+      const childSystems = systems.filter(s => s.parentId === selectedSystemId);
+      setAvailableStages(childSystems.map(s => ({ value: s.id, label: s.name })));
+    } else {
+      setAvailableStages([]);
+      setUploadData(prev => ({ ...prev, stageId: '' }));
+    }
+  }, [uploadData.systemId, systems]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -55,6 +69,11 @@ const LibraryPage: React.FC = () => {
       return;
     }
 
+    // Use stageId if available, otherwise use systemId
+    const finalSystemId = uploadData.stageId
+      ? Number(uploadData.stageId)
+      : (uploadData.systemId ? Number(uploadData.systemId) : undefined);
+
     // Prepare data for submission
     const submitData = {
       title: uploadData.title,
@@ -62,7 +81,7 @@ const LibraryPage: React.FC = () => {
         ? customCategory.trim()
         : uploadData.category,
       description: uploadData.description || undefined,
-      systemId: uploadData.systemId ? Number(uploadData.systemId) : undefined,
+      systemId: finalSystemId,
       file: selectedFile
     };
 
@@ -70,9 +89,10 @@ const LibraryPage: React.FC = () => {
 
     if (uploadDocument.fulfilled.match(result)) {
       setIsUploadOpen(false);
-      setUploadData({ title: '', category: '', description: '', systemId: '' });
+      setUploadData({ title: '', category: '', description: '', systemId: '', stageId: '' });
       setCustomCategory('');
       setSelectedFile(null);
+      setAvailableStages([]);
     }
   };
 
@@ -134,7 +154,8 @@ const LibraryPage: React.FC = () => {
     { value: 'other', label: t('library.categories.other') }
   ];
 
-  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  // Only show parent systems (no parentId)
+  const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
 
   return (
     <div className="space-y-6">
@@ -222,11 +243,22 @@ const LibraryPage: React.FC = () => {
           <Select
             name="systemId"
             value={uploadData.systemId}
-            onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value })}
+            onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value, stageId: '' })}
             options={systemOptions}
             label={t('library.modal.relatedSystem')}
             placeholder={t('library.modal.systemPlaceholder')}
           />
+
+          {availableStages.length > 0 && (
+            <Select
+              name="stageId"
+              value={uploadData.stageId}
+              onChange={(e) => setUploadData({ ...uploadData, stageId: e.target.value })}
+              options={availableStages}
+              label={t('library.modal.relatedStage')}
+              placeholder={t('library.modal.stagePlaceholder')}
+            />
+          )}
 
           <TextArea
             name="description"

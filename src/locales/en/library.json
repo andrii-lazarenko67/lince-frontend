@@ -59,6 +59,8 @@
       "customCategoryPlaceholder": "Enter custom category name",
       "relatedSystem": "Related System (Optional)",
       "systemPlaceholder": "Select system",
+      "relatedStage": "Related Stage (Optional)",
+      "stagePlaceholder": "Select stage",
       "description": "Description",
       "descriptionPlaceholder": "Enter document description",
       "documentFile": "Document File",
