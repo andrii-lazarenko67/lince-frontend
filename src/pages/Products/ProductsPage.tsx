@@ -25,7 +25,8 @@ const ProductsPage: React.FC = () => {
     supplier: '',
     currentStock: 0,
     minStockAlert: 0,
-    description: ''
+    description: '',
+    recommendedDosage: ''
   });
 
   useEffect(() => {
@@ -43,7 +44,8 @@ const ProductsPage: React.FC = () => {
         supplier: product.supplier || '',
         currentStock: parseFloat(product.currentStock.toString()),
         minStockAlert: product.minStockAlert ? parseFloat(product.minStockAlert.toString()) : 0,
-        description: product.description || ''
+        description: product.description || '',
+        recommendedDosage: product.recommendedDosage || ''
       });
     } else {
       setEditingProduct(null);
@@ -54,7 +56,8 @@ const ProductsPage: React.FC = () => {
         supplier: '',
         currentStock: 0,
         minStockAlert: 0,
-        description: ''
+        description: '',
+        recommendedDosage: ''
       });
     }
     setIsFormOpen(true);
@@ -308,6 +311,15 @@ const ProductsPage: React.FC = () => {
             onChange={handleChange}
             label={t('products.form.supplier')}
             placeholder={t('products.form.supplierPlaceholder')}
+          />
+
+          <Input
+            type="text"
+            name="recommendedDosage"
+            value={formData.recommendedDosage || ''}
+            onChange={handleChange}
+            label={t('products.form.recommendedDosage')}
+            placeholder={t('products.form.recommendedDosagePlaceholder')}
           />
 
           <TextArea

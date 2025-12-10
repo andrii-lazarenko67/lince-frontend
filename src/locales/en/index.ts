@@ -1,0 +1,37 @@
+import common from './common.json';
+import nav from './navigation.json';
+import login from './auth.json';
+import dashboard from './dashboard.json';
+import { systems, monitoringPoints, checklistItems } from './systems.json';
+import { dailyLogs } from './dailyLogs.json';
+import { inspections } from './inspections.json';
+import { incidents } from './incidents.json';
+import { products, productDosage } from './products.json';
+import { reports } from './reports.json';
+import { users } from './users.json';
+import { library } from './library.json';
+import { settings } from './settings.json';
+import { profile } from './profile.json';
+import { notifications, photoGallery } from './notifications.json';
+
+export default {
+  common,
+  nav,
+  login,
+  dashboard,
+  systems,
+  monitoringPoints,
+  checklistItems,
+  dailyLogs,
+  inspections,
+  incidents,
+  products,
+  productDosage,
+  reports,
+  users,
+  library,
+  settings,
+  profile,
+  notifications,
+  photoGallery,
+};

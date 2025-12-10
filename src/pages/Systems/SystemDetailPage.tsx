@@ -25,6 +25,8 @@ const SystemDetailPage: React.FC = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [relatedRecords, setRelatedRecords] = useState<{ dailyLogs: number; inspections: number; incidents: number } | null>(null);
+  const [showForceDelete, setShowForceDelete] = useState(false);
   const [isMonitoringPointFormOpen, setIsMonitoringPointFormOpen] = useState(false);
   const [editingMonitoringPoint, setEditingMonitoringPoint] = useState<MonitoringPoint | null>(null);
   const [deletingMonitoringPoint, setDeletingMonitoringPoint] = useState<MonitoringPoint | null>(null);
@@ -42,16 +44,30 @@ const SystemDetailPage: React.FC = () => {
     }
   }, [dispatch, id]);
 
-  const handleDeleteSystem = async () => {
+  const handleDeleteSystem = async (force: boolean = false) => {
     if (id) {
       setDeleteError(null);
-      const result = await dispatch(deleteSystem(Number(id)));
+      const result = await dispatch(deleteSystem({ id: Number(id), force }));
       if (deleteSystem.fulfilled.match(result)) {
         goToSystems();
       } else if (deleteSystem.rejected.match(result)) {
-        setDeleteError(result.payload as string || t('systems.deleteFailed'));
+        const payload = result.payload as { message: string; relatedRecords?: { dailyLogs: number; inspections: number; incidents: number } };
+        setDeleteError(payload.message || t('systems.deleteFailed'));
+
+        // If there are related records, show force delete option
+        if (payload.relatedRecords && !force) {
+          setRelatedRecords(payload.relatedRecords);
+          setShowForceDelete(true);
+        }
       }
     }
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteOpen(false);
+    setDeleteError(null);
+    setRelatedRecords(null);
+    setShowForceDelete(false);
   };
 
   const handleOpenMonitoringPointForm = (point?: MonitoringPoint) => {
@@ -350,7 +366,7 @@ const SystemDetailPage: React.FC = () => {
         system={currentSystem}
       />
 
-      <Modal isOpen={isDeleteOpen} onClose={() => { setIsDeleteOpen(false); setDeleteError(null); }} title={t('systems.deleteSystem')} size="sm">
+      <Modal isOpen={isDeleteOpen} onClose={handleCloseDeleteModal} title={t('systems.deleteSystem')} size="sm">
         {deleteError && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
             {deleteError}
@@ -362,20 +378,46 @@ const SystemDetailPage: React.FC = () => {
             <p className="text-sm mt-1">{t('systems.deleteSubSystemsFirst', { count: currentSystem.children.length })}</p>
           </div>
         )}
+        {showForceDelete && relatedRecords && (
+          <div className="bg-orange-50 border border-orange-300 text-orange-900 px-4 py-3 rounded mb-4">
+            <p className="font-semibold mb-2">{t('systems.forceDeleteWarning')}</p>
+            <ul className="list-disc list-inside text-sm space-y-1">
+              {relatedRecords.dailyLogs > 0 && (
+                <li>{t('systems.forceDeleteDailyLogs', { count: relatedRecords.dailyLogs })}</li>
+              )}
+              {relatedRecords.inspections > 0 && (
+                <li>{t('systems.forceDeleteInspections', { count: relatedRecords.inspections })}</li>
+              )}
+              {relatedRecords.incidents > 0 && (
+                <li>{t('systems.forceDeleteIncidents', { count: relatedRecords.incidents })}</li>
+              )}
+            </ul>
+          </div>
+        )}
         <p className="text-gray-600 mb-6">
-          {t('systems.deleteConfirm')}
+          {showForceDelete ? t('systems.forceDeleteConfirm') : t('systems.deleteConfirm')}
         </p>
         <div className="flex justify-end space-x-3">
-          <Button variant="outline" onClick={() => { setIsDeleteOpen(false); setDeleteError(null); }} disabled={loading}>
+          <Button variant="outline" onClick={handleCloseDeleteModal} disabled={loading}>
             {t('common.cancel')}
           </Button>
-          <Button
-            variant="danger"
-            onClick={handleDeleteSystem}
-            disabled={loading || (currentSystem?.children && currentSystem.children.length > 0)}
-          >
-            {loading ? t('common.loading') : t('common.delete')}
-          </Button>
+          {showForceDelete ? (
+            <Button
+              variant="danger"
+              onClick={() => handleDeleteSystem(true)}
+              disabled={loading}
+            >
+              {loading ? t('common.loading') : t('systems.forceDeleteButton')}
+            </Button>
+          ) : (
+            <Button
+              variant="danger"
+              onClick={() => handleDeleteSystem(false)}
+              disabled={loading || (currentSystem?.children && currentSystem.children.length > 0)}
+            >
+              {loading ? t('common.loading') : t('common.delete')}
+            </Button>
+          )}
         </div>
       </Modal>
 

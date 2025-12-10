@@ -206,6 +206,12 @@ const ProductDetailPage: React.FC = () => {
               <dt className="text-sm font-medium text-gray-500">{t('products.detail.supplier')}</dt>
               <dd className="mt-1 text-gray-900">{currentProduct.supplier || '-'}</dd>
             </div>
+            {currentProduct.recommendedDosage && (
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.recommendedDosage')}</dt>
+                <dd className="mt-1 text-gray-900">{currentProduct.recommendedDosage}</dd>
+              </div>
+            )}
             {currentProduct.description && (
               <div>
                 <dt className="text-sm font-medium text-gray-500">{t('products.detail.description')}</dt>

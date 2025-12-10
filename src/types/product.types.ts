@@ -12,6 +12,7 @@ export interface Product {
   currentStock: number;
   minStockAlert: number | null;
   description: string | null;
+  recommendedDosage: string | null;
   isActive: boolean;
   usages?: ProductUsage[];
   createdAt: string;
@@ -42,6 +43,7 @@ export interface CreateProductRequest {
   currentStock?: number;
   minStockAlert?: number;
   description?: string;
+  recommendedDosage?: string;
 }
 
 export interface UpdateProductRequest {
@@ -52,6 +54,7 @@ export interface UpdateProductRequest {
   currentStock?: number;
   minStockAlert?: number;
   description?: string;
+  recommendedDosage?: string;
   isActive?: boolean;
 }
 

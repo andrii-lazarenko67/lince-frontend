@@ -75,14 +75,18 @@ export const updateSystem = createAsyncThunk(
 
 export const deleteSystem = createAsyncThunk(
   'systems/delete',
-  async (id: number, { dispatch, rejectWithValue }) => {
+  async ({ id, force }: { id: number; force?: boolean }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      await axiosInstance.delete(`/systems/${id}`);
+      const params = force ? { force: 'true' } : {};
+      await axiosInstance.delete(`/systems/${id}`, { params });
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete system');
+      const err = error as { response?: { data?: { message?: string; relatedRecords?: { dailyLogs: number; inspections: number; incidents: number } } } };
+      return rejectWithValue({
+        message: err.response?.data?.message || 'Failed to delete system',
+        relatedRecords: err.response?.data?.relatedRecords
+      });
     } finally {
       dispatch(setLoading(false));
     }
@@ -212,7 +216,8 @@ const systemSlice = createSlice({
         state.error = null;
       })
       .addCase(deleteSystem.rejected, (state, action) => {
-        state.error = action.payload as string;
+        const payload = action.payload as { message: string; relatedRecords?: { dailyLogs: number; inspections: number; incidents: number } } | string;
+        state.error = typeof payload === 'string' ? payload : payload.message;
       });
   }
 });

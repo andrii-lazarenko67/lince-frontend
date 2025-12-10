@@ -1,0 +1,12 @@
+{
+  "dashboard": "Dashboard",
+  "systems": "Systems",
+  "dailyLogs": "Daily Logs",
+  "inspections": "Inspections",
+  "incidents": "Incidents",
+  "products": "Products",
+  "reports": "Reports",
+  "library": "Library",
+  "users": "Users",
+  "settings": "Settings"
+}

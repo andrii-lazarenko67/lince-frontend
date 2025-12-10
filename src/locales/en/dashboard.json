@@ -1,0 +1,9 @@
+{
+  "title": "Dashboard",
+  "welcome": "Welcome",
+  "overview": "Overview",
+  "activeSystems": "Active Systems",
+  "recentLogs": "Recent Logs",
+  "openIncidents": "Open Incidents",
+  "pendingInspections": "Pending Inspections"
+}
