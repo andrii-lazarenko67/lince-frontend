@@ -34,6 +34,7 @@
     "uploadButton": "Enviar",
     "emptyMessage": "Nenhum documento encontrado. Clique em 'Enviar Documento' para adicionar um.",
     "validationRequired": "Por favor, preencha todos os campos obrigatórios (título e categoria)",
+    "customCategoryRequired": "Por favor, digite um nome para a categoria personalizada",
     "table": {
       "title": "Título",
       "category": "Categoria",
@@ -54,6 +55,8 @@
       "titlePlaceholder": "Digite o título do documento",
       "category": "Categoria",
       "categoryPlaceholder": "Selecione a categoria",
+      "customCategory": "Categoria Personalizada",
+      "customCategoryPlaceholder": "Digite o nome da categoria personalizada",
       "relatedSystem": "Sistema Relacionado (Opcional)",
       "systemPlaceholder": "Selecione o sistema",
       "description": "Descrição",

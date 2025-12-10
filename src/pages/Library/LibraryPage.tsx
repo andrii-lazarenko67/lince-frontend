@@ -22,6 +22,7 @@ const LibraryPage: React.FC = () => {
     description: '',
     systemId: ''
   });
+  const [customCategory, setCustomCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -48,17 +49,29 @@ const LibraryPage: React.FC = () => {
       return;
     }
 
-    const result = await dispatch(uploadDocument({
+    // Validate custom category if "other" is selected
+    if (uploadData.category === 'other' && !customCategory.trim()) {
+      alert(t('library.customCategoryRequired'));
+      return;
+    }
+
+    // Prepare data for submission
+    const submitData = {
       title: uploadData.title,
-      category: uploadData.category,
+      category: uploadData.category === 'other' && customCategory.trim()
+        ? customCategory.trim()
+        : uploadData.category,
       description: uploadData.description || undefined,
       systemId: uploadData.systemId ? Number(uploadData.systemId) : undefined,
       file: selectedFile
-    }));
+    };
+
+    const result = await dispatch(uploadDocument(submitData));
 
     if (uploadDocument.fulfilled.match(result)) {
       setIsUploadOpen(false);
       setUploadData({ title: '', category: '', description: '', systemId: '' });
+      setCustomCategory('');
       setSelectedFile(null);
     }
   };
@@ -193,6 +206,18 @@ const LibraryPage: React.FC = () => {
             label={t('library.modal.category')}
             placeholder={t('library.modal.categoryPlaceholder')}
           />
+
+          {uploadData.category === 'other' && (
+            <Input
+              type="text"
+              name="customCategory"
+              value={customCategory}
+              onChange={(e) => setCustomCategory(e.target.value)}
+              label={t('library.modal.customCategory')}
+              placeholder={t('library.modal.customCategoryPlaceholder')}
+              required
+            />
+          )}
 
           <Select
             name="systemId"

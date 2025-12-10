@@ -34,6 +34,7 @@
     "uploadButton": "Upload",
     "emptyMessage": "No documents found. Click 'Upload Document' to add one.",
     "validationRequired": "Please fill in all required fields (title and category)",
+    "customCategoryRequired": "Please enter a custom category name",
     "table": {
       "title": "Title",
       "category": "Category",
@@ -54,6 +55,8 @@
       "titlePlaceholder": "Enter document title",
       "category": "Category",
       "categoryPlaceholder": "Select category",
+      "customCategory": "Custom Category",
+      "customCategoryPlaceholder": "Enter custom category name",
       "relatedSystem": "Related System (Optional)",
       "systemPlaceholder": "Select system",
       "description": "Description",
