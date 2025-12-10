@@ -34,6 +34,7 @@ export interface UpdateDocumentRequest {
   description?: string;
   category?: string;
   systemId?: number;
+  fileName?: string;
 }
 
 export interface LibraryState {

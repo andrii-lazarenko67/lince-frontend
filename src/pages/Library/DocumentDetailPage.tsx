@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchDocumentById, deleteDocument, uploadNewVersion } from '../../store/slices/librarySlice';
-import { Card, Badge, Button, Modal, FileUpload } from '../../components/common';
+import { fetchDocumentById, deleteDocument, uploadNewVersion, updateDocument } from '../../store/slices/librarySlice';
+import { Card, Badge, Button, Modal, FileUpload, Input } from '../../components/common';
 
 const DocumentDetailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,7 +14,10 @@ const DocumentDetailPage: React.FC = () => {
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isVersionOpen, setIsVersionOpen] = useState(false);
+  const [isEditNameOpen, setIsEditNameOpen] = useState(false);
   const [newVersionFile, setNewVersionFile] = useState<File | null>(null);
+  const [editedFileName, setEditedFileName] = useState<string>('');
+  const [editedTitle, setEditedTitle] = useState<string>('');
 
   useEffect(() => {
     if (id) {
@@ -40,6 +43,27 @@ const DocumentDetailPage: React.FC = () => {
       if (uploadNewVersion.fulfilled.match(result)) {
         setIsVersionOpen(false);
         setNewVersionFile(null);
+      }
+    }
+  };
+
+  const handleOpenEditName = () => {
+    setEditedTitle(currentDocument?.title || '');
+    setEditedFileName(currentDocument?.fileName || '');
+    setIsEditNameOpen(true);
+  };
+
+  const handleEditName = async () => {
+    if (id && (editedTitle.trim() || editedFileName.trim())) {
+      const result = await dispatch(updateDocument({
+        id: Number(id),
+        data: {
+          title: editedTitle.trim() || undefined,
+          fileName: editedFileName.trim() || undefined
+        }
+      }));
+      if (updateDocument.fulfilled.match(result)) {
+        setIsEditNameOpen(false);
       }
     }
   };
@@ -90,6 +114,9 @@ const DocumentDetailPage: React.FC = () => {
           </div>
         </div>
         <div className="flex space-x-3">
+          <Button variant="outline" onClick={handleOpenEditName}>
+            {t('library.detail.editName')}
+          </Button>
           <Button variant="outline" onClick={() => setIsVersionOpen(true)}>
             {t('library.detail.uploadNewVersion')}
           </Button>
@@ -102,7 +129,7 @@ const DocumentDetailPage: React.FC = () => {
             {t('library.detail.download')}
           </a>
           <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            {t('library.detail.delete')}
+            {t('library.detail.deleteButton')}
           </Button>
         </div>
       </div>
@@ -207,7 +234,36 @@ const DocumentDetailPage: React.FC = () => {
         </div>
       </Modal>
 
-      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('library.detail.deleteDocument')} size="sm">
+      <Modal isOpen={isEditNameOpen} onClose={() => setIsEditNameOpen(false)} title={t('library.detail.editNameTitle')}>
+        <div className="space-y-4">
+          <Input
+            type="text"
+            name="title"
+            value={editedTitle}
+            onChange={(e) => setEditedTitle(e.target.value)}
+            label={t('library.detail.documentTitle')}
+            placeholder={t('library.detail.documentTitlePlaceholder')}
+          />
+          <Input
+            type="text"
+            name="fileName"
+            value={editedFileName}
+            onChange={(e) => setEditedFileName(e.target.value)}
+            label={t('library.detail.fileName')}
+            placeholder={t('library.detail.fileNamePlaceholder')}
+          />
+        </div>
+        <div className="flex justify-end space-x-3 mt-6">
+          <Button variant="outline" onClick={() => setIsEditNameOpen(false)}>
+            {t('common.cancel')}
+          </Button>
+          <Button variant="primary" onClick={handleEditName}>
+            {t('common.save')}
+          </Button>
+        </div>
+      </Modal>
+
+      <Modal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} title={t('library.detail.deleteModal')} size="sm">
         <p className="text-gray-600 mb-6">
           {t('library.detail.deleteConfirm')}
         </p>
