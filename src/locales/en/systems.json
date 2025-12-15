@@ -33,7 +33,14 @@
     "forceDeleteButton": "Delete Anyway",
     "customType": "Custom System Type",
     "customTypePlaceholder": "Enter custom system type",
-    "customTypeRequired": "Custom type is required when 'Other' is selected"
+    "customTypeRequired": "Custom type is required when 'Other' is selected",
+    "pool": "Pool",
+    "coolingTower": "Cooling Tower",
+    "boiler": "Boiler",
+    "wtp": "WTP (Water Treatment Plant)",
+    "wwtp": "WWTP (Wastewater Treatment Plant)",
+    "effluent": "Effluent",
+    "monitoringPoint": "Monitoring Point"
   },
   "monitoringPoints": {
     "addMonitoringPoint": "Add Monitoring Point",

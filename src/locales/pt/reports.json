@@ -38,12 +38,12 @@
       "date": "Data"
     },
     "sections": {
-      "dailyLogs": "Registros Diários",
-      "dailyLogsUpper": "REGISTROS DIÁRIOS",
+      "dailyLogs": "Registros",
+      "dailyLogsUpper": "REGISTROS",
       "inspections": "Inspeções",
       "inspectionsUpper": "INSPEÇÕES",
-      "incidents": "Incidentes",
-      "incidentsUpper": "INCIDENTES",
+      "incidents": "Ocorrências",
+      "incidentsUpper": "OCORRÊNCIAS",
       "products": "Produtos",
       "productsUpper": "PRODUTOS",
       "productUsages": "Uso de Produtos",
@@ -60,9 +60,9 @@
     "reportType": "Tipo de Relatório",
     "reportConfig": "Configuração do Relatório",
     "reportPreview": "Visualização do Relatório",
-    "dailyLogsReport": "Relatório de Registros Diários",
+    "dailyLogsReport": "Relatório de Registros",
     "inspectionsReport": "Relatório de Inspeções",
-    "incidentsReport": "Relatório de Incidentes",
+    "incidentsReport": "Relatório de Ocorrências",
     "productsReport": "Relatório de Produtos",
     "fullReport": "Relatório Completo",
     "selectReportType": "Selecione o tipo de relatório",
@@ -81,9 +81,9 @@
     },
     "statistics": {
       "overview": "Visão Geral",
-      "dailyLogs": "Registros Diários",
+      "dailyLogs": "Registros",
       "inspections": "Inspeções",
-      "incidents": "Incidentes",
+      "incidents": "Ocorrências",
       "products": "Produtos",
       "reportStatistics": "Estatísticas do Relatório",
       "reportPeriod": "Período do Relatório ({{start}} a {{end}})",
@@ -123,7 +123,7 @@
       "noData": "Sem dados"
     },
     "dailyLogs": {
-      "title": "Relatório de Registros Diários",
+      "title": "Relatório de Registros",
       "logCount": "{{count}} registro(s)",
       "type": "Tipo",
       "date": "Data",
@@ -155,8 +155,8 @@
       "noInspections": "Nenhuma inspeção neste relatório"
     },
     "incidents": {
-      "title": "Relatório de Incidentes",
-      "incidentCount": "{{count}} incidente(s)",
+      "title": "Relatório de Ocorrências",
+      "incidentCount": "{{count}} ocorrência(s)",
       "title_column": "Título",
       "system": "Sistema",
       "priority": "Prioridade",
@@ -174,7 +174,7 @@
       "low": "Baixa",
       "notAssigned": "Não Atribuído",
       "notResolved": "Não Resolvido",
-      "noIncidents": "Nenhum incidente neste relatório"
+      "noIncidents": "Nenhuma ocorrência neste relatório"
     },
     "products": {
       "title": "Relatório de Produtos",

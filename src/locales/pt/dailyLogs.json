@@ -1,10 +1,10 @@
 {
   "dailyLogs": {
-    "title": "Registros Diários",
+    "title": "Registros",
     "description": "Monitorar e rastrear medições diárias de tratamento de água",
     "newLog": "Novo Registro",
-    "newDailyLog": "Novo Registro Diário",
-    "editDailyLog": "Editar Registro Diário",
+    "newDailyLog": "Novo Registro",
+    "editDailyLog": "Editar Registro",
     "system": "Sistema",
     "measurements": "Medições",
     "productDosages": "Dosagens de Produtos",
@@ -14,8 +14,8 @@
     "addDosage": "Adicionar Dosagem",
     "product": "Produto",
     "dosage": "Dosagem",
-    "saveDailyLog": "Salvar Registro Diário",
-    "noDailyLogs": "Nenhum registro diário encontrado",
+    "saveDailyLog": "Salvar Registro",
+    "noDailyLogs": "Nenhum registro encontrado",
     "list": {
       "type": "Tipo",
       "date": "Data",
@@ -28,10 +28,10 @@
       "field": "Campo",
       "lab": "Laboratório",
       "alert": "{{count}} Alerta(s)",
-      "emptyMessage": "Nenhum registro diário encontrado"
+      "emptyMessage": "Nenhum registro encontrado"
     },
     "detail": {
-      "title": "Detalhe do Registro Diário",
+      "title": "Detalhe do Registro",
       "monitoringPoint": "Ponto de Monitoramento",
       "parameter": "Parâmetro",
       "value": "Valor",
@@ -77,8 +77,8 @@
       "laboratoryRecords": "Registros de Laboratório"
     },
     "export": {
-      "title": "Relatório de Registros Diários",
-      "subtitle": "Registros de Monitoramento Diário de Tratamento de Água",
+      "title": "Relatório de Registros",
+      "subtitle": "Registros de Monitoramento de Tratamento de Água",
       "type": "Tipo",
       "date": "Data",
       "system": "Sistema",
@@ -90,11 +90,11 @@
       "notes": "Observações",
       "totalRecords": "Total de Registros",
       "generated": "Gerado Em",
-      "dailyLogs": "Registros Diários",
-      "dailyLogsUpper": "REGISTROS DIÁRIOS"
+      "dailyLogs": "Registros",
+      "dailyLogsUpper": "REGISTROS"
     },
     "new": {
-      "title": "Novo Registro Diário",
+      "title": "Novo Registro",
       "description": "Registrar medições de {{type}}",
       "fieldAnalyses": "campo",
       "laboratoryAnalyses": "laboratório",
