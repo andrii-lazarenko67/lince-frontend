@@ -111,7 +111,7 @@ const SystemsList: React.FC = () => {
       key: 'type',
       header: t('common.type'),
       render: (system: System) => (
-        <span className="capitalize">{system.type}</span>
+        <span>{system.systemType?.name || '-'}</span>
       )
     },
     {

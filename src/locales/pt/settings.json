@@ -5,7 +5,8 @@
     "description": "Configurar parâmetros do sistema e unidades de medida",
     "tabs": {
       "parameters": "Parâmetros",
-      "units": "Unidades"
+      "units": "Unidades",
+      "systemTypes": "Tipos de Sistema"
     },
     "addParameter": "Adicionar Parâmetro",
     "addUnit": "Adicionar Unidade",
@@ -78,6 +79,23 @@
       "categoryPlaceholder": "ex: temperatura, concentração, vazão",
       "deleteConfirm": "Tem certeza que deseja excluir {{name}} ({{abbreviation}})?",
       "validationRequired": "Nome da unidade e abreviação são obrigatórios"
+    },
+    "systemTypes": {
+      "title": "Tipos de Sistema",
+      "subtitle": "Gerenciar tipos de sistema para classificação",
+      "addSystemType": "Adicionar Tipo de Sistema",
+      "editSystemType": "Editar Tipo de Sistema",
+      "deleteSystemType": "Excluir Tipo de Sistema",
+      "name": "Nome",
+      "description": "Descrição",
+      "actions": "Ações",
+      "emptyMessage": "Nenhum tipo de sistema encontrado. Adicione seu primeiro tipo de sistema para começar.",
+      "systemTypeName": "Nome do Tipo de Sistema",
+      "namePlaceholder": "ex: Piscina, Torre de Resfriamento, Caldeira",
+      "descriptionOptional": "Descrição (Opcional)",
+      "descriptionPlaceholder": "Descreva este tipo de sistema",
+      "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
+      "nameRequired": "Nome do tipo de sistema é obrigatório"
     }
   }
 }

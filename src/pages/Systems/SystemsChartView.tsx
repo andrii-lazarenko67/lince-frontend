@@ -35,7 +35,7 @@ const SystemsChartView: React.FC<SystemsChartViewProps> = ({ systems }) => {
   // Systems by type
   const typeMap = new Map<string, number>();
   systems.forEach(s => {
-    const type = s.type || t('products.other');
+    const type = s.systemType?.name || t('products.other');
     typeMap.set(type, (typeMap.get(type) || 0) + 1);
   });
   const typeColors = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#6366f1'];

@@ -1,4 +1,5 @@
 import type { MonitoringPoint } from './monitoringPoint.types';
+import type { SystemType } from './systemType.types';
 
 export type SystemStatus = 'active' | 'inactive' | 'maintenance';
 
@@ -17,7 +18,8 @@ export interface ChecklistItem {
 export interface System {
   id: number;
   name: string;
-  type: string;
+  systemTypeId: number;
+  systemType?: SystemType;
   location: string | null;
   description: string | null;
   status: SystemStatus;
@@ -25,12 +27,14 @@ export interface System {
   parent?: {
     id: number;
     name: string;
-    type: string;
+    systemTypeId: number;
+    systemType?: SystemType;
   };
   children?: Array<{
     id: number;
     name: string;
-    type: string;
+    systemTypeId: number;
+    systemType?: SystemType;
     status: SystemStatus;
     location?: string | null;
   }>;
@@ -42,7 +46,7 @@ export interface System {
 
 export interface CreateSystemRequest {
   name: string;
-  type: string;
+  systemTypeId: number;
   location?: string;
   description?: string;
   status?: SystemStatus;
@@ -51,7 +55,7 @@ export interface CreateSystemRequest {
 
 export interface UpdateSystemRequest {
   name?: string;
-  type?: string;
+  systemTypeId?: number;
   location?: string;
   description?: string;
   status?: SystemStatus;

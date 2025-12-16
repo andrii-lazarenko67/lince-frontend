@@ -5,7 +5,8 @@
     "description": "Configure system parameters and measurement units",
     "tabs": {
       "parameters": "Parameters",
-      "units": "Units"
+      "units": "Units",
+      "systemTypes": "System Types"
     },
     "addParameter": "Add Parameter",
     "addUnit": "Add Unit",
@@ -78,6 +79,23 @@
       "categoryPlaceholder": "e.g., temperature, concentration, flow_rate",
       "deleteConfirm": "Are you sure you want to delete {{name}} ({{abbreviation}})?",
       "validationRequired": "Unit name and abbreviation are required"
+    },
+    "systemTypes": {
+      "title": "System Types",
+      "subtitle": "Manage system types for classification",
+      "addSystemType": "Add System Type",
+      "editSystemType": "Edit System Type",
+      "deleteSystemType": "Delete System Type",
+      "name": "Name",
+      "description": "Description",
+      "actions": "Actions",
+      "emptyMessage": "No system types found. Add your first system type to get started.",
+      "systemTypeName": "System Type Name",
+      "namePlaceholder": "e.g., Pool, Cooling Tower, Boiler",
+      "descriptionOptional": "Description (Optional)",
+      "descriptionPlaceholder": "Describe this system type",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "nameRequired": "System type name is required"
     }
   }
 }

@@ -19,6 +19,7 @@ import unitSlice from './slices/unitSlice';
 import productDosageSlice from './slices/productDosageSlice';
 import systemPhotoSlice from './slices/systemPhotoSlice';
 import checklistItemSlice from './slices/checklistItemSlice';
+import systemTypeSlice from './slices/systemTypeSlice';
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     ui: uiSlice,
     users: userSlice,
     systems: systemSlice,
+    systemTypes: systemTypeSlice,
     monitoringPoints: monitoringPointSlice,
     dailyLogs: dailyLogSlice,
     inspections: inspectionSlice,

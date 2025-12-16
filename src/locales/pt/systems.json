@@ -10,7 +10,7 @@
     "monitoringPoints": "Análises de Monitoramento",
     "checklistItems": "Itens de Verificação",
     "photoGallery": "Galeria de Fotos",
-    "addPoint": "Adicionar Análise",
+    "addPoint": "Adicionar Etapa",
     "addItem": "Adicionar Item",
     "uploadPhoto": "Enviar Foto",
     "systemType": "Tipo de Sistema",
@@ -43,7 +43,7 @@
     "monitoringPoint": "Etapa"
   },
   "monitoringPoints": {
-    "addMonitoringPoint": "Adicionar Análise de Monitoramento",
+    "addMonitoringPoint": "Adicionar Etapa de Monitoramento",
     "editMonitoringPoint": "Editar Análise de Monitoramento",
     "deleteMonitoringPoint": "Excluir Análise de Monitoramento",
     "parameter": "Parâmetro",

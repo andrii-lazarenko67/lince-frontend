@@ -11,7 +11,7 @@ const initialState: SystemState = {
 
 export const fetchSystems = createAsyncThunk(
   'systems/fetchAll',
-  async (params: { status?: string; type?: string; search?: string; parentId?: string | number | null } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { status?: string; systemTypeId?: string; search?: string; parentId?: string | number | null } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: System[] }>('/systems', { params });
@@ -132,7 +132,8 @@ const systemSlice = createSlice({
             parent.children.push({
               id: newSystem.id,
               name: newSystem.name,
-              type: newSystem.type,
+              systemTypeId: newSystem.systemTypeId,
+              systemType: newSystem.systemType,
               status: newSystem.status
             });
           }
@@ -168,7 +169,8 @@ const systemSlice = createSlice({
                 state.systems[newParentIndex].children!.push({
                   id: updatedSystem.id,
                   name: updatedSystem.name,
-                  type: updatedSystem.type,
+                  systemTypeId: updatedSystem.systemTypeId,
+                  systemType: updatedSystem.systemType,
                   status: updatedSystem.status
                 });
               }
@@ -182,7 +184,8 @@ const systemSlice = createSlice({
                 state.systems[parentIndex].children![childIndex] = {
                   id: updatedSystem.id,
                   name: updatedSystem.name,
-                  type: updatedSystem.type,
+                  systemTypeId: updatedSystem.systemTypeId,
+                  systemType: updatedSystem.systemType,
                   status: updatedSystem.status
                 };
               }

@@ -250,7 +250,7 @@ const SystemDetailPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{currentSystem.name}</h1>
-            <p className="text-gray-500 mt-1 capitalize">{currentSystem.type}</p>
+            <p className="text-gray-500 mt-1">{currentSystem.systemType?.name || '-'}</p>
           </div>
         </div>
         <div className="flex space-x-3">
@@ -282,7 +282,7 @@ const SystemDetailPage: React.FC = () => {
                     onClick={() => goToSystemDetail(currentSystem.parent!.id)}
                     className="text-blue-600 hover:text-blue-800 underline"
                   >
-                    {currentSystem.parent.name} ({currentSystem.parent.type})
+                    {currentSystem.parent.name} ({currentSystem.parent.systemType?.name || '-'})
                   </button>
                 </dd>
               </div>
@@ -298,7 +298,7 @@ const SystemDetailPage: React.FC = () => {
                           onClick={() => goToSystemDetail(child.id)}
                           className="text-blue-600 hover:text-blue-800 underline text-sm"
                         >
-                          {child.name} ({child.type})
+                          {child.name} ({child.systemType?.name || '-'})
                         </button>
                       </li>
                     ))}
