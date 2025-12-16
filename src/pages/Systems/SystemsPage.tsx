@@ -33,7 +33,7 @@ const SystemsPage: React.FC = () => {
     const rows = systems.map(sys => [
       sys.name,
       sys.location || '-',
-      sys.type || '-',
+      sys.systemType?.name || '-',
       getStatusLabel(sys.status),
       new Date(sys.createdAt).toLocaleDateString()
     ]);

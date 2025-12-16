@@ -101,7 +101,7 @@ const SystemsList: React.FC = () => {
           <span className="font-medium text-gray-900">{item.name}</span>
           {item.hasChildren && (
             <span className="ml-2 text-xs text-gray-500">
-              ({item.children?.length} {item.children?.length === 1 ? t('inspections.stage') : t('inspections.stage')})
+              ({item.children?.length})
             </span>
           )}
         </div>
