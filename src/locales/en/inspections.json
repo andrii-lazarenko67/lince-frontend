@@ -39,8 +39,8 @@
       "endDate": "End Date",
       "apply": "Apply Filters",
       "clear": "Clear Filters",
-      "pending": "Pending",
-      "completed": "Completed",
+      "pending": "Pending / Viewed",
+      "completed": "Detection Completed",
       "viewed": "Viewed"
     },
     "export": {
