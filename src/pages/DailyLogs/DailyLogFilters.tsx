@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector } from '../../hooks';
+import { useAppSelector, useAppDispatch } from '../../hooks';
+import { fetchSystems } from '../../store/slices/systemSlice';
 import { Select, DateInput, Button } from '../../components/common';
+import type { System } from '../../types';
 
 interface DailyLogFiltersProps {
   filters: {
@@ -23,24 +25,35 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
   onClear
 }) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
+  const [stages, setStages] = useState<System[]>([]);
 
-  // Get main systems (no parent)
-  const mainSystems = systems.filter(s => !s.parentId);
-  const systemOptions = mainSystems.map(system => ({
+  const systemOptions = systems.map(system => ({
     value: system.id,
     label: system.name
   }));
 
-  // Get stages (child systems) for selected system
-  const stageOptions = filters.systemId
-    ? systems
-        .filter(s => s.parentId === Number(filters.systemId))
-        .map(stage => ({
-          value: stage.id,
-          label: stage.name
-        }))
-    : [];
+  // Fetch stages (children) when system is selected
+  useEffect(() => {
+    if (filters.systemId) {
+      dispatch(fetchSystems({ parentId: Number(filters.systemId) }))
+        .unwrap()
+        .then((fetchedSystems) => {
+          setStages(fetchedSystems);
+        })
+        .catch(() => {
+          setStages([]);
+        });
+    } else {
+      setStages([]);
+    }
+  }, [filters.systemId, dispatch]);
+
+  const stageOptions = stages.map(stage => ({
+    value: stage.id,
+    label: stage.name
+  }));
 
   const recordTypeOptions = [
     { value: 'field', label: t('dailyLogs.filters.fieldRecords') },

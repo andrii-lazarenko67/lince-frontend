@@ -24,7 +24,7 @@ const InspectionsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems({}));
+    dispatch(fetchSystems({ parentId: 'null' }));
     dispatch(fetchInspections({}));
   }, [dispatch]);
 
@@ -101,7 +101,7 @@ const InspectionsPage: React.FC = () => {
     );
   };
 
-  const systemOptions = systems.filter(s => !s.parentId).map(s => ({ value: s.id, label: s.name }));
+  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
   const statusOptions = [
     { value: 'pending', label: t('inspections.filters.pending') },
     { value: 'completed', label: t('inspections.filters.completed') },

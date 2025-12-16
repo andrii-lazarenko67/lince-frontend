@@ -25,7 +25,7 @@ const IncidentsPage: React.FC = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchSystems({}));
+    dispatch(fetchSystems({ parentId: 'null' }));
     dispatch(fetchIncidents({}));
   }, [dispatch]);
 
