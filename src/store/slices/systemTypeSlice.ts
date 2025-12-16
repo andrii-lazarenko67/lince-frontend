@@ -14,8 +14,8 @@ export const fetchSystemTypes = createAsyncThunk<SystemType[]>(
   'systemTypes/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get('/system-types');
-      return response.data;
+      const response = await axiosInstance.get<{ success: boolean; data: SystemType[] }>('/system-types');
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch system types');
     }
@@ -26,8 +26,8 @@ export const createSystemType = createAsyncThunk<SystemType, CreateSystemTypeReq
   'systemTypes/create',
   async (systemTypeData, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.post('/system-types', systemTypeData);
-      return response.data;
+      const response = await axiosInstance.post<{ success: boolean; data: SystemType }>('/system-types', systemTypeData);
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to create system type');
     }
@@ -38,8 +38,8 @@ export const updateSystemType = createAsyncThunk<SystemType, { id: number; data:
   'systemTypes/update',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`/system-types/${id}`, data);
-      return response.data;
+      const response = await axiosInstance.put<{ success: boolean; data: SystemType }>(`/system-types/${id}`, data);
+      return response.data.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to update system type');
     }
