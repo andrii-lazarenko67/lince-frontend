@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector, useAppDispatch } from '../../hooks';
-import { fetchSystems } from '../../store/slices/systemSlice';
+import { useAppSelector } from '../../hooks';
 import { Select, DateInput, Button } from '../../components/common';
-import type { System } from '../../types';
 
 interface DailyLogFiltersProps {
   filters: {
@@ -25,35 +23,19 @@ const DailyLogFilters: React.FC<DailyLogFiltersProps> = ({
   onClear
 }) => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
-  const [stages, setStages] = useState<System[]>([]);
 
   const systemOptions = systems.map(system => ({
     value: system.id,
     label: system.name
   }));
 
-  // Fetch stages (children) when system is selected
-  useEffect(() => {
-    if (filters.systemId) {
-      dispatch(fetchSystems({ parentId: Number(filters.systemId) }))
-        .unwrap()
-        .then((fetchedSystems) => {
-          setStages(fetchedSystems);
-        })
-        .catch(() => {
-          setStages([]);
-        });
-    } else {
-      setStages([]);
-    }
-  }, [filters.systemId, dispatch]);
-
-  const stageOptions = stages.map(stage => ({
+  // Get stages (children) from the selected system's children array in Redux
+  const selectedSystem = systems.find(s => s.id === Number(filters.systemId));
+  const stageOptions = selectedSystem?.children?.map(stage => ({
     value: stage.id,
     label: stage.name
-  }));
+  })) || [];
 
   const recordTypeOptions = [
     { value: 'field', label: t('dailyLogs.filters.fieldRecords') },
