@@ -10,7 +10,7 @@
     "monitoringPoints": "Análises de Monitoramento",
     "checklistItems": "Itens de Verificação",
     "photoGallery": "Galeria de Fotos",
-    "addPoint": "Adicionar Etapa",
+    "addPoint": "Adicionar Ponto",
     "addStep": "Adicionar Etapa",
     "stepName": "Nome da Etapa",
     "stepNamePlaceholder": "Digite o nome da etapa",
@@ -46,9 +46,9 @@
     "monitoringPoint": "Etapa"
   },
   "monitoringPoints": {
-    "addMonitoringPoint": "Adicionar Etapa de Monitoramento",
-    "editMonitoringPoint": "Editar Análise de Monitoramento",
-    "deleteMonitoringPoint": "Excluir Análise de Monitoramento",
+    "addMonitoringPoint": "Adicionar Ponto de Monitoramento",
+    "editMonitoringPoint": "Editar Ponto de Monitoramento",
+    "deleteMonitoringPoint": "Excluir Ponto de Monitoramento",
     "parameter": "Parâmetro",
     "unit": "Unidade",
     "minValue": "Valor Mínimo",
@@ -58,8 +58,8 @@
     "alerts": "Alertas",
     "enabled": "Habilitado",
     "disabled": "Desabilitado",
-    "noMonitoringPoints": "Nenhuma análise de monitoramento configurada para este sistema",
-    "deleteConfirm": "Tem certeza que deseja excluir esta análise de monitoramento? Esta ação não pode ser desfeita."
+    "noMonitoringPoints": "Nenhuma ponto de monitoramento configurada para este sistema",
+    "deleteConfirm": "Tem certeza que deseja excluir esta ponto de monitoramento? Esta ação não pode ser desfeita."
   },
   "checklistItems": {
     "addChecklistItem": "Adicionar Item de Verificação",

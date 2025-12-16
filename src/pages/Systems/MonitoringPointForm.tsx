@@ -245,11 +245,6 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
               {t('monitoringPoints.alertEnabled')}
             </span>
           </label>
-          {!hasRange && (
-            <p className="text-sm text-gray-400 mt-1 ml-6">
-              {t('monitoringPoints.alerts')}
-            </p>
-          )}
         </div>
 
         <div className="flex justify-end space-x-3 mt-6">
