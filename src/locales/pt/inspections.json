@@ -39,8 +39,8 @@
       "allStatuses": "Todos os Status",
       "startDate": "Data Inicial",
       "endDate": "Data Final",
-      "apply": "Aplicar Filtros",
-      "clear": "Limpar Filtros",
+      "apply": "Aplicar",
+      "clear": "Limpar",
       "pending": "Pendente",
       "completed": "Concluído",
       "viewed": "Visualizada"
