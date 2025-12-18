@@ -62,6 +62,12 @@
       "field": "Registro de Campo",
       "laboratory": "Registro de Laboratório"
     },
+    "period": {
+      "morning": "Manhã",
+      "afternoon": "Tarde",
+      "evening": "Noite",
+      "night": "Madrugada"
+    },
     "filters": {
       "recordType": "Tipo de Registro",
       "system": "Sistema",

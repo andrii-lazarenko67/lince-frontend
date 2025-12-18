@@ -43,7 +43,7 @@ const DailyLogsList: React.FC = () => {
     {
       key: 'period',
       header: t('dailyLogs.list.period'),
-      render: (log: DailyLog) => log.period || '-'
+      render: (log: DailyLog) => log.period ? t(`dailyLogs.period.${log.period}`, { defaultValue: log.period }) : '-'
     },
     {
       key: 'laboratory',

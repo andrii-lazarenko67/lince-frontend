@@ -62,6 +62,12 @@
       "field": "Field Record",
       "laboratory": "Laboratory Record"
     },
+    "period": {
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "night": "Night"
+    },
     "filters": {
       "recordType": "Record Type",
       "system": "System",
