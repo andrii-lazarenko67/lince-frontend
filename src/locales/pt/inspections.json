@@ -1,7 +1,7 @@
 {
   "inspections": {
     "title": "Inspeções",
-    "description": "Gerenciar inspeções e listas de verificação da instalação",
+    "description": "Gerenciar inspeções e listas de verificações",
     "newInspection": "Nova Inspeção",
     "editInspection": "Editar Inspeção",
     "markAsViewedInspection": "Marcar como Visualizada",
