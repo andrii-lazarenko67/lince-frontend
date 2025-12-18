@@ -33,6 +33,7 @@
   "location": "Localização",
   "close": "Fechar",
   "createdAt": "Criado Em",
+  "selectAnOption": "Selecione uma opção",
   "viewMode": {
     "table": "Tabela",
     "charts": "Gráficos"

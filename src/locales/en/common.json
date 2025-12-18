@@ -33,6 +33,7 @@
   "type": "Type",
   "location": "Location",
   "close": "Close",
+  "selectAnOption": "Select an option",
   "viewMode": {
     "table": "Table",
     "charts": "Charts"
