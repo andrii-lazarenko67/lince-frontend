@@ -7,6 +7,7 @@ interface ReportConfigurationProps {
   formData: {
     type: string;
     systemIds: number[];
+    stageIds: number[];
     startDate: string;
     endDate: string;
   };
@@ -15,6 +16,7 @@ interface ReportConfigurationProps {
   hasReport: boolean;
   onTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   onSystemToggle: (systemId: number) => void;
+  onStageToggle: (stageId: number) => void;
   onDateChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onGenerate: () => void;
   onExportPDF: () => void;
@@ -29,6 +31,7 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
   hasReport,
   onTypeChange,
   onSystemToggle,
+  onStageToggle,
   onDateChange,
   onGenerate,
   onExportPDF,
@@ -36,6 +39,11 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
   onExportCSV
 }) => {
   const { t } = useTranslation();
+
+  // Get all stages from selected systems
+  const availableStages = systems
+    .filter(system => formData.systemIds.includes(system.id))
+    .flatMap(system => system.children || []);
 
   const typeOptions = [
     { value: 'daily', label: t('reports.config.daily') },
@@ -107,6 +115,31 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
                 : t('reports.config.systemsSelected', { count: formData.systemIds.length })}
             </p>
           </div>
+
+          {/* Stages Filter - only show when systems are selected and have stages */}
+          {availableStages.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t('reports.config.selectStages')}</label>
+              <div className="border border-gray-300 rounded-lg p-3 max-h-40 overflow-y-auto space-y-2">
+                {availableStages.map(stage => (
+                  <label key={stage.id} className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                    <input
+                      type="checkbox"
+                      checked={formData.stageIds.includes(stage.id)}
+                      onChange={() => onStageToggle(stage.id)}
+                      className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    />
+                    <span className="text-sm text-gray-700">{stage.name}</span>
+                  </label>
+                ))}
+              </div>
+              <p className="text-xs text-gray-500 mt-1">
+                {formData.stageIds.length === 0
+                  ? t('reports.config.noStagesSelected')
+                  : t('reports.config.stagesSelected', { count: formData.stageIds.length })}
+              </p>
+            </div>
+          )}
         </div>
       </div>
 

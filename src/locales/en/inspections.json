@@ -33,6 +33,8 @@
     "filters": {
       "system": "System",
       "allSystems": "All Systems",
+      "stage": "Stage",
+      "allStages": "All Stages",
       "status": "Status",
       "allStatuses": "All Statuses",
       "startDate": "Start Date",
@@ -55,7 +57,7 @@
     "status": {
       "pending": "Pending",
       "viewed": "Viewed",
-      "rejected": "Rejected"
+      "completed": "completed"
     },
     "new": {
       "title": "New Inspection",

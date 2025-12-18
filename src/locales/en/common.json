@@ -29,6 +29,7 @@
   "time": "Time",
   "name": "Name",
   "description": "Description",
+  "createdAt": "Created At",
   "type": "Type",
   "location": "Location",
   "close": "Close",

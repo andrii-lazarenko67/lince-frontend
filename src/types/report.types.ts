@@ -8,6 +8,7 @@ export type ReportType = 'daily' | 'weekly' | 'monthly' | 'custom';
 export interface GenerateReportRequest {
   type: ReportType;
   systemIds?: number[];
+  stageIds?: number[];
   startDate?: string;
   endDate?: string;
 }

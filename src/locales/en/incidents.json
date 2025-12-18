@@ -35,6 +35,8 @@
       "priorityLow": "Low",
       "filterSystem": "System",
       "filterSystemPlaceholder": "All Systems",
+      "filterStage": "Stage",
+      "filterStagePlaceholder": "All Stages",
       "filterStatus": "Status",
       "filterStatusPlaceholder": "All Statuses",
       "filterPriority": "Priority",

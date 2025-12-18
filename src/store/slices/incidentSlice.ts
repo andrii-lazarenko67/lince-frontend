@@ -12,7 +12,7 @@ const initialState: IncidentState = {
 
 export const fetchIncidents = createAsyncThunk(
   'incidents/fetchAll',
-  async (params: { systemId?: number; status?: string; priority?: string; startDate?: string; endDate?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { systemId?: number; stageId?: number; status?: string; priority?: string; startDate?: string; endDate?: string } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: Incident[] }>('/incidents', { params });

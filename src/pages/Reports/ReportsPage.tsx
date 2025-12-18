@@ -27,6 +27,7 @@ const ReportsPage: React.FC = () => {
   const [formData, setFormData] = useState({
     type: 'daily',
     systemIds: [] as number[],
+    stageIds: [] as number[],
     startDate: '',
     endDate: ''
   });
@@ -43,11 +44,32 @@ const ReportsPage: React.FC = () => {
   };
 
   const handleSystemToggle = (systemId: number) => {
+    setFormData(prev => {
+      const newSystemIds = prev.systemIds.includes(systemId)
+        ? prev.systemIds.filter(id => id !== systemId)
+        : [...prev.systemIds, systemId];
+
+      // When a system is deselected, also remove its stages from stageIds
+      const selectedSystem = systems.find(s => s.id === systemId);
+      const stageIdsToRemove = selectedSystem?.children?.map(c => c.id) || [];
+      const newStageIds = prev.systemIds.includes(systemId)
+        ? prev.stageIds.filter(id => !stageIdsToRemove.includes(id))
+        : prev.stageIds;
+
+      return {
+        ...prev,
+        systemIds: newSystemIds,
+        stageIds: newStageIds
+      };
+    });
+  };
+
+  const handleStageToggle = (stageId: number) => {
     setFormData(prev => ({
       ...prev,
-      systemIds: prev.systemIds.includes(systemId)
-        ? prev.systemIds.filter(id => id !== systemId)
-        : [...prev.systemIds, systemId]
+      stageIds: prev.stageIds.includes(stageId)
+        ? prev.stageIds.filter(id => id !== stageId)
+        : [...prev.stageIds, stageId]
     }));
   };
 
@@ -62,6 +84,7 @@ const ReportsPage: React.FC = () => {
     dispatch(generateReport({
       type: formData.type as ReportType,
       systemIds: formData.systemIds.length > 0 ? formData.systemIds : undefined,
+      stageIds: formData.stageIds.length > 0 ? formData.stageIds : undefined,
       startDate: formData.startDate || undefined,
       endDate: formData.endDate || undefined
     }));
@@ -245,6 +268,7 @@ const ReportsPage: React.FC = () => {
         hasReport={!!currentReport}
         onTypeChange={handleTypeChange}
         onSystemToggle={handleSystemToggle}
+        onStageToggle={handleStageToggle}
         onDateChange={handleDateChange}
         onGenerate={handleGenerate}
         onExportPDF={handleExportPDF}

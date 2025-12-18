@@ -18,6 +18,7 @@ const IncidentsPage: React.FC = () => {
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
     systemId: '',
+    stageId: '',
     status: '',
     priority: '',
     startDate: '',
@@ -32,6 +33,7 @@ const IncidentsPage: React.FC = () => {
   const handleApplyFilters = () => {
     dispatch(fetchIncidents({
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
+      stageId: filters.stageId ? Number(filters.stageId) : undefined,
       status: filters.status || undefined,
       priority: filters.priority || undefined,
       startDate: filters.startDate || undefined,
@@ -40,7 +42,7 @@ const IncidentsPage: React.FC = () => {
   };
 
   const handleClearFilters = () => {
-    setFilters({ systemId: '', status: '', priority: '', startDate: '', endDate: '' });
+    setFilters({ systemId: '', stageId: '', status: '', priority: '', startDate: '', endDate: '' });
     dispatch(fetchIncidents({}));
   };
 
@@ -176,6 +178,14 @@ const IncidentsPage: React.FC = () => {
   ];
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+
+  // Get stages (children) from the selected system's children array in Redux
+  const selectedSystem = systems.find(s => s.id === Number(filters.systemId));
+  const stageOptions = selectedSystem?.children?.map(stage => ({
+    value: stage.id,
+    label: stage.name
+  })) || [];
+
   const statusOptions = [
     { value: 'open', label: t('incidents.page.statusOpen') },
     { value: 'in_progress', label: t('incidents.page.statusInProgress') },
@@ -215,17 +225,30 @@ const IncidentsPage: React.FC = () => {
       {viewMode === 'table' ? (
         <>
           <div className="bg-white rounded-lg shadow p-4">
-            <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
               <div>
                 <Select
                   name="systemId"
                   value={filters.systemId}
-                  onChange={(e) => setFilters({ ...filters, systemId: e.target.value })}
+                  onChange={(e) => setFilters({ ...filters, systemId: e.target.value, stageId: '' })}
                   options={systemOptions}
                   label={t('incidents.page.filterSystem')}
                   placeholder={t('incidents.page.filterSystemPlaceholder')}
                 />
               </div>
+
+              {stageOptions.length > 0 && (
+                <div>
+                  <Select
+                    name="stageId"
+                    value={filters.stageId}
+                    onChange={(e) => setFilters({ ...filters, stageId: e.target.value })}
+                    options={stageOptions}
+                    label={t('incidents.page.filterStage')}
+                    placeholder={t('incidents.page.filterStagePlaceholder')}
+                  />
+                </div>
+              )}
 
               <div>
                 <Select
@@ -267,11 +290,11 @@ const IncidentsPage: React.FC = () => {
                 />
               </div>
 
-              <div className="flex space-x-4 items-start justify-end">
-                <Button variant="primary" onClick={handleApplyFilters}>
+              <div className="flex space-x-2 items-end">
+                <Button variant="primary" onClick={handleApplyFilters} className="flex-1">
                   {t('incidents.page.applyButton')}
                 </Button>
-                <Button variant="outline" onClick={handleClearFilters}>
+                <Button variant="outline" onClick={handleClearFilters} className="flex-1">
                   {t('incidents.page.clearButton')}
                 </Button>
               </div>

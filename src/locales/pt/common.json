@@ -32,6 +32,7 @@
   "type": "Tipo",
   "location": "Localização",
   "close": "Fechar",
+  "createdAt": "Criado Em",
   "viewMode": {
     "table": "Tabela",
     "charts": "Gráficos"
