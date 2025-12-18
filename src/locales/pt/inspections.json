@@ -41,8 +41,8 @@
       "endDate": "Data Final",
       "apply": "Aplicar Filtros",
       "clear": "Limpar Filtros",
-      "pending": "Pendente / Visualizado",
-      "completed": "Detecção Concluída",
+      "pending": "Pendente",
+      "completed": "Concluído",
       "viewed": "Visualizada"
     },
     "export": {

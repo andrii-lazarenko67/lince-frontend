@@ -41,8 +41,8 @@
       "endDate": "End Date",
       "apply": "Apply Filters",
       "clear": "Clear Filters",
-      "pending": "Pending / Viewed",
-      "completed": "Detection Completed",
+      "pending": "Pending",
+      "completed": "Completed",
       "viewed": "Viewed"
     },
     "export": {
@@ -57,7 +57,7 @@
     "status": {
       "pending": "Pending",
       "viewed": "Viewed",
-      "completed": "completed"
+      "completed": "Completed"
     },
     "new": {
       "title": "New Inspection",
