@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import type { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: DailyLogState = {
   dailyLogs: [],
@@ -25,8 +26,7 @@ export const fetchDailyLogs = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: DailyLog[] }>('/daily-logs', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch daily logs');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch daily logs'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -55,8 +55,7 @@ export const fetchDailyLogsBySystem = createAsyncThunk(
       });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch daily logs');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch daily logs'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -71,8 +70,7 @@ export const fetchDailyLogById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: DailyLog }>(`/daily-logs/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch daily log');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch daily log'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -93,8 +91,7 @@ export const createDailyLog = createAsyncThunk(
 
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create daily log');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create daily log'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -109,8 +106,7 @@ export const updateDailyLog = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: DailyLog }>(`/daily-logs/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update daily log');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update daily log'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -125,8 +121,7 @@ export const deleteDailyLog = createAsyncThunk(
       await axiosInstance.delete(`/daily-logs/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete daily log');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete daily log'));
     } finally {
       dispatch(setLoading(false));
     }

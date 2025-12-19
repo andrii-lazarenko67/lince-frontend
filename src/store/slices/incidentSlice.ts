@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: IncidentState = {
   incidents: [],
@@ -18,8 +19,7 @@ export const fetchIncidents = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Incident[] }>('/incidents', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch incidents');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch incidents'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -34,8 +34,7 @@ export const fetchIncidentById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Incident }>(`/incidents/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch incident');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch incident'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -75,8 +74,7 @@ export const createIncident = createAsyncThunk(
 
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create incident');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create incident'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -91,8 +89,7 @@ export const updateIncident = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Incident }>(`/incidents/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update incident');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update incident'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -107,8 +104,7 @@ export const updateIncidentStatus = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Incident }>(`/incidents/${id}/status`, { status, resolution });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update incident status');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update incident status'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -127,8 +123,7 @@ export const assignIncident = createAsyncThunk(
 
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to assign incident');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to assign incident'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -143,8 +138,7 @@ export const addIncidentComment = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: IncidentComment }>(`/incidents/${id}/comments`, { content });
       return { incidentId: id, comment: response.data.data };
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to add comment');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to add comment'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -159,8 +153,7 @@ export const deleteIncident = createAsyncThunk(
       await axiosInstance.delete(`/incidents/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete incident');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete incident'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -184,8 +177,7 @@ export const addIncidentPhotos = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to add photos');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to add photos'));
     } finally {
       dispatch(setLoading(false));
     }

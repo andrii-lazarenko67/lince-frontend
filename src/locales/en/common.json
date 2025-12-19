@@ -1,4 +1,11 @@
 {
+  "errors": {
+    "validationError": "Validation error",
+    "duplicateEntry": "Duplicate entry",
+    "invalidToken": "Invalid token",
+    "tokenExpired": "Token expired",
+    "internalServerError": "Internal server error"
+  },
   "email": "Email",
   "password": "Password",
   "signIn": "Sign In",
@@ -56,5 +63,53 @@
     "pass": "Pass",
     "fail": "Fail",
     "na": "N/A"
+  },
+  "parameters": {
+    "errors": {
+      "fetchError": "Error fetching parameters",
+      "notFound": "Parameter not found",
+      "nameRequired": "Parameter name is required",
+      "nameExists": "Parameter with this name already exists",
+      "createError": "Error creating parameter",
+      "cannotModifyDefault": "Cannot modify system default parameters",
+      "updateError": "Error updating parameter",
+      "cannotDeleteDefault": "Cannot delete system default parameters",
+      "inUse": "Cannot delete parameter. It is currently used by {{count}} monitoring point(s)",
+      "deleteError": "Error deleting parameter"
+    },
+    "success": {
+      "deleted": "Parameter deleted successfully"
+    }
+  },
+  "units": {
+    "errors": {
+      "fetchError": "Error fetching units",
+      "notFound": "Unit not found",
+      "nameAndAbbrevRequired": "Unit name and abbreviation are required",
+      "abbreviationExists": "Unit with this abbreviation already exists",
+      "createError": "Error creating unit",
+      "cannotModifyDefault": "Cannot modify system default units",
+      "updateError": "Error updating unit",
+      "cannotDeleteDefault": "Cannot delete system default units",
+      "inUse": "Cannot delete unit. It is currently used by {{count}} monitoring point(s)",
+      "deleteError": "Error deleting unit"
+    },
+    "success": {
+      "deleted": "Unit deleted successfully"
+    }
+  },
+  "productDosages": {
+    "errors": {
+      "fetchError": "Error fetching product dosages",
+      "notFound": "Product dosage not found",
+      "requiredFields": "Product ID, value, unit ID, and dosage mode are required",
+      "invalidDosageMode": "Dosage mode must be either 'manual' or 'automatic'",
+      "createError": "Error creating product dosage",
+      "updateError": "Error updating product dosage",
+      "deleteError": "Error deleting product dosage"
+    },
+    "success": {
+      "deleted": "Product dosage deleted successfully"
+    }
   }
 }

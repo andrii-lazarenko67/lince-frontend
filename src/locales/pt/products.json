@@ -176,6 +176,13 @@
         "minStock": "Estoque Mín",
         "status": "Status"
       }
+    },
+    "errors": {
+      "notFound": "Produto não encontrado",
+      "negativeStock": "Não é possível reduzir estoque abaixo de zero"
+    },
+    "success": {
+      "deactivated": "Produto desativado com sucesso"
     }
   },
   "productDosage": {

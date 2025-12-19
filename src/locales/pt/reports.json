@@ -1,6 +1,10 @@
 {
   "reports": {
     "description": "Gere relatórios abrangentes para seu sistema de tratamento de água",
+    "errors": {
+      "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",
+      "invalidType": "Tipo de relatório inválido"
+    },
     "config": {
       "title": "Configuração do Relatório",
       "selectType": "Selecione o Tipo de Relatório",

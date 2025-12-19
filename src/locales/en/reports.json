@@ -1,6 +1,10 @@
 {
   "reports": {
     "description": "Generate comprehensive reports for your water treatment system",
+    "errors": {
+      "datesRequired": "Start date and end date are required for custom reports",
+      "invalidType": "Invalid report type"
+    },
     "config": {
       "title": "Report Configuration",
       "selectType": "Select Report Type",

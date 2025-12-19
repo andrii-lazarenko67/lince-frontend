@@ -5,5 +5,16 @@
   "activeSystems": "Sistemas Ativos",
   "recentLogs": "Registros Recentes",
   "openIncidents": "Ocorrências em Aberto",
-  "pendingInspections": "Inspeções Pendentes"
+  "pendingInspections": "Inspeções Pendentes",
+  "activity": {
+    "dailyLogRecorded": "Registro diário registrado para {{system}}",
+    "inspectionStatus": "Inspeção {{status}} para {{system}}"
+  },
+  "alerts": {
+    "openIncident": "Ocorrência aberta em {{system}}",
+    "lowStock": "Alerta de Estoque Baixo",
+    "lowStockMessage": "{{name}}: {{stock}} {{unit}} restante",
+    "outOfRange": "Valor Fora do Intervalo",
+    "outOfRangeMessage": "{{point}} em {{system}}: {{value}} {{unit}}"
+  }
 }

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { Parameter, CreateParameterRequest, UpdateParameterRequest, ParameterState } from '../../types/parameter.types';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 // Initial state with proper TypeScript types
 const initialState: ParameterState = {
@@ -16,8 +17,8 @@ export const fetchParameters = createAsyncThunk<Parameter[]>(
     try {
       const response = await axiosInstance.get('/parameters');
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch parameters');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch parameters'));
     }
   }
 );
@@ -28,8 +29,8 @@ export const createParameter = createAsyncThunk<Parameter, CreateParameterReques
     try {
       const response = await axiosInstance.post('/parameters', parameterData);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create parameter');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create parameter'));
     }
   }
 );
@@ -40,8 +41,8 @@ export const updateParameter = createAsyncThunk<Parameter, { id: number; data: U
     try {
       const response = await axiosInstance.put(`/parameters/${id}`, data);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update parameter');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update parameter'));
     }
   }
 );
@@ -52,8 +53,8 @@ export const deleteParameter = createAsyncThunk<number, number>(
     try {
       await axiosInstance.delete(`/parameters/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete parameter');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete parameter'));
     }
   }
 );

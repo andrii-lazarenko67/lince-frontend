@@ -99,6 +99,14 @@
       "dailyLogs": "Daily Logs",
       "dailyLogsUpper": "DAILY LOGS"
     },
+    "errors": {
+      "notFound": "Daily log not found",
+      "laboratoryRequired": "Laboratory field is required for laboratory records",
+      "alreadyExists": "Daily log already exists for this date, system, stage, and record type"
+    },
+    "success": {
+      "deleted": "Daily log deleted successfully"
+    },
     "new": {
       "title": "New Daily Log",
       "description": "Record {{type}} measurements",

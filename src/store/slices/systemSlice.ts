@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { System, SystemState, CreateSystemRequest, UpdateSystemRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: SystemState = {
   systems: [],
@@ -17,8 +18,7 @@ export const fetchSystems = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: System[] }>('/systems', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch systems');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch systems'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -33,8 +33,7 @@ export const fetchSystemById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: System }>(`/systems/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch system');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch system'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -49,8 +48,7 @@ export const createSystem = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: System }>('/systems', data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create system');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create system'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -65,8 +63,7 @@ export const updateSystem = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: System }>(`/systems/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update system');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update system'));
     } finally {
       dispatch(setLoading(false));
     }

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { ReportState, ReportData, GenerateReportRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: ReportState = {
   currentReport: null,
@@ -17,8 +18,7 @@ export const generateReport = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: ReportData }>('/reports/generate', params);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to generate report');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to generate report'));
     } finally {
       dispatch(setLoading(false));
     }

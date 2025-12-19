@@ -165,6 +165,13 @@
       "inspectionsPerSystem": "Inspections per System",
       "byInspector": "By Inspector",
       "inspectionsPerInspector": "Inspections per Inspector"
+    },
+    "errors": {
+      "notFound": "Inspection not found",
+      "noPermission": "You do not have permission to delete this inspection"
+    },
+    "success": {
+      "deleted": "Inspection deleted successfully"
     }
   }
 }

@@ -8,6 +8,7 @@ import type {
   CreateNotificationRequest
 } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: NotificationState = {
   notifications: [],
@@ -27,8 +28,7 @@ export const fetchNotifications = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Notification[] }>('/notifications', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch notifications');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch notifications'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -42,8 +42,7 @@ export const fetchUnreadCount = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: { count: number } }>('/notifications/unread-count');
       return response.data.data.count;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch unread count');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch unread count'));
     }
   }
 );
@@ -56,8 +55,7 @@ export const markAsRead = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Notification }>(`/notifications/${id}/read`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to mark as read');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to mark as read'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -72,8 +70,7 @@ export const markAllAsRead = createAsyncThunk(
       await axiosInstance.put('/notifications/read-all');
       return true;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to mark all as read');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to mark all as read'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -88,8 +85,7 @@ export const clearMyNotifications = createAsyncThunk(
       await axiosInstance.delete('/notifications/clear-mine');
       return true;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to clear notifications');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to clear notifications'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -106,8 +102,7 @@ export const fetchAllNotificationsWithStats = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: NotificationWithStats[] }>('/notifications/admin/all', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch all notifications');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch all notifications'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -122,8 +117,7 @@ export const fetchNotificationRecipients = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: NotificationDetail }>(`/notifications/admin/${id}/recipients`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch notification recipients');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch notification recipients'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -138,8 +132,7 @@ export const createNotification = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: NotificationWithStats }>('/notifications', data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create notification');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create notification'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -154,8 +147,7 @@ export const updateNotification = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Notification }>(`/notifications/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update notification');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update notification'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -170,8 +162,7 @@ export const deleteNotification = createAsyncThunk(
       await axiosInstance.delete(`/notifications/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete notification');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete notification'));
     } finally {
       dispatch(setLoading(false));
     }

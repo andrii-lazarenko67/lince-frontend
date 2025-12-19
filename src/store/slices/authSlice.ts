@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import type { User, LoginRequest, LoginResponse, AuthState } from '../../types';
 import { setLoading } from './uiSlice';
 import { resetNotifications } from './notificationSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: AuthState = {
   user: JSON.parse(localStorage.getItem('user') || 'null'),
@@ -22,8 +23,7 @@ export const login = createAsyncThunk(
       localStorage.setItem('user', JSON.stringify(user));
       return { user, token };
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Login failed');
+      return rejectWithValue(getApiErrorMessage(error, 'Login failed'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -51,8 +51,7 @@ export const getMe = createAsyncThunk(
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to get user');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to get user'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -67,8 +66,7 @@ export const changePassword = createAsyncThunk(
       await axiosInstance.put('/auth/change-password', data);
       return true;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to change password');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to change password'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -85,8 +83,7 @@ export const updateProfile = createAsyncThunk(
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update profile');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update profile'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -111,8 +108,7 @@ export const uploadAvatar = createAsyncThunk(
       localStorage.setItem('user', JSON.stringify(user));
       return user;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to upload avatar');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to upload avatar'));
     } finally {
       dispatch(setLoading(false));
     }

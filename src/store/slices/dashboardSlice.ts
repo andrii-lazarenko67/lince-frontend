@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { DashboardState, DashboardStats, RecentActivity, Alert } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: DashboardState = {
   stats: null,
@@ -18,8 +19,7 @@ export const fetchDashboardStats = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: DashboardStats }>('/dashboard/stats');
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch dashboard stats');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch dashboard stats'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -34,8 +34,7 @@ export const fetchRecentActivity = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: RecentActivity[] }>('/dashboard/recent-activity', { params: { limit } });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch recent activity');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch recent activity'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -50,8 +49,7 @@ export const fetchAlerts = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Alert[] }>('/dashboard/alerts');
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch alerts');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch alerts'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -74,8 +72,7 @@ export const fetchDashboardData = createAsyncThunk(
         alerts: alertsResponse.data.data
       };
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch dashboard data');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch dashboard data'));
     } finally {
       dispatch(setLoading(false));
     }

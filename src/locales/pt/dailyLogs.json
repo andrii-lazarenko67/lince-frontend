@@ -99,6 +99,14 @@
       "dailyLogs": "Registros",
       "dailyLogsUpper": "REGISTROS"
     },
+    "errors": {
+      "notFound": "Registro não encontrado",
+      "laboratoryRequired": "O campo laboratório é obrigatório para registros de laboratório",
+      "alreadyExists": "Já existe um registro para esta data, sistema, etapa e tipo de registro"
+    },
+    "success": {
+      "deleted": "Registro excluído com sucesso"
+    },
     "new": {
       "title": "Novo Registro",
       "description": "Registrar medições de {{type}}",

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { ChecklistItem, CreateChecklistItemRequest, UpdateChecklistItemRequest, ChecklistItemState } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: ChecklistItemState = {
   checklistItems: [],
@@ -18,8 +19,7 @@ export const fetchChecklistItems = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: ChecklistItem[] }>('/checklist-items', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch checklist items');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch checklist items'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -35,8 +35,7 @@ export const fetchChecklistItemsBySystem = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: ChecklistItem[] }>(`/checklist-items/system/${systemId}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch checklist items');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch checklist items'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -52,8 +51,7 @@ export const fetchChecklistItemById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: ChecklistItem }>(`/checklist-items/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch checklist item');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch checklist item'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -69,8 +67,7 @@ export const createChecklistItem = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: ChecklistItem }>('/checklist-items', data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create checklist item');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create checklist item'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -86,8 +83,7 @@ export const updateChecklistItem = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: ChecklistItem }>(`/checklist-items/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update checklist item');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update checklist item'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -103,8 +99,7 @@ export const deleteChecklistItem = createAsyncThunk(
       await axiosInstance.delete(`/checklist-items/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete checklist item');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete checklist item'));
     } finally {
       dispatch(setLoading(false));
     }

@@ -105,6 +105,14 @@
       "created": "Created",
       "updated": "Updated",
       "never": "Never"
+    },
+    "errors": {
+      "notFound": "User not found",
+      "emailExists": "Email already registered",
+      "emailInUse": "Email already in use"
+    },
+    "success": {
+      "deactivated": "User deactivated successfully"
     }
   }
 }

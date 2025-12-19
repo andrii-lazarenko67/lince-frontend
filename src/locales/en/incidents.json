@@ -168,6 +168,12 @@
       "priorityHigh": "High",
       "priorityMedium": "Medium",
       "priorityLow": "Low"
+    },
+    "errors": {
+      "notFound": "Incident not found"
+    },
+    "success": {
+      "deleted": "Incident deleted successfully"
     }
   }
 }

@@ -43,7 +43,20 @@
     "wtp": "ETA (Estação de Tratamento de Água)",
     "wwtp": "ETE (Estação de Tratamento de Esgoto)",
     "effluent": "Efluente",
-    "monitoringPoint": "Etapa"
+    "monitoringPoint": "Etapa",
+    "errors": {
+      "notFound": "Sistema não encontrado",
+      "parentNotFound": "Sistema pai não encontrado",
+      "typeRequired": "Tipo de sistema é obrigatório",
+      "typeNotFound": "Tipo de sistema não encontrado",
+      "cannotBeOwnParent": "Sistema não pode ser seu próprio pai",
+      "circularReference": "Não é possível criar referência circular na hierarquia do sistema",
+      "hasSubSystems": "Não é possível excluir sistema com sub-sistemas. Exclua os sub-sistemas primeiro.",
+      "hasRelatedRecords": "Não é possível excluir sistema com registros existentes (registros diários, inspeções ou ocorrências). Remova esses registros primeiro."
+    },
+    "success": {
+      "deleted": "Sistema excluído com sucesso"
+    }
   },
   "monitoringPoints": {
     "addMonitoringPoint": "Adicionar Ponto de Monitoramento",
@@ -59,7 +72,15 @@
     "enabled": "Habilitado",
     "disabled": "Desabilitado",
     "noMonitoringPoints": "Nenhuma ponto de monitoramento configurada para este sistema",
-    "deleteConfirm": "Tem certeza que deseja excluir esta ponto de monitoramento? Esta ação não pode ser desfeita."
+    "deleteConfirm": "Tem certeza que deseja excluir esta ponto de monitoramento? Esta ação não pode ser desfeita.",
+    "errors": {
+      "notFound": "Ponto de monitoramento não encontrado",
+      "parameterNotFound": "Parâmetro não encontrado",
+      "unitNotFound": "Unidade não encontrada"
+    },
+    "success": {
+      "deleted": "Ponto de monitoramento excluído com sucesso"
+    }
   },
   "checklistItems": {
     "addChecklistItem": "Adicionar Item de Verificação",
@@ -68,6 +89,40 @@
     "displayOrder": "Ordem de Exibição",
     "requiredItem": "Item obrigatório (deve ser verificado durante a inspeção)",
     "noChecklistItems": "Nenhum item de verificação configurado para este sistema",
-    "deleteConfirm": "Tem certeza que deseja excluir este item de verificação? Esta ação não pode ser desfeita."
+    "deleteConfirm": "Tem certeza que deseja excluir este item de verificação? Esta ação não pode ser desfeita.",
+    "errors": {
+      "notFound": "Item de verificação não encontrado"
+    },
+    "success": {
+      "deactivated": "Item de verificação desativado com sucesso"
+    }
+  },
+  "systemTypes": {
+    "errors": {
+      "fetchError": "Erro ao buscar tipos de sistema",
+      "notFound": "Tipo de sistema não encontrado",
+      "nameRequired": "Nome do tipo de sistema é obrigatório",
+      "nameExists": "Tipo de sistema com este nome já existe",
+      "createError": "Erro ao criar tipo de sistema",
+      "updateError": "Erro ao atualizar tipo de sistema",
+      "inUse": "Não é possível excluir tipo de sistema. Atualmente usado por {{count}} sistema(s)",
+      "deleteError": "Erro ao excluir tipo de sistema"
+    },
+    "success": {
+      "deleted": "Tipo de sistema excluído com sucesso"
+    }
+  },
+  "systemPhotos": {
+    "errors": {
+      "fetchError": "Falha ao buscar fotos do sistema",
+      "notFound": "Foto não encontrada",
+      "noFileUploaded": "Nenhum arquivo enviado",
+      "uploadError": "Falha ao enviar foto",
+      "updateError": "Falha ao atualizar foto",
+      "deleteError": "Falha ao excluir foto"
+    },
+    "success": {
+      "deleted": "Foto excluída com sucesso"
+    }
   }
 }

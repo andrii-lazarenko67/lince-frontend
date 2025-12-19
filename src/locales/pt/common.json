@@ -1,4 +1,11 @@
 {
+  "errors": {
+    "validationError": "Erro de validação",
+    "duplicateEntry": "Entrada duplicada",
+    "invalidToken": "Token inválido",
+    "tokenExpired": "Token expirado",
+    "internalServerError": "Erro interno do servidor"
+  },
   "email": "E-mail",
   "password": "Senha",
   "signIn": "Entrar",
@@ -56,5 +63,53 @@
     "pass": "Conforme",
     "fail": "Não Conforme",
     "na": "N/A"
+  },
+  "parameters": {
+    "errors": {
+      "fetchError": "Erro ao buscar parâmetros",
+      "notFound": "Parâmetro não encontrado",
+      "nameRequired": "Nome do parâmetro é obrigatório",
+      "nameExists": "Parâmetro com este nome já existe",
+      "createError": "Erro ao criar parâmetro",
+      "cannotModifyDefault": "Não é possível modificar parâmetros padrão do sistema",
+      "updateError": "Erro ao atualizar parâmetro",
+      "cannotDeleteDefault": "Não é possível excluir parâmetros padrão do sistema",
+      "inUse": "Não é possível excluir parâmetro. Atualmente usado por {{count}} ponto(s) de monitoramento",
+      "deleteError": "Erro ao excluir parâmetro"
+    },
+    "success": {
+      "deleted": "Parâmetro excluído com sucesso"
+    }
+  },
+  "units": {
+    "errors": {
+      "fetchError": "Erro ao buscar unidades",
+      "notFound": "Unidade não encontrada",
+      "nameAndAbbrevRequired": "Nome e abreviação da unidade são obrigatórios",
+      "abbreviationExists": "Unidade com esta abreviação já existe",
+      "createError": "Erro ao criar unidade",
+      "cannotModifyDefault": "Não é possível modificar unidades padrão do sistema",
+      "updateError": "Erro ao atualizar unidade",
+      "cannotDeleteDefault": "Não é possível excluir unidades padrão do sistema",
+      "inUse": "Não é possível excluir unidade. Atualmente usada por {{count}} ponto(s) de monitoramento",
+      "deleteError": "Erro ao excluir unidade"
+    },
+    "success": {
+      "deleted": "Unidade excluída com sucesso"
+    }
+  },
+  "productDosages": {
+    "errors": {
+      "fetchError": "Erro ao buscar dosagens de produtos",
+      "notFound": "Dosagem de produto não encontrada",
+      "requiredFields": "ID do produto, valor, ID da unidade e modo de dosagem são obrigatórios",
+      "invalidDosageMode": "Modo de dosagem deve ser 'manual' ou 'automatic'",
+      "createError": "Erro ao criar dosagem de produto",
+      "updateError": "Erro ao atualizar dosagem de produto",
+      "deleteError": "Erro ao excluir dosagem de produto"
+    },
+    "success": {
+      "deleted": "Dosagem de produto excluída com sucesso"
+    }
   }
 }

@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { MonitoringPoint, MonitoringPointState, CreateMonitoringPointRequest, UpdateMonitoringPointRequest } from '../../types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: MonitoringPointState = {
   monitoringPoints: [],
@@ -17,8 +18,7 @@ export const fetchMonitoringPoints = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: MonitoringPoint[] }>('/monitoring-points', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch monitoring points');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch monitoring points'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -33,8 +33,7 @@ export const fetchMonitoringPointsBySystem = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: MonitoringPoint[] }>(`/monitoring-points/system/${systemId}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch monitoring points');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch monitoring points'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -49,8 +48,7 @@ export const createMonitoringPoint = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: MonitoringPoint }>('/monitoring-points', data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create monitoring point');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create monitoring point'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -65,8 +63,7 @@ export const updateMonitoringPoint = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: MonitoringPoint }>(`/monitoring-points/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update monitoring point');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update monitoring point'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -81,8 +78,7 @@ export const deleteMonitoringPoint = createAsyncThunk(
       await axiosInstance.delete(`/monitoring-points/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete monitoring point');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete monitoring point'));
     } finally {
       dispatch(setLoading(false));
     }

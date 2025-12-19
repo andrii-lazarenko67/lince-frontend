@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import type { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: InspectionState = {
   inspections: [],
@@ -19,8 +20,7 @@ export const fetchInspections = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Inspection[] }>('/inspections', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch inspections');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch inspections'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -35,8 +35,7 @@ export const fetchInspectionById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Inspection }>(`/inspections/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch inspection');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch inspection'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -51,8 +50,7 @@ export const fetchChecklistItems = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: ChecklistItem[] }>(`/checklist-items/system/${systemId}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch checklist items');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch checklist items'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -93,8 +91,7 @@ export const createInspection = createAsyncThunk(
 
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create inspection');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create inspection'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -109,8 +106,7 @@ export const updateInspection = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Inspection }>(`/inspections/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update inspection');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update inspection'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -125,8 +121,7 @@ export const markInspectionAsViewed = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Inspection }>(`/inspections/${id}/mark-viewed`, { managerNotes });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to mark inspection as viewed');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to mark inspection as viewed'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -141,8 +136,7 @@ export const deleteInspection = createAsyncThunk(
       await axiosInstance.delete(`/inspections/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete inspection');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete inspection'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -166,8 +160,7 @@ export const addInspectionPhotos = createAsyncThunk(
       );
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to add photos');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to add photos'));
     } finally {
       dispatch(setLoading(false));
     }

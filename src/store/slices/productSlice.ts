@@ -3,6 +3,7 @@ import axiosInstance from '../../api/axiosInstance';
 import type { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 interface RecordUsageRequest {
   systemId?: number;
@@ -27,8 +28,7 @@ export const fetchProducts = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Product[] }>('/products', { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch products');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch products'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -43,8 +43,7 @@ export const fetchProductById = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: Product }>(`/products/${id}`);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch product'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -59,8 +58,7 @@ export const createProduct = createAsyncThunk(
       const response = await axiosInstance.post<{ success: boolean; data: Product }>('/products', data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create product');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create product'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -75,8 +73,7 @@ export const updateProduct = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Product }>(`/products/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update product');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update product'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -97,8 +94,7 @@ export const recordProductUsage = createAsyncThunk(
 
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to record usage');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to record usage'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -113,8 +109,7 @@ export const fetchProductUsageHistory = createAsyncThunk(
       const response = await axiosInstance.get<{ success: boolean; data: ProductUsage[] }>(`/products/${id}/usages`, { params });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch usage history');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch usage history'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -129,8 +124,7 @@ export const updateStock = createAsyncThunk(
       const response = await axiosInstance.put<{ success: boolean; data: Product }>(`/products/${id}/stock`, { quantity, type, notes });
       return response.data.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update stock');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update stock'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -145,8 +139,7 @@ export const deleteProduct = createAsyncThunk(
       await axiosInstance.delete(`/products/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete product');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete product'));
     } finally {
       dispatch(setLoading(false));
     }

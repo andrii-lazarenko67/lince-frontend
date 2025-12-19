@@ -72,6 +72,15 @@
     "currentPasswordRequired": "Senha atual é obrigatória",
     "newPasswordRequired": "Nova senha é obrigatória",
     "passwordMinLength": "A senha deve ter pelo menos 6 caracteres",
-    "passwordsNoMatch": "As senhas não coincidem"
+    "passwordsNoMatch": "As senhas não coincidem",
+    "errors": {
+      "passwordRequired": "Senha atual e nova senha são obrigatórias",
+      "currentPasswordIncorrect": "Senha atual está incorreta",
+      "emailInUse": "E-mail já está em uso",
+      "avatarRequired": "Imagem do avatar é obrigatória"
+    },
+    "success": {
+      "passwordChanged": "Senha alterada com sucesso"
+    }
   }
 }

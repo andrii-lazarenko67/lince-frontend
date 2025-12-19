@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { SystemType, CreateSystemTypeRequest, UpdateSystemTypeRequest, SystemTypeState } from '../../types/systemType.types';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 // Initial state
 const initialState: SystemTypeState = {
@@ -16,8 +17,8 @@ export const fetchSystemTypes = createAsyncThunk<SystemType[]>(
     try {
       const response = await axiosInstance.get<{ success: boolean; data: SystemType[] }>('/system-types');
       return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch system types');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch system types'));
     }
   }
 );
@@ -28,8 +29,8 @@ export const createSystemType = createAsyncThunk<SystemType, CreateSystemTypeReq
     try {
       const response = await axiosInstance.post<{ success: boolean; data: SystemType }>('/system-types', systemTypeData);
       return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create system type');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create system type'));
     }
   }
 );
@@ -40,8 +41,8 @@ export const updateSystemType = createAsyncThunk<SystemType, { id: number; data:
     try {
       const response = await axiosInstance.put<{ success: boolean; data: SystemType }>(`/system-types/${id}`, data);
       return response.data.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update system type');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update system type'));
     }
   }
 );
@@ -52,8 +53,8 @@ export const deleteSystemType = createAsyncThunk<number, number>(
     try {
       await axiosInstance.delete(`/system-types/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete system type');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete system type'));
     }
   }
 );

@@ -117,6 +117,34 @@
       "unreadSummary": "{{unread}} unread",
       "createdBy": "Created: {{date}} by {{user}}"
     },
+    "messages": {
+      "outOfRange": {
+        "title": "Out of Range Value Detected",
+        "message": "{{point}} in {{system}} recorded value {{value}} ({{range}})"
+      },
+      "incident": {
+        "title": "New Incident Reported",
+        "message": "{{title}} - {{system}}"
+      },
+      "inspection": {
+        "title": "New Inspection Submitted",
+        "message": "{{user}} has submitted an inspection for {{system}}"
+      },
+      "lowStock": {
+        "title": "Low Stock Alert",
+        "message": "{{name}} is running low. Current stock: {{stock}} {{unit}}"
+      }
+    },
+    "errors": {
+      "notFound": "Notification not found",
+      "adminOnly": "Only managers and admins can perform this action",
+      "requiredFields": "Type, title, and message are required"
+    },
+    "success": {
+      "allMarkedAsRead": "All notifications marked as read",
+      "deleted": "Notification deleted successfully",
+      "cleared": "All your notifications cleared successfully"
+    },
     "export": {
       "title": "Notifications Report",
       "subtitle": "LINCE Water Treatment System",

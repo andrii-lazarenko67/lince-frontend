@@ -117,6 +117,24 @@
       "unreadSummary": "{{unread}} não lidas",
       "createdBy": "Criada: {{date}} por {{user}}"
     },
+    "messages": {
+      "outOfRange": {
+        "title": "Valor Fora do Intervalo Detectado",
+        "message": "{{point}} em {{system}} registrou valor {{value}} ({{range}})"
+      },
+      "incident": {
+        "title": "Nova Ocorrência Reportada",
+        "message": "{{title}} - {{system}}"
+      },
+      "inspection": {
+        "title": "Nova Inspeção Enviada",
+        "message": "{{user}} enviou uma inspeção para {{system}}"
+      },
+      "lowStock": {
+        "title": "Alerta de Estoque Baixo",
+        "message": "{{name}} está com estoque baixo. Estoque atual: {{stock}} {{unit}}"
+      }
+    },
     "export": {
       "title": "Relatório de Notificações",
       "subtitle": "Sistema de Tratamento de Água LINCE",
@@ -133,6 +151,16 @@
         "status": "Status",
         "created": "Criada"
       }
+    },
+    "errors": {
+      "notFound": "Notificação não encontrada",
+      "adminOnly": "Apenas gerentes e administradores podem realizar esta ação",
+      "requiredFields": "Tipo, título e mensagem são obrigatórios"
+    },
+    "success": {
+      "allMarkedAsRead": "Todas as notificações marcadas como lidas",
+      "deleted": "Notificação excluída com sucesso",
+      "cleared": "Todas as suas notificações foram limpas com sucesso"
     }
   },
   "photoGallery": {

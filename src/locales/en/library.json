@@ -95,6 +95,13 @@
       "fileNamePlaceholder": "Enter file name",
       "deleteModal": "Delete Document",
       "deleteConfirm": "Are you sure you want to delete this document? This action cannot be undone."
+    },
+    "errors": {
+      "notFound": "Document not found",
+      "fileRequired": "File is required"
+    },
+    "success": {
+      "deleted": "Document deleted successfully"
     }
   }
 }

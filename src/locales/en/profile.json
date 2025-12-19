@@ -72,6 +72,15 @@
     "currentPasswordRequired": "Current password is required",
     "newPasswordRequired": "New password is required",
     "passwordMinLength": "Password must be at least 6 characters",
-    "passwordsNoMatch": "Passwords do not match"
+    "passwordsNoMatch": "Passwords do not match",
+    "errors": {
+      "passwordRequired": "Current password and new password are required",
+      "currentPasswordIncorrect": "Current password is incorrect",
+      "emailInUse": "Email is already in use",
+      "avatarRequired": "Avatar image is required"
+    },
+    "success": {
+      "passwordChanged": "Password changed successfully"
+    }
   }
 }

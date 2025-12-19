@@ -165,6 +165,13 @@
       "inspectionsPerSystem": "Inspeções por Sistema",
       "byInspector": "Por Inspetor",
       "inspectionsPerInspector": "Inspeções por Inspetor"
+    },
+    "errors": {
+      "notFound": "Inspeção não encontrada",
+      "noPermission": "Você não tem permissão para excluir esta inspeção"
+    },
+    "success": {
+      "deleted": "Inspeção excluída com sucesso"
     }
   }
 }

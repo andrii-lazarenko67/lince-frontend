@@ -95,6 +95,13 @@
       "fileNamePlaceholder": "Digite o nome do arquivo",
       "deleteModal": "Excluir Documento",
       "deleteConfirm": "Tem certeza que deseja excluir este documento? Esta ação não pode ser desfeita."
+    },
+    "errors": {
+      "notFound": "Documento não encontrado",
+      "fileRequired": "Arquivo é obrigatório"
+    },
+    "success": {
+      "deleted": "Documento excluído com sucesso"
     }
   }
 }

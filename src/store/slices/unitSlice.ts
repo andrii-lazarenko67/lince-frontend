@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
 import type { Unit, CreateUnitRequest, UpdateUnitRequest, UnitState } from '../../types/unit.types';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 // Initial state with proper TypeScript types
 const initialState: UnitState = {
@@ -16,8 +17,8 @@ export const fetchUnits = createAsyncThunk<Unit[]>(
     try {
       const response = await axiosInstance.get('/units');
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch units');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch units'));
     }
   }
 );
@@ -28,8 +29,8 @@ export const fetchUnitsByCategory = createAsyncThunk<Unit[], string>(
     try {
       const response = await axiosInstance.get(`/units/category/${category}`);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch units by category');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch units by category'));
     }
   }
 );
@@ -40,8 +41,8 @@ export const createUnit = createAsyncThunk<Unit, CreateUnitRequest>(
     try {
       const response = await axiosInstance.post('/units', unitData);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to create unit');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create unit'));
     }
   }
 );
@@ -52,8 +53,8 @@ export const updateUnit = createAsyncThunk<Unit, { id: number; data: UpdateUnitR
     try {
       const response = await axiosInstance.put(`/units/${id}`, data);
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update unit');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update unit'));
     }
   }
 );
@@ -64,8 +65,8 @@ export const deleteUnit = createAsyncThunk<number, number>(
     try {
       await axiosInstance.delete(`/units/${id}`);
       return id;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to delete unit');
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete unit'));
     }
   }
 );

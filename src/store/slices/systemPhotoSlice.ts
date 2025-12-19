@@ -6,6 +6,7 @@ import type {
   SystemPhotoState
 } from '../../types/systemPhoto.types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 // Initial state with proper TypeScript types - EXACT MATCH
 const initialState: SystemPhotoState = {
@@ -25,8 +26,7 @@ export const fetchPhotosBySystem = createAsyncThunk<SystemPhoto[], number>(
       const response = await axiosInstance.get(`/system-photos/system/${systemId}`);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch system photos');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch system photos'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -42,8 +42,7 @@ export const fetchPhotoById = createAsyncThunk<SystemPhoto, number>(
       const response = await axiosInstance.get(`/system-photos/${id}`);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch photo');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch photo'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -76,8 +75,7 @@ export const uploadSystemPhoto = createAsyncThunk<
       );
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to upload photo');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to upload photo'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -96,8 +94,7 @@ export const updateSystemPhoto = createAsyncThunk<
       const response = await axiosInstance.put(`/system-photos/${id}`, data);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update photo');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update photo'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -113,8 +110,7 @@ export const deleteSystemPhoto = createAsyncThunk<number, number>(
       await axiosInstance.delete(`/system-photos/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete photo');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete photo'));
     } finally {
       dispatch(setLoading(false));
     }

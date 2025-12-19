@@ -168,6 +168,12 @@
       "priorityHigh": "Alta",
       "priorityMedium": "Média",
       "priorityLow": "Baixa"
+    },
+    "errors": {
+      "notFound": "Ocorrência não encontrada"
+    },
+    "success": {
+      "deleted": "Ocorrência excluída com sucesso"
     }
   }
 }

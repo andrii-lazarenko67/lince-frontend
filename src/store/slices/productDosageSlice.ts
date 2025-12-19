@@ -7,6 +7,7 @@ import type {
   ProductDosageState
 } from '../../types/productDosage.types';
 import { setLoading } from './uiSlice';
+import { getApiErrorMessage } from '../../utils/apiMessages';
 
 // Initial state with proper TypeScript types - EXACT MATCH
 const initialState: ProductDosageState = {
@@ -35,8 +36,7 @@ export const fetchProductDosages = createAsyncThunk<
       const response = await axiosInstance.get(`/product-dosages?${params}`);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product dosages');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch product dosages'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -52,8 +52,7 @@ export const fetchDosagesByProduct = createAsyncThunk<ProductDosage[], number>(
       const response = await axiosInstance.get(`/product-dosages/product/${productId}`);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to fetch product dosages');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch product dosages'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -69,8 +68,7 @@ export const createProductDosage = createAsyncThunk<ProductDosage, CreateProduct
       const response = await axiosInstance.post('/product-dosages', dosageData);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to create product dosage');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create product dosage'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -89,8 +87,7 @@ export const updateProductDosage = createAsyncThunk<
       const response = await axiosInstance.put(`/product-dosages/${id}`, data);
       return response.data;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to update product dosage');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update product dosage'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -106,8 +103,7 @@ export const deleteProductDosage = createAsyncThunk<number, number>(
       await axiosInstance.delete(`/product-dosages/${id}`);
       return id;
     } catch (error: unknown) {
-      const err = error as { response?: { data?: { message?: string } } };
-      return rejectWithValue(err.response?.data?.message || 'Failed to delete product dosage');
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete product dosage'));
     } finally {
       dispatch(setLoading(false));
     }
