@@ -32,6 +32,12 @@ const ReportsPage: React.FC = () => {
     endDate: ''
   });
 
+  // Filter to get only root systems (no parentId)
+  const rootSystems = systems.filter(s => !s.parentId);
+
+  // Get stages for selected systems using parentId filter
+  const availableStages = systems.filter(s => s.parentId && formData.systemIds.includes(s.parentId));
+
   useEffect(() => {
     dispatch(fetchSystems({}));
   }, [dispatch]);
@@ -50,8 +56,9 @@ const ReportsPage: React.FC = () => {
         : [...prev.systemIds, systemId];
 
       // When a system is deselected, also remove its stages from stageIds
-      const selectedSystem = systems.find(s => s.id === systemId);
-      const stageIdsToRemove = selectedSystem?.children?.map(c => c.id) || [];
+      const stageIdsToRemove = systems
+        .filter(s => s.parentId === systemId)
+        .map(s => s.id);
       const newStageIds = prev.systemIds.includes(systemId)
         ? prev.stageIds.filter(id => !stageIdsToRemove.includes(id))
         : prev.stageIds;
@@ -264,7 +271,8 @@ const ReportsPage: React.FC = () => {
 
       <ReportConfiguration
         formData={formData}
-        systems={systems}
+        systems={rootSystems}
+        availableStages={availableStages}
         isGenerating={isGenerating}
         hasReport={!!currentReport}
         onTypeChange={handleTypeChange}

@@ -12,6 +12,7 @@ interface ReportConfigurationProps {
     endDate: string;
   };
   systems: System[];
+  availableStages: System[];
   isGenerating: boolean;
   hasReport: boolean;
   onTypeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -27,6 +28,7 @@ interface ReportConfigurationProps {
 const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
   formData,
   systems,
+  availableStages,
   isGenerating,
   hasReport,
   onTypeChange,
@@ -39,11 +41,6 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
   onExportCSV
 }) => {
   const { t } = useTranslation();
-
-  // Get all stages from selected systems
-  const availableStages = systems
-    .filter(system => formData.systemIds.includes(system.id))
-    .flatMap(system => system.children || []);
 
   const typeOptions = [
     { value: 'daily', label: t('reports.config.daily') },
