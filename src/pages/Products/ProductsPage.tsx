@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { fetchUnits } from '../../store/slices/unitSlice';
+import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select, TextArea, ExportDropdown, ViewModeToggle } from '../../components/common';
 import ProductsChartView from './ProductsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
@@ -13,11 +14,18 @@ const ProductsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { products } = useAppSelector((state) => state.products);
   const { units } = useAppSelector((state) => state.units);
+  const { systems } = useAppSelector((state) => state.systems);
   const { goToProductDetail } = useAppNavigation();
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [filters, setFilters] = useState({
+    systemId: '',
+    stageId: '',
+    type: '',
+    lowStock: false
+  });
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: '',
     type: '',
@@ -32,7 +40,21 @@ const ProductsPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchProducts({}));
     dispatch(fetchUnits());
+    dispatch(fetchSystems({ parentId: 'null' }));
   }, [dispatch]);
+
+  const handleApplyFilters = () => {
+    dispatch(fetchProducts({
+      systemId: filters.systemId ? Number(filters.systemId) : undefined,
+      type: filters.type || undefined,
+      lowStock: filters.lowStock || undefined
+    }));
+  };
+
+  const handleClearFilters = () => {
+    setFilters({ systemId: '', stageId: '', type: '', lowStock: false });
+    dispatch(fetchProducts({}));
+  };
 
   const handleOpenForm = (product?: Product) => {
     if (product) {
@@ -213,6 +235,15 @@ const ProductsPage: React.FC = () => {
 
   const unitOptions = units.map(u => ({ value: u.abbreviation, label: `${u.name} (${u.abbreviation})` }));
 
+  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+
+  // Get stages (children) from the selected system's children array in Redux
+  const selectedSystem = systems.find(s => s.id === Number(filters.systemId));
+  const stageOptions = selectedSystem?.children?.map(stage => ({
+    value: stage.id,
+    label: stage.name
+  })) || [];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -238,15 +269,77 @@ const ProductsPage: React.FC = () => {
       </div>
 
       {viewMode === 'table' ? (
-        <Card noPadding>
-          <Table
-            columns={columns}
-            data={products}
-            keyExtractor={(product) => product.id}
-            onRowClick={(product) => goToProductDetail(product.id)}
-            emptyMessage={t('products.emptyMessage')}
-          />
-        </Card>
+        <>
+          <div className="bg-white rounded-lg shadow p-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+              <div>
+                <Select
+                  name="systemId"
+                  value={filters.systemId}
+                  onChange={(e) => setFilters({ ...filters, systemId: e.target.value, stageId: '' })}
+                  options={systemOptions}
+                  label={t('products.filters.system')}
+                  placeholder={t('products.filters.allSystems')}
+                />
+              </div>
+
+              {stageOptions.length > 0 && (
+                <div>
+                  <Select
+                    name="stageId"
+                    value={filters.stageId}
+                    onChange={(e) => setFilters({ ...filters, stageId: e.target.value })}
+                    options={stageOptions}
+                    label={t('products.filters.stage')}
+                    placeholder={t('products.filters.allStages')}
+                  />
+                </div>
+              )}
+
+              <div>
+                <Select
+                  name="type"
+                  value={filters.type}
+                  onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                  options={typeOptions}
+                  label={t('products.filters.type')}
+                  placeholder={t('products.filters.allTypes')}
+                />
+              </div>
+
+              <div className="flex items-end">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={filters.lowStock}
+                    onChange={(e) => setFilters({ ...filters, lowStock: e.target.checked })}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <span className="text-sm text-gray-700">{t('products.filters.lowStock')}</span>
+                </label>
+              </div>
+
+              <div className="flex space-x-2 items-end">
+                <Button variant="primary" onClick={handleApplyFilters} className="flex-1">
+                  {t('products.filters.apply')}
+                </Button>
+                <Button variant="outline" onClick={handleClearFilters} className="flex-1">
+                  {t('products.filters.clear')}
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <Card noPadding>
+            <Table
+              columns={columns}
+              data={products}
+              keyExtractor={(product) => product.id}
+              onRowClick={(product) => goToProductDetail(product.id)}
+              emptyMessage={t('products.emptyMessage')}
+            />
+          </Card>
+        </>
       ) : (
         <ProductsChartView products={products} />
       )}

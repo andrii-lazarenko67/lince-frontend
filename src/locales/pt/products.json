@@ -33,6 +33,19 @@
     "allStockNormal": "Todos os níveis de estoque normais",
     "description": "Descrição",
     "emptyMessage": "Nenhum produto encontrado",
+    "filters": {
+      "system": "Sistema",
+      "allSystems": "Todos os Sistemas",
+      "stage": "Etapa",
+      "allStages": "Todas as Etapas",
+      "type": "Tipo",
+      "allTypes": "Todos os Tipos",
+      "stockStatus": "Status do Estoque",
+      "allStatuses": "Todos os Status",
+      "lowStock": "Apenas Estoque Baixo",
+      "apply": "Aplicar",
+      "clear": "Limpar"
+    },
     "list": {
       "name": "Nome",
       "type": "Tipo",

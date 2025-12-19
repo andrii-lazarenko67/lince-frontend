@@ -21,7 +21,7 @@ const initialState: ProductState = {
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchAll',
-  async (params: { isActive?: boolean; lowStock?: boolean } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { isActive?: boolean; lowStock?: boolean; systemId?: number; type?: string } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: Product[] }>('/products', { params });

@@ -33,6 +33,19 @@
     "allStockNormal": "All stock levels normal",
     "description": "Description",
     "emptyMessage": "No products found",
+    "filters": {
+      "system": "System",
+      "allSystems": "All Systems",
+      "stage": "Stage",
+      "allStages": "All Stages",
+      "type": "Type",
+      "allTypes": "All Types",
+      "stockStatus": "Stock Status",
+      "allStatuses": "All Statuses",
+      "lowStock": "Low Stock Only",
+      "apply": "Apply",
+      "clear": "Clear"
+    },
     "list": {
       "name": "Name",
       "type": "Type",
