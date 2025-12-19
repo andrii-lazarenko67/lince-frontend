@@ -132,7 +132,8 @@ const NotificationsPage: React.FC = () => {
           { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
           { label: t('notifications.export.unreadNotifications'), value: String(unreadCount) },
           { label: t('notifications.export.generated'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: t('notifications.export.notifications'), headers, rows }]
     );

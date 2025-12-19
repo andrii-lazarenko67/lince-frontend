@@ -51,7 +51,8 @@ const UsersPage: React.FC = () => {
         title: t('users.export.title'),
         subtitle: t('users.export.subtitle'),
         filename: `users-${new Date().toISOString().split('T')[0]}`,
-        metadata: getExportMetadata()
+        metadata: getExportMetadata(),
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: `${t('users.export.users')} (${users.length})`, headers, rows }]
     );

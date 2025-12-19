@@ -78,7 +78,8 @@ const IncidentsPage: React.FC = () => {
         metadata: [
           { label: t('incidents.page.exportMetadata.total'), value: String(incidents.length) },
           { label: t('incidents.page.exportMetadata.generated'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: t('incidents.page.exportSectionTitle', { count: incidents.length }), headers, rows }]
     );

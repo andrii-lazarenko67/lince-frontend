@@ -102,13 +102,14 @@ const DashboardPage: React.FC = () => {
     exportToPdf(
       {
         title: t('dashboard.title'),
-        subtitle: 'LINCE Water Treatment System',
+        subtitle: t('common.exportFooter'),
         filename: `dashboard-${new Date().toISOString().split('T')[0]}`,
         metadata: [
           { label: t('dashboard.openIncidents'), value: String(stats?.incidents.open || 0) },
           { label: t('products.minimumStock'), value: String(stats?.products.lowStock || 0) },
           { label: t('common.date'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       sections
     );

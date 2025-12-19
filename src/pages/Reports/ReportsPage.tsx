@@ -246,7 +246,8 @@ const ReportsPage: React.FC = () => {
           { label: t('reports.export.reportType'), value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
           { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
           { label: t('reports.export.generated'), value: new Date(report.generatedAt).toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       pdfSections
     );

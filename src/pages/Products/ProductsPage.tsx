@@ -120,7 +120,8 @@ const ProductsPage: React.FC = () => {
           { label: t('products.export.totalProducts'), value: String(products.length) },
           { label: t('products.export.lowStockItems'), value: String(products.filter(p => isLowStock(p)).length) },
           { label: t('products.export.generated'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: `${t('products.export.products')} (${products.length})`, headers, rows }]
     );

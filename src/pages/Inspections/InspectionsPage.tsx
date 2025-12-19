@@ -67,7 +67,8 @@ const InspectionsPage: React.FC = () => {
         metadata: [
           { label: t('inspections.export.totalInspections'), value: String(inspections.length) },
           { label: t('inspections.export.generated'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: `${t('inspections.export.inspections')} (${inspections.length})`, headers, rows }]
     );

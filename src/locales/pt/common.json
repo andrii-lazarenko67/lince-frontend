@@ -37,5 +37,6 @@
   "viewMode": {
     "table": "Tabela",
     "charts": "Gráficos"
-  }
+  },
+  "exportFooter": "Gerado pelo Sistema de Monitoramento de Tratamento de Água LINCE"
 }

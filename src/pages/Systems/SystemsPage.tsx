@@ -45,13 +45,14 @@ const SystemsPage: React.FC = () => {
     exportToPdf(
       {
         title: t('systems.title'),
-        subtitle: 'LINCE Water Treatment System',
+        subtitle: t('common.exportFooter'),
         filename: `systems-${new Date().toISOString().split('T')[0]}`,
         metadata: [
           { label: t('systems.title'), value: String(systems.length) },
           { label: t('systems.active'), value: String(systems.filter(s => s.status === 'active').length) },
           { label: t('common.date'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: `${t('systems.title')} (${systems.length})`, headers, rows }]
     );

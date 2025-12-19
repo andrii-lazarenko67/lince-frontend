@@ -70,7 +70,8 @@ const DailyLogsPage: React.FC = () => {
         metadata: [
           { label: t('dailyLogs.export.totalRecords'), value: String(dailyLogs.length) },
           { label: t('dailyLogs.export.generated'), value: new Date().toLocaleString() }
-        ]
+        ],
+        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
       },
       [{ title: `${t('dailyLogs.export.dailyLogs')} (${dailyLogs.length})`, headers, rows }]
     );
