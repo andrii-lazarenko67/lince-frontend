@@ -110,7 +110,7 @@ const ReportsPage: React.FC = () => {
           new Date(insp.date).toLocaleDateString(),
           insp.system?.name || '-',
           insp.user?.name || '-',
-          insp.status,
+          t(`inspections.status.${insp.status}`),
           insp.conclusion || '-',
           insp.items?.length || 0
         ])
@@ -121,8 +121,8 @@ const ReportsPage: React.FC = () => {
         rows: report.incidents.map(inc => [
           inc.title,
           inc.system?.name || '-',
-          inc.priority,
-          inc.status,
+          t(`incidents.${inc.priority}`),
+          t(`incidents.${inc.status}`),
           inc.reporter?.name || '-',
           inc.assignee?.name || '-',
           new Date(inc.createdAt).toLocaleDateString()

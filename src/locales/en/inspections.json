@@ -52,7 +52,12 @@
       "generated": "Generated",
       "inspections": "Inspections",
       "inspectionsUpper": "INSPECTIONS",
-      "date": "Date"
+      "date": "Date",
+      "system": "System",
+      "inspector": "Inspector",
+      "status": "Status",
+      "conclusion": "Conclusion",
+      "items": "Items"
     },
     "status": {
       "pending": "Pending",

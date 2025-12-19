@@ -114,7 +114,7 @@ const NotificationsPage: React.FC = () => {
       notif.title,
       notif.message,
       getTypeLabel(notif.type),
-      notif.priority,
+      t(`notifications.priority.${notif.priority}`),
       notif.isRead ? t('notifications.read') : t('notifications.unread'),
       new Date(notif.createdAt).toLocaleString()
     ]);

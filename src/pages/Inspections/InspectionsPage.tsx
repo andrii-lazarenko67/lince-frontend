@@ -50,7 +50,7 @@ const InspectionsPage: React.FC = () => {
       new Date(insp.date).toLocaleDateString(),
       insp.system?.name || '-',
       insp.user?.name || '-',
-      insp.status,
+      t(`inspections.status.${insp.status}`),
       insp.conclusion || '-',
       insp.items?.length || 0
     ]);

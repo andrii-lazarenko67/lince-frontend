@@ -52,7 +52,12 @@
       "generated": "Gerado",
       "inspections": "Inspeções",
       "inspectionsUpper": "INSPEÇÕES",
-      "date": "Data"
+      "date": "Data",
+      "system": "Sistema",
+      "inspector": "Inspetor",
+      "status": "Status",
+      "conclusion": "Conclusão",
+      "items": "Itens"
     },
     "status": {
       "pending": "Pendente",

@@ -59,8 +59,8 @@ const IncidentsPage: React.FC = () => {
     const rows = incidents.map(inc => [
       inc.title,
       inc.system?.name || '-',
-      inc.priority,
-      inc.status,
+      t(`incidents.${inc.priority}`),
+      t(`incidents.${inc.status}`),
       inc.reporter?.name || '-',
       inc.assignee?.name || '-',
       new Date(inc.createdAt).toLocaleDateString()
