@@ -38,5 +38,22 @@
     "table": "Tabela",
     "charts": "Gráficos"
   },
-  "exportFooter": "Gerado pelo Sistema de Monitoramento de Tratamento de Água LINCE"
+  "exportFooter": "Gerado pelo Sistema de Monitoramento de Tratamento de Água LINCE",
+  "charts": {
+    "noData": "Sem dados",
+    "total": "Total",
+    "count": "Contagem",
+    "share": "Proporção",
+    "value": "Valor",
+    "average": "Média",
+    "peak": "Máximo",
+    "items": "itens",
+    "stock": "Estoque",
+    "minAlert": "Alerta Mín",
+    "normal": "Normal",
+    "lowStock": "Estoque Baixo",
+    "pass": "Conforme",
+    "fail": "Não Conforme",
+    "na": "N/A"
+  }
 }

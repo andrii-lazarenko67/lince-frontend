@@ -200,5 +200,46 @@
       "noProducts": "Nenhum produto neste relatório",
       "noUsage": "Nenhuma transação de uso neste relatório"
     }
+  },
+  "reportDailyLogs": {
+    "charts": {
+      "total": "Total",
+      "count": "Contagem",
+      "share": "Proporção",
+      "value": "Valor",
+      "average": "Média",
+      "peak": "Máximo"
+    },
+    "status": {
+      "normal": "Normal",
+      "outOfRange": "Fora da Faixa"
+    },
+    "overview": {
+      "title": "Visão Geral dos Registros",
+      "totalLogs": "Total de Registros",
+      "totalReadings": "Total de Leituras",
+      "normalReadings": "Leituras Normais",
+      "outOfRange": "Fora da Faixa"
+    },
+    "readingsStatus": {
+      "title": "Status das Leituras",
+      "chartTitle": "Distribuição de Status"
+    },
+    "logsBySystem": {
+      "title": "Registros por Sistema",
+      "chartTitle": "Registros por Sistema"
+    },
+    "logsOverTime": {
+      "title": "Registros ao Longo do Tempo",
+      "chartTitle": "Tendência de Registros"
+    },
+    "outOfRangeOverTime": {
+      "title": "Fora da Faixa ao Longo do Tempo",
+      "chartTitle": "Tendência de Fora da Faixa"
+    },
+    "logsByUser": {
+      "title": "Registros por Usuário",
+      "chartTitle": "Registros por Usuário"
+    }
   }
 }

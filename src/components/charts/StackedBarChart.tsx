@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface StackedBarSegment {
   label: string;
@@ -19,13 +20,14 @@ interface StackedBarChartProps {
 }
 
 const StackedBarChart: React.FC<StackedBarChartProps> = ({ data, title, height = 200, legendItems }) => {
+  const { t } = useTranslation();
   const [hoveredBar, setHoveredBar] = useState<{ barIndex: number; segmentIndex: number } | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('charts.noData')}</div>
       </div>
     );
   }

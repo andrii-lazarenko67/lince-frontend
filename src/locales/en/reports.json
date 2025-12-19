@@ -200,5 +200,46 @@
       "noProducts": "No products in this report",
       "noUsage": "No usage transactions in this report"
     }
+  },
+  "reportDailyLogs": {
+    "charts": {
+      "total": "Total",
+      "count": "Count",
+      "share": "Share",
+      "value": "Value",
+      "average": "Average",
+      "peak": "Peak"
+    },
+    "status": {
+      "normal": "Normal",
+      "outOfRange": "Out of Range"
+    },
+    "overview": {
+      "title": "Daily Logs Overview",
+      "totalLogs": "Total Logs",
+      "totalReadings": "Total Readings",
+      "normalReadings": "Normal Readings",
+      "outOfRange": "Out of Range"
+    },
+    "readingsStatus": {
+      "title": "Readings Status",
+      "chartTitle": "Status Distribution"
+    },
+    "logsBySystem": {
+      "title": "Logs by System",
+      "chartTitle": "Logs per System"
+    },
+    "logsOverTime": {
+      "title": "Logs Over Time",
+      "chartTitle": "Daily Log Trend"
+    },
+    "outOfRangeOverTime": {
+      "title": "Out of Range Over Time",
+      "chartTitle": "Out of Range Trend"
+    },
+    "logsByUser": {
+      "title": "Logs by User",
+      "chartTitle": "Logs per User"
+    }
   }
 }

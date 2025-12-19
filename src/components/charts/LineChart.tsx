@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface LineChartData {
   label: string;
@@ -14,6 +15,7 @@ interface LineChartProps {
 }
 
 const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color = '#3b82f6', showStats = true }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
@@ -34,7 +36,7 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
         <div className="flex items-center justify-center bg-gray-50 rounded-lg" style={{ height }}>
-          <span className="text-gray-400">No data</span>
+          <span className="text-gray-400">{t('charts.noData')}</span>
         </div>
       </div>
     );
@@ -128,8 +130,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
                       <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
                       <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={color} style={{ pointerEvents: 'none' }} />
                       <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{p.label}</text>
-                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Value: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
-                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>Share: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
                     </g>
                   )}
                 </g>
@@ -149,15 +151,15 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       {showStats && (
         <div className="flex justify-center gap-6 mt-3 pt-3 border-t border-gray-100">
           <div className="text-center">
-            <span className="text-xs text-gray-500">Total</span>
+            <span className="text-xs text-gray-500">{t('charts.total')}</span>
             <p className="text-sm font-semibold" style={{ color }}>{total}</p>
           </div>
           <div className="text-center">
-            <span className="text-xs text-gray-500">Average</span>
+            <span className="text-xs text-gray-500">{t('charts.average')}</span>
             <p className="text-sm font-semibold text-gray-700">{(total / data.length).toFixed(1)}</p>
           </div>
           <div className="text-center">
-            <span className="text-xs text-gray-500">Peak</span>
+            <span className="text-xs text-gray-500">{t('charts.peak')}</span>
             <p className="text-sm font-semibold text-gray-700">{maxValue}</p>
           </div>
         </div>

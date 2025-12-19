@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface BarChartData {
   label: string;
@@ -14,13 +15,14 @@ interface BarChartProps {
 }
 
 const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, defaultColor = '#3b82f6' }) => {
+  const { t } = useTranslation();
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   if (data.length === 0) {
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">No data</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('charts.noData')}</div>
       </div>
     );
   }
@@ -72,10 +74,10 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, defaultC
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    Count: <span className="text-white font-semibold">{item.value}</span>
+                    {t('charts.count')}: <span className="text-white font-semibold">{item.value}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    Share: <span className="font-semibold" style={{ color: barColor }}>{percentage.toFixed(1)}%</span>
+                    {t('charts.share')}: <span className="font-semibold" style={{ color: barColor }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
