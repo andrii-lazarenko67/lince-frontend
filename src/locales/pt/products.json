@@ -208,6 +208,11 @@
       "frequency": "Frequência",
       "frequencyPlaceholder": "ex: Diário, Semanal, etc.",
       "system": "Sistema",
+      "selectSystem": "Selecione o sistema",
+      "allSystems": "Todos os Sistemas",
+      "stage": "Etapa",
+      "selectStage": "Selecione a etapa",
+      "allStages": "Todas as Etapas",
       "noneGeneral": "Nenhum (Geral)",
       "notes": "Observações",
       "notesPlaceholder": "Adicionar observações (opcional)"

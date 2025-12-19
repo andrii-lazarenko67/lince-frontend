@@ -208,6 +208,11 @@
       "frequency": "Frequency",
       "frequencyPlaceholder": "e.g., Daily, Weekly, etc.",
       "system": "System",
+      "selectSystem": "Select system",
+      "allSystems": "All Systems",
+      "stage": "Stage",
+      "selectStage": "Select stage",
+      "allStages": "All Stages",
       "noneGeneral": "None (General)",
       "notes": "Notes",
       "notesPlaceholder": "Add notes (optional)"

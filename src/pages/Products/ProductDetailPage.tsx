@@ -21,12 +21,24 @@ const ProductDetailPage: React.FC = () => {
   const [isStockOpen, setIsStockOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  // System/Stage selection state for usage modal
+  const [selectedSystemId, setSelectedSystemId] = useState<string>('');
+  const [selectedStageId, setSelectedStageId] = useState<string>('');
+
   const [usageData, setUsageData] = useState({
     systemId: '',
     quantity: '',
     type: 'out' as 'in' | 'out',
     notes: ''
   });
+
+  // Get root systems (no parent)
+  const rootSystems = systems.filter(s => !s.parentId);
+
+  // Get stages (children of selected system)
+  const stageOptions = selectedSystemId
+    ? systems.filter(s => s.parentId === Number(selectedSystemId))
+    : [];
 
   const [stockData, setStockData] = useState({
     quantity: '',
@@ -42,6 +54,37 @@ const ProductDetailPage: React.FC = () => {
     dispatch(fetchSystems({}));
   }, [dispatch, id]);
 
+  // Handle system change for usage modal - reset stage and update usageData
+  const handleUsageSystemChange = (systemId: string) => {
+    setSelectedSystemId(systemId);
+    setSelectedStageId('');
+    // If no stages for this system, use the system itself
+    const stages = systems.filter(s => s.parentId === Number(systemId));
+    if (stages.length === 0 && systemId) {
+      setUsageData({ ...usageData, systemId });
+    } else {
+      setUsageData({ ...usageData, systemId: '' });
+    }
+  };
+
+  // Handle stage change for usage modal - update usageData with the stage ID
+  const handleUsageStageChange = (stageId: string) => {
+    setSelectedStageId(stageId);
+    if (stageId) {
+      setUsageData({ ...usageData, systemId: stageId });
+    } else if (selectedSystemId) {
+      // If no stage selected but system is, use the system
+      const stages = systems.filter(s => s.parentId === Number(selectedSystemId));
+      if (stages.length === 0) {
+        setUsageData({ ...usageData, systemId: selectedSystemId });
+      } else {
+        setUsageData({ ...usageData, systemId: '' });
+      }
+    } else {
+      setUsageData({ ...usageData, systemId: '' });
+    }
+  };
+
   const handleRecordUsage = async () => {
     if (id && usageData.quantity) {
       const result = await dispatch(recordProductUsage({
@@ -56,6 +99,8 @@ const ProductDetailPage: React.FC = () => {
       if (recordProductUsage.fulfilled.match(result)) {
         setIsUsageOpen(false);
         setUsageData({ systemId: '', quantity: '', type: 'out', notes: '' });
+        setSelectedSystemId('');
+        setSelectedStageId('');
         // Refresh product and usage history to show changes immediately
         dispatch(fetchProductById(Number(id)));
         dispatch(fetchProductUsageHistory({ id: Number(id) }));
@@ -132,7 +177,14 @@ const ProductDetailPage: React.FC = () => {
     }
   ];
 
-  const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
+  const systemOptions = [
+    { value: '', label: t('products.filters.allSystems') },
+    ...rootSystems.map(s => ({ value: s.id, label: s.name }))
+  ];
+  const stageSelectOptions = [
+    { value: '', label: t('products.filters.allStages') },
+    ...stageOptions.map(s => ({ value: s.id, label: s.name }))
+  ];
   const usageTypeOptions = [
     { value: 'out', label: t('products.detail.stockOutUsage') },
     { value: 'in', label: t('products.detail.stockInReceived') }
@@ -234,7 +286,7 @@ const ProductDetailPage: React.FC = () => {
       <ProductDosageSection productId={currentProduct.id} productName={currentProduct.name} />
 
       <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title={t('products.detail.recordUsage')}>
-        <div className='flex flex-col gap-10'>
+        <div className='flex flex-col gap-4'>
           <Select
             name="type"
             value={usageData.type}
@@ -244,12 +296,22 @@ const ProductDetailPage: React.FC = () => {
           />
           <Select
             name="systemId"
-            value={usageData.systemId}
-            onChange={(e) => setUsageData({ ...usageData, systemId: e.target.value })}
+            value={selectedSystemId}
+            onChange={(e) => handleUsageSystemChange(e.target.value)}
             options={systemOptions}
             label={t('products.detail.systemOptional')}
             placeholder={t('products.detail.selectSystem')}
           />
+          {selectedSystemId && stageOptions.length > 0 && (
+            <Select
+              name="stageId"
+              value={selectedStageId}
+              onChange={(e) => handleUsageStageChange(e.target.value)}
+              options={stageSelectOptions}
+              label={t('products.filters.stage')}
+              placeholder={t('products.detail.selectSystem')}
+            />
+          )}
           <Input
             type="number"
             name="quantity"
@@ -273,7 +335,15 @@ const ProductDetailPage: React.FC = () => {
             {t('common.cancel')}
           </Button>
           <Button variant="primary" onClick={handleRecordUsage} disabled={loading}>
-            {loading ? t('products.detail.recording') : t('products.detail.record')}
+            {loading ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {t('products.detail.recording')}
+              </span>
+            ) : t('products.detail.record')}
           </Button>
         </div>
       </Modal>

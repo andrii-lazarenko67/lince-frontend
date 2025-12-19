@@ -22,12 +22,17 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { dosages, loading, error } = useAppSelector((state) => state.productDosages);
+  const { loading: globalLoading } = useAppSelector((state) => state.ui);
   const { units } = useAppSelector((state) => state.units);
   const { systems } = useAppSelector((state) => state.systems);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [selectedDosage, setSelectedDosage] = useState<ProductDosage | null>(null);
+
+  // System/Stage selection state
+  const [selectedSystemId, setSelectedSystemId] = useState<string>('');
+  const [selectedStageId, setSelectedStageId] = useState<string>('');
 
   const [formData, setFormData] = useState<CreateProductDosageRequest>({
     productId,
@@ -38,6 +43,14 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
     frequency: '',
     notes: ''
   });
+
+  // Get root systems (no parent)
+  const rootSystems = systems.filter(s => !s.parentId);
+
+  // Get stages (children of selected system)
+  const stageOptions = selectedSystemId
+    ? systems.filter(s => s.parentId === Number(selectedSystemId))
+    : [];
 
   useEffect(() => {
     dispatch(fetchDosagesByProduct(productId));
@@ -63,6 +76,8 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
       notes: ''
     });
     setSelectedDosage(null);
+    setSelectedSystemId('');
+    setSelectedStageId('');
   };
 
   const handleOpenCreate = () => {
@@ -81,7 +96,58 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
       frequency: dosage.frequency || '',
       notes: dosage.notes || ''
     });
+
+    // Find and set the system/stage selection
+    if (dosage.systemId) {
+      const system = systems.find(s => s.id === dosage.systemId);
+      if (system) {
+        if (system.parentId) {
+          // It's a stage - set parent as system and this as stage
+          setSelectedSystemId(system.parentId.toString());
+          setSelectedStageId(system.id.toString());
+        } else {
+          // It's a root system
+          setSelectedSystemId(system.id.toString());
+          setSelectedStageId('');
+        }
+      }
+    } else {
+      setSelectedSystemId('');
+      setSelectedStageId('');
+    }
+
     setIsModalOpen(true);
+  };
+
+  // Handle system change - reset stage and update formData
+  const handleSystemChange = (systemId: string) => {
+    setSelectedSystemId(systemId);
+    setSelectedStageId('');
+    // If no stages for this system, use the system itself
+    const stages = systems.filter(s => s.parentId === Number(systemId));
+    if (stages.length === 0 && systemId) {
+      setFormData({ ...formData, systemId: Number(systemId) });
+    } else {
+      setFormData({ ...formData, systemId: null });
+    }
+  };
+
+  // Handle stage change - update formData with the stage ID
+  const handleStageChange = (stageId: string) => {
+    setSelectedStageId(stageId);
+    if (stageId) {
+      setFormData({ ...formData, systemId: Number(stageId) });
+    } else if (selectedSystemId) {
+      // If no stage selected but system is, use the system
+      const stages = systems.filter(s => s.parentId === Number(selectedSystemId));
+      if (stages.length === 0) {
+        setFormData({ ...formData, systemId: Number(selectedSystemId) });
+      } else {
+        setFormData({ ...formData, systemId: null });
+      }
+    } else {
+      setFormData({ ...formData, systemId: null });
+    }
   };
 
   const handleOpenDelete = (dosage: ProductDosage) => {
@@ -206,8 +272,13 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
   }));
 
   const systemOptions = [
-    { value: '', label: t('productDosage.form.noneGeneral') },
-    ...systems.map(s => ({ value: s.id, label: s.name }))
+    { value: '', label: t('productDosage.form.allSystems') },
+    ...rootSystems.map(s => ({ value: s.id, label: s.name }))
+  ];
+
+  const stageSelectOptions = [
+    { value: '', label: t('productDosage.form.allStages') },
+    ...stageOptions.map(s => ({ value: s.id, label: s.name }))
   ];
 
   const dosageModeOptions: { value: DosageMode; label: string }[] = [
@@ -296,11 +367,23 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
 
           <Select
             name="systemId"
-            value={formData.systemId?.toString() || ''}
-            onChange={(e) => setFormData({ ...formData, systemId: e.target.value ? parseInt(e.target.value) : null })}
+            value={selectedSystemId}
+            onChange={(e) => handleSystemChange(e.target.value)}
             options={systemOptions}
             label={t('productDosage.form.system')}
+            placeholder={t('productDosage.form.selectSystem')}
           />
+
+          {selectedSystemId && stageOptions.length > 0 && (
+            <Select
+              name="stageId"
+              value={selectedStageId}
+              onChange={(e) => handleStageChange(e.target.value)}
+              options={stageSelectOptions}
+              label={t('productDosage.form.stage')}
+              placeholder={t('productDosage.form.selectStage')}
+            />
+          )}
 
           <TextArea
             name="notes"
@@ -319,11 +402,22 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
               setIsModalOpen(false);
               resetForm();
             }}
+            disabled={loading || globalLoading}
           >
             {t('productDosage.modal.cancel')}
           </Button>
-          <Button variant="primary" onClick={handleSubmit} disabled={loading}>
-            {selectedDosage ? t('productDosage.modal.update') : t('productDosage.modal.create')}
+          <Button variant="primary" onClick={handleSubmit} disabled={loading || globalLoading}>
+            {(loading || globalLoading) ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {selectedDosage ? t('productDosage.modal.update') : t('productDosage.modal.create')}
+              </span>
+            ) : (
+              selectedDosage ? t('productDosage.modal.update') : t('productDosage.modal.create')
+            )}
           </Button>
         </div>
       </Modal>
@@ -347,11 +441,22 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
               setIsDeleteOpen(false);
               setSelectedDosage(null);
             }}
+            disabled={loading || globalLoading}
           >
             {t('productDosage.delete.cancel')}
           </Button>
-          <Button variant="danger" onClick={handleDelete} disabled={loading}>
-            {t('productDosage.delete.delete')}
+          <Button variant="danger" onClick={handleDelete} disabled={loading || globalLoading}>
+            {(loading || globalLoading) ? (
+              <span className="flex items-center">
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {t('productDosage.delete.delete')}
+              </span>
+            ) : (
+              t('productDosage.delete.delete')
+            )}
           </Button>
         </div>
       </Modal>
