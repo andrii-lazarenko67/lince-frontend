@@ -202,14 +202,6 @@
     }
   },
   "reportDailyLogs": {
-    "charts": {
-      "total": "Total",
-      "count": "Contagem",
-      "share": "Proporção",
-      "value": "Valor",
-      "average": "Média",
-      "peak": "Máximo"
-    },
     "status": {
       "normal": "Normal",
       "outOfRange": "Fora da Faixa"

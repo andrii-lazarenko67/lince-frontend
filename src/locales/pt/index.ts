@@ -7,7 +7,7 @@ import { dailyLogs } from './dailyLogs.json';
 import { inspections } from './inspections.json';
 import { incidents } from './incidents.json';
 import { products, productDosage } from './products.json';
-import { reports } from './reports.json';
+import { reports, reportDailyLogs } from './reports.json';
 import { users } from './users.json';
 import { library } from './library.json';
 import { settings } from './settings.json';
@@ -28,6 +28,7 @@ export default {
   products,
   productDosage,
   reports,
+  reportDailyLogs,
   users,
   library,
   settings,

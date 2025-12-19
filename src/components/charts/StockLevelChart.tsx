@@ -85,15 +85,15 @@ const StockLevelChart: React.FC<StockLevelChartProps> = ({ data, title, maxItems
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('charts.stock')}: <span className="text-white font-semibold">{item.current} {item.unit}</span>
+                    {t('common.charts.stock')}: <span className="text-white font-semibold">{item.current} {item.unit}</span>
                   </div>
                   {item.min !== null && (
                     <div className="text-xs text-gray-400">
-                      {t('charts.minAlert')}: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
+                      {t('common.charts.minAlert')}: <span className="text-yellow-400 font-semibold">{item.min} {item.unit}</span>
                     </div>
                   )}
                   <div className="text-xs text-gray-400">
-                    {t('charts.share')}: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                    {t('common.charts.share')}: <span className="font-semibold" style={{ color: isLowStock ? '#ef4444' : '#3b82f6' }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
@@ -102,9 +102,9 @@ const StockLevelChart: React.FC<StockLevelChartProps> = ({ data, title, maxItems
         })}
       </div>
       <div className="flex justify-center gap-4 mt-4">
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">{t('charts.normal')}</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('charts.lowStock')}</span></div>
-        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">{t('charts.minAlert')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-blue-500" /><span className="text-xs text-gray-600">{t('common.charts.normal')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-3 rounded bg-red-500" /><span className="text-xs text-gray-600">{t('common.charts.lowStock')}</span></div>
+        <div className="flex items-center gap-1"><div className="w-3 h-0.5 bg-yellow-500" /><span className="text-xs text-gray-600">{t('common.charts.minAlert')}</span></div>
       </div>
     </div>
   );

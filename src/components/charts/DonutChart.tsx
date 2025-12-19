@@ -23,7 +23,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180, showLe
     return (
       <div className="flex flex-col items-center">
         <div className="rounded-full bg-gray-100 flex items-center justify-center" style={{ width: size, height: size }}>
-          <span className="text-gray-400 text-sm">{t('charts.noData')}</span>
+          <span className="text-gray-400 text-sm">{t('common.charts.noData')}</span>
         </div>
         <p className="text-sm font-medium text-gray-700 mt-3">{title}</p>
       </div>
@@ -86,7 +86,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180, showLe
           )
         ))}
         <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('charts.total')}</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('common.charts.total')}</text>
 
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
           const segment = segments[hoveredIndex];
@@ -106,8 +106,8 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180, showLe
               <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
               <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={segment.color} style={{ pointerEvents: 'none' }} />
               <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{segment.label}</text>
-              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
-              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
             </g>
           );
         })()}

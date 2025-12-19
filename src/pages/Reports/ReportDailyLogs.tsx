@@ -86,7 +86,7 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
           )
         ))}
         <text x={radius} y={radius - 8} textAnchor="middle" style={{ fontSize: '24px', fontWeight: 'bold', fill: '#374151', pointerEvents: 'none' }}>{total}</text>
-        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.total')}</text>
+        <text x={radius} y={radius + 12} textAnchor="middle" style={{ fontSize: '12px', fill: '#6b7280', pointerEvents: 'none' }}>{t('common.charts.total')}</text>
 
         {/* Detailed Tooltip */}
         {hoveredIndex !== null && segments[hoveredIndex] && (() => {
@@ -107,8 +107,8 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
               <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
               <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={segment.color} style={{ pointerEvents: 'none' }} />
               <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{segment.label}</text>
-              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
-              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
             </g>
           );
         })()}
@@ -186,10 +186,10 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200, showValu
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('reportDailyLogs.charts.count')}: <span className="text-white font-semibold">{item.value}</span>
+                    {t('common.charts.count')}: <span className="text-white font-semibold">{item.value}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('reportDailyLogs.charts.share')}: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                    {t('common.charts.share')}: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
@@ -324,8 +324,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
                       <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
                       <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={color} style={{ pointerEvents: 'none' }} />
                       <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{p.label}</text>
-                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
-                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('reportDailyLogs.charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
                     </g>
                   )}
                 </g>
@@ -344,15 +344,15 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       )}
       <div className="flex justify-center gap-6 mt-3 pt-3 border-t border-gray-100">
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.total')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.total')}</span>
           <p className="text-sm font-semibold" style={{ color }}>{data.reduce((sum, d) => sum + d.value, 0)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.average')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.average')}</span>
           <p className="text-sm font-semibold text-gray-700">{(data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(1)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('reportDailyLogs.charts.peak')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.peak')}</span>
           <p className="text-sm font-semibold text-gray-700">{maxValue}</p>
         </div>
       </div>

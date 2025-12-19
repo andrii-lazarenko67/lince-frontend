@@ -107,8 +107,8 @@ const DonutChart: React.FC<DonutChartProps> = ({ data, title, size = 180 }) => {
               <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
               <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={segment.color} style={{ pointerEvents: 'none' }} />
               <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{segment.label}</text>
-              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
-              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.count')}: <tspan fill="white" fontWeight="600">{segment.value}</tspan></text>
+              <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.share')}: <tspan fill={segment.color} fontWeight="600">{segment.percentage.toFixed(1)}%</tspan></text>
             </g>
           );
         })()}
@@ -185,10 +185,10 @@ const BarChart: React.FC<BarChartProps> = ({ data, title, height = 200 }) => {
                     <span className="text-white text-xs font-bold truncate">{item.label}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('charts.count')}: <span className="text-white font-semibold">{item.value}</span>
+                    {t('common.charts.count')}: <span className="text-white font-semibold">{item.value}</span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('charts.share')}: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
+                    {t('common.charts.share')}: <span className="font-semibold" style={{ color: item.color || '#3b82f6' }}>{percentage.toFixed(1)}%</span>
                   </div>
                 </div>
               )}
@@ -230,7 +230,7 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title }) 
             <div key={index} className="space-y-1 relative">
               <div className="flex justify-between text-xs">
                 <span className="text-gray-700 truncate max-w-[150px]">{item.label}</span>
-                <span className="text-gray-500">{total} {t('charts.items')}</span>
+                <span className="text-gray-500">{total} {t('common.charts.items')}</span>
               </div>
               <div className="flex h-4 rounded overflow-hidden">
                 {item.pass > 0 && (
@@ -294,12 +294,12 @@ const HorizontalBarChart: React.FC<HorizontalBarChartProps> = ({ data, title }) 
                     </span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('charts.count')}: <span className="text-white font-semibold">
+                    {t('common.charts.count')}: <span className="text-white font-semibold">
                       {hoveredItem.type === 'pass' ? item.pass : hoveredItem.type === 'fail' ? item.fail : item.na}
                     </span>
                   </div>
                   <div className="text-xs text-gray-400">
-                    {t('charts.share')}: <span
+                    {t('common.charts.share')}: <span
                       className="font-semibold"
                       style={{
                         color: hoveredItem.type === 'pass' ? '#22c55e' : hoveredItem.type === 'fail' ? '#ef4444' : '#9ca3af'
@@ -446,8 +446,8 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
                       <rect x={tooltipX} y={tooltipY} width={tooltipWidth} height={tooltipHeight} rx="6" fill="#1f2937" style={{ cursor: 'pointer' }} />
                       <rect x={tooltipX + 8} y={tooltipY + 10} width={10} height={10} rx="2" fill={color} style={{ pointerEvents: 'none' }} />
                       <text x={tooltipX + 24} y={tooltipY + 18} textAnchor="start" style={{ fontSize: '11px', fill: 'white', fontWeight: 'bold', pointerEvents: 'none' }}>{p.label}</text>
-                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
-                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 34} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.value')}: <tspan fill="white" fontWeight="600">{p.value}</tspan></text>
+                      <text x={tooltipX + 8} y={tooltipY + 48} textAnchor="start" style={{ fontSize: '10px', fill: '#9ca3af', pointerEvents: 'none' }}>{t('common.charts.share')}: <tspan fill={color} fontWeight="600">{percentage.toFixed(1)}%</tspan></text>
                     </g>
                   )}
                 </g>
@@ -466,15 +466,15 @@ const LineChart: React.FC<LineChartProps> = ({ data, title, height = 220, color 
       )}
       <div className="flex justify-center gap-6 mt-3 pt-3 border-t border-gray-100">
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('charts.total')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.total')}</span>
           <p className="text-sm font-semibold" style={{ color }}>{data.reduce((sum, d) => sum + d.value, 0)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('charts.average')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.average')}</span>
           <p className="text-sm font-semibold text-gray-700">{(data.reduce((sum, d) => sum + d.value, 0) / data.length).toFixed(1)}</p>
         </div>
         <div className="text-center">
-          <span className="text-xs text-gray-500">{t('charts.peak')}</span>
+          <span className="text-xs text-gray-500">{t('common.charts.peak')}</span>
           <p className="text-sm font-semibold text-gray-700">{maxValue}</p>
         </div>
       </div>

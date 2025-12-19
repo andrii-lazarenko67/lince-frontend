@@ -27,7 +27,7 @@ const StackedBarChart: React.FC<StackedBarChartProps> = ({ data, title, height =
     return (
       <div className="w-full">
         <p className="text-sm font-medium text-gray-700 mb-4">{title}</p>
-        <div className="flex items-center justify-center h-48 text-gray-400">{t('charts.noData')}</div>
+        <div className="flex items-center justify-center h-48 text-gray-400">{t('common.charts.noData')}</div>
       </div>
     );
   }

@@ -16,6 +16,7 @@
   "export": "Exportar",
   "loading": "Carregando...",
   "noData": "Nenhum dado disponível",
+  "unknown": "Desconhecido",
   "error": "Ocorreu um erro",
   "success": "Sucesso",
   "confirm": "Confirmar",
