@@ -49,7 +49,7 @@ const NotificationsPage: React.FC = () => {
   };
 
   const handleClearMyNotifications = () => {
-    if (window.confirm(t('notifications.confirmClearAll'))) {
+    if (window.confirm(t('notifications.clearConfirm'))) {
       dispatch(clearMyNotifications());
     }
   };
@@ -85,30 +85,37 @@ const NotificationsPage: React.FC = () => {
   };
 
   const handleDeleteNotification = (id: number) => {
-    if (window.confirm(t('notifications.confirmDelete'))) {
+    if (window.confirm(t('notifications.deleteConfirm'))) {
       dispatch(deleteNotification(id));
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'incident': return t('notifications.types.incident');
-      case 'alert': return t('notifications.types.alert');
-      case 'stock': return t('notifications.types.stock');
-      case 'inspection': return t('notifications.types.inspection');
-      case 'system': return t('notifications.types.system');
+      case 'incident': return t('notifications.incident');
+      case 'alert': return t('notifications.alert');
+      case 'stock': return t('notifications.stock');
+      case 'inspection': return t('notifications.inspection');
+      case 'system': return t('notifications.system');
       default: return type;
     }
   };
 
   const getExportData = () => {
-    const headers = [t('notifications.export.title'), t('notifications.export.message'), t('notifications.export.type'), t('notifications.export.priority'), t('notifications.export.status'), t('notifications.export.created')];
+    const headers = [
+      t('notifications.export.headers.title'),
+      t('notifications.export.headers.message'),
+      t('notifications.export.headers.type'),
+      t('notifications.export.headers.priority'),
+      t('notifications.export.headers.status'),
+      t('notifications.export.headers.created')
+    ];
     const rows = notifications.map(notif => [
       notif.title,
       notif.message,
       getTypeLabel(notif.type),
       notif.priority,
-      notif.isRead ? t('notifications.export.read') : t('notifications.export.unread'),
+      notif.isRead ? t('notifications.read') : t('notifications.unread'),
       new Date(notif.createdAt).toLocaleString()
     ]);
     return { headers, rows };
@@ -118,16 +125,16 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToPdf(
       {
-        title: t('notifications.export.reportTitle'),
+        title: t('notifications.export.title'),
         subtitle: t('notifications.export.subtitle'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
           { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
-          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.unreadNotifications'), value: String(unreadCount) },
           { label: t('notifications.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `${t('notifications.export.notificationsCount', { count: notifications.length })}`, headers, rows }]
+      [{ title: t('notifications.export.notifications'), headers, rows }]
     );
   };
 
@@ -135,15 +142,15 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToHtml(
       {
-        title: t('notifications.export.reportTitle'),
+        title: t('notifications.export.title'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
           { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
-          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.unreadNotifications'), value: String(unreadCount) },
           { label: t('notifications.export.generated'), value: new Date().toLocaleString() }
         ]
       },
-      [{ title: `${t('notifications.export.notificationsCount', { count: notifications.length })}`, headers, rows }]
+      [{ title: t('notifications.export.notifications'), headers, rows }]
     );
   };
 
@@ -151,11 +158,11 @@ const NotificationsPage: React.FC = () => {
     const { headers, rows } = getExportData();
     exportToCsv(
       {
-        title: t('notifications.export.reportTitle'),
+        title: t('notifications.export.title'),
         filename: `notifications-${new Date().toISOString().split('T')[0]}`,
         metadata: [
           { label: t('notifications.export.totalNotifications'), value: String(notifications.length) },
-          { label: t('notifications.export.unread'), value: String(unreadCount) },
+          { label: t('notifications.export.unreadNotifications'), value: String(unreadCount) },
           { label: t('notifications.export.generated'), value: new Date().toISOString() }
         ]
       },
@@ -169,7 +176,7 @@ const NotificationsPage: React.FC = () => {
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t('notifications.title')}</h1>
           <p className="text-gray-500 mt-1">
-            {unreadCount > 0 ? t('notifications.unreadCount', { count: unreadCount }) : t('notifications.allCaughtUp')}
+            {unreadCount > 0 ? t('notifications.subtitle', { count: unreadCount }) : t('notifications.allCaughtUp')}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
@@ -199,7 +206,7 @@ const NotificationsPage: React.FC = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('notifications.tabs.myNotifications')}
+              {t('notifications.myNotifications')}
               {unreadCount > 0 && (
                 <span className="ml-2 bg-blue-100 text-blue-600 py-0.5 px-2 rounded-full text-xs">
                   {unreadCount}
@@ -214,7 +221,7 @@ const NotificationsPage: React.FC = () => {
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {t('notifications.tabs.allNotifications')}
+              {t('notifications.allNotifications')}
               <span className="ml-2 bg-gray-100 text-gray-600 py-0.5 px-2 rounded-full text-xs">
                 {allNotifications.length}
               </span>
@@ -227,12 +234,12 @@ const NotificationsPage: React.FC = () => {
       {activeTab === 'my' && (
         <Card
           noPadding
-          title={t('notifications.myNotificationsCard')}
+          title={t('notifications.myNotifications')}
           headerActions={
             <div className="flex gap-2">
               {unreadCount > 0 && (
                 <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
-                  {t('notifications.markAllRead')}
+                  {t('notifications.markAllAsRead')}
                 </Button>
               )}
               {notifications.length > 0 && (
@@ -253,7 +260,7 @@ const NotificationsPage: React.FC = () => {
 
       {/* Admin Notifications Tab */}
       {activeTab === 'admin' && isAdmin && (
-        <Card noPadding title={t('notifications.allSystemNotifications')}>
+        <Card noPadding title={t('notifications.allNotifications')}>
           <AdminNotificationList
             notifications={allNotifications}
             onViewRecipients={handleViewRecipients}
