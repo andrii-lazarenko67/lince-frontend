@@ -91,8 +91,8 @@ const AdminNotificationList: React.FC<AdminNotificationListProps> = ({
           {notifications.map((notification) => (
             <tr key={notification.id} className="hover:bg-gray-50">
               <td className="px-6 py-4">
-                <div className="text-sm font-medium text-gray-900">{notification.title}</div>
-                <div className="text-sm text-gray-500 truncate max-w-xs">{notification.message}</div>
+                <div className="text-sm font-medium text-gray-900">{t(notification.title)}</div>
+                <div className="text-sm text-gray-500 truncate max-w-xs">{t(notification.message)}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 {getTypeBadge(notification.type)}

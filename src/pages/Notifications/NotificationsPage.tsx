@@ -111,8 +111,8 @@ const NotificationsPage: React.FC = () => {
       t('notifications.export.headers.created')
     ];
     const rows = notifications.map(notif => [
-      notif.title,
-      notif.message,
+      t(notif.title),
+      t(notif.message),
       getTypeLabel(notif.type),
       t(`notifications.priority.${notif.priority}`),
       notif.isRead ? t('notifications.read') : t('notifications.unread'),

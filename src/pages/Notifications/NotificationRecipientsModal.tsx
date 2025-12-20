@@ -67,7 +67,7 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
         <div className="p-6 border-b border-gray-200">
           <div className="flex items-start justify-between">
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{notification.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{t(notification.title)}</h2>
               <div className="flex items-center gap-2 mt-2">
                 {getTypeBadge(notification.type)}
                 {getPriorityBadge(notification.priority)}
@@ -82,7 +82,7 @@ const NotificationRecipientsModal: React.FC<NotificationRecipientsModalProps> = 
               </svg>
             </button>
           </div>
-          <p className="mt-3 text-gray-600">{notification.message}</p>
+          <p className="mt-3 text-gray-600">{t(notification.message)}</p>
           <p className="mt-2 text-sm text-gray-500">
             {t('notifications.recipients.created')}: {new Date(notification.createdAt).toLocaleString()}
             {notification.createdBy && ` ${t('notifications.recipients.by')} ${notification.createdBy.name}`}

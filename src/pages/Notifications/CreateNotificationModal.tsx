@@ -207,7 +207,7 @@ const CreateNotificationModal: React.FC<CreateNotificationModalProps> = ({
                       />
                       <div className="ml-3">
                         <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                        <p className="text-xs text-gray-500">{user.email} - {user.role}</p>
+                        <p className="text-xs text-gray-500">{user.email} - {t(`users.roles.${user.role}`)}</p>
                       </div>
                     </label>
                   ))}
