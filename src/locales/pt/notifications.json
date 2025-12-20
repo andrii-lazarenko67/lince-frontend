@@ -133,6 +133,57 @@
       "lowStock": {
         "title": "Alerta de Estoque Baixo",
         "message": "{{name}} está com estoque baixo. Estoque atual: {{stock}} {{unit}}"
+      },
+      "incidentAssigned": {
+        "title": "Ocorrência Atribuída a Você",
+        "message": "Você foi designado para lidar com uma ocorrência"
+      }
+    },
+    "seed": {
+      "legionellaAlert": {
+        "title": "CRÍTICO: Alerta de Legionella",
+        "message": "Contagem de Legionella acima do limite na Torre de Resfriamento 1. Ação imediata necessária."
+      },
+      "incidentResolved": {
+        "title": "Ocorrência Resolvida",
+        "message": "A ocorrência \"Alerta de Legionella na torre de resfriamento\" foi resolvida com sucesso."
+      },
+      "inspectionScheduled": {
+        "title": "Inspeção Agendada",
+        "message": "Inspeção de segurança da Caldeira a Vapor agendada para os próximos 10 dias."
+      },
+      "lowStockHypochlorite": {
+        "message": "Estoque de Hipoclorito de Sódio 12% está abaixo do nível mínimo (100L restantes)."
+      },
+      "parameterOutOfRange": {
+        "title": "Parâmetro Fora do Limite",
+        "message": "pH da Piscina Olímpica medido em 7,9, acima do limite máximo de 7,8."
+      },
+      "vibrationDetected": {
+        "message": "Vibração excessiva detectada no ventilador da Torre de Resfriamento 1."
+      },
+      "inspectionCompleted": {
+        "title": "Inspeção Concluída",
+        "message": "Inspeção regulatória da ETA Principal concluída com sucesso."
+      },
+      "lowStockBactericide": {
+        "message": "Estoque de Bactericida THPS Industrial está abaixo do nível mínimo."
+      },
+      "monthlyReport": {
+        "title": "Relatório Mensal Disponível",
+        "message": "O relatório mensal de qualidade da água de Novembro está disponível para download."
+      },
+      "scheduledMaintenance": {
+        "title": "Manutenção Programada",
+        "message": "Manutenção preventiva da ETA Principal agendada para o dia 15."
+      },
+      "highTurbidity": {
+        "title": "Turbidez Elevada Detectada",
+        "message": "Turbidez da água bruta na ETA Principal acima de 100 NTU."
+      },
+      "recordReminder": {
+        "title": "Lembrete de Registro",
+        "message": "Não esqueça de registrar os dados diários da Piscina Olímpica."
       }
     },
     "export": {

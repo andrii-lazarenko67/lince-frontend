@@ -114,7 +114,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
             >
               <div className="flex items-center flex-wrap gap-2 mb-1">
                 <p className={`text-sm font-medium ${!notification.isRead ? 'text-gray-900' : 'text-gray-700'}`}>
-                  {notification.title}
+                  {t(notification.title)}
                 </p>
                 {getTypeBadge(notification.type)}
                 {getPriorityBadge(notification.priority)}
@@ -122,7 +122,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
                   <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                 )}
               </div>
-              <p className="text-sm text-gray-500">{notification.message}</p>
+              <p className="text-sm text-gray-500">{t(notification.message)}</p>
               <p className="text-xs text-gray-400 mt-1">
                 {new Date(notification.createdAt).toLocaleString()}
               </p>

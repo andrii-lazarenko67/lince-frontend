@@ -133,6 +133,57 @@
       "lowStock": {
         "title": "Low Stock Alert",
         "message": "{{name}} is running low. Current stock: {{stock}} {{unit}}"
+      },
+      "incidentAssigned": {
+        "title": "Incident Assigned to You",
+        "message": "You have been assigned to handle an incident"
+      }
+    },
+    "seed": {
+      "legionellaAlert": {
+        "title": "CRITICAL: Legionella Alert",
+        "message": "Legionella count above limit in Cooling Tower 1. Immediate action required."
+      },
+      "incidentResolved": {
+        "title": "Incident Resolved",
+        "message": "The incident \"Legionella Alert in cooling tower\" was resolved successfully."
+      },
+      "inspectionScheduled": {
+        "title": "Inspection Scheduled",
+        "message": "Steam Boiler safety inspection scheduled for the next 10 days."
+      },
+      "lowStockHypochlorite": {
+        "message": "Sodium Hypochlorite 12% stock is below minimum level (100L remaining)."
+      },
+      "parameterOutOfRange": {
+        "title": "Parameter Out of Range",
+        "message": "Olympic Pool pH measured at 7.9, above maximum limit of 7.8."
+      },
+      "vibrationDetected": {
+        "message": "Excessive vibration detected in Cooling Tower 1 fan."
+      },
+      "inspectionCompleted": {
+        "title": "Inspection Completed",
+        "message": "Regulatory inspection of Main WTP completed successfully."
+      },
+      "lowStockBactericide": {
+        "message": "Industrial THPS Bactericide stock is below minimum level."
+      },
+      "monthlyReport": {
+        "title": "Monthly Report Available",
+        "message": "November water quality monthly report is available for download."
+      },
+      "scheduledMaintenance": {
+        "title": "Scheduled Maintenance",
+        "message": "Preventive maintenance of Main WTP scheduled for the 15th."
+      },
+      "highTurbidity": {
+        "title": "High Turbidity Detected",
+        "message": "Raw water turbidity in Main WTP above 100 NTU."
+      },
+      "recordReminder": {
+        "title": "Record Reminder",
+        "message": "Don't forget to record daily data for the Olympic Pool."
       }
     },
     "errors": {

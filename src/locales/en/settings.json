@@ -55,7 +55,22 @@
       "descriptionOptional": "Description (Optional)",
       "descriptionPlaceholder": "Describe what this parameter measures",
       "deleteConfirm": "Are you sure you want to delete {{name}}?",
-      "nameRequired": "Parameter name is required"
+      "nameRequired": "Parameter name is required",
+      "errors": {
+        "fetchError": "Error fetching parameters",
+        "notFound": "Parameter not found",
+        "nameRequired": "Parameter name is required",
+        "nameExists": "Parameter with this name already exists",
+        "createError": "Error creating parameter",
+        "updateError": "Error updating parameter",
+        "cannotModifyDefault": "Cannot modify system default parameters",
+        "cannotDeleteDefault": "Cannot delete system default parameters",
+        "inUse": "Cannot delete parameter. It is currently used by {{count}} monitoring point(s)",
+        "deleteError": "Error deleting parameter"
+      },
+      "success": {
+        "deleted": "Parameter deleted successfully"
+      }
     },
     "units": {
       "title": "Measurement Units",

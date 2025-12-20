@@ -55,7 +55,22 @@
       "descriptionOptional": "Descrição (Opcional)",
       "descriptionPlaceholder": "Descreva o que este parâmetro mede",
       "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
-      "nameRequired": "Nome do parâmetro é obrigatório"
+      "nameRequired": "Nome do parâmetro é obrigatório",
+      "errors": {
+        "fetchError": "Erro ao buscar parâmetros",
+        "notFound": "Parâmetro não encontrado",
+        "nameRequired": "Nome do parâmetro é obrigatório",
+        "nameExists": "Parâmetro com este nome já existe",
+        "createError": "Erro ao criar parâmetro",
+        "updateError": "Erro ao atualizar parâmetro",
+        "cannotModifyDefault": "Não é possível modificar parâmetros padrão do sistema",
+        "cannotDeleteDefault": "Não é possível excluir parâmetros padrão do sistema",
+        "inUse": "Não é possível excluir parâmetro. Está sendo usado por {{count}} ponto(s) de monitoramento",
+        "deleteError": "Erro ao excluir parâmetro"
+      },
+      "success": {
+        "deleted": "Parâmetro excluído com sucesso"
+      }
     },
     "units": {
       "title": "Unidades de Medida",
