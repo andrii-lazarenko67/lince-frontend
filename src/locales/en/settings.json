@@ -6,7 +6,8 @@
     "tabs": {
       "parameters": "Parameters",
       "units": "Units",
-      "systemTypes": "System Types"
+      "systemTypes": "System Types",
+      "productTypes": "Product Types"
     },
     "addParameter": "Add Parameter",
     "addUnit": "Add Unit",
@@ -111,6 +112,23 @@
       "descriptionPlaceholder": "Describe this system type",
       "deleteConfirm": "Are you sure you want to delete {{name}}?",
       "nameRequired": "System type name is required"
+    },
+    "productTypes": {
+      "title": "Product Types",
+      "subtitle": "Manage product types for classification",
+      "addType": "Add Product Type",
+      "editType": "Edit Product Type",
+      "deleteType": "Delete Product Type",
+      "name": "Name",
+      "description": "Description",
+      "actions": "Actions",
+      "emptyMessage": "No product types found. Add your first product type to get started.",
+      "typeName": "Product Type Name",
+      "namePlaceholder": "e.g., Disinfectant, pH Adjuster, Algaecide",
+      "descriptionOptional": "Description (Optional)",
+      "descriptionPlaceholder": "Describe this product type",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "validationRequired": "Product type name is required"
     }
   }
 }

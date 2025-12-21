@@ -33,6 +33,42 @@ export const fetchProductTypes = createAsyncThunk(
   }
 );
 
+export const createProductType = createAsyncThunk(
+  'products/createType',
+  async (data: { name: string; description?: string }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post<{ success: boolean; data: ProductType }>('/products/types', data);
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to create product type'));
+    }
+  }
+);
+
+export const updateProductType = createAsyncThunk(
+  'products/updateType',
+  async ({ id, data }: { id: number; data: { name?: string; description?: string } }, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.put<{ success: boolean; data: ProductType }>(`/products/types/${id}`, data);
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to update product type'));
+    }
+  }
+);
+
+export const deleteProductType = createAsyncThunk(
+  'products/deleteType',
+  async (id: number, { rejectWithValue }) => {
+    try {
+      await axiosInstance.delete(`/products/types/${id}`);
+      return id;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete product type'));
+    }
+  }
+);
+
 export const fetchProducts = createAsyncThunk(
   'products/fetchAll',
   async (params: { isActive?: boolean; lowStock?: boolean; systemId?: number; typeId?: number } = {}, { dispatch, rejectWithValue }) => {
@@ -177,6 +213,21 @@ const productSlice = createSlice({
     builder
       .addCase(fetchProductTypes.fulfilled, (state, action) => {
         state.productTypes = action.payload;
+        state.error = null;
+      })
+      .addCase(createProductType.fulfilled, (state, action) => {
+        state.productTypes.push(action.payload);
+        state.error = null;
+      })
+      .addCase(updateProductType.fulfilled, (state, action) => {
+        const index = state.productTypes.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.productTypes[index] = action.payload;
+        }
+        state.error = null;
+      })
+      .addCase(deleteProductType.fulfilled, (state, action) => {
+        state.productTypes = state.productTypes.filter(t => t.id !== action.payload);
         state.error = null;
       })
       .addCase(fetchProducts.fulfilled, (state, action) => {

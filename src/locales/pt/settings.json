@@ -6,7 +6,8 @@
     "tabs": {
       "parameters": "Parâmetros",
       "units": "Unidades",
-      "systemTypes": "Tipos de Sistema"
+      "systemTypes": "Tipos de Sistema",
+      "productTypes": "Tipos de Produto"
     },
     "addParameter": "Adicionar Parâmetro",
     "addUnit": "Adicionar Unidade",
@@ -111,6 +112,23 @@
       "descriptionPlaceholder": "Descreva este tipo de sistema",
       "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
       "nameRequired": "Nome do tipo de sistema é obrigatório"
+    },
+    "productTypes": {
+      "title": "Tipos de Produto",
+      "subtitle": "Gerenciar tipos de produto para classificação",
+      "addType": "Adicionar Tipo de Produto",
+      "editType": "Editar Tipo de Produto",
+      "deleteType": "Excluir Tipo de Produto",
+      "name": "Nome",
+      "description": "Descrição",
+      "actions": "Ações",
+      "emptyMessage": "Nenhum tipo de produto encontrado. Adicione seu primeiro tipo de produto para começar.",
+      "typeName": "Nome do Tipo de Produto",
+      "namePlaceholder": "ex: Desinfetante, Corretor de pH, Algicida",
+      "descriptionOptional": "Descrição (Opcional)",
+      "descriptionPlaceholder": "Descreva este tipo de produto",
+      "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
+      "validationRequired": "Nome do tipo de produto é obrigatório"
     }
   }
 }
