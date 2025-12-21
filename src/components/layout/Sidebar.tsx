@@ -204,7 +204,7 @@ const Sidebar: React.FC = () => {
               {user?.name || 'User'}
             </Typography>
             <Typography variant="caption" sx={{ color: 'primary.contrastText', opacity: 0.7, textTransform: 'capitalize' }}>
-              {user?.role || 'Role'}
+              {user?.role ? t(`users.roles.${user.role}`) : 'Role'}
             </Typography>
           </Box>
         </Box>

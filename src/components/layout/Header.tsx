@@ -154,7 +154,7 @@ const Header: React.FC = () => {
                   {user?.name || 'User'}
                 </Typography>
                 <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize' }}>
-                  {user?.role || 'Role'}
+                  {user?.role ? t(`users.roles.${user.role}`) : 'Role'}
                 </Typography>
               </Box>
               <Avatar
