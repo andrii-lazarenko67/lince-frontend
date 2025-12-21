@@ -213,7 +213,7 @@ const ProductDetailPage: React.FC = () => {
           </button>
           <div>
             <h1 className="text-2xl font-bold text-gray-900">{currentProduct.name}</h1>
-            <p className="text-gray-500 mt-1">{currentProduct.type || t('products.detail.product')}</p>
+            <p className="text-gray-500 mt-1">{currentProduct.type?.name || t('products.detail.product')}</p>
           </div>
         </div>
         <div className="flex space-x-3">

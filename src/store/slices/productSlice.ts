@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Product, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
+import type { Product, ProductType, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
@@ -15,14 +15,27 @@ interface RecordUsageRequest {
 
 const initialState: ProductState = {
   products: [],
+  productTypes: [],
   currentProduct: null,
   usages: [],
   error: null
 };
 
+export const fetchProductTypes = createAsyncThunk(
+  'products/fetchTypes',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get<{ success: boolean; data: ProductType[] }>('/products/types');
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch product types'));
+    }
+  }
+);
+
 export const fetchProducts = createAsyncThunk(
   'products/fetchAll',
-  async (params: { isActive?: boolean; lowStock?: boolean; systemId?: number; type?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: { isActive?: boolean; lowStock?: boolean; systemId?: number; typeId?: number } = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get<{ success: boolean; data: Product[] }>('/products', { params });
@@ -162,6 +175,10 @@ const productSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(fetchProductTypes.fulfilled, (state, action) => {
+        state.productTypes = action.payload;
+        state.error = null;
+      })
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.products = action.payload;
         state.error = null;

@@ -25,12 +25,12 @@ const ProductsChartView: React.FC<ProductsChartViewProps> = ({ products }) => {
   // Products by type donut
   const typeMap = new Map<string, number>();
   products.forEach(p => {
-    const type = p.type || 'other';
-    typeMap.set(type, (typeMap.get(type) || 0) + 1);
+    const typeName = p.type?.name || t('products.charts.unknown');
+    typeMap.set(typeName, (typeMap.get(typeName) || 0) + 1);
   });
   const typeColors = ['#3b82f6', '#8b5cf6', '#f59e0b', '#10b981', '#ec4899', '#6366f1'];
-  const byTypeData = Array.from(typeMap.entries()).map(([type, value], index) => ({
-    label: t(`products.types.${type.toLowerCase()}`, { defaultValue: type }),
+  const byTypeData = Array.from(typeMap.entries()).map(([typeName, value], index) => ({
+    label: typeName,
     value,
     color: typeColors[index % typeColors.length]
   }));
@@ -61,12 +61,12 @@ const ProductsChartView: React.FC<ProductsChartViewProps> = ({ products }) => {
   // Total stock value by type
   const typeStockMap = new Map<string, number>();
   products.forEach(p => {
-    const type = p.type || 'other';
-    typeStockMap.set(type, (typeStockMap.get(type) || 0) + Number(p.currentStock));
+    const typeName = p.type?.name || t('products.charts.unknown');
+    typeStockMap.set(typeName, (typeStockMap.get(typeName) || 0) + Number(p.currentStock));
   });
   const stockByTypeData = Array.from(typeStockMap.entries())
-    .map(([type, value], index) => ({
-      label: t(`products.types.${type.toLowerCase()}`, { defaultValue: type }),
+    .map(([typeName, value], index) => ({
+      label: typeName,
       value: Math.round(value),
       color: typeColors[index % typeColors.length]
     }))

@@ -3,10 +3,18 @@ import type { System } from './system.types';
 
 export type ProductUsageType = 'in' | 'out';
 
+export interface ProductType {
+  id: number;
+  name: string;
+  description: string | null;
+  createdAt: string;
+}
+
 export interface Product {
   id: number;
   name: string;
-  type: string;
+  typeId: number | null;
+  type: ProductType | null;
   unit: string;
   supplier: string | null;
   currentStock: number;
@@ -37,7 +45,7 @@ export interface ProductUsage {
 
 export interface CreateProductRequest {
   name: string;
-  type: string;
+  typeId?: number;
   unit: string;
   supplier?: string;
   currentStock?: number;
@@ -48,7 +56,7 @@ export interface CreateProductRequest {
 
 export interface UpdateProductRequest {
   name?: string;
-  type?: string;
+  typeId?: number;
   unit?: string;
   supplier?: string;
   currentStock?: number;
@@ -68,6 +76,7 @@ export interface AddProductUsageRequest {
 
 export interface ProductState {
   products: Product[];
+  productTypes: ProductType[];
   currentProduct: Product | null;
   usages: ProductUsage[];
   error: string | null;

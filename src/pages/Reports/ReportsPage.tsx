@@ -140,7 +140,7 @@ const ReportsPage: React.FC = () => {
         headers: [t('reports.headers.name'), t('reports.headers.type'), t('reports.headers.currentStock'), t('reports.headers.unit'), t('reports.headers.minAlert'), t('reports.headers.supplier')],
         rows: report.products.map(prod => [
           prod.name,
-          prod.type,
+          prod.type?.name || '-',
           prod.currentStock,
           prod.unit,
           prod.minStockAlert || '-',

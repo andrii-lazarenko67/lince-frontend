@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchProducts, createProduct, updateProduct } from '../../store/slices/productSlice';
+import { fetchProducts, fetchProductTypes, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { fetchUnits } from '../../store/slices/unitSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select, TextArea, ExportDropdown, ViewModeToggle } from '../../components/common';
@@ -12,7 +12,7 @@ import type { Product, CreateProductRequest } from '../../types';
 const ProductsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { products } = useAppSelector((state) => state.products);
+  const { products, productTypes } = useAppSelector((state) => state.products);
   const { units } = useAppSelector((state) => state.units);
   const { systems } = useAppSelector((state) => state.systems);
   const { goToProductDetail } = useAppNavigation();
@@ -23,12 +23,12 @@ const ProductsPage: React.FC = () => {
   const [filters, setFilters] = useState({
     systemId: '',
     stageId: '',
-    type: '',
+    typeId: '',
     lowStock: false
   });
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: '',
-    type: '',
+    typeId: undefined,
     unit: '',
     supplier: '',
     currentStock: 0,
@@ -39,6 +39,7 @@ const ProductsPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchProducts({}));
+    dispatch(fetchProductTypes());
     dispatch(fetchUnits());
     dispatch(fetchSystems({ parentId: 'null' }));
   }, [dispatch]);
@@ -46,13 +47,13 @@ const ProductsPage: React.FC = () => {
   const handleApplyFilters = () => {
     dispatch(fetchProducts({
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
-      type: filters.type || undefined,
+      typeId: filters.typeId ? Number(filters.typeId) : undefined,
       lowStock: filters.lowStock || undefined
     }));
   };
 
   const handleClearFilters = () => {
-    setFilters({ systemId: '', stageId: '', type: '', lowStock: false });
+    setFilters({ systemId: '', stageId: '', typeId: '', lowStock: false });
     dispatch(fetchProducts({}));
   };
 
@@ -61,7 +62,7 @@ const ProductsPage: React.FC = () => {
       setEditingProduct(product);
       setFormData({
         name: product.name,
-        type: product.type || '',
+        typeId: product.typeId || undefined,
         unit: product.unit,
         supplier: product.supplier || '',
         currentStock: parseFloat(product.currentStock.toString()),
@@ -73,7 +74,7 @@ const ProductsPage: React.FC = () => {
       setEditingProduct(null);
       setFormData({
         name: '',
-        type: '',
+        typeId: undefined,
         unit: '',
         supplier: '',
         currentStock: 0,
@@ -91,10 +92,18 @@ const ProductsPage: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const value = e.target.type === 'number' ? parseFloat(e.target.value) || 0 : e.target.value;
+    const { name, value, type } = e.target;
+    let parsedValue: string | number | undefined = value;
+
+    if (type === 'number') {
+      parsedValue = parseFloat(value) || 0;
+    } else if (name === 'typeId') {
+      parsedValue = value ? Number(value) : undefined;
+    }
+
     setFormData({
       ...formData,
-      [e.target.name]: value
+      [name]: parsedValue
     });
   };
 
@@ -121,7 +130,7 @@ const ProductsPage: React.FC = () => {
     const headers = [t('products.export.name'), t('products.export.type'), t('products.export.currentStock'), t('products.export.unit'), t('products.export.minAlert'), t('products.export.status'), t('products.export.supplier')];
     const rows = products.map(prod => [
       prod.name,
-      prod.type || '-',
+      prod.type?.name || '-',
       prod.currentStock,
       prod.unit,
       prod.minStockAlert || '-',
@@ -192,7 +201,7 @@ const ProductsPage: React.FC = () => {
     {
       key: 'type',
       header: t('products.list.type'),
-      render: (product: Product) => product.type || '-'
+      render: (product: Product) => product.type?.name || '-'
     },
     {
       key: 'stock',
@@ -226,12 +235,8 @@ const ProductsPage: React.FC = () => {
     }
   ];
 
-  const typeOptions = [
-    { value: 'chemical', label: t('products.types.chemical') },
-    { value: 'equipment', label: t('products.types.equipment') },
-    { value: 'consumable', label: t('products.types.consumable') },
-    { value: 'other', label: t('products.types.other') }
-  ];
+  // Dynamic type options from database
+  const typeOptions = productTypes.map(pt => ({ value: pt.id, label: pt.name }));
 
   const unitOptions = units.map(u => ({ value: u.abbreviation, label: `${u.name} (${u.abbreviation})` }));
 
@@ -298,9 +303,9 @@ const ProductsPage: React.FC = () => {
 
               <div>
                 <Select
-                  name="type"
-                  value={filters.type}
-                  onChange={(e) => setFilters({ ...filters, type: e.target.value })}
+                  name="typeId"
+                  value={filters.typeId}
+                  onChange={(e) => setFilters({ ...filters, typeId: e.target.value })}
                   options={typeOptions}
                   label={t('products.filters.type')}
                   placeholder={t('products.filters.allTypes')}
@@ -357,8 +362,8 @@ const ProductsPage: React.FC = () => {
           />
 
           <Select
-            name="type"
-            value={formData.type || ''}
+            name="typeId"
+            value={formData.typeId?.toString() || ''}
             onChange={handleChange}
             options={typeOptions}
             label={t('products.form.type')}
