@@ -149,6 +149,24 @@
       "currentVsMinimum": "Atual vs Estoque Mínimo",
       "minimum": "Mínimo"
     },
+    "charts": {
+      "overview": "Visão Geral de Produtos",
+      "totalProducts": "Total de Produtos",
+      "inStock": "Em Estoque",
+      "lowStock": "Estoque Baixo",
+      "totalQuantity": "Quantidade Total",
+      "stockStatus": "Status do Estoque",
+      "stockStatusTitle": "Status do Estoque",
+      "productsByType": "Produtos por Tipo",
+      "distributionByType": "Distribuição por Tipo",
+      "currentStockLevels": "Níveis de Estoque Atuais",
+      "stockLevelsTitle": "Níveis de Estoque",
+      "productsBySupplier": "Produtos por Fornecedor",
+      "productsPerSupplier": "Produtos por Fornecedor",
+      "stockQuantityByType": "Quantidade de Estoque por Tipo",
+      "stockQuantityPerType": "Quantidade de Estoque por Tipo",
+      "unknown": "Desconhecido"
+    },
     "export": {
       "title": "Relatório de Produtos",
       "subtitle": "Sistema de Tratamento de Água LINCE",

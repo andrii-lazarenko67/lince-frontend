@@ -149,6 +149,24 @@
       "currentVsMinimum": "Current vs Minimum Stock",
       "minimum": "Minimum"
     },
+    "charts": {
+      "overview": "Products Overview",
+      "totalProducts": "Total Products",
+      "inStock": "In Stock",
+      "lowStock": "Low Stock",
+      "totalQuantity": "Total Quantity",
+      "stockStatus": "Stock Status",
+      "stockStatusTitle": "Stock Status",
+      "productsByType": "Products by Type",
+      "distributionByType": "Distribution by Type",
+      "currentStockLevels": "Current Stock Levels",
+      "stockLevelsTitle": "Stock Levels",
+      "productsBySupplier": "Products by Supplier",
+      "productsPerSupplier": "Products per Supplier",
+      "stockQuantityByType": "Stock Quantity by Type",
+      "stockQuantityPerType": "Stock Quantity per Type",
+      "unknown": "Unknown"
+    },
     "export": {
       "title": "Products Report",
       "subtitle": "LINCE Water Treatment System",
