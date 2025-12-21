@@ -35,36 +35,45 @@ export const fetchProductTypes = createAsyncThunk(
 
 export const createProductType = createAsyncThunk(
   'products/createType',
-  async (data: { name: string; description?: string }, { rejectWithValue }) => {
+  async (data: { name: string; description?: string }, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.post<{ success: boolean; data: ProductType }>('/products/types', data);
       return response.data.data;
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to create product type'));
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
 
 export const updateProductType = createAsyncThunk(
   'products/updateType',
-  async ({ id, data }: { id: number; data: { name?: string; description?: string } }, { rejectWithValue }) => {
+  async ({ id, data }: { id: number; data: { name?: string; description?: string } }, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       const response = await axiosInstance.put<{ success: boolean; data: ProductType }>(`/products/types/${id}`, data);
       return response.data.data;
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to update product type'));
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
 
 export const deleteProductType = createAsyncThunk(
   'products/deleteType',
-  async (id: number, { rejectWithValue }) => {
+  async (id: number, { dispatch, rejectWithValue }) => {
     try {
+      dispatch(setLoading(true));
       await axiosInstance.delete(`/products/types/${id}`);
       return id;
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to delete product type'));
+    } finally {
+      dispatch(setLoading(false));
     }
   }
 );
