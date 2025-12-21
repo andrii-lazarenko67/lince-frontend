@@ -245,13 +245,13 @@ const ProductDetailPage: React.FC = () => {
             <div>
               <dt className="text-sm font-medium text-gray-500">{t('products.detail.currentStock')}</dt>
               <dd className="mt-1 text-2xl font-semibold text-gray-900">
-                {currentProduct.currentStock} {currentProduct.unit}
+                {currentProduct.currentStock} {currentProduct.unit?.abbreviation || ''}
               </dd>
             </div>
             <div>
               <dt className="text-sm font-medium text-gray-500">{t('products.detail.minStockAlert')}</dt>
               <dd className="mt-1 text-gray-900">
-                {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit}` : t('products.detail.notSet')}
+                {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit?.abbreviation || ''}` : t('products.detail.notSet')}
               </dd>
             </div>
             <div>
@@ -317,7 +317,7 @@ const ProductDetailPage: React.FC = () => {
             name="quantity"
             value={usageData.quantity}
             onChange={(e) => setUsageData({ ...usageData, quantity: e.target.value })}
-            label={`${t('products.detail.quantity')} (${currentProduct.unit})`}
+            label={`${t('products.detail.quantity')} (${currentProduct.unit?.abbreviation || ''})`}
             min={0}
             step="0.01"
             required
@@ -362,7 +362,7 @@ const ProductDetailPage: React.FC = () => {
             name="quantity"
             value={stockData.quantity}
             onChange={(e) => setStockData({ ...stockData, quantity: e.target.value })}
-            label={`${t('products.detail.quantity')} (${currentProduct.unit})`}
+            label={`${t('products.detail.quantity')} (${currentProduct.unit?.abbreviation || ''})`}
             min={0}
             step="0.01"
           />

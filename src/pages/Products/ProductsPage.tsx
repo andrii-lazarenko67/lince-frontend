@@ -29,7 +29,7 @@ const ProductsPage: React.FC = () => {
   const [formData, setFormData] = useState<CreateProductRequest>({
     name: '',
     typeId: undefined,
-    unit: '',
+    unitId: 0,
     supplier: '',
     currentStock: 0,
     minStockAlert: 0,
@@ -63,7 +63,7 @@ const ProductsPage: React.FC = () => {
       setFormData({
         name: product.name,
         typeId: product.typeId || undefined,
-        unit: product.unit,
+        unitId: product.unitId,
         supplier: product.supplier || '',
         currentStock: parseFloat(product.currentStock.toString()),
         minStockAlert: product.minStockAlert ? parseFloat(product.minStockAlert.toString()) : 0,
@@ -75,7 +75,7 @@ const ProductsPage: React.FC = () => {
       setFormData({
         name: '',
         typeId: undefined,
-        unit: '',
+        unitId: 0,
         supplier: '',
         currentStock: 0,
         minStockAlert: 0,
@@ -99,6 +99,8 @@ const ProductsPage: React.FC = () => {
       parsedValue = parseFloat(value) || 0;
     } else if (name === 'typeId') {
       parsedValue = value ? Number(value) : undefined;
+    } else if (name === 'unitId') {
+      parsedValue = value ? Number(value) : 0;
     }
 
     setFormData({
@@ -132,7 +134,7 @@ const ProductsPage: React.FC = () => {
       prod.name,
       prod.type?.name || '-',
       prod.currentStock,
-      prod.unit,
+      prod.unit?.abbreviation || '-',
       prod.minStockAlert || '-',
       isLowStock(prod) ? t('products.export.lowStock') : t('products.export.inStock'),
       prod.supplier || '-'
@@ -208,14 +210,14 @@ const ProductsPage: React.FC = () => {
       header: t('products.list.currentStock'),
       render: (product: Product) => (
         <span className={isLowStock(product) ? 'text-red-600 font-medium' : ''}>
-          {product.currentStock} {product.unit}
+          {product.currentStock} {product.unit?.abbreviation || ''}
         </span>
       )
     },
     {
       key: 'minStock',
       header: t('products.list.minAlert'),
-      render: (product: Product) => product.minStockAlert ? `${product.minStockAlert} ${product.unit}` : '-'
+      render: (product: Product) => product.minStockAlert ? `${product.minStockAlert} ${product.unit?.abbreviation || ''}` : '-'
     },
     {
       key: 'status',
@@ -238,7 +240,7 @@ const ProductsPage: React.FC = () => {
   // Dynamic type options from database
   const typeOptions = productTypes.map(pt => ({ value: pt.id, label: pt.name }));
 
-  const unitOptions = units.map(u => ({ value: u.abbreviation, label: `${u.name} (${u.abbreviation})` }));
+  const unitOptions = units.map(u => ({ value: u.id, label: `${u.name} (${u.abbreviation})` }));
 
   const systemOptions = systems.map(s => ({ value: s.id, label: s.name }));
 
@@ -371,8 +373,8 @@ const ProductsPage: React.FC = () => {
           />
 
           <Select
-            name="unit"
-            value={formData.unit}
+            name="unitId"
+            value={formData.unitId?.toString() || ''}
             onChange={handleChange}
             options={unitOptions}
             label={t('products.form.unit')}

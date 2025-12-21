@@ -40,7 +40,7 @@ const ProductsChartView: React.FC<ProductsChartViewProps> = ({ products }) => {
     label: p.name,
     current: Number(p.currentStock),
     min: p.minStockAlert !== null ? Number(p.minStockAlert) : null,
-    unit: p.unit
+    unit: p.unit?.abbreviation || ''
   })).sort((a, b) => a.current - b.current);
 
   // Products by supplier

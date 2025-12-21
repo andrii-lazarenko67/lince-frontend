@@ -1,5 +1,6 @@
 import type { User } from './auth.types';
 import type { System } from './system.types';
+import type { Unit } from './unit.types';
 
 export type ProductUsageType = 'in' | 'out';
 
@@ -15,7 +16,8 @@ export interface Product {
   name: string;
   typeId: number | null;
   type: ProductType | null;
-  unit: string;
+  unitId: number;
+  unit: Unit | null;
   supplier: string | null;
   currentStock: number;
   minStockAlert: number | null;
@@ -46,7 +48,7 @@ export interface ProductUsage {
 export interface CreateProductRequest {
   name: string;
   typeId?: number;
-  unit: string;
+  unitId: number;
   supplier?: string;
   currentStock?: number;
   minStockAlert?: number;
@@ -57,7 +59,7 @@ export interface CreateProductRequest {
 export interface UpdateProductRequest {
   name?: string;
   typeId?: number;
-  unit?: string;
+  unitId?: number;
   supplier?: string;
   currentStock?: number;
   minStockAlert?: number;

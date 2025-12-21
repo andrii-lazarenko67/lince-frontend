@@ -142,7 +142,7 @@ const ReportsPage: React.FC = () => {
           prod.name,
           prod.type?.name || '-',
           prod.currentStock,
-          prod.unit,
+          prod.unit?.abbreviation || '-',
           prod.minStockAlert || '-',
           prod.supplier || '-'
         ])
