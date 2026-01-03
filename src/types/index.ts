@@ -15,3 +15,5 @@ export type * from './parameter.types';
 export type * from './unit.types';
 export type * from './productDosage.types';
 export type * from './systemPhoto.types';
+export type * from './client.types';
+export type * from './reportTemplate.types';

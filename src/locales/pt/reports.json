@@ -92,10 +92,12 @@
       "inspections": "Inspeções",
       "incidents": "Ocorrências",
       "products": "Produtos",
+      "readings": "Leituras",
       "reportStatistics": "Estatísticas do Relatório",
       "reportPeriod": "Período do Relatório ({{start}} a {{end}})",
       "viewDetails": "Ver Detalhes",
       "readingsStatus": "Status das Leituras",
+      "readingsTrend": "Tendência de Leituras",
       "totalLogs": "Total de Registros",
       "totalReadings": "Total de Leituras",
       "inspectionStatus": "Status das Inspeções",
@@ -103,6 +105,7 @@
       "itemsChecked": "Itens Verificados",
       "incidentsByStatus": "Por Status",
       "incidentsByPriority": "Por Prioridade",
+      "incidentsBySystem": "Ocorrências por Sistema",
       "stockStatus": "Status do Estoque",
       "usageTransactions": "Transações de Uso",
       "totalQtyIn": "Qtd Total Entrada",
@@ -127,7 +130,11 @@
       "lowStock": "Estoque Baixo",
       "stockIn": "Entrada",
       "stockOut": "Saída",
-      "noData": "Sem dados"
+      "noData": "Sem dados",
+      "systemHealth": "Visão Geral da Saúde do Sistema",
+      "healthScore": "Pontuação de Saúde (%)",
+      "readingsCompliance": "Conformidade das Leituras",
+      "incidentResolution": "Resolução de Ocorrências"
     },
     "dailyLogs": {
       "title": "Relatório de Registros",
@@ -204,6 +211,51 @@
       "noProducts": "Nenhum produto neste relatório",
       "noUsage": "Nenhuma transação de uso neste relatório"
     }
+  },
+  "templates": {
+    "title": "Modelos de Relatório",
+    "subtitle": "Crie e gerencie modelos personalizados de relatório",
+    "createTemplate": "Criar Modelo",
+    "editTemplate": "Editar Modelo",
+    "deleteTemplate": "Excluir Modelo",
+    "templateName": "Nome do Modelo",
+    "templateNamePlaceholder": "Digite o nome do modelo",
+    "templateDescription": "Descrição",
+    "templateDescriptionPlaceholder": "Digite a descrição do modelo (opcional)",
+    "noTemplates": "Nenhum modelo criado ainda",
+    "selectModules": "Selecionar Módulos",
+    "dragToReorder": "Arraste para reordenar módulos",
+    "moduleSettings": "Configurações do Módulo",
+    "saveTemplate": "Salvar Modelo",
+    "useTemplate": "Usar Modelo",
+    "setAsDefault": "Definir como Padrão",
+    "defaultTemplate": "Padrão",
+    "manageTemplates": "Gerenciar Modelos",
+    "selectTemplate": "Selecionar Modelo",
+    "modules": {
+      "systems": "Sistemas",
+      "dailyLogs": "Registros",
+      "inspections": "Inspeções",
+      "incidents": "Ocorrências",
+      "products": "Produtos"
+    },
+    "settings": {
+      "showSummary": "Mostrar Resumo",
+      "showCharts": "Mostrar Gráficos",
+      "showTable": "Mostrar Tabela",
+      "showPhotos": "Mostrar Fotos",
+      "showDescription": "Mostrar Descrição",
+      "showStatus": "Mostrar Status",
+      "showUsage": "Mostrar Histórico de Uso"
+    },
+    "errors": {
+      "notFound": "Modelo não encontrado",
+      "nameRequired": "Nome do modelo é obrigatório"
+    },
+    "created": "Modelo criado com sucesso",
+    "updated": "Modelo atualizado com sucesso",
+    "deleted": "Modelo excluído com sucesso",
+    "setAsDefaultSuccess": "Modelo definido como padrão"
   },
   "reportDailyLogs": {
     "status": {

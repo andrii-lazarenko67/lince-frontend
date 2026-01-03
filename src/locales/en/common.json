@@ -62,7 +62,15 @@
     "lowStock": "Low Stock",
     "pass": "Pass",
     "fail": "Fail",
-    "na": "N/A"
+    "na": "N/A",
+    "trend": "Trend",
+    "movingAverage": "Moving Average",
+    "gauge": "Gauge",
+    "heatmap": "Heatmap",
+    "radar": "Radar",
+    "scatter": "Scatter",
+    "area": "Area",
+    "comparison": "Comparison"
   },
   "parameters": {
     "errors": {

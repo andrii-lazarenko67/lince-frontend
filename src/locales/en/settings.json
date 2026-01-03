@@ -7,7 +7,8 @@
       "parameters": "Parameters",
       "units": "Units",
       "systemTypes": "System Types",
-      "productTypes": "Product Types"
+      "productTypes": "Product Types",
+      "clients": "Clients"
     },
     "addParameter": "Add Parameter",
     "addUnit": "Add Unit",
@@ -129,6 +130,59 @@
       "descriptionPlaceholder": "Describe this product type",
       "deleteConfirm": "Are you sure you want to delete {{name}}?",
       "validationRequired": "Product type name is required"
+    },
+    "clients": {
+      "title": "Clients",
+      "subtitle": "Manage your clients",
+      "addClient": "Add Client",
+      "editClient": "Edit Client",
+      "deleteClient": "Delete Client",
+      "name": "Client Name",
+      "namePlaceholder": "Enter client name",
+      "address": "Address",
+      "addressPlaceholder": "Enter address",
+      "contact": "Contact Person",
+      "contactPlaceholder": "Enter contact name",
+      "phone": "Phone",
+      "phonePlaceholder": "Enter phone number",
+      "email": "Email",
+      "emailPlaceholder": "Enter email address",
+      "selectClient": "Select Client",
+      "allClients": "All Clients",
+      "noClients": "No clients found",
+      "emptyMessage": "No clients found. Add your first client to get started.",
+      "deleteConfirm": "Are you sure you want to delete {{name}}?",
+      "actions": "Actions",
+      "systems": "Systems",
+      "status": "Status",
+      "active": "Active",
+      "inactive": "Inactive",
+      "errors": {
+        "notFound": "Client not found",
+        "nameRequired": "Client name is required",
+        "noOrganization": "You must belong to an organization to manage clients"
+      },
+      "created": "Client created successfully",
+      "updated": "Client updated successfully",
+      "deleted": "Client deleted successfully"
+    },
+    "organizations": {
+      "title": "Organizations",
+      "subtitle": "Manage organizations",
+      "addOrganization": "Add Organization",
+      "editOrganization": "Edit Organization",
+      "name": "Organization Name",
+      "namePlaceholder": "Enter organization name",
+      "isServiceProvider": "Service Provider",
+      "isServiceProviderHelp": "Enable to manage multiple clients",
+      "users": "Users",
+      "clients": "Clients",
+      "errors": {
+        "notFound": "Organization not found"
+      },
+      "created": "Organization created successfully",
+      "updated": "Organization updated successfully",
+      "deleted": "Organization deleted successfully"
     }
   }
 }

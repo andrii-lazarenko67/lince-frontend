@@ -92,10 +92,12 @@
       "inspections": "Inspections",
       "incidents": "Incidents",
       "products": "Products",
+      "readings": "Readings",
       "reportStatistics": "Report Statistics",
       "reportPeriod": "Report Period ({{start}} to {{end}})",
       "viewDetails": "View Details",
       "readingsStatus": "Readings Status",
+      "readingsTrend": "Readings Trend",
       "totalLogs": "Total Logs",
       "totalReadings": "Total Readings",
       "inspectionStatus": "Inspection Status",
@@ -103,6 +105,7 @@
       "itemsChecked": "Items Checked",
       "incidentsByStatus": "By Status",
       "incidentsByPriority": "By Priority",
+      "incidentsBySystem": "Incidents by System",
       "stockStatus": "Stock Status",
       "usageTransactions": "Usage Transactions",
       "totalQtyIn": "Total Qty In",
@@ -127,7 +130,11 @@
       "lowStock": "Low Stock",
       "stockIn": "Stock In",
       "stockOut": "Stock Out",
-      "noData": "No data"
+      "noData": "No data",
+      "systemHealth": "System Health Overview",
+      "healthScore": "Health Score (%)",
+      "readingsCompliance": "Readings Compliance",
+      "incidentResolution": "Incident Resolution"
     },
     "dailyLogs": {
       "title": "Daily Logs Report",
@@ -204,6 +211,51 @@
       "noProducts": "No products in this report",
       "noUsage": "No usage transactions in this report"
     }
+  },
+  "templates": {
+    "title": "Report Templates",
+    "subtitle": "Create and manage custom report templates",
+    "createTemplate": "Create Template",
+    "editTemplate": "Edit Template",
+    "deleteTemplate": "Delete Template",
+    "templateName": "Template Name",
+    "templateNamePlaceholder": "Enter template name",
+    "templateDescription": "Description",
+    "templateDescriptionPlaceholder": "Enter template description (optional)",
+    "noTemplates": "No templates created yet",
+    "selectModules": "Select Modules",
+    "dragToReorder": "Drag to reorder modules",
+    "moduleSettings": "Module Settings",
+    "saveTemplate": "Save Template",
+    "useTemplate": "Use Template",
+    "setAsDefault": "Set as Default",
+    "defaultTemplate": "Default",
+    "manageTemplates": "Manage Templates",
+    "selectTemplate": "Select Template",
+    "modules": {
+      "systems": "Systems",
+      "dailyLogs": "Daily Logs",
+      "inspections": "Inspections",
+      "incidents": "Incidents",
+      "products": "Products"
+    },
+    "settings": {
+      "showSummary": "Show Summary",
+      "showCharts": "Show Charts",
+      "showTable": "Show Table",
+      "showPhotos": "Show Photos",
+      "showDescription": "Show Description",
+      "showStatus": "Show Status",
+      "showUsage": "Show Usage History"
+    },
+    "errors": {
+      "notFound": "Template not found",
+      "nameRequired": "Template name is required"
+    },
+    "created": "Template created successfully",
+    "updated": "Template updated successfully",
+    "deleted": "Template deleted successfully",
+    "setAsDefaultSuccess": "Template set as default"
   },
   "reportDailyLogs": {
     "status": {

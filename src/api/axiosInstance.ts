@@ -15,6 +15,13 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Add client context header for service provider mode
+    const selectedClientId = localStorage.getItem('selectedClientId');
+    if (selectedClientId) {
+      config.headers['X-Client-Id'] = selectedClientId;
+    }
+
     return config;
   },
   (error) => {

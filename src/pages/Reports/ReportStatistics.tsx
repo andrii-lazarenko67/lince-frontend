@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card } from '../../components/common';
+import {
+  GaugeChart,
+  TrendLineChart,
+  ComparisonBarChart,
+  RadarChart
+} from '../../components/charts';
 import type { ReportData } from '../../types';
 import ReportDailyLogs from './ReportDailyLogs';
 import ReportInspections from './ReportInspections';
@@ -297,9 +303,90 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
     { label: t('reports.statistics.stockOut'), value: stockOut, color: '#8b5cf6' }
   ];
 
+  // Prepare trend data for daily logs over time
+  const getDailyLogsTrendData = () => {
+    const logsByDate: Record<string, number> = {};
+    report.dailyLogs.forEach(log => {
+      const date = new Date(log.date).toLocaleDateString();
+      logsByDate[date] = (logsByDate[date] || 0) + (log.entries?.length || 0);
+    });
+    return Object.entries(logsByDate)
+      .sort(([a], [b]) => new Date(a).getTime() - new Date(b).getTime())
+      .slice(-10)
+      .map(([label, value]) => ({ label, value }));
+  };
+
+  // Prepare comparison data for incidents by priority across systems
+  const getIncidentComparisonData = () => {
+    const systemIncidents: Record<string, Record<string, number>> = {};
+    report.incidents.forEach(incident => {
+      const systemName = incident.system?.name || t('common.unknown');
+      if (!systemIncidents[systemName]) {
+        systemIncidents[systemName] = { critical: 0, high: 0, medium: 0, low: 0 };
+      }
+      systemIncidents[systemName][incident.priority] = (systemIncidents[systemName][incident.priority] || 0) + 1;
+    });
+    return Object.entries(systemIncidents).slice(0, 5).map(([label, counts]) => ({
+      label,
+      values: [
+        { name: t('reports.statistics.critical'), value: counts.critical, color: '#dc2626' },
+        { name: t('reports.statistics.high'), value: counts.high, color: '#f97316' },
+        { name: t('reports.statistics.medium'), value: counts.medium, color: '#eab308' },
+        { name: t('reports.statistics.low'), value: counts.low, color: '#22c55e' }
+      ]
+    }));
+  };
+
+  // Prepare radar data for system health
+  const getSystemHealthRadarData = () => {
+    const totalLogs = report.dailyLogs.length;
+    const totalInspections = report.inspections.length;
+    const totalIncidents = report.incidents.length;
+    const resolvedIncidents = report.incidents.filter(i => i.status === 'resolved' || i.status === 'closed').length;
+    const completedInspectionsCount = report.inspections.filter(i => i.status === 'completed' || i.status === 'viewed').length;
+    const normalReadingsCount = totalReadings - outOfRangeCount;
+
+    return [
+      { label: t('reports.statistics.dailyLogs'), value: Math.min(totalLogs, 100), maxValue: 100 },
+      { label: t('reports.statistics.inspections'), value: totalInspections > 0 ? Math.round((completedInspectionsCount / totalInspections) * 100) : 0, maxValue: 100 },
+      { label: t('reports.statistics.incidents'), value: totalIncidents > 0 ? Math.round((resolvedIncidents / totalIncidents) * 100) : 100, maxValue: 100 },
+      { label: t('reports.statistics.readings'), value: totalReadings > 0 ? Math.round((normalReadingsCount / totalReadings) * 100) : 100, maxValue: 100 },
+      { label: t('reports.statistics.products'), value: report.products.length > 0 ? Math.round((normalStockProducts / report.products.length) * 100) : 100, maxValue: 100 }
+    ];
+  };
+
   const renderOverview = () => (
     <Card title={t('reports.statistics.reportPeriod', { start: report.period.startDate, end: report.period.endDate })}>
       <div className="space-y-8">
+        {/* System Health Overview - Radar Chart */}
+        <div className="border-b border-gray-200 pb-6">
+          <h4 className="text-sm font-semibold text-gray-700 mb-4">{t('reports.statistics.systemHealth')}</h4>
+          <div className="flex flex-wrap justify-center gap-8">
+            <RadarChart
+              data={getSystemHealthRadarData()}
+              title={t('reports.statistics.healthScore')}
+              size={280}
+              color="#3b82f6"
+            />
+            <div className="flex flex-col justify-center space-y-3">
+              <GaugeChart
+                value={totalReadings - outOfRangeCount}
+                max={totalReadings || 1}
+                title={t('reports.statistics.readingsCompliance')}
+                size={140}
+                thresholds={{ warning: 70, danger: 50 }}
+              />
+              <GaugeChart
+                value={resolvedIncidents + closedIncidents}
+                max={report.incidents.length || 1}
+                title={t('reports.statistics.incidentResolution')}
+                size={140}
+                thresholds={{ warning: 60, danger: 40 }}
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Daily Logs Section */}
         <div className="border-b border-gray-200 pb-6">
           <div className="flex items-center justify-between mb-4">
@@ -316,6 +403,16 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
               data={dailyLogsChartData}
               title={t('reports.statistics.readingsStatus')}
             />
+            <div className="flex-1 min-w-[300px]">
+              <TrendLineChart
+                data={getDailyLogsTrendData()}
+                title={t('reports.statistics.readingsTrend')}
+                height={200}
+                color="#3b82f6"
+                showTrendLine={true}
+                showMovingAverage={true}
+              />
+            </div>
             <div className="flex flex-col justify-center space-y-2">
               <div className="text-center p-3 bg-blue-50 rounded-lg">
                 <p className="text-2xl font-bold text-blue-600">{report.dailyLogs.length}</p>
@@ -381,6 +478,17 @@ const ReportStatistics: React.FC<ReportStatisticsProps> = ({ report }) => {
               title={t('reports.statistics.incidentsByPriority')}
             />
           </div>
+          {/* Incidents by System Comparison */}
+          {getIncidentComparisonData().length > 0 && (
+            <div className="mt-6">
+              <ComparisonBarChart
+                data={getIncidentComparisonData()}
+                title={t('reports.statistics.incidentsBySystem')}
+                height={250}
+                horizontal={true}
+              />
+            </div>
+          )}
         </div>
 
         {/* Products Section */}

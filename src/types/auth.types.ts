@@ -1,5 +1,11 @@
 export type UserRole = 'technician' | 'manager' | 'admin';
 
+export interface UserOrganization {
+  id: number;
+  name: string;
+  isServiceProvider: boolean;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -9,6 +15,8 @@ export interface User {
   avatar: string | null;
   isActive: boolean;
   lastLogin: string | null;
+  organizationId: number | null;
+  organization?: UserOrganization;
   createdAt: string;
   updatedAt: string;
 }

@@ -22,6 +22,7 @@ import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { toggleSidebar } from '../../store/slices/uiSlice';
 import { logout } from '../../store/slices/authSlice';
 import { fetchUnreadCount } from '../../store/slices/notificationSlice';
+import ClientSelector from '../ClientSelector';
 
 const DRAWER_WIDTH = 256;
 
@@ -93,6 +94,9 @@ const Header: React.FC = () => {
 
         {/* Right side actions */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          {/* Client Selector for Service Providers */}
+          <ClientSelector />
+
           {/* Notifications */}
           <IconButton
             onClick={goToNotifications}

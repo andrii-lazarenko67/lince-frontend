@@ -7,7 +7,8 @@
       "parameters": "Parâmetros",
       "units": "Unidades",
       "systemTypes": "Tipos de Sistema",
-      "productTypes": "Tipos de Produto"
+      "productTypes": "Tipos de Produto",
+      "clients": "Clientes"
     },
     "addParameter": "Adicionar Parâmetro",
     "addUnit": "Adicionar Unidade",
@@ -129,6 +130,59 @@
       "descriptionPlaceholder": "Descreva este tipo de produto",
       "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
       "validationRequired": "Nome do tipo de produto é obrigatório"
+    },
+    "clients": {
+      "title": "Clientes",
+      "subtitle": "Gerencie seus clientes",
+      "addClient": "Adicionar Cliente",
+      "editClient": "Editar Cliente",
+      "deleteClient": "Excluir Cliente",
+      "name": "Nome do Cliente",
+      "namePlaceholder": "Digite o nome do cliente",
+      "address": "Endereço",
+      "addressPlaceholder": "Digite o endereço",
+      "contact": "Pessoa de Contato",
+      "contactPlaceholder": "Digite o nome do contato",
+      "phone": "Telefone",
+      "phonePlaceholder": "Digite o telefone",
+      "email": "Email",
+      "emailPlaceholder": "Digite o email",
+      "selectClient": "Selecionar Cliente",
+      "allClients": "Todos os Clientes",
+      "noClients": "Nenhum cliente encontrado",
+      "emptyMessage": "Nenhum cliente encontrado. Adicione seu primeiro cliente para começar.",
+      "deleteConfirm": "Tem certeza que deseja excluir {{name}}?",
+      "actions": "Ações",
+      "systems": "Sistemas",
+      "status": "Status",
+      "active": "Ativo",
+      "inactive": "Inativo",
+      "errors": {
+        "notFound": "Cliente não encontrado",
+        "nameRequired": "Nome do cliente é obrigatório",
+        "noOrganization": "Você deve pertencer a uma organização para gerenciar clientes"
+      },
+      "created": "Cliente criado com sucesso",
+      "updated": "Cliente atualizado com sucesso",
+      "deleted": "Cliente excluído com sucesso"
+    },
+    "organizations": {
+      "title": "Organizações",
+      "subtitle": "Gerenciar organizações",
+      "addOrganization": "Adicionar Organização",
+      "editOrganization": "Editar Organização",
+      "name": "Nome da Organização",
+      "namePlaceholder": "Digite o nome da organização",
+      "isServiceProvider": "Prestador de Serviços",
+      "isServiceProviderHelp": "Habilite para gerenciar múltiplos clientes",
+      "users": "Usuários",
+      "clients": "Clientes",
+      "errors": {
+        "notFound": "Organização não encontrada"
+      },
+      "created": "Organização criada com sucesso",
+      "updated": "Organização atualizada com sucesso",
+      "deleted": "Organização excluída com sucesso"
     }
   }
 }

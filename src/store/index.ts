@@ -20,6 +20,8 @@ import productDosageSlice from './slices/productDosageSlice';
 import systemPhotoSlice from './slices/systemPhotoSlice';
 import checklistItemSlice from './slices/checklistItemSlice';
 import systemTypeSlice from './slices/systemTypeSlice';
+import clientSlice from './slices/clientSlice';
+import reportTemplateSlice from './slices/reportTemplateSlice';
 
 export const store = configureStore({
   reducer: {
@@ -41,7 +43,9 @@ export const store = configureStore({
     units: unitSlice,
     productDosages: productDosageSlice,
     systemPhotos: systemPhotoSlice,
-    checklistItems: checklistItemSlice
+    checklistItems: checklistItemSlice,
+    clients: clientSlice,
+    reportTemplates: reportTemplateSlice
   }
 });
 

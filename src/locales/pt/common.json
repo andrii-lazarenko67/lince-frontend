@@ -62,7 +62,15 @@
     "lowStock": "Estoque Baixo",
     "pass": "Conforme",
     "fail": "Não Conforme",
-    "na": "N/A"
+    "na": "N/A",
+    "trend": "Tendência",
+    "movingAverage": "Média Móvel",
+    "gauge": "Medidor",
+    "heatmap": "Mapa de Calor",
+    "radar": "Radar",
+    "scatter": "Dispersão",
+    "area": "Área",
+    "comparison": "Comparação"
   },
   "parameters": {
     "errors": {

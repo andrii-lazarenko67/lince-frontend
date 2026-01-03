@@ -504,7 +504,7 @@ const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
     label: p.name,
     current: Number(p.currentStock),
     min: p.minStockAlert !== null ? Number(p.minStockAlert) : null,
-    unit: p.unit
+    unit: p.unit?.abbreviation || ''
   })).sort((a, b) => a.current - b.current);
 
   // Usage by product
@@ -567,7 +567,8 @@ const ReportProducts: React.FC<ReportProductsProps> = ({ report }) => {
   // Products by type
   const productTypeMap = new Map<string, number>();
   report.products.forEach(p => {
-    productTypeMap.set(p.type, (productTypeMap.get(p.type) || 0) + 1);
+    const typeName = p.type?.name || t('common.notSpecified');
+    productTypeMap.set(typeName, (productTypeMap.get(typeName) || 0) + 1);
   });
   const byTypeData = Array.from(productTypeMap.entries()).map(([label, value]) => ({
     label,
