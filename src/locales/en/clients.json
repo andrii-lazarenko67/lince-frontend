@@ -1,0 +1,26 @@
+{
+  "clients": {
+    "title": "Clients",
+    "addFirst": {
+      "title": "Add Your First Client",
+      "subtitle": "Get started by adding your first client to manage",
+      "submitButton": "Add Client"
+    },
+    "form": {
+      "nameLabel": "Client Name",
+      "namePlaceholder": "Enter client name",
+      "addressLabel": "Address",
+      "addressPlaceholder": "Enter address",
+      "contactLabel": "Contact Person",
+      "contactPlaceholder": "Enter contact name",
+      "phoneLabel": "Phone",
+      "phonePlaceholder": "Enter phone number",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter email address"
+    },
+    "errors": {
+      "nameRequired": "Client name is required",
+      "createFailed": "Failed to create client"
+    }
+  }
+}

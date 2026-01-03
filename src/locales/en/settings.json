@@ -157,14 +157,76 @@
       "status": "Status",
       "active": "Active",
       "inactive": "Inactive",
+      "tabs": {
+        "details": "Details",
+        "branding": "Branding"
+      },
+      "branding": {
+        "title": "Branding",
+        "subtitle": "Customize client branding",
+        "logo": "Logo",
+        "logoHelp": "Upload a logo for this client (PNG, JPG, SVG, max 2MB)",
+        "uploadLogo": "Upload Logo",
+        "removeLogo": "Remove Logo",
+        "brandColor": "Brand Color",
+        "brandColorHelp": "Select a primary brand color for this client"
+      },
+      "stats": {
+        "systems": "Systems",
+        "dailyLogs": "Daily Logs",
+        "inspections": "Inspections",
+        "incidents": "Incidents",
+        "products": "Products"
+      },
+      "users": {
+        "title": "User Access",
+        "subtitle": "Manage who has access to this client",
+        "addUser": "Add User",
+        "removeUser": "Remove User",
+        "selectUser": "Select User",
+        "accessLevel": "Access Level",
+        "noUsers": "No users have access to this client",
+        "availableUsers": "Available Users",
+        "noAvailableUsers": "No available users to add",
+        "removeConfirm": "Are you sure you want to remove {{name}}'s access to this client?",
+        "accessLevels": {
+          "view": "View Only",
+          "edit": "Can Edit",
+          "admin": "Admin"
+        },
+        "accessLevelDescriptions": {
+          "view": "Can view client data but cannot make changes",
+          "edit": "Can view and edit client data",
+          "admin": "Full access including user management"
+        }
+      },
       "errors": {
         "notFound": "Client not found",
         "nameRequired": "Client name is required",
-        "noOrganization": "You must belong to an organization to manage clients"
+        "notServiceProvider": "This feature is only available for service providers",
+        "userIdRequired": "User ID is required",
+        "userAlreadyHasAccess": "User already has access to this client",
+        "invalidAccessLevel": "Invalid access level",
+        "userAccessNotFound": "User access not found",
+        "cannotRemoveLastAdmin": "Cannot remove the last admin from this client",
+        "noFileUploaded": "No file was uploaded",
+        "invalidFileType": "Invalid file type. Only PNG, JPG, and SVG are allowed",
+        "fileTooLarge": "File is too large. Maximum size is 2MB"
       },
       "created": "Client created successfully",
       "updated": "Client updated successfully",
-      "deleted": "Client deleted successfully"
+      "deleted": "Client deleted successfully",
+      "userAdded": "User added to client successfully",
+      "userRemoved": "User removed from client successfully",
+      "userAccessUpdated": "User access level updated successfully",
+      "logoUploaded": "Logo uploaded successfully",
+      "logoDeleted": "Logo removed successfully",
+      "manageUsers": "Manage Users",
+      "userAccess": "User Access",
+      "changeLogo": "Change Logo",
+      "addClientSubtitle": "Create a new client to manage",
+      "searchUsers": "Search users...",
+      "accessUpdated": "Access level updated"
     },
     "organizations": {
       "title": "Organizations",

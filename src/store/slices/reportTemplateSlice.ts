@@ -4,7 +4,8 @@ import type {
   ReportTemplate,
   ReportTemplateState,
   CreateReportTemplateRequest,
-  UpdateReportTemplateRequest
+  UpdateReportTemplateRequest,
+  ReportTemplateConfig
 } from '../../types';
 import { setLoading } from './uiSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
@@ -12,6 +13,7 @@ import { getApiErrorMessage } from '../../utils/apiMessages';
 const initialState: ReportTemplateState = {
   templates: [],
   currentTemplate: null,
+  defaultConfig: null,
   loading: false,
   error: null
 };
@@ -48,12 +50,24 @@ export const fetchReportTemplateById = createAsyncThunk(
 
 export const fetchDefaultTemplate = createAsyncThunk(
   'reportTemplates/fetchDefault',
-  async (_, { dispatch, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get<{ success: boolean; data: ReportTemplate | null }>('/report-templates/default');
       return response.data.data;
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch default template'));
+    }
+  }
+);
+
+export const fetchDefaultConfig = createAsyncThunk(
+  'reportTemplates/fetchDefaultConfig',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get<{ success: boolean; data: ReportTemplateConfig }>('/report-templates/default-config');
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch default config'));
     }
   }
 );
@@ -118,6 +132,24 @@ export const setDefaultTemplate = createAsyncThunk(
   }
 );
 
+export const duplicateReportTemplate = createAsyncThunk(
+  'reportTemplates/duplicate',
+  async ({ id, name }: { id: number; name?: string }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.post<{ success: boolean; data: ReportTemplate }>(
+        `/report-templates/${id}/duplicate`,
+        { name }
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to duplicate report template'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const reportTemplateSlice = createSlice({
   name: 'reportTemplates',
   initialState,
@@ -156,6 +188,10 @@ const reportTemplateSlice = createSlice({
         if (action.payload) {
           state.currentTemplate = action.payload;
         }
+      })
+      // Fetch default config
+      .addCase(fetchDefaultConfig.fulfilled, (state, action) => {
+        state.defaultConfig = action.payload;
       })
       // Create template
       .addCase(createReportTemplate.fulfilled, (state, action) => {
@@ -199,6 +235,10 @@ const reportTemplateSlice = createSlice({
         if (state.currentTemplate?.id === action.payload.id) {
           state.currentTemplate = action.payload;
         }
+      })
+      // Duplicate template
+      .addCase(duplicateReportTemplate.fulfilled, (state, action) => {
+        state.templates.push(action.payload);
       });
   }
 });

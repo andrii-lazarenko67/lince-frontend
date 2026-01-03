@@ -1,17 +1,20 @@
 export interface Client {
   id: number;
-  organizationId: number;
+  ownerId: number;
   name: string;
   address: string | null;
   contact: string | null;
   phone: string | null;
   email: string | null;
+  logo: string | null;
+  brandColor: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  organization?: {
+  owner?: {
     id: number;
     name: string;
+    email: string;
     isServiceProvider: boolean;
   };
   systems?: {
@@ -19,6 +22,21 @@ export interface Client {
     name: string;
     status: string;
   }[];
+  userClients?: UserClient[];
+}
+
+export interface UserClient {
+  id: number;
+  userId: number;
+  clientId: number;
+  accessLevel: 'view' | 'edit' | 'admin';
+  createdAt: string;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    role: string;
+  };
 }
 
 export interface CreateClientRequest {
@@ -35,35 +53,33 @@ export interface UpdateClientRequest {
   contact?: string;
   phone?: string;
   email?: string;
+  logo?: string | null;
+  brandColor?: string | null;
   isActive?: boolean;
+}
+
+export interface ClientStats {
+  systems: number;
+  dailyLogs: number;
+  inspections: number;
+  incidents: number;
+  products: number;
 }
 
 export interface ClientState {
   clients: Client[];
   currentClient: Client | null;
+  currentClientStats: ClientStats | null;
   selectedClientId: number | null;
   loading: boolean;
   error: string | null;
 }
 
-export interface Organization {
-  id: number;
-  name: string;
-  isServiceProvider: boolean;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  users?: {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-  }[];
-  clients?: Client[];
+export interface AddUserAccessRequest {
+  userId: number;
+  accessLevel: 'view' | 'edit' | 'admin';
 }
 
-export interface OrganizationState {
-  currentOrganization: Organization | null;
-  loading: boolean;
-  error: string | null;
+export interface UpdateUserAccessRequest {
+  accessLevel: 'view' | 'edit' | 'admin';
 }

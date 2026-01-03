@@ -151,7 +151,7 @@ const AreaChart: React.FC<AreaChartProps> = ({
             })}
 
             {/* Area fills */}
-            {renderOrder.map((s, renderIndex) => {
+            {renderOrder.map((_s, renderIndex) => {
               const actualIndex = stacked ? series.length - 1 - renderIndex : renderIndex;
               const baseSeriesData = stacked && actualIndex > 0
                 ? processedSeries[actualIndex - 1].data

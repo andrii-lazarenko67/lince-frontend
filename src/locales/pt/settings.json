@@ -157,14 +157,76 @@
       "status": "Status",
       "active": "Ativo",
       "inactive": "Inativo",
+      "tabs": {
+        "details": "Detalhes",
+        "branding": "Identidade Visual"
+      },
+      "branding": {
+        "title": "Identidade Visual",
+        "subtitle": "Personalizar identidade visual do cliente",
+        "logo": "Logo",
+        "logoHelp": "Envie um logo para este cliente (PNG, JPG, SVG, máx 2MB)",
+        "uploadLogo": "Enviar Logo",
+        "removeLogo": "Remover Logo",
+        "brandColor": "Cor da Marca",
+        "brandColorHelp": "Selecione uma cor primária da marca para este cliente"
+      },
+      "stats": {
+        "systems": "Sistemas",
+        "dailyLogs": "Registros",
+        "inspections": "Inspeções",
+        "incidents": "Ocorrências",
+        "products": "Produtos"
+      },
+      "users": {
+        "title": "Acesso de Usuários",
+        "subtitle": "Gerencie quem tem acesso a este cliente",
+        "addUser": "Adicionar Usuário",
+        "removeUser": "Remover Usuário",
+        "selectUser": "Selecionar Usuário",
+        "accessLevel": "Nível de Acesso",
+        "noUsers": "Nenhum usuário tem acesso a este cliente",
+        "availableUsers": "Usuários Disponíveis",
+        "noAvailableUsers": "Nenhum usuário disponível para adicionar",
+        "removeConfirm": "Tem certeza que deseja remover o acesso de {{name}} a este cliente?",
+        "accessLevels": {
+          "view": "Apenas Visualização",
+          "edit": "Pode Editar",
+          "admin": "Administrador"
+        },
+        "accessLevelDescriptions": {
+          "view": "Pode visualizar dados do cliente mas não pode fazer alterações",
+          "edit": "Pode visualizar e editar dados do cliente",
+          "admin": "Acesso completo incluindo gerenciamento de usuários"
+        }
+      },
       "errors": {
         "notFound": "Cliente não encontrado",
         "nameRequired": "Nome do cliente é obrigatório",
-        "noOrganization": "Você deve pertencer a uma organização para gerenciar clientes"
+        "notServiceProvider": "Este recurso está disponível apenas para prestadores de serviços",
+        "userIdRequired": "ID do usuário é obrigatório",
+        "userAlreadyHasAccess": "Usuário já tem acesso a este cliente",
+        "invalidAccessLevel": "Nível de acesso inválido",
+        "userAccessNotFound": "Acesso do usuário não encontrado",
+        "cannotRemoveLastAdmin": "Não é possível remover o último administrador deste cliente",
+        "noFileUploaded": "Nenhum arquivo foi enviado",
+        "invalidFileType": "Tipo de arquivo inválido. Apenas PNG, JPG e SVG são permitidos",
+        "fileTooLarge": "Arquivo muito grande. O tamanho máximo é 2MB"
       },
       "created": "Cliente criado com sucesso",
       "updated": "Cliente atualizado com sucesso",
-      "deleted": "Cliente excluído com sucesso"
+      "deleted": "Cliente excluído com sucesso",
+      "userAdded": "Usuário adicionado ao cliente com sucesso",
+      "userRemoved": "Usuário removido do cliente com sucesso",
+      "userAccessUpdated": "Nível de acesso do usuário atualizado com sucesso",
+      "logoUploaded": "Logo enviado com sucesso",
+      "logoDeleted": "Logo removido com sucesso",
+      "manageUsers": "Gerenciar Usuários",
+      "userAccess": "Acesso de Usuários",
+      "changeLogo": "Alterar Logo",
+      "addClientSubtitle": "Criar um novo cliente para gerenciar",
+      "searchUsers": "Buscar usuários...",
+      "accessUpdated": "Nível de acesso atualizado"
     },
     "organizations": {
       "title": "Organizações",

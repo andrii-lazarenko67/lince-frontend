@@ -12,7 +12,7 @@ type TabType = 'parameters' | 'units' | 'systemTypes' | 'productTypes' | 'client
 const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const { user } = useAppSelector((state) => state.auth);
-  const isServiceProvider = user?.organization?.isServiceProvider;
+  const isServiceProvider = user?.isServiceProvider;
   const [activeTab, setActiveTab] = useState<TabType>('parameters');
 
   return (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { login } from '../../store/slices/authSlice';
+import { setSelectedClient } from '../../store/slices/clientSlice';
 import { Input, Button, Alert } from '../../components/common';
 import { GlobalLoader } from '../../components/common';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
@@ -10,7 +11,7 @@ const LoginPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { token, error } = useAppSelector((state) => state.auth);
-  const { goToDashboard } = useAppNavigation();
+  const { goToDashboard, goToAddClient, goToSignup } = useAppNavigation();
 
   const [formData, setFormData] = useState({
     email: '',
@@ -42,7 +43,17 @@ const LoginPage: React.FC = () => {
 
     const result = await dispatch(login(formData));
     if (login.fulfilled.match(result)) {
-      goToDashboard();
+      const { client, redirectTo } = result.payload;
+      // Set selected client in Redux store
+      if (client) {
+        dispatch(setSelectedClient(client.id));
+      }
+      // Redirect based on server response
+      if (redirectTo === 'add-client') {
+        goToAddClient();
+      } else {
+        goToDashboard();
+      }
     }
   };
 
@@ -96,7 +107,14 @@ const LoginPage: React.FC = () => {
           </form>
 
           <p className="text-center text-sm text-gray-500 mt-6">
-            {t('login.footer')}
+            {t('login.noAccount')}{' '}
+            <button
+              type="button"
+              onClick={goToSignup}
+              className="text-blue-600 hover:underline"
+            >
+              {t('login.signUpLink')}
+            </button>
           </p>
         </div>
       </div>

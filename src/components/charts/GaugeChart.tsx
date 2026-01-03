@@ -21,7 +21,7 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
   color = '#3b82f6',
   thresholds
 }) => {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const percentage = max > 0 ? Math.min((value / max) * 100, 100) : 0;
 
   // Determine color based on thresholds
@@ -39,7 +39,7 @@ const GaugeChart: React.FC<GaugeChartProps> = ({
   const radius = (size - 20) / 2;
   const strokeWidth = 12;
   const circumference = Math.PI * radius; // Half circle
-  const progress = (percentage / 100) * circumference;
+  void circumference; // Used for reference
 
   const startAngle = 180;
   const endAngle = startAngle + (percentage / 100) * 180;

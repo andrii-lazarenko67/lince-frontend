@@ -9,6 +9,12 @@ import { MainLayout } from './components/layout';
 import { PrivateRoute } from './components/auth';
 import {
   LoginPage,
+  SignupPage,
+  AddClientPage,
+  FirstClientSetupPage,
+  ClientsPage,
+  ClientDetailPage,
+  ClientUsersPage,
   DashboardPage,
   SystemsPage,
   SystemDetailPage,
@@ -40,6 +46,12 @@ const App: React.FC = () => {
         <Router>
           <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* Standalone route for first client setup after signup */}
+          <Route element={<PrivateRoute />}>
+            <Route path="/add-client" element={<FirstClientSetupPage />} />
+          </Route>
 
           <Route element={<PrivateRoute />}>
             <Route element={<MainLayout />}>
@@ -62,6 +74,12 @@ const App: React.FC = () => {
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/settings" element={<SettingsPage />} />
+
+              {/* Client management routes (service providers only) */}
+              <Route path="/clients" element={<ClientsPage />} />
+              <Route path="/clients/new" element={<AddClientPage />} />
+              <Route path="/clients/:id" element={<ClientDetailPage />} />
+              <Route path="/clients/:id/users" element={<ClientUsersPage />} />
             </Route>
           </Route>
 

@@ -9,7 +9,7 @@ const ClientSelector: React.FC = () => {
   const { user } = useAppSelector((state) => state.auth);
   const { clients, selectedClientId } = useAppSelector((state) => state.clients);
 
-  const isServiceProvider = user?.organization?.isServiceProvider;
+  const isServiceProvider = user?.isServiceProvider;
 
   useEffect(() => {
     if (isServiceProvider) {

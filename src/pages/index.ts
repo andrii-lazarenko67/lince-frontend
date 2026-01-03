@@ -1,4 +1,6 @@
 export * from './Login';
+export * from './Signup';
+export * from './Clients';
 export * from './Dashboard';
 export * from './Systems';
 export * from './DailyLogs';

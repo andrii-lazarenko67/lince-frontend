@@ -104,6 +104,18 @@ export const useAppNavigation = () => {
     navigate('/notifications');
   }, [navigate]);
 
+  const goToAddClient = useCallback(() => {
+    navigate('/add-client');
+  }, [navigate]);
+
+  const goToClients = useCallback(() => {
+    navigate('/clients');
+  }, [navigate]);
+
+  const goToSignup = useCallback(() => {
+    navigate('/signup');
+  }, [navigate]);
+
   return {
     goTo,
     goBack,
@@ -129,7 +141,10 @@ export const useAppNavigation = () => {
     goToUsers,
     goToUserDetail,
     goToSettings,
-    goToNotifications
+    goToNotifications,
+    goToAddClient,
+    goToClients,
+    goToSignup
   };
 };
 

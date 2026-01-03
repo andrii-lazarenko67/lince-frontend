@@ -1,6 +1,7 @@
 import common from './common.json';
 import nav from './navigation.json';
 import login from './auth.json';
+const { signup } = login;
 import dashboard from './dashboard.json';
 import { systems, monitoringPoints, checklistItems } from './systems.json';
 import { dailyLogs } from './dailyLogs.json';
@@ -13,11 +14,13 @@ import { library } from './library.json';
 import { settings } from './settings.json';
 import { profile } from './profile.json';
 import { notifications, photoGallery } from './notifications.json';
+import { clients } from './clients.json';
 
 export default {
   common,
   nav,
   login,
+  signup,
   dashboard,
   systems,
   monitoringPoints,
@@ -35,4 +38,5 @@ export default {
   profile,
   notifications,
   photoGallery,
+  clients,
 };

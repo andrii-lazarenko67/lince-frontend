@@ -1,6 +1,185 @@
 {
   "reports": {
+    "title": "Reports",
     "description": "Generate comprehensive reports for your water treatment system",
+    "tabs": {
+      "generator": "Generate Report",
+      "templates": "Templates",
+      "history": "History"
+    },
+    "templates": {
+      "title": "Report Templates",
+      "create": "Create Template",
+      "editTemplate": "Edit Template",
+      "name": "Template Name",
+      "descriptionLabel": "Description",
+      "noDescription": "No description",
+      "blocksCount": "{{count}} blocks",
+      "default": "Default",
+      "global": "Global",
+      "lastUpdated": "Updated",
+      "empty": "No templates found. Create your first template to get started.",
+      "createFirst": "Create First Template",
+      "duplicate": "Duplicate",
+      "setDefault": "Set as Default",
+      "deleteConfirmTitle": "Delete Template",
+      "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
+      "reportBlocks": "Report Blocks",
+      "blocksHelp": "Enable or disable blocks and drag to reorder them. Each block represents a section of your report.",
+      "branding": "Branding & Appearance",
+      "errors": {
+        "notFound": "Template not found",
+        "nameRequired": "Template name is required",
+        "cannotEditGlobal": "Cannot edit global templates",
+        "cannotDeleteGlobal": "Cannot delete global templates"
+      },
+      "created": "Template created successfully",
+      "updatedSuccess": "Template updated successfully",
+      "deleted": "Template deleted successfully",
+      "duplicated": "Template duplicated successfully",
+      "setAsDefault": "Template set as default"
+    },
+    "blocks": {
+      "identification": {
+        "title": "Identification",
+        "description": "Report header with title, period, and client info"
+      },
+      "scope": {
+        "title": "Scope",
+        "description": "Description of the report scope and covered systems"
+      },
+      "systems": {
+        "title": "Systems",
+        "description": "List of monitored systems with details"
+      },
+      "analyses": {
+        "title": "Analyses",
+        "description": "Daily log entries and parameter readings"
+      },
+      "inspections": {
+        "title": "Inspections",
+        "description": "Inspection records and checklist results"
+      },
+      "occurrences": {
+        "title": "Occurrences",
+        "description": "Incidents and issues recorded during the period"
+      },
+      "conclusion": {
+        "title": "Conclusion",
+        "description": "Summary and recommendations"
+      },
+      "signature": {
+        "title": "Signature",
+        "description": "Space for technician signature"
+      },
+      "attachments": {
+        "title": "Attachments",
+        "description": "Additional documents and files"
+      },
+      "options": {
+        "includePhotos": "Include photos",
+        "includeCharts": "Include charts",
+        "highlightAlerts": "Highlight alerts",
+        "includeTimeline": "Include timeline"
+      }
+    },
+    "branding": {
+      "showLogo": "Show logo",
+      "logoPosition": "Logo position",
+      "left": "Left",
+      "center": "Center",
+      "right": "Right",
+      "primaryColor": "Primary color",
+      "showHeader": "Show header",
+      "headerText": "Header text",
+      "showFooter": "Show footer",
+      "footerText": "Footer text",
+      "footerHelp": "Use {page} and {pages} for page numbers"
+    },
+    "generator": {
+      "steps": {
+        "template": "Select Template",
+        "period": "Select Period",
+        "systems": "Select Systems",
+        "preview": "Preview & Generate",
+        "generate": "Complete"
+      },
+      "selectTemplateHelp": "Choose a template for your report. Each template defines which sections and formatting to include.",
+      "selectPeriodHelp": "Select the time period for your report data.",
+      "selectSystemsHelp": "Select which systems to include in the report.",
+      "periodType": "Period Type",
+      "periods": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "custom": "Custom"
+      },
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "selectAll": "Select All Systems",
+      "summary": "Report Summary",
+      "reportName": "Report Name",
+      "reportPrefix": "Report",
+      "template": "Template",
+      "period": "Period",
+      "selectedSystems": "Systems",
+      "noSystems": "No systems selected",
+      "includedBlocks": "Included Blocks",
+      "generate": "Generate Report",
+      "generating": "Generating...",
+      "complete": "Report generated successfully!",
+      "completeHelp": "Your report has been created. You can download it from the History tab.",
+      "createAnother": "Create Another Report"
+    },
+    "history": {
+      "filters": "Filters",
+      "startDate": "Start Date",
+      "endDate": "End Date",
+      "name": "Name",
+      "period": "Period",
+      "template": "Template",
+      "systems": "Systems",
+      "systemsCount": "systems",
+      "generatedAt": "Generated",
+      "by": "by",
+      "pdf": "PDF",
+      "downloadPdf": "Download PDF",
+      "noPdf": "PDF not available",
+      "download": "Download",
+      "empty": "No reports generated yet",
+      "deleteConfirmTitle": "Delete Report",
+      "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
+    },
+    "pdf": {
+      "technicalReport": "Technical Report",
+      "period": "Period",
+      "periodType": "Type",
+      "client": "Client",
+      "generatedBy": "Generated by",
+      "generatedAt": "Generated at",
+      "scopeDescription": "This report covers {{count}} system(s) from {{startDate}} to {{endDate}}.",
+      "noSystems": "No systems in this report",
+      "noAnalyses": "No analyses in this report",
+      "noInspections": "No inspections in this report",
+      "noOccurrences": "No occurrences in this report",
+      "name": "Name",
+      "type": "Type",
+      "description": "Description",
+      "date": "Date",
+      "system": "System",
+      "user": "User",
+      "entries": "Entries",
+      "notes": "Notes",
+      "status": "Status",
+      "conclusion": "Conclusion",
+      "title": "Title",
+      "priority": "Priority",
+      "totalSystems": "Total systems",
+      "totalAnalyses": "Total analyses",
+      "totalInspections": "Total inspections",
+      "totalOccurrences": "Total occurrences",
+      "technician": "Technician"
+    },
     "errors": {
       "datesRequired": "Start date and end date are required for custom reports",
       "invalidType": "Invalid report type"
@@ -56,7 +235,6 @@
       "productUsages": "Product Usage",
       "productUsagesUpper": "PRODUCT USAGE"
     },
-    "title": "Reports",
     "subtitle": "Generate and configure system reports",
     "generateReport": "Generate Report",
     "generateButton": "Generate",

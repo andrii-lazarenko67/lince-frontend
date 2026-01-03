@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Button, Select, Input } from '../../components/common';
+import { Card, Button, Select, DateInput } from '../../components/common';
 import type { System } from '../../types';
 
 interface ReportConfigurationProps {
@@ -65,16 +65,14 @@ const ReportConfiguration: React.FC<ReportConfigurationProps> = ({
 
           {formData.type === 'custom' && (
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                type="date"
+              <DateInput
                 name="startDate"
                 value={formData.startDate}
                 onChange={onDateChange}
                 label={t('reports.config.startDate')}
               />
 
-              <Input
-                type="date"
+              <DateInput
                 name="endDate"
                 value={formData.endDate}
                 onChange={onDateChange}

@@ -25,7 +25,8 @@ import {
   FolderOpen as FolderOpenIcon,
   People as PeopleIcon,
   Settings as SettingsIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  Business as BusinessIcon
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { useLocation } from 'react-router-dom';
@@ -37,6 +38,7 @@ interface NavItem {
   path: string;
   icon: React.ReactNode;
   roles?: string[];
+  serviceProviderOnly?: boolean;
 }
 
 const DRAWER_WIDTH = 256;
@@ -64,6 +66,7 @@ const Sidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { name: t('nav.dashboard'), path: '/dashboard', icon: <DashboardIcon /> },
+    { name: t('nav.clients'), path: '/clients', icon: <BusinessIcon />, serviceProviderOnly: true },
     { name: t('nav.systems'), path: '/systems', icon: <StorageIcon />, roles: ['manager'] },
     { name: t('nav.dailyLogs'), path: '/daily-logs', icon: <AssignmentIcon /> },
     { name: t('nav.inspections'), path: '/inspections', icon: <PlaylistAddCheckIcon /> },
@@ -76,8 +79,11 @@ const Sidebar: React.FC = () => {
   ];
 
   const filteredNavItems = navItems.filter(item => {
-    if (!item.roles) return true;
-    return user && item.roles.includes(user.role);
+    // Check service provider only items
+    if (item.serviceProviderOnly && !user?.isServiceProvider) return false;
+    // Check role restrictions
+    if (item.roles && (!user || !item.roles.includes(user.role))) return false;
+    return true;
   });
 
   const isActive = (path: string) => location.pathname === path || location.pathname.startsWith(path + '/');

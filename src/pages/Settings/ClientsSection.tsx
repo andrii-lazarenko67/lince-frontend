@@ -26,7 +26,7 @@ const ClientsSection: React.FC = () => {
     email: ''
   });
 
-  const isServiceProvider = user?.organization?.isServiceProvider;
+  const isServiceProvider = user?.isServiceProvider;
 
   useEffect(() => {
     if (isServiceProvider) {
@@ -79,7 +79,7 @@ const ClientsSection: React.FC = () => {
   if (!isServiceProvider) {
     return (
       <div className="text-center py-12">
-        <p className="text-gray-500">{t('settings.clients.errors.noOrganization')}</p>
+        <p className="text-gray-500">{t('settings.clients.errors.notServiceProvider')}</p>
       </div>
     );
   }

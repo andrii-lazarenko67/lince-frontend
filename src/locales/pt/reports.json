@@ -1,6 +1,185 @@
 {
   "reports": {
+    "title": "Relatórios",
     "description": "Gere relatórios abrangentes para seu sistema de tratamento de água",
+    "tabs": {
+      "generator": "Gerar Relatório",
+      "templates": "Modelos",
+      "history": "Histórico"
+    },
+    "templates": {
+      "title": "Modelos de Relatório",
+      "create": "Criar Modelo",
+      "editTemplate": "Editar Modelo",
+      "name": "Nome do Modelo",
+      "descriptionLabel": "Descrição",
+      "noDescription": "Sem descrição",
+      "blocksCount": "{{count}} blocos",
+      "default": "Padrão",
+      "global": "Global",
+      "lastUpdated": "Atualizado",
+      "empty": "Nenhum modelo encontrado. Crie seu primeiro modelo para começar.",
+      "createFirst": "Criar Primeiro Modelo",
+      "duplicate": "Duplicar",
+      "setDefault": "Definir como Padrão",
+      "deleteConfirmTitle": "Excluir Modelo",
+      "deleteConfirmMessage": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
+      "reportBlocks": "Blocos do Relatório",
+      "blocksHelp": "Ative ou desative blocos e arraste para reordená-los. Cada bloco representa uma seção do seu relatório.",
+      "branding": "Marca e Aparência",
+      "errors": {
+        "notFound": "Modelo não encontrado",
+        "nameRequired": "Nome do modelo é obrigatório",
+        "cannotEditGlobal": "Não é possível editar modelos globais",
+        "cannotDeleteGlobal": "Não é possível excluir modelos globais"
+      },
+      "created": "Modelo criado com sucesso",
+      "updatedSuccess": "Modelo atualizado com sucesso",
+      "deleted": "Modelo excluído com sucesso",
+      "duplicated": "Modelo duplicado com sucesso",
+      "setAsDefault": "Modelo definido como padrão"
+    },
+    "blocks": {
+      "identification": {
+        "title": "Identificação",
+        "description": "Cabeçalho do relatório com título, período e informações do cliente"
+      },
+      "scope": {
+        "title": "Escopo",
+        "description": "Descrição do escopo do relatório e sistemas cobertos"
+      },
+      "systems": {
+        "title": "Sistemas",
+        "description": "Lista de sistemas monitorados com detalhes"
+      },
+      "analyses": {
+        "title": "Análises",
+        "description": "Registros diários e leituras de parâmetros"
+      },
+      "inspections": {
+        "title": "Inspeções",
+        "description": "Registros de inspeção e resultados de checklist"
+      },
+      "occurrences": {
+        "title": "Ocorrências",
+        "description": "Incidentes e problemas registrados durante o período"
+      },
+      "conclusion": {
+        "title": "Conclusão",
+        "description": "Resumo e recomendações"
+      },
+      "signature": {
+        "title": "Assinatura",
+        "description": "Espaço para assinatura do técnico"
+      },
+      "attachments": {
+        "title": "Anexos",
+        "description": "Documentos e arquivos adicionais"
+      },
+      "options": {
+        "includePhotos": "Incluir fotos",
+        "includeCharts": "Incluir gráficos",
+        "highlightAlerts": "Destacar alertas",
+        "includeTimeline": "Incluir linha do tempo"
+      }
+    },
+    "branding": {
+      "showLogo": "Mostrar logo",
+      "logoPosition": "Posição do logo",
+      "left": "Esquerda",
+      "center": "Centro",
+      "right": "Direita",
+      "primaryColor": "Cor primária",
+      "showHeader": "Mostrar cabeçalho",
+      "headerText": "Texto do cabeçalho",
+      "showFooter": "Mostrar rodapé",
+      "footerText": "Texto do rodapé",
+      "footerHelp": "Use {page} e {pages} para números de página"
+    },
+    "generator": {
+      "steps": {
+        "template": "Selecionar Modelo",
+        "period": "Selecionar Período",
+        "systems": "Selecionar Sistemas",
+        "preview": "Visualizar e Gerar",
+        "generate": "Concluído"
+      },
+      "selectTemplateHelp": "Escolha um modelo para seu relatório. Cada modelo define quais seções e formatação incluir.",
+      "selectPeriodHelp": "Selecione o período de tempo para os dados do seu relatório.",
+      "selectSystemsHelp": "Selecione quais sistemas incluir no relatório.",
+      "periodType": "Tipo de Período",
+      "periods": {
+        "daily": "Diário",
+        "weekly": "Semanal",
+        "monthly": "Mensal",
+        "custom": "Personalizado"
+      },
+      "startDate": "Data Inicial",
+      "endDate": "Data Final",
+      "selectAll": "Selecionar Todos os Sistemas",
+      "summary": "Resumo do Relatório",
+      "reportName": "Nome do Relatório",
+      "reportPrefix": "Relatório",
+      "template": "Modelo",
+      "period": "Período",
+      "selectedSystems": "Sistemas",
+      "noSystems": "Nenhum sistema selecionado",
+      "includedBlocks": "Blocos Incluídos",
+      "generate": "Gerar Relatório",
+      "generating": "Gerando...",
+      "complete": "Relatório gerado com sucesso!",
+      "completeHelp": "Seu relatório foi criado. Você pode baixá-lo na aba Histórico.",
+      "createAnother": "Criar Outro Relatório"
+    },
+    "history": {
+      "filters": "Filtros",
+      "startDate": "Data Inicial",
+      "endDate": "Data Final",
+      "name": "Nome",
+      "period": "Período",
+      "template": "Modelo",
+      "systems": "Sistemas",
+      "systemsCount": "sistemas",
+      "generatedAt": "Gerado em",
+      "by": "por",
+      "pdf": "PDF",
+      "downloadPdf": "Baixar PDF",
+      "noPdf": "PDF não disponível",
+      "download": "Baixar",
+      "empty": "Nenhum relatório gerado ainda",
+      "deleteConfirmTitle": "Excluir Relatório",
+      "deleteConfirmMessage": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita."
+    },
+    "pdf": {
+      "technicalReport": "Relatório Técnico",
+      "period": "Período",
+      "periodType": "Tipo",
+      "client": "Cliente",
+      "generatedBy": "Gerado por",
+      "generatedAt": "Gerado em",
+      "scopeDescription": "Este relatório cobre {{count}} sistema(s) de {{startDate}} a {{endDate}}.",
+      "noSystems": "Nenhum sistema neste relatório",
+      "noAnalyses": "Nenhuma análise neste relatório",
+      "noInspections": "Nenhuma inspeção neste relatório",
+      "noOccurrences": "Nenhuma ocorrência neste relatório",
+      "name": "Nome",
+      "type": "Tipo",
+      "description": "Descrição",
+      "date": "Data",
+      "system": "Sistema",
+      "user": "Usuário",
+      "entries": "Entradas",
+      "notes": "Observações",
+      "status": "Status",
+      "conclusion": "Conclusão",
+      "title": "Título",
+      "priority": "Prioridade",
+      "totalSystems": "Total de sistemas",
+      "totalAnalyses": "Total de análises",
+      "totalInspections": "Total de inspeções",
+      "totalOccurrences": "Total de ocorrências",
+      "technician": "Técnico"
+    },
     "errors": {
       "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",
       "invalidType": "Tipo de relatório inválido"
@@ -56,7 +235,6 @@
       "productUsages": "Uso de Produtos",
       "productUsagesUpper": "USO DE PRODUTOS"
     },
-    "title": "Relatórios",
     "subtitle": "Gerar e configurar relatórios do sistema",
     "generateReport": "Gerar Relatório",
     "generateButton": "Gerar",

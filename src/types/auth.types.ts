@@ -1,11 +1,5 @@
 export type UserRole = 'technician' | 'manager' | 'admin';
 
-export interface UserOrganization {
-  id: number;
-  name: string;
-  isServiceProvider: boolean;
-}
-
 export interface User {
   id: number;
   name: string;
@@ -13,10 +7,9 @@ export interface User {
   role: UserRole;
   phone: string | null;
   avatar: string | null;
+  isServiceProvider: boolean;
   isActive: boolean;
   lastLogin: string | null;
-  organizationId: number | null;
-  organization?: UserOrganization;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,13 +22,19 @@ export interface LoginRequest {
 export interface LoginResponse {
   user: User;
   token: string;
+  client?: {
+    id: number;
+    name: string;
+  };
+  redirectTo?: 'dashboard' | 'add-client';
 }
 
 export interface RegisterRequest {
   name: string;
   email: string;
   password: string;
-  role?: UserRole;
+  isServiceProvider: boolean;
+  companyName?: string;
   phone?: string;
 }
 

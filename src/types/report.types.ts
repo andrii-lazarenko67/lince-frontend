@@ -5,7 +5,7 @@ import type { Product, ProductUsage } from './product.types';
 
 export type ReportType = 'daily' | 'weekly' | 'monthly' | 'custom';
 
-export interface GenerateReportRequest {
+export interface LegacyGenerateReportRequest {
   type: ReportType;
   systemIds?: number[];
   stageIds?: number[];

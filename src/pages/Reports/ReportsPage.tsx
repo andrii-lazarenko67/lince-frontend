@@ -1,294 +1,97 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchSystems } from '../../store/slices/systemSlice';
-import { generateReport } from '../../store/slices/reportSlice';
-import ReportConfiguration from './ReportConfiguration';
-import ReportStatistics from "./ReportStatistics";
+import { Box, Tabs, Tab, Paper } from '@mui/material';
 import {
-  exportToHtml,
-  exportToCsv,
-  exportToPdf,
-  getStatusClass,
-  getPriorityClass,
-  type HtmlTableSection,
-  type CsvSection,
-  type PdfTableSection
-} from '../../utils';
+  Description as TemplateIcon,
+  Add as GenerateIcon,
+  History as HistoryIcon
+} from '@mui/icons-material';
+import ReportTemplatesTab from './ReportTemplatesTab';
+import ReportGeneratorTab from './ReportGeneratorTab';
+import ReportHistoryTab from './ReportHistoryTab';
 
-import type { ReportType, ReportData } from '../../types';
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: number;
+  value: number;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`reports-tabpanel-${index}`}
+      aria-labelledby={`reports-tab-${index}`}
+      {...other}
+    >
+      {value === index && <Box sx={{ pt: 3 }}>{children}</Box>}
+    </div>
+  );
+}
+
+function a11yProps(index: number) {
+  return {
+    id: `reports-tab-${index}`,
+    'aria-controls': `reports-tabpanel-${index}`,
+  };
+}
 
 const ReportsPage: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { systems } = useAppSelector((state) => state.systems);
-  const { currentReport, isGenerating } = useAppSelector((state) => state.reports);
+  const [activeTab, setActiveTab] = useState(0);
 
-  const [formData, setFormData] = useState({
-    type: 'daily',
-    systemIds: [] as number[],
-    stageIds: [] as number[],
-    startDate: '',
-    endDate: ''
-  });
-
-  // Filter to get only root systems (no parentId)
-  const rootSystems = systems.filter(s => !s.parentId);
-
-  // Get stages for selected systems using parentId filter
-  const availableStages = systems.filter(s => s.parentId && formData.systemIds.includes(s.parentId));
-
-  useEffect(() => {
-    dispatch(fetchSystems({}));
-  }, [dispatch]);
-
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setFormData({
-      ...formData,
-      type: e.target.value
-    });
-  };
-
-  const handleSystemToggle = (systemId: number) => {
-    setFormData(prev => {
-      const newSystemIds = prev.systemIds.includes(systemId)
-        ? prev.systemIds.filter(id => id !== systemId)
-        : [...prev.systemIds, systemId];
-
-      // When a system is deselected, also remove its stages from stageIds
-      const stageIdsToRemove = systems
-        .filter(s => s.parentId === systemId)
-        .map(s => s.id);
-      const newStageIds = prev.systemIds.includes(systemId)
-        ? prev.stageIds.filter(id => !stageIdsToRemove.includes(id))
-        : prev.stageIds;
-
-      return {
-        ...prev,
-        systemIds: newSystemIds,
-        stageIds: newStageIds
-      };
-    });
-  };
-
-  const handleStageToggle = (stageId: number) => {
-    setFormData(prev => ({
-      ...prev,
-      stageIds: prev.stageIds.includes(stageId)
-        ? prev.stageIds.filter(id => id !== stageId)
-        : [...prev.stageIds, stageId]
-    }));
-  };
-
-  const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleGenerate = () => {
-    dispatch(generateReport({
-      type: formData.type as ReportType,
-      systemIds: formData.systemIds.length > 0 ? formData.systemIds : undefined,
-      stageIds: formData.stageIds.length > 0 ? formData.stageIds : undefined,
-      startDate: formData.startDate || undefined,
-      endDate: formData.endDate || undefined
-    }));
-  };
-
-  const getReportSections = (report: ReportData) => {
-    return {
-      dailyLogs: {
-        title: `${t('reports.sections.dailyLogs')} (${report.dailyLogs.length})`,
-        headers: [t('reports.headers.date'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.entries'), t('reports.headers.notes')],
-        rows: report.dailyLogs.map(log => [
-          log.date,
-          log.system?.name || '-',
-          log.user?.name || '-',
-          log.entries?.length || 0,
-          log.notes || '-'
-        ])
-      },
-      inspections: {
-        title: `${t('reports.sections.inspections')} (${report.inspections.length})`,
-        headers: [t('reports.headers.date'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.status'), t('reports.headers.conclusion'), t('reports.headers.items')],
-        rows: report.inspections.map(insp => [
-          new Date(insp.date).toLocaleDateString(),
-          insp.system?.name || '-',
-          insp.user?.name || '-',
-          t(`inspections.status.${insp.status}`),
-          insp.conclusion || '-',
-          insp.items?.length || 0
-        ])
-      },
-      incidents: {
-        title: `${t('reports.sections.incidents')} (${report.incidents.length})`,
-        headers: [t('reports.headers.title'), t('reports.headers.system'), t('reports.headers.priority'), t('reports.headers.status'), t('reports.headers.reporter'), t('reports.headers.assignee'), t('reports.headers.created')],
-        rows: report.incidents.map(inc => [
-          inc.title,
-          inc.system?.name || '-',
-          t(`incidents.${inc.priority}`),
-          t(`incidents.${inc.status}`),
-          inc.reporter?.name || '-',
-          inc.assignee?.name || '-',
-          new Date(inc.createdAt).toLocaleDateString()
-        ])
-      },
-      products: {
-        title: `${t('reports.sections.products')} (${report.products.length})`,
-        headers: [t('reports.headers.name'), t('reports.headers.type'), t('reports.headers.currentStock'), t('reports.headers.unit'), t('reports.headers.minAlert'), t('reports.headers.supplier')],
-        rows: report.products.map(prod => [
-          prod.name,
-          prod.type?.name || '-',
-          prod.currentStock,
-          prod.unit?.abbreviation || '-',
-          prod.minStockAlert || '-',
-          prod.supplier || '-'
-        ])
-      },
-      productUsages: {
-        title: `${t('reports.sections.productUsages')} (${report.productUsages.length})`,
-        headers: [t('reports.headers.date'), t('reports.headers.product'), t('reports.headers.type'), t('reports.headers.quantity'), t('reports.headers.system'), t('reports.headers.user'), t('reports.headers.notes')],
-        rows: report.productUsages.map(usage => [
-          new Date(usage.date).toLocaleDateString(),
-          usage.product?.name || '-',
-          usage.type,
-          usage.quantity,
-          usage.system?.name || '-',
-          usage.user?.name || '-',
-          usage.notes || '-'
-        ])
-      }
-    };
-  };
-
-  const handleExportHTML = () => {
-    if (!currentReport) return;
-
-    const report = currentReport;
-    const sections = getReportSections(report);
-
-    const htmlSections: HtmlTableSection[] = [
-      sections.dailyLogs,
-      sections.inspections,
-      {
-        ...sections.incidents,
-        cellClasses: [
-          undefined,
-          undefined,
-          (value) => getPriorityClass(String(value)),
-          (value) => getStatusClass(String(value)),
-          undefined,
-          undefined,
-          undefined
-        ]
-      } as HtmlTableSection,
-      sections.products,
-      sections.productUsages
-    ];
-
-    exportToHtml(
-      {
-        title: t('reports.export.title'),
-        filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
-        metadata: [
-          { label: t('reports.export.reportType'), value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
-          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toLocaleString() }
-        ]
-      },
-      htmlSections
-    );
-  };
-
-  const handleExportCSV = () => {
-    if (!currentReport) return;
-
-    const report = currentReport;
-    const sections = getReportSections(report);
-
-    const csvSections: CsvSection[] = [
-      { title: t('reports.sections.dailyLogsUpper'), headers: sections.dailyLogs.headers, rows: sections.dailyLogs.rows },
-      { title: t('reports.sections.inspectionsUpper'), headers: sections.inspections.headers, rows: sections.inspections.rows },
-      { title: t('reports.sections.incidentsUpper'), headers: sections.incidents.headers, rows: sections.incidents.rows },
-      { title: t('reports.sections.productsUpper'), headers: sections.products.headers, rows: sections.products.rows },
-      { title: t('reports.sections.productUsagesUpper'), headers: sections.productUsages.headers, rows: sections.productUsages.rows }
-    ];
-
-    exportToCsv(
-      {
-        title: t('reports.export.title'),
-        filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
-        metadata: [
-          { label: t('reports.export.type'), value: report.type },
-          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toISOString() }
-        ]
-      },
-      csvSections
-    );
-  };
-
-  const handleExportPDF = () => {
-    if (!currentReport) return;
-
-    const report = currentReport;
-    const sections = getReportSections(report);
-
-    const pdfSections: PdfTableSection[] = [
-      sections.dailyLogs,
-      sections.inspections,
-      sections.incidents,
-      sections.products,
-      sections.productUsages
-    ];
-
-    exportToPdf(
-      {
-        title: t('reports.export.title'),
-        subtitle: `${report.type.charAt(0).toUpperCase() + report.type.slice(1)} ${t('reports.export.report')}`,
-        filename: `lince-report-${report.type}-${report.period.startDate}-${report.period.endDate}`,
-        metadata: [
-          { label: t('reports.export.reportType'), value: report.type.charAt(0).toUpperCase() + report.type.slice(1) },
-          { label: t('reports.export.period'), value: `${report.period.startDate} to ${report.period.endDate}` },
-          { label: t('reports.export.generated'), value: new Date(report.generatedAt).toLocaleString() }
-        ],
-        footerText: `${t('common.exportFooter')} - ${new Date().toLocaleString()}`
-      },
-      pdfSections
-    );
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue);
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
-          <p className="text-gray-500 mt-1">{t('reports.description')}</p>
-        </div>
-      </div>
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ mb: 3 }}>
+        <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
+        <p className="text-gray-500 mt-1">{t('reports.description')}</p>
+      </Box>
 
-      <ReportConfiguration
-        formData={formData}
-        systems={rootSystems}
-        availableStages={availableStages}
-        isGenerating={isGenerating}
-        hasReport={!!currentReport}
-        onTypeChange={handleTypeChange}
-        onSystemToggle={handleSystemToggle}
-        onStageToggle={handleStageToggle}
-        onDateChange={handleDateChange}
-        onGenerate={handleGenerate}
-        onExportPDF={handleExportPDF}
-        onExportHTML={handleExportHTML}
-        onExportCSV={handleExportCSV}
-      />
+      <Paper sx={{ width: '100%', mb: 2 }}>
+        <Tabs
+          value={activeTab}
+          onChange={handleTabChange}
+          aria-label="reports tabs"
+          sx={{ borderBottom: 1, borderColor: 'divider' }}
+        >
+          <Tab
+            icon={<GenerateIcon />}
+            iconPosition="start"
+            label={t('reports.tabs.generator')}
+            {...a11yProps(0)}
+          />
+          <Tab
+            icon={<TemplateIcon />}
+            iconPosition="start"
+            label={t('reports.tabs.templates')}
+            {...a11yProps(1)}
+          />
+          <Tab
+            icon={<HistoryIcon />}
+            iconPosition="start"
+            label={t('reports.tabs.history')}
+            {...a11yProps(2)}
+          />
+        </Tabs>
+      </Paper>
 
-      {currentReport && (
-        <ReportStatistics report={currentReport} />
-      )}
-    </div>
+      <TabPanel value={activeTab} index={0}>
+        <ReportGeneratorTab />
+      </TabPanel>
+      <TabPanel value={activeTab} index={1}>
+        <ReportTemplatesTab />
+      </TabPanel>
+      <TabPanel value={activeTab} index={2}>
+        <ReportHistoryTab />
+      </TabPanel>
+    </Box>
   );
 };
 

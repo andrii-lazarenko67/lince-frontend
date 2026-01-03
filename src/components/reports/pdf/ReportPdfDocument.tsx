@@ -1,0 +1,841 @@
+/**
+ * Report PDF Document Component
+ * Uses @react-pdf/renderer for professional PDF generation
+ * Implements all 9 report blocks with proper styling
+ */
+import React from 'react';
+import {
+  Document,
+  Page,
+  Text,
+  View,
+  Image,
+  StyleSheet
+} from '@react-pdf/renderer';
+import type {
+  ReportTemplateConfig,
+  ReportBlock,
+  ReportBranding,
+  GeneratedReportPeriod
+} from '../../../types';
+
+// Types for report data
+export interface ReportClient {
+  id: number;
+  name: string;
+  address?: string;
+  contact?: string;
+  phone?: string;
+  email?: string;
+  logo?: string;
+  brandColor?: string;
+}
+
+export interface ReportSystem {
+  id: number;
+  name: string;
+  description?: string;
+  status?: string;
+  location?: string;
+  systemType?: { id: number; name: string; nameKey?: string };
+  photos?: Array<{ id: number; url: string; description?: string }>;
+}
+
+export interface ReportDailyLogEntry {
+  id: number;
+  value: number | null;
+  isOutOfRange?: boolean;
+  monitoringPoint?: {
+    id: number;
+    name: string;
+    minValue?: number;
+    maxValue?: number;
+    unit?: { symbol: string };
+  };
+}
+
+export interface ReportDailyLog {
+  id: number;
+  date: string;
+  recordType?: string;
+  notes?: string;
+  system?: { id: number; name: string };
+  stage?: { id: number; name: string };
+  user?: { id: number; name: string };
+  entries?: ReportDailyLogEntry[];
+}
+
+export interface ReportInspectionItem {
+  id: number;
+  status: 'compliant' | 'non_compliant' | 'not_verified';
+  notes?: string;
+  checklistItem?: { id: number; name: string };
+}
+
+export interface ReportInspection {
+  id: number;
+  date: string;
+  status: string;
+  conclusion?: string;
+  system?: { id: number; name: string };
+  user?: { id: number; name: string };
+  items?: ReportInspectionItem[];
+  photos?: Array<{ id: number; url: string; description?: string }>;
+}
+
+export interface ReportIncidentComment {
+  id: number;
+  content: string;
+  createdAt: string;
+  user?: { id: number; name: string };
+}
+
+export interface ReportIncident {
+  id: number;
+  title: string;
+  description?: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  status: 'open' | 'in_progress' | 'resolved' | 'closed';
+  createdAt: string;
+  resolvedAt?: string;
+  system?: { id: number; name: string };
+  reporter?: { id: number; name: string };
+  assignee?: { id: number; name: string };
+  photos?: Array<{ id: number; url: string; description?: string }>;
+  comments?: ReportIncidentComment[];
+}
+
+export interface ReportData {
+  client: ReportClient;
+  period: GeneratedReportPeriod;
+  systems: ReportSystem[];
+  dailyLogs: ReportDailyLog[];
+  inspections: ReportInspection[];
+  incidents: ReportIncident[];
+  summary: {
+    totalSystems: number;
+    totalReadings: number;
+    outOfRangeCount: number;
+    totalInspections: number;
+    totalIncidents: number;
+    openIncidents: number;
+  };
+  conclusion?: string;
+  signature?: {
+    name?: string;
+    role?: string;
+    registration?: string;
+    signatureImage?: string;
+  };
+  generatedAt: string;
+  generatedBy: { id: number; name: string };
+}
+
+export interface ReportPdfProps {
+  reportName: string;
+  config: ReportTemplateConfig;
+  data: ReportData;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}
+
+// Create styles with dynamic primary color
+const createStyles = (primaryColor: string) => StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+    paddingTop: 30,
+    paddingBottom: 50,
+    paddingHorizontal: 40,
+    fontFamily: 'Helvetica',
+    fontSize: 10
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: primaryColor,
+    paddingBottom: 10
+  },
+  headerLogo: {
+    width: 80,
+    height: 40,
+    objectFit: 'contain'
+  },
+  headerText: {
+    fontSize: 8,
+    color: '#666666',
+    textAlign: 'right'
+  },
+  title: {
+    fontSize: 22,
+    fontFamily: 'Helvetica-Bold',
+    color: primaryColor,
+    textAlign: 'center',
+    marginBottom: 10
+  },
+  subtitle: {
+    fontSize: 12,
+    color: '#666666',
+    textAlign: 'center',
+    marginBottom: 20
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontFamily: 'Helvetica-Bold',
+    color: primaryColor,
+    marginTop: 15,
+    marginBottom: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: primaryColor,
+    paddingBottom: 4
+  },
+  infoBox: {
+    backgroundColor: '#f8fafc',
+    borderRadius: 4,
+    padding: 12,
+    marginBottom: 15
+  },
+  infoRow: {
+    flexDirection: 'row',
+    marginBottom: 4
+  },
+  infoLabel: {
+    fontFamily: 'Helvetica-Bold',
+    color: '#374151',
+    width: 120
+  },
+  infoValue: {
+    color: '#6b7280',
+    flex: 1
+  },
+  table: {
+    marginTop: 8,
+    marginBottom: 12
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: primaryColor,
+    padding: 8,
+    borderTopLeftRadius: 4,
+    borderTopRightRadius: 4
+  },
+  tableHeaderCell: {
+    fontFamily: 'Helvetica-Bold',
+    color: '#FFFFFF',
+    fontSize: 9,
+    flex: 1,
+    textAlign: 'left'
+  },
+  tableRow: {
+    flexDirection: 'row',
+    padding: 6,
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#e5e7eb'
+  },
+  tableRowAlt: {
+    backgroundColor: '#f9fafb'
+  },
+  tableCell: {
+    fontSize: 8,
+    color: '#374151',
+    flex: 1,
+    textAlign: 'left'
+  },
+  tableCellAlert: {
+    color: '#dc2626',
+    fontFamily: 'Helvetica-Bold'
+  },
+  text: {
+    fontSize: 10,
+    color: '#374151',
+    lineHeight: 1.5
+  },
+  textMuted: {
+    fontSize: 9,
+    color: '#9ca3af'
+  },
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 8
+  },
+  photo: {
+    width: 120,
+    height: 90,
+    marginRight: 8,
+    marginBottom: 8,
+    objectFit: 'cover',
+    borderRadius: 4
+  },
+  photoCaption: {
+    fontSize: 7,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginTop: 2
+  },
+  signatureBox: {
+    marginTop: 30,
+    alignItems: 'center'
+  },
+  signatureLine: {
+    width: 200,
+    borderTopWidth: 1,
+    borderTopColor: '#9ca3af',
+    marginBottom: 8
+  },
+  signatureName: {
+    fontSize: 11,
+    fontFamily: 'Helvetica-Bold',
+    color: '#374151'
+  },
+  signatureRole: {
+    fontSize: 9,
+    color: '#6b7280'
+  },
+  signatureImage: {
+    width: 150,
+    height: 50,
+    marginBottom: 8,
+    objectFit: 'contain'
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 40,
+    right: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 0.5,
+    borderTopColor: '#e5e7eb',
+    paddingTop: 8
+  },
+  footerText: {
+    fontSize: 8,
+    color: '#9ca3af'
+  },
+  pageNumber: {
+    fontSize: 8,
+    color: '#9ca3af'
+  },
+  badge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    fontSize: 8
+  },
+  badgeCritical: {
+    backgroundColor: '#fef2f2',
+    color: '#dc2626'
+  },
+  badgeHigh: {
+    backgroundColor: '#fff7ed',
+    color: '#ea580c'
+  },
+  badgeMedium: {
+    backgroundColor: '#fefce8',
+    color: '#ca8a04'
+  },
+  badgeLow: {
+    backgroundColor: '#f0fdf4',
+    color: '#16a34a'
+  },
+  statusOpen: {
+    color: '#dc2626'
+  },
+  statusInProgress: {
+    color: '#2563eb'
+  },
+  statusResolved: {
+    color: '#16a34a'
+  },
+  statusClosed: {
+    color: '#6b7280'
+  },
+  timeline: {
+    marginTop: 8,
+    paddingLeft: 12,
+    borderLeftWidth: 2,
+    borderLeftColor: primaryColor
+  },
+  timelineItem: {
+    marginBottom: 8,
+    paddingLeft: 8
+  },
+  timelineDate: {
+    fontSize: 8,
+    color: '#9ca3af'
+  },
+  conclusionBox: {
+    backgroundColor: '#f0f9ff',
+    borderRadius: 4,
+    padding: 15,
+    marginTop: 10
+  },
+  summaryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginTop: 10
+  },
+  summaryItem: {
+    width: '25%',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+  summaryValue: {
+    fontSize: 20,
+    fontFamily: 'Helvetica-Bold',
+    color: primaryColor
+  },
+  summaryLabel: {
+    fontSize: 8,
+    color: '#6b7280',
+    textAlign: 'center'
+  }
+});
+
+// Helper functions
+const formatDate = (dateString: string): string => {
+  try {
+    return new Date(dateString).toLocaleDateString();
+  } catch {
+    return dateString;
+  }
+};
+
+const formatDateTime = (dateString: string): string => {
+  try {
+    return new Date(dateString).toLocaleString();
+  } catch {
+    return dateString;
+  }
+};
+
+// Block Components
+interface BlockProps {
+  data: ReportData;
+  block: ReportBlock;
+  styles: ReturnType<typeof createStyles>;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}
+
+const IdentificationBlock: React.FC<BlockProps & { reportName: string }> = ({
+  data,
+  styles,
+  t,
+  reportName
+}) => (
+  <View>
+    <Text style={styles.title}>{reportName}</Text>
+    <Text style={styles.subtitle}>
+      {t('reports.pdf.period')}: {formatDate(data.period.startDate)} - {formatDate(data.period.endDate)}
+    </Text>
+    <View style={styles.infoBox}>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>{t('reports.pdf.client')}:</Text>
+        <Text style={styles.infoValue}>{data.client.name}</Text>
+      </View>
+      {data.client.address && (
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>{t('common.address')}:</Text>
+          <Text style={styles.infoValue}>{data.client.address}</Text>
+        </View>
+      )}
+      {data.client.contact && (
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>{t('common.contact')}:</Text>
+          <Text style={styles.infoValue}>{data.client.contact}</Text>
+        </View>
+      )}
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>{t('reports.pdf.generatedBy')}:</Text>
+        <Text style={styles.infoValue}>{data.generatedBy.name}</Text>
+      </View>
+      <View style={styles.infoRow}>
+        <Text style={styles.infoLabel}>{t('reports.pdf.generatedAt')}:</Text>
+        <Text style={styles.infoValue}>{formatDateTime(data.generatedAt)}</Text>
+      </View>
+    </View>
+  </View>
+);
+
+const ScopeBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.scope.title')}</Text>
+    <Text style={styles.text}>
+      {t('reports.pdf.scopeDescription', {
+        count: data.systems.length,
+        startDate: formatDate(data.period.startDate),
+        endDate: formatDate(data.period.endDate)
+      })}
+    </Text>
+    <View style={{ marginTop: 8 }}>
+      {data.systems.map((system) => (
+        <Text key={system.id} style={styles.text}>
+          • {system.name} {system.systemType ? `(${system.systemType.name})` : ''}
+        </Text>
+      ))}
+    </View>
+  </View>
+);
+
+const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.systems.title')}</Text>
+    {data.systems.length === 0 ? (
+      <Text style={styles.textMuted}>{t('reports.pdf.noSystems')}</Text>
+    ) : (
+      <>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.name')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.pdf.type')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.description')}</Text>
+          </View>
+          {data.systems.map((system, idx) => (
+            <View key={system.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{system.name}</Text>
+              <Text style={styles.tableCell}>{system.systemType?.name || '-'}</Text>
+              <Text style={styles.tableCell}>{system.status || '-'}</Text>
+              <Text style={[styles.tableCell, { flex: 2 }]}>{system.description || '-'}</Text>
+            </View>
+          ))}
+        </View>
+        {block.includePhotos && data.systems.some(s => s.photos && s.photos.length > 0) && (
+          <View style={styles.photoGrid}>
+            {data.systems.flatMap(system =>
+              (system.photos || []).slice(0, 4).map(photo => (
+                <View key={photo.id}>
+                  <Image src={photo.url} style={styles.photo} />
+                  {photo.description && (
+                    <Text style={styles.photoCaption}>{photo.description}</Text>
+                  )}
+                </View>
+              ))
+            )}
+          </View>
+        )}
+      </>
+    )}
+  </View>
+);
+
+const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.title')}</Text>
+    {data.dailyLogs.length === 0 ? (
+      <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>
+    ) : (
+      <View style={styles.table}>
+        <View style={styles.tableHeader}>
+          <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+          <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+          <Text style={styles.tableHeaderCell}>{t('reports.dailyLogs.type')}</Text>
+          <Text style={styles.tableHeaderCell}>{t('reports.pdf.user')}</Text>
+          <Text style={styles.tableHeaderCell}>{t('reports.pdf.entries')}</Text>
+          {block.highlightAlerts && (
+            <Text style={styles.tableHeaderCell}>{t('reports.dailyLogs.alerts')}</Text>
+          )}
+        </View>
+        {data.dailyLogs.map((log, idx) => {
+          const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
+          return (
+            <View key={log.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+              <Text style={styles.tableCell}>{formatDate(log.date)}</Text>
+              <Text style={styles.tableCell}>{log.system?.name || log.stage?.name || '-'}</Text>
+              <Text style={styles.tableCell}>{log.recordType || '-'}</Text>
+              <Text style={styles.tableCell}>{log.user?.name || '-'}</Text>
+              <Text style={styles.tableCell}>{log.entries?.length || 0}</Text>
+              {block.highlightAlerts && (
+                <Text style={[styles.tableCell, outOfRange > 0 ? styles.tableCellAlert : {}]}>
+                  {outOfRange}
+                </Text>
+              )}
+            </View>
+          );
+        })}
+      </View>
+    )}
+  </View>
+);
+
+const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.inspections.title')}</Text>
+    {data.inspections.length === 0 ? (
+      <Text style={styles.textMuted}>{t('reports.pdf.noInspections')}</Text>
+    ) : (
+      <>
+        <View style={styles.table}>
+          <View style={styles.tableHeader}>
+            <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.inspections.inspector')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+            <Text style={styles.tableHeaderCell}>{t('reports.inspections.itemsChecked')}</Text>
+          </View>
+          {data.inspections.map((insp, idx) => (
+            <View key={insp.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+              <Text style={styles.tableCell}>{formatDate(insp.date)}</Text>
+              <Text style={styles.tableCell}>{insp.system?.name || '-'}</Text>
+              <Text style={styles.tableCell}>{insp.user?.name || '-'}</Text>
+              <Text style={styles.tableCell}>{insp.status}</Text>
+              <Text style={styles.tableCell}>{insp.items?.length || 0}</Text>
+            </View>
+          ))}
+        </View>
+        {block.includePhotos && data.inspections.some(i => i.photos && i.photos.length > 0) && (
+          <View style={styles.photoGrid}>
+            {data.inspections.flatMap(insp =>
+              (insp.photos || []).slice(0, 4).map(photo => (
+                <View key={photo.id}>
+                  <Image src={photo.url} style={styles.photo} />
+                  {photo.description && (
+                    <Text style={styles.photoCaption}>{photo.description}</Text>
+                  )}
+                </View>
+              ))
+            )}
+          </View>
+        )}
+      </>
+    )}
+  </View>
+);
+
+const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+  const getPriorityStyle = (priority: string) => {
+    switch (priority) {
+      case 'critical': return styles.badgeCritical;
+      case 'high': return styles.badgeHigh;
+      case 'medium': return styles.badgeMedium;
+      default: return styles.badgeLow;
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'open': return styles.statusOpen;
+      case 'in_progress': return styles.statusInProgress;
+      case 'resolved': return styles.statusResolved;
+      default: return styles.statusClosed;
+    }
+  };
+
+  return (
+    <View>
+      <Text style={styles.sectionTitle}>{t('reports.blocks.occurrences.title')}</Text>
+      {data.incidents.length === 0 ? (
+        <Text style={styles.textMuted}>{t('reports.pdf.noOccurrences')}</Text>
+      ) : (
+        <>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.title')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.priority')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+            </View>
+            {data.incidents.map((inc, idx) => (
+              <View key={inc.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+                <Text style={[styles.tableCell, { flex: 2 }]}>{inc.title}</Text>
+                <Text style={styles.tableCell}>{inc.system?.name || '-'}</Text>
+                <Text style={[styles.tableCell, getPriorityStyle(inc.priority)]}>
+                  {t(`reports.incidents.${inc.priority}`)}
+                </Text>
+                <Text style={[styles.tableCell, getStatusStyle(inc.status)]}>
+                  {t(`reports.incidents.${inc.status}`)}
+                </Text>
+                <Text style={styles.tableCell}>{formatDate(inc.createdAt)}</Text>
+              </View>
+            ))}
+          </View>
+          {block.includeTimeline && data.incidents.length > 0 && (
+            <View style={styles.timeline}>
+              {data.incidents.slice(0, 5).map(inc => (
+                <View key={inc.id} style={styles.timelineItem}>
+                  <Text style={styles.timelineDate}>{formatDateTime(inc.createdAt)}</Text>
+                  <Text style={styles.text}>{inc.title}</Text>
+                  {inc.resolvedAt && (
+                    <Text style={[styles.textMuted, { color: '#16a34a' }]}>
+                      ✓ {t('reports.incidents.resolved')}: {formatDateTime(inc.resolvedAt)}
+                    </Text>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+        </>
+      )}
+    </View>
+  );
+};
+
+const ConclusionBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.conclusion.title')}</Text>
+    <View style={styles.summaryGrid}>
+      <View style={styles.summaryItem}>
+        <Text style={styles.summaryValue}>{data.summary.totalSystems}</Text>
+        <Text style={styles.summaryLabel}>{t('reports.pdf.totalSystems')}</Text>
+      </View>
+      <View style={styles.summaryItem}>
+        <Text style={styles.summaryValue}>{data.summary.totalReadings}</Text>
+        <Text style={styles.summaryLabel}>{t('reports.pdf.totalAnalyses')}</Text>
+      </View>
+      <View style={styles.summaryItem}>
+        <Text style={styles.summaryValue}>{data.summary.totalInspections}</Text>
+        <Text style={styles.summaryLabel}>{t('reports.pdf.totalInspections')}</Text>
+      </View>
+      <View style={styles.summaryItem}>
+        <Text style={styles.summaryValue}>{data.summary.totalIncidents}</Text>
+        <Text style={styles.summaryLabel}>{t('reports.pdf.totalOccurrences')}</Text>
+      </View>
+    </View>
+    {data.summary.outOfRangeCount > 0 && (
+      <View style={[styles.infoBox, { backgroundColor: '#fef2f2' }]}>
+        <Text style={[styles.text, { color: '#dc2626' }]}>
+          ⚠ {data.summary.outOfRangeCount} {t('reports.statistics.outOfRange').toLowerCase()}
+        </Text>
+      </View>
+    )}
+    {data.conclusion && (
+      <View style={styles.conclusionBox}>
+        <Text style={styles.text}>{data.conclusion}</Text>
+      </View>
+    )}
+  </View>
+);
+
+const SignatureBlock: React.FC<Pick<BlockProps, 'data' | 'styles'>> = ({ data, styles }) => (
+  <View style={styles.signatureBox}>
+    {data.signature?.signatureImage && (
+      <Image src={data.signature.signatureImage} style={styles.signatureImage} />
+    )}
+    <View style={styles.signatureLine} />
+    <Text style={styles.signatureName}>
+      {data.signature?.name || data.generatedBy.name}
+    </Text>
+    {data.signature?.role && (
+      <Text style={styles.signatureRole}>{data.signature.role}</Text>
+    )}
+    {data.signature?.registration && (
+      <Text style={styles.signatureRole}>{data.signature.registration}</Text>
+    )}
+    <Text style={[styles.signatureRole, { marginTop: 8 }]}>
+      {formatDate(data.generatedAt)}
+    </Text>
+  </View>
+);
+
+const AttachmentsBlock: React.FC<Pick<BlockProps, 'styles' | 't'>> = ({ styles, t }) => (
+  <View>
+    <Text style={styles.sectionTitle}>{t('reports.blocks.attachments.title')}</Text>
+    <Text style={styles.textMuted}>{t('reports.blocks.attachments.description')}</Text>
+  </View>
+);
+
+// Header component with logo
+const ReportHeader: React.FC<{
+  branding: ReportBranding;
+  client: ReportClient;
+  styles: ReturnType<typeof createStyles>;
+}> = ({ branding, client, styles }) => {
+  const logoSrc = branding.showLogo ? client.logo : undefined;
+
+  return (
+    <View style={styles.header}>
+      {branding.logoPosition === 'left' && logoSrc && (
+        <Image src={logoSrc} style={styles.headerLogo} />
+      )}
+      {branding.logoPosition === 'center' ? (
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          {logoSrc && <Image src={logoSrc} style={styles.headerLogo} />}
+        </View>
+      ) : (
+        <View style={{ flex: 1 }}>
+          {branding.showHeader && (
+            <Text style={styles.headerText}>{branding.headerText}</Text>
+          )}
+        </View>
+      )}
+      {branding.logoPosition === 'right' && logoSrc && (
+        <Image src={logoSrc} style={styles.headerLogo} />
+      )}
+    </View>
+  );
+};
+
+// Main Document Component
+export const ReportPdfDocument: React.FC<ReportPdfProps> = ({
+  reportName,
+  config,
+  data,
+  t
+}) => {
+  const { blocks, branding } = config;
+  const primaryColor = branding.primaryColor || '#1976d2';
+  const styles = createStyles(primaryColor);
+
+  // Sort and filter enabled blocks
+  const enabledBlocks = blocks
+    .filter(block => block.enabled)
+    .sort((a, b) => a.order - b.order);
+
+  const renderBlock = (block: ReportBlock) => {
+    const props: BlockProps = { data, block, styles, t };
+
+    switch (block.type) {
+      case 'identification':
+        return <IdentificationBlock key={block.type} {...props} reportName={reportName} />;
+      case 'scope':
+        return <ScopeBlock key={block.type} {...props} />;
+      case 'systems':
+        return <SystemsBlock key={block.type} {...props} />;
+      case 'analyses':
+        return <AnalysesBlock key={block.type} {...props} />;
+      case 'inspections':
+        return <InspectionsBlock key={block.type} {...props} />;
+      case 'occurrences':
+        return <OccurrencesBlock key={block.type} {...props} />;
+      case 'conclusion':
+        return <ConclusionBlock key={block.type} {...props} />;
+      case 'signature':
+        return <SignatureBlock key={block.type} data={data} styles={styles} />;
+      case 'attachments':
+        return <AttachmentsBlock key={block.type} styles={styles} t={t} />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <ReportHeader branding={branding} client={data.client} styles={styles} />
+
+        {enabledBlocks.map(block => (
+          <View key={block.type} wrap={false}>
+            {renderBlock(block)}
+          </View>
+        ))}
+
+        <View style={styles.footer} fixed>
+          <Text style={styles.footerText}>
+            {branding.showFooter && branding.footerText}
+          </Text>
+          <Text
+            style={styles.pageNumber}
+            render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
+            fixed
+          />
+        </View>
+      </Page>
+    </Document>
+  );
+};
+
+export default ReportPdfDocument;

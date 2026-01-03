@@ -1,0 +1,26 @@
+{
+  "clients": {
+    "title": "Clientes",
+    "addFirst": {
+      "title": "Adicione Seu Primeiro Cliente",
+      "subtitle": "Comece adicionando seu primeiro cliente para gerenciar",
+      "submitButton": "Adicionar Cliente"
+    },
+    "form": {
+      "nameLabel": "Nome do Cliente",
+      "namePlaceholder": "Digite o nome do cliente",
+      "addressLabel": "Endereço",
+      "addressPlaceholder": "Digite o endereço",
+      "contactLabel": "Pessoa de Contato",
+      "contactPlaceholder": "Digite o nome do contato",
+      "phoneLabel": "Telefone",
+      "phonePlaceholder": "Digite o telefone",
+      "emailLabel": "E-mail",
+      "emailPlaceholder": "Digite o e-mail"
+    },
+    "errors": {
+      "nameRequired": "Nome do cliente é obrigatório",
+      "createFailed": "Falha ao criar cliente"
+    }
+  }
+}

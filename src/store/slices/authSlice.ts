@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { User, LoginRequest, LoginResponse, AuthState } from '../../types';
+import type { User, LoginRequest, LoginResponse, RegisterRequest, AuthState } from '../../types';
 import { setLoading } from './uiSlice';
 import { resetNotifications } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
@@ -18,12 +18,38 @@ export const login = createAsyncThunk(
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.post<{ success: boolean; data: LoginResponse }>('/auth/login', credentials);
-      const { user, token } = response.data.data;
+      const { user, token, client, redirectTo } = response.data.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(user));
-      return { user, token };
+      // Store selected client if provided
+      if (client) {
+        localStorage.setItem('selectedClientId', client.id.toString());
+      }
+      return { user, token, client, redirectTo };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Login failed'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const register = createAsyncThunk(
+  'auth/register',
+  async (data: RegisterRequest, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.post<{ success: boolean; data: LoginResponse }>('/auth/register', data);
+      const { user, token, client, redirectTo } = response.data.data;
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
+      // Store selected client if provided (for end customers)
+      if (client) {
+        localStorage.setItem('selectedClientId', client.id.toString());
+      }
+      return { user, token, client, redirectTo };
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Registration failed'));
     } finally {
       dispatch(setLoading(false));
     }
@@ -36,6 +62,7 @@ export const logout = createAsyncThunk(
     dispatch(setLoading(true));
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('selectedClientId');
     dispatch(resetNotifications());
     dispatch(setLoading(false));
   }
@@ -132,6 +159,15 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(login.rejected, (state, action) => {
+        state.error = action.payload as string;
+      })
+      .addCase(register.fulfilled, (state, action) => {
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        state.isAuthenticated = true;
+        state.error = null;
+      })
+      .addCase(register.rejected, (state, action) => {
         state.error = action.payload as string;
       })
       .addCase(logout.fulfilled, (state) => {
