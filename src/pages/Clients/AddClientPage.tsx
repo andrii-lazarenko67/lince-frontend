@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -10,11 +10,12 @@ import {
   Grid,
   IconButton,
   CircularProgress,
-  Alert as MuiAlert
+  Alert as MuiAlert,
+  Avatar
 } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, PhotoCamera as PhotoCameraIcon, Business as BusinessIcon } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { createClient } from '../../store/slices/clientSlice';
+import { createClient, uploadClientLogo } from '../../store/slices/clientSlice';
 import { setSelectedClient } from '../../store/slices/clientSlice';
 
 const AddClientPage: React.FC = () => {
@@ -32,16 +33,48 @@ const AddClientPage: React.FC = () => {
     address: '',
     contact: '',
     phone: '',
-    email: ''
+    email: '',
+    brandColor: '#1976d2'
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+    setFormError('');
+  };
+
+  const handleLogoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/png', 'image/jpeg', 'image/svg+xml'];
+    if (!allowedTypes.includes(file.type)) {
+      setFormError(t('settings.clients.errors.invalidLogoType', 'Logo must be PNG, JPG, or SVG'));
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      setFormError(t('settings.clients.errors.logoTooLarge', 'Logo must be less than 2MB'));
+      return;
+    }
+
+    setLogoFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
     setFormError('');
   };
 
@@ -58,8 +91,17 @@ const AddClientPage: React.FC = () => {
     try {
       const result = await dispatch(createClient(formData));
       if (createClient.fulfilled.match(result)) {
-        // Set the newly created client as selected
-        dispatch(setSelectedClient(result.payload.id));
+        const clientId = result.payload.id;
+
+        if (logoFile) {
+          try {
+            await dispatch(uploadClientLogo({ clientId, file: logoFile })).unwrap();
+          } catch {
+            // Logo upload failed but client created
+          }
+        }
+
+        dispatch(setSelectedClient(clientId));
         goTo('/clients');
       } else {
         setFormError(t('settings.clients.errors.createFailed', 'Failed to create client'));
@@ -157,6 +199,80 @@ const AddClientPage: React.FC = () => {
                 value={formData.phone}
                 onChange={handleChange}
               />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                {t('settings.clients.logo', 'Logo')}
+              </Typography>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 2,
+                  p: 2,
+                  border: '2px dashed',
+                  borderColor: 'divider',
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                  '&:hover': {
+                    borderColor: 'primary.main',
+                    bgcolor: 'action.hover'
+                  }
+                }}
+                onClick={handleLogoClick}
+              >
+                {logoPreview ? (
+                  <Avatar src={logoPreview} sx={{ width: 60, height: 60 }} variant="rounded" />
+                ) : (
+                  <Avatar sx={{ width: 60, height: 60, bgcolor: 'grey.200' }} variant="rounded">
+                    <BusinessIcon sx={{ fontSize: 30, color: 'grey.400' }} />
+                  </Avatar>
+                )}
+                <Box sx={{ flex: 1 }}>
+                  <Button startIcon={<PhotoCameraIcon />} size="small">
+                    {logoPreview ? t('settings.clients.changeLogo', 'Change Logo') : t('settings.clients.uploadLogo', 'Upload Logo')}
+                  </Button>
+                  <Typography variant="caption" color="text.secondary" display="block">
+                    PNG, JPG, SVG - Max 2MB
+                  </Typography>
+                </Box>
+              </Box>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleLogoChange}
+                accept="image/png,image/jpeg,image/svg+xml"
+                style={{ display: 'none' }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography variant="subtitle2" gutterBottom>
+                {t('settings.clients.brandColor', 'Brand Color')}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <input
+                  type="color"
+                  name="brandColor"
+                  value={formData.brandColor}
+                  onChange={handleChange}
+                  style={{
+                    width: 60,
+                    height: 40,
+                    border: 'none',
+                    borderRadius: 8,
+                    cursor: 'pointer'
+                  }}
+                />
+                <TextField
+                  size="small"
+                  name="brandColor"
+                  value={formData.brandColor}
+                  onChange={handleChange}
+                  placeholder="#1976d2"
+                  sx={{ width: 120 }}
+                />
+              </Box>
             </Grid>
             <Grid item xs={12}>
               <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>

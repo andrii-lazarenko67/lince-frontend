@@ -18,6 +18,13 @@ const ClientSelector: React.FC = () => {
     }
   }, [dispatch, isServiceProvider]);
 
+  // Auto-select first client if none is selected (required for service providers)
+  useEffect(() => {
+    if (isServiceProvider && clients.length > 0 && !selectedClientId) {
+      dispatch(setSelectedClient(clients[0].id));
+    }
+  }, [dispatch, isServiceProvider, clients, selectedClientId]);
+
   if (!isServiceProvider) {
     return null;
   }
@@ -36,14 +43,17 @@ const ClientSelector: React.FC = () => {
         onChange={handleClientChange}
         className="bg-white/10 text-white text-sm rounded-md border border-white/20 px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-white/30 cursor-pointer min-w-[150px]"
       >
-        <option value="" className="text-gray-900">
-          {t('settings.clients.allClients')}
-        </option>
-        {clients.map((client) => (
-          <option key={client.id} value={client.id} className="text-gray-900">
-            {client.name}
+        {clients.length === 0 ? (
+          <option value="" className="text-gray-900">
+            {t('settings.clients.noClients')}
           </option>
-        ))}
+        ) : (
+          clients.map((client) => (
+            <option key={client.id} value={client.id} className="text-gray-900">
+              {client.name}
+            </option>
+          ))
+        )}
       </select>
       {selectedClient && (
         <span className="text-xs text-white/70 hidden md:inline">

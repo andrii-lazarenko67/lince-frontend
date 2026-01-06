@@ -12,6 +12,7 @@ import type { Product, CreateProductRequest } from '../../types';
 const ProductsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { products, productTypes } = useAppSelector((state) => state.products);
   const { units } = useAppSelector((state) => state.units);
   const { systems } = useAppSelector((state) => state.systems);
@@ -42,7 +43,7 @@ const ProductsPage: React.FC = () => {
     dispatch(fetchProductTypes());
     dispatch(fetchUnits());
     dispatch(fetchSystems({ parentId: 'null' }));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const handleApplyFilters = () => {
     dispatch(fetchProducts({

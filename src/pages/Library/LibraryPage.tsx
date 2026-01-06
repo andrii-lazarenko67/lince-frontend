@@ -9,6 +9,7 @@ import type { Document } from '../../types';
 const LibraryPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { documents } = useAppSelector((state) => state.library);
   const { systems } = useAppSelector((state) => state.systems);
   const { goToDocumentDetail } = useAppNavigation();
@@ -30,7 +31,7 @@ const LibraryPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchDocuments({}));
     dispatch(fetchSystems({}));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   // Filter stages (child systems) when a system is selected
   useEffect(() => {

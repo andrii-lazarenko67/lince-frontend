@@ -11,13 +11,14 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 const SystemsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchSystems({}));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const getStatusLabel = (status: string) => {
     switch (status) {

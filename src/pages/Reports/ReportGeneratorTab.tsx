@@ -63,6 +63,9 @@ const ReportGeneratorTab: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedSystemIds, setSelectedSystemIds] = useState<number[]>([]);
+  const [includeOnlyAlerts, setIncludeOnlyAlerts] = useState(false);
+  const [includePhotos, setIncludePhotos] = useState(true);
+  const [includeCharts, setIncludeCharts] = useState(true);
   const [generationComplete, setGenerationComplete] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -147,12 +150,17 @@ const ReportGeneratorTab: React.FC = () => {
       templateId: selectedTemplateId,
       name,
       systemIds: selectedSystemIds,
-      period
+      period,
+      filters: {
+        includeOnlyAlerts,
+        includePhotos,
+        includeCharts
+      }
     }));
 
     if (generateReport.fulfilled.match(result)) {
       setGenerationComplete(true);
-      setActiveStep(4);
+      setActiveStep(5);
     }
   };
 
@@ -257,6 +265,10 @@ const ReportGeneratorTab: React.FC = () => {
     {
       label: t('reports.generator.steps.systems'),
       icon: <SystemIcon />
+    },
+    {
+      label: t('reports.generator.steps.options'),
+      icon: <PreviewIcon />
     },
     {
       label: t('reports.generator.steps.preview'),
@@ -502,7 +514,7 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
 
-        {/* Step 4: Preview & Generate */}
+        {/* Step 4: Configure Options */}
         <Step>
           <StepLabel
             StepIconComponent={() => (
@@ -523,6 +535,79 @@ const ReportGeneratorTab: React.FC = () => {
             )}
           >
             {steps[3].label}
+          </StepLabel>
+          <StepContent>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('reports.generator.configureOptionsHelp', 'Configure what to include in the report')}
+              </Typography>
+
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={includeOnlyAlerts}
+                      onChange={(e) => setIncludeOnlyAlerts(e.target.checked)}
+                    />
+                  }
+                  label={t('reports.generator.options.includeOnlyAlerts', 'Include only items with alerts/non-compliant')}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={includePhotos}
+                      onChange={(e) => setIncludePhotos(e.target.checked)}
+                    />
+                  }
+                  label={t('reports.generator.options.includePhotos', 'Include photos')}
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={includeCharts}
+                      onChange={(e) => setIncludeCharts(e.target.checked)}
+                    />
+                  }
+                  label={t('reports.generator.options.includeCharts', 'Include charts')}
+                />
+              </FormGroup>
+            </Box>
+            <Box sx={{ mt: 2 }}>
+              <Button onClick={handleBack} sx={{ mr: 1 }}>
+                {t('common.back')}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                disabled={!canProceed(3)}
+              >
+                {t('common.next')}
+              </Button>
+            </Box>
+          </StepContent>
+        </Step>
+
+        {/* Step 5: Preview & Generate */}
+        <Step>
+          <StepLabel
+            StepIconComponent={() => (
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  bgcolor: activeStep >= 4 ? 'primary.main' : 'grey.400',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {activeStep > 4 ? <CheckIcon fontSize="small" /> : <PreviewIcon fontSize="small" />}
+              </Box>
+            )}
+          >
+            {steps[4].label}
           </StepLabel>
           <StepContent>
             <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
@@ -591,6 +676,21 @@ const ReportGeneratorTab: React.FC = () => {
                   ))
                 }
               </Box>
+
+              <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>
+                {t('reports.generator.options.title', 'Options')}:
+              </Typography>
+              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                {includeOnlyAlerts && (
+                  <Chip size="small" label={t('reports.generator.options.onlyAlerts', 'Alerts Only')} color="warning" />
+                )}
+                {includePhotos && (
+                  <Chip size="small" label={t('reports.generator.options.photos', 'Photos')} color="info" />
+                )}
+                {includeCharts && (
+                  <Chip size="small" label={t('reports.generator.options.charts', 'Charts')} color="success" />
+                )}
+              </Box>
             </Paper>
 
             <Box sx={{ mt: 2 }}>
@@ -609,7 +709,7 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
 
-        {/* Step 5: Complete */}
+        {/* Step 6: Complete */}
         <Step>
           <StepLabel
             StepIconComponent={() => (
@@ -629,7 +729,7 @@ const ReportGeneratorTab: React.FC = () => {
               </Box>
             )}
           >
-            {steps[4].label}
+            {steps[5].label}
           </StepLabel>
           <StepContent>
             {generationComplete && (
@@ -683,6 +783,9 @@ const ReportGeneratorTab: React.FC = () => {
                   setGenerationComplete(false);
                   setSelectedSystemIds([]);
                   setReportName('');
+                  setIncludeOnlyAlerts(false);
+                  setIncludePhotos(true);
+                  setIncludeCharts(true);
                 }}
               >
                 {t('reports.generator.createAnother')}

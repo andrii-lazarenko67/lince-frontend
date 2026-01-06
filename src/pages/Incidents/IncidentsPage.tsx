@@ -11,6 +11,7 @@ import type { Incident } from '../../types';
 const IncidentsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
   const { incidents } = useAppSelector((state) => state.incidents);
   const { goToNewIncident, goToIncidentDetail } = useAppNavigation();
@@ -28,7 +29,7 @@ const IncidentsPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchSystems({ parentId: 'null' }));
     dispatch(fetchIncidents({}));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const handleApplyFilters = () => {
     dispatch(fetchIncidents({

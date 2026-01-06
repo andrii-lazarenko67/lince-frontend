@@ -13,12 +13,13 @@ const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { stats, recentActivity, alerts } = useAppSelector((state) => state.dashboard);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
 
   useEffect(() => {
     dispatch(fetchDashboardData());
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const getActivityTypeLabel = (type: string) => {
     switch (type) {

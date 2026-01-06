@@ -121,6 +121,9 @@ export interface GeneratedReportFilters {
   systemIds?: number[];
   stageIds?: number[];
   includeSubSystems?: boolean;
+  includeOnlyAlerts?: boolean;
+  includePhotos?: boolean;
+  includeCharts?: boolean;
 }
 
 export interface GeneratedReport {

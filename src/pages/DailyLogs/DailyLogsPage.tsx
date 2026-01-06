@@ -12,6 +12,7 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 const DailyLogsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { dailyLogs } = useAppSelector((state) => state.dailyLogs);
   const { goToNewDailyLog } = useAppNavigation();
 
@@ -27,7 +28,7 @@ const DailyLogsPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchSystems({ parentId: 'null' }));
     dispatch(fetchDailyLogs({}));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const handleApplyFilters = () => {
     dispatch(fetchDailyLogs({

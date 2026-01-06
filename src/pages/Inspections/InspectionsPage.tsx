@@ -11,6 +11,7 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 const InspectionsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
   const { inspections } = useAppSelector((state) => state.inspections);
   const { goToNewInspection } = useAppNavigation();
@@ -27,7 +28,7 @@ const InspectionsPage: React.FC = () => {
   useEffect(() => {
     dispatch(fetchSystems({ parentId: 'null' }));
     dispatch(fetchInspections({}));
-  }, [dispatch]);
+  }, [dispatch, selectedClientId]);
 
   const handleApplyFilters = () => {
     dispatch(fetchInspections({
