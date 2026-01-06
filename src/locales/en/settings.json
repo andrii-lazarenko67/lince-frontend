@@ -157,19 +157,32 @@
       "status": "Status",
       "active": "Active",
       "inactive": "Inactive",
+      "details": "Details",
+      "branding": "Branding",
+      "logo": "Logo",
+      "uploadLogo": "Upload Logo",
+      "changeLogo": "Change Logo",
+      "brandColor": "Brand Color",
+      "brandColorHelp": "This color will be used in reports and exports.",
+      "logoUpdated": "Logo updated successfully",
+      "noUsers": "No users have access to this client",
+      "addUser": "Add User",
+      "removeUser": "Remove User",
+      "removeUserConfirm": "Are you sure you want to remove {{name}} from this client?",
+      "selectUser": "Select User",
+      "searchUsers": "Search users...",
+      "accessLevel": "Access Level",
+      "accessLevels": {
+        "view": "View Only",
+        "viewDesc": "Can only view data",
+        "edit": "Edit",
+        "editDesc": "Can create, edit, and delete data",
+        "admin": "Admin",
+        "adminDesc": "Full access including user management"
+      },
       "tabs": {
         "details": "Details",
         "branding": "Branding"
-      },
-      "branding": {
-        "title": "Branding",
-        "subtitle": "Customize client branding",
-        "logo": "Logo",
-        "logoHelp": "Upload a logo for this client (PNG, JPG, SVG, max 2MB)",
-        "uploadLogo": "Upload Logo",
-        "removeLogo": "Remove Logo",
-        "brandColor": "Brand Color",
-        "brandColorHelp": "Select a primary brand color for this client"
       },
       "stats": {
         "systems": "Systems",
@@ -211,7 +224,14 @@
         "cannotRemoveLastAdmin": "Cannot remove the last admin from this client",
         "noFileUploaded": "No file was uploaded",
         "invalidFileType": "Invalid file type. Only PNG, JPG, and SVG are allowed",
-        "fileTooLarge": "File is too large. Maximum size is 2MB"
+        "fileTooLarge": "File is too large. Maximum size is 2MB",
+        "invalidLogoType": "Logo must be PNG, JPG, or SVG",
+        "logoTooLarge": "Logo must be less than 2MB",
+        "logoUploadFailed": "Failed to upload logo",
+        "createFailed": "Failed to create client",
+        "addUserFailed": "Failed to add user",
+        "removeUserFailed": "Failed to remove user",
+        "updateAccessFailed": "Failed to update access level"
       },
       "created": "Client created successfully",
       "updated": "Client updated successfully",
@@ -223,9 +243,7 @@
       "logoDeleted": "Logo removed successfully",
       "manageUsers": "Manage Users",
       "userAccess": "User Access",
-      "changeLogo": "Change Logo",
       "addClientSubtitle": "Create a new client to manage",
-      "searchUsers": "Search users...",
       "accessUpdated": "Access level updated"
     },
     "organizations": {

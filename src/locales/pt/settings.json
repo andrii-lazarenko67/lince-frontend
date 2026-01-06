@@ -157,19 +157,32 @@
       "status": "Status",
       "active": "Ativo",
       "inactive": "Inativo",
+      "details": "Detalhes",
+      "branding": "Identidade Visual",
+      "logo": "Logo",
+      "uploadLogo": "Enviar Logo",
+      "changeLogo": "Alterar Logo",
+      "brandColor": "Cor da Marca",
+      "brandColorHelp": "Esta cor será usada em relatórios e exportações.",
+      "logoUpdated": "Logo atualizado com sucesso",
+      "noUsers": "Nenhum usuário tem acesso a este cliente",
+      "addUser": "Adicionar Usuário",
+      "removeUser": "Remover Usuário",
+      "removeUserConfirm": "Tem certeza que deseja remover {{name}} deste cliente?",
+      "selectUser": "Selecionar Usuário",
+      "searchUsers": "Buscar usuários...",
+      "accessLevel": "Nível de Acesso",
+      "accessLevels": {
+        "view": "Apenas Visualização",
+        "viewDesc": "Pode apenas visualizar dados",
+        "edit": "Editar",
+        "editDesc": "Pode criar, editar e excluir dados",
+        "admin": "Administrador",
+        "adminDesc": "Acesso completo incluindo gerenciamento de usuários"
+      },
       "tabs": {
         "details": "Detalhes",
         "branding": "Identidade Visual"
-      },
-      "branding": {
-        "title": "Identidade Visual",
-        "subtitle": "Personalizar identidade visual do cliente",
-        "logo": "Logo",
-        "logoHelp": "Envie um logo para este cliente (PNG, JPG, SVG, máx 2MB)",
-        "uploadLogo": "Enviar Logo",
-        "removeLogo": "Remover Logo",
-        "brandColor": "Cor da Marca",
-        "brandColorHelp": "Selecione uma cor primária da marca para este cliente"
       },
       "stats": {
         "systems": "Sistemas",
@@ -211,7 +224,14 @@
         "cannotRemoveLastAdmin": "Não é possível remover o último administrador deste cliente",
         "noFileUploaded": "Nenhum arquivo foi enviado",
         "invalidFileType": "Tipo de arquivo inválido. Apenas PNG, JPG e SVG são permitidos",
-        "fileTooLarge": "Arquivo muito grande. O tamanho máximo é 2MB"
+        "fileTooLarge": "Arquivo muito grande. O tamanho máximo é 2MB",
+        "invalidLogoType": "Logo deve ser PNG, JPG ou SVG",
+        "logoTooLarge": "Logo deve ter menos de 2MB",
+        "logoUploadFailed": "Falha ao enviar logo",
+        "createFailed": "Falha ao criar cliente",
+        "addUserFailed": "Falha ao adicionar usuário",
+        "removeUserFailed": "Falha ao remover usuário",
+        "updateAccessFailed": "Falha ao atualizar nível de acesso"
       },
       "created": "Cliente criado com sucesso",
       "updated": "Cliente atualizado com sucesso",
@@ -223,9 +243,7 @@
       "logoDeleted": "Logo removido com sucesso",
       "manageUsers": "Gerenciar Usuários",
       "userAccess": "Acesso de Usuários",
-      "changeLogo": "Alterar Logo",
       "addClientSubtitle": "Criar um novo cliente para gerenciar",
-      "searchUsers": "Buscar usuários...",
       "accessUpdated": "Nível de acesso atualizado"
     },
     "organizations": {
