@@ -7,8 +7,6 @@ import {
   Typography,
   Badge,
   Box,
-  Divider,
-  Avatar,
   useMediaQuery,
   useTheme
 } from '@mui/material';
@@ -31,7 +29,7 @@ const Header: React.FC = () => {
   const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const { unreadCount } = useAppSelector((state) => state.notifications);
-  const { goToNotifications, goToSettings, goToLogin, goTo } = useAppNavigation();
+  const { goToNotifications, goToSettings, goToLogin } = useAppNavigation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
@@ -127,57 +125,6 @@ const Header: React.FC = () => {
           >
             <SettingsIcon />
           </IconButton>
-
-          {/* Divider */}
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{ mx: 1, height: 32, alignSelf: 'center', bgcolor: 'rgba(255, 255, 255, 0.3)' }}
-          />
-
-          {/* User info */}
-          {!isMobile && (
-            <Box
-              onClick={() => goTo('/profile')}
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                cursor: 'pointer',
-                borderRadius: 2,
-                px: 1,
-                py: 0.5,
-                transition: 'all 0.2s',
-                '&:hover': {
-                  bgcolor: 'rgba(255, 255, 255, 0.15)',
-                  transform: 'scale(1.02)'
-                }
-              }}
-            >
-              <Box sx={{ mr: 1.5, textAlign: 'right' }}>
-                <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, lineHeight: 1.2 }}>
-                  {user?.name || 'User'}
-                </Typography>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.9)', textTransform: 'capitalize' }}>
-                  {user?.role ? t(`users.roles.${user.role}`) : 'Role'}
-                </Typography>
-              </Box>
-              <Avatar
-                src={user?.avatar || undefined}
-                alt={user?.name || 'User'}
-                sx={{
-                  width: 36,
-                  height: 36,
-                  border: '2px solid rgba(255, 255, 255, 0.3)',
-                  bgcolor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
-                  fontWeight: 600,
-                  fontSize: '0.875rem'
-                }}
-              >
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
-              </Avatar>
-            </Box>
-          )}
 
           {/* Logout */}
           <IconButton
