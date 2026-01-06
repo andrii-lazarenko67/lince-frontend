@@ -66,16 +66,16 @@ const Sidebar: React.FC = () => {
 
   const navItems: NavItem[] = [
     { name: t('nav.dashboard'), path: '/dashboard', icon: <DashboardIcon /> },
-    { name: t('nav.clients'), path: '/clients', icon: <BusinessIcon />, serviceProviderOnly: true },
-    { name: t('nav.systems'), path: '/systems', icon: <StorageIcon />, roles: ['manager'] },
+    { name: t('nav.clients'), path: '/clients', icon: <BusinessIcon />, roles: ['manager', 'admin'], serviceProviderOnly: true },
+    { name: t('nav.systems'), path: '/systems', icon: <StorageIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.dailyLogs'), path: '/daily-logs', icon: <AssignmentIcon /> },
     { name: t('nav.inspections'), path: '/inspections', icon: <PlaylistAddCheckIcon /> },
     { name: t('nav.incidents'), path: '/incidents', icon: <WarningIcon /> },
-    { name: t('nav.products'), path: '/products', icon: <InventoryIcon />, roles: ['manager'] },
+    { name: t('nav.products'), path: '/products', icon: <InventoryIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.reports'), path: '/reports', icon: <AssessmentIcon /> },
-    { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager'] },
-    { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['manager'] },
-    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon /> }
+    { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager', 'admin'] },
+    { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['manager', 'admin'] },
+    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] }
   ];
 
   const filteredNavItems = navItems.filter(item => {

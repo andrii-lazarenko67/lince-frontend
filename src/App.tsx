@@ -73,17 +73,10 @@ const App: React.FC = () => {
 
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/settings" element={<SettingsPage />} />
-
-              {/* Client management routes (service providers only) */}
-              <Route path="/clients" element={<ClientsPage />} />
-              <Route path="/clients/new" element={<AddClientPage />} />
-              <Route path="/clients/:id" element={<ClientDetailPage />} />
-              <Route path="/clients/:id/users" element={<ClientUsersPage />} />
             </Route>
           </Route>
 
-          <Route element={<PrivateRoute allowedRoles={['manager']} />}>
+          <Route element={<PrivateRoute allowedRoles={['manager', 'admin']} />}>
             <Route element={<MainLayout />}>
               <Route path="/systems" element={<SystemsPage />} />
               <Route path="/systems/:id" element={<SystemDetailPage />} />
@@ -95,6 +88,14 @@ const App: React.FC = () => {
               <Route path="/library/:id" element={<DocumentDetailPage />} />
 
               <Route path="/users" element={<UsersPage />} />
+
+              <Route path="/settings" element={<SettingsPage />} />
+
+              {/* Client management routes (manager/admin only) */}
+              <Route path="/clients" element={<ClientsPage />} />
+              <Route path="/clients/new" element={<AddClientPage />} />
+              <Route path="/clients/:id" element={<ClientDetailPage />} />
+              <Route path="/clients/:id/users" element={<ClientUsersPage />} />
             </Route>
           </Route>
 
