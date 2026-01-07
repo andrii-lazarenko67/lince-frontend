@@ -48,7 +48,7 @@ import type { ReportTemplate, GeneratedReportPeriod } from '../../types';
 type PeriodType = 'daily' | 'weekly' | 'monthly' | 'custom';
 
 const ReportGeneratorTab: React.FC = () => {
-  const { t } = useTranslation('reports');
+  const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { templates, currentTemplate } = useAppSelector((state) => state.reportTemplates);
   const { systems } = useAppSelector((state) => state.systems);
@@ -640,7 +640,7 @@ const ReportGeneratorTab: React.FC = () => {
                   </ListItemIcon>
                   <ListItemText
                     primary={t('reports.generator.period')}
-                    secondary={`${startDate} - ${endDate} (${t(`reports.generator.periods.${periodType}`)})`}
+                    secondary={`${startDate} - ${endDate} (${t(`reports.generator.periods.${periodType || 'custom'}`)})`}
                   />
                 </ListItem>
                 <ListItem>

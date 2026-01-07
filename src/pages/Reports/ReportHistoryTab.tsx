@@ -234,7 +234,7 @@ const ReportHistoryTab: React.FC = () => {
                   <Box>
                     <Chip
                       size="small"
-                      label={t(`reports.generator.periods.${report.period.type}`)}
+                      label={t(`reports.generator.periods.${report.period?.type || 'custom'}`)}
                       variant="outlined"
                       sx={{ mb: 0.5 }}
                     />

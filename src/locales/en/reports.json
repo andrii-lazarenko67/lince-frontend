@@ -101,6 +101,7 @@
         "template": "Select Template",
         "period": "Select Period",
         "systems": "Select Systems",
+        "options": "Configure Options",
         "preview": "Preview & Generate",
         "generate": "Complete"
       },

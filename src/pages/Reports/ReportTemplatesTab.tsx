@@ -240,7 +240,7 @@ const ReportTemplatesTab: React.FC = () => {
 
               <CardActions sx={{ justifyContent: 'space-between', px: 2, pb: 2 }}>
                 <Typography variant="caption" color="text.secondary">
-                  {t('reports.templates.updated')}: {formatDate(template.updatedAt)}
+                  {t('reports.templates.lastUpdated')}: {formatDate(template.updatedAt)}
                 </Typography>
                 <Button
                   size="small"

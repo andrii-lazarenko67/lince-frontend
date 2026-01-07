@@ -142,7 +142,7 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography variant="h6">{t('reports.templates.editTemplate')}</Typography>
+        {t('reports.templates.editTemplate')}
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
