@@ -280,17 +280,20 @@ const ClientUsersPage: React.FC = () => {
                   placeholder={t('settings.clients.searchUsers', 'Search users...')}
                 />
               )}
-              renderOption={(props, option) => (
-                <Box component="li" {...props}>
-                  <Avatar sx={{ mr: 2, width: 32, height: 32 }}>
-                    {option.name.charAt(0).toUpperCase()}
-                  </Avatar>
-                  <Box>
-                    <Typography variant="body2">{option.name}</Typography>
-                    <Typography variant="caption" color="text.secondary">{option.email}</Typography>
+              renderOption={(props, option) => {
+                const { key, ...otherProps } = props;
+                return (
+                  <Box component="li" key={key} {...otherProps}>
+                    <Avatar sx={{ mr: 2, width: 32, height: 32 }}>
+                      {option.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <Box>
+                      <Typography variant="body2">{option.name}</Typography>
+                      <Typography variant="caption" color="text.secondary">{option.email}</Typography>
+                    </Box>
                   </Box>
-                </Box>
-              )}
+                );
+              }}
             />
             <FormControl fullWidth>
               <InputLabel>{t('settings.clients.accessLevel', 'Access Level')}</InputLabel>
