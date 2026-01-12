@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Drawer,
@@ -52,6 +52,25 @@ const Sidebar: React.FC = () => {
   const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+  const desktopDrawerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (desktopDrawerRef.current) {
+      const drawerPaper = desktopDrawerRef.current.querySelector('.MuiDrawer-paper');
+      if (drawerPaper) {
+        if (sidebarOpen && isMobile) {
+          drawerPaper.setAttribute('aria-hidden', 'true');
+          // Blur any focused elements inside the desktop drawer
+          const focusedElement = drawerPaper.querySelector(':focus');
+          if (focusedElement instanceof HTMLElement) {
+            focusedElement.blur();
+          }
+        } else {
+          drawerPaper.removeAttribute('aria-hidden');
+        }
+      }
+    }
+  }, [sidebarOpen, isMobile]);
 
   const handleCloseSidebar = () => {
     dispatch(toggleSidebar());
@@ -225,7 +244,12 @@ const Sidebar: React.FC = () => {
         variant="temporary"
         open={sidebarOpen}
         onClose={handleCloseSidebar}
-        ModalProps={{ keepMounted: true }}
+        ModalProps={{
+          keepMounted: true,
+          disableEnforceFocus: false,
+          disableAutoFocus: false,
+          disableRestoreFocus: false
+        }}
         sx={{
           display: { xs: 'block', lg: 'none' },
           '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' }
@@ -235,16 +259,20 @@ const Sidebar: React.FC = () => {
       </Drawer>
 
       {/* Desktop Drawer */}
-      <Drawer
-        variant="permanent"
-        sx={{
-          display: { xs: 'none', lg: 'block' },
-          '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' }
-        }}
-        open
+      <Box
+        ref={desktopDrawerRef}
+        sx={{ display: { xs: 'none', lg: 'block' } }}
       >
-        {drawerContent}
-      </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' }
+          }}
+          open
+        >
+          {drawerContent}
+        </Drawer>
+      </Box>
     </>
   );
 };
