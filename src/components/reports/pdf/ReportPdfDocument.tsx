@@ -31,14 +31,23 @@ export interface ReportClient {
   brandColor?: string;
 }
 
+export interface ReportSystemChild {
+  id: number;
+  name: string;
+  status?: string;
+  description?: string;
+  systemType?: { id: number; name: string };
+}
+
 export interface ReportSystem {
   id: number;
   name: string;
   description?: string;
   status?: string;
   location?: string;
-  systemType?: { id: number; name: string; nameKey?: string };
+  systemType?: { id: number; name: string };
   photos?: Array<{ id: number; url: string; description?: string }>;
+  children?: ReportSystemChild[];
 }
 
 export interface ReportDailyLogEntry {
@@ -260,13 +269,16 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
   photoGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 8
+    marginTop: 8,
+    gap: 8
+  },
+  photoContainer: {
+    width: 120,
+    marginBottom: 8
   },
   photo: {
     width: 120,
     height: 90,
-    marginRight: 8,
-    marginBottom: 8,
     objectFit: 'cover',
     borderRadius: 4
   },
@@ -274,7 +286,8 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
     fontSize: 7,
     color: '#6b7280',
     textAlign: 'center',
-    marginTop: 2
+    marginTop: 2,
+    width: 120
   },
   signatureBox: {
     marginTop: 30,
@@ -541,24 +554,46 @@ const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
                 <Text style={[styles.tableCell, { flex: 2 }]}>{system.description || '-'}</Text>
               </View>
             ))}
-        </View>
-        {block.includePhotos && data.systems.some(s => s.photos && s.photos.length > 0) && (
-          <View style={styles.photoGrid}>
-            {data.systems.flatMap(system =>
-              (system.photos || []).slice(0, 4).map(photo => (
-                <View key={photo.id}>
-                  <Image src={photo.url} style={styles.photo} />
-                  {photo.description && (
-                    <Text style={styles.photoCaption}>{photo.description}</Text>
-                  )}
-                </View>
-              ))
-            )}
           </View>
-        )}
-      </>
-    )}
-  </View>
+
+          {/* Process Stages Section - Show children/sub-systems for each system */}
+          {data.systems.some(s => s.children && s.children.length > 0) && (
+            <View style={{ marginTop: 15 }}>
+              <Text style={styles.sectionTitle}>{t('reports.pdf.processStages')}</Text>
+              {data.systems.map(system => (
+                system.children && system.children.length > 0 && (
+                  <View key={`stages-${system.id}`} style={{ marginBottom: 10 }}>
+                    <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 4 }]}>
+                      {system.name}:
+                    </Text>
+                    {system.children.map(stage => (
+                      <View key={stage.id} style={styles.infoRow}>
+                        <Text style={styles.text}>• {stage.name}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )
+              ))}
+            </View>
+          )}
+
+          {block.includePhotos && data.systems.some(s => s.photos && s.photos.length > 0) && (
+            <View style={styles.photoGrid}>
+              {data.systems.flatMap(system =>
+                (system.photos || []).slice(0, 4).map(photo => (
+                  <View key={photo.id} style={styles.photoContainer}>
+                    <Image src={photo.url} style={styles.photo} />
+                    {photo.description && (
+                      <Text style={styles.photoCaption}>{photo.description}</Text>
+                    )}
+                  </View>
+                ))
+              )}
+            </View>
+          )}
+        </>
+      )}
+    </View>
   );
 };
 
@@ -630,7 +665,7 @@ const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
           <View style={styles.photoGrid}>
             {data.inspections.flatMap(insp =>
               (insp.photos || []).slice(0, 4).map(photo => (
-                <View key={photo.id}>
+                <View key={photo.id} style={styles.photoContainer}>
                   <Image src={photo.url} style={styles.photo} />
                   {photo.description && (
                     <Text style={styles.photoCaption}>{photo.description}</Text>

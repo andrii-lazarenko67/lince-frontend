@@ -8,6 +8,7 @@ export type {
   ReportData,
   ReportClient,
   ReportSystem,
+  ReportSystemChild,
   ReportDailyLog,
   ReportDailyLogEntry,
   ReportInspection,

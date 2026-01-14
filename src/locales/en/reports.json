@@ -181,7 +181,8 @@
       "totalAnalyses": "Total analyses",
       "totalInspections": "Total inspections",
       "totalOccurrences": "Total occurrences",
-      "technician": "Technician"
+      "technician": "Technician",
+      "processStages": "Process Stages"
     },
     "errors": {
       "datesRequired": "Start date and end date are required for custom reports",

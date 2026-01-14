@@ -181,7 +181,8 @@
       "totalAnalyses": "Total de análises",
       "totalInspections": "Total de inspeções",
       "totalOccurrences": "Total de ocorrências",
-      "technician": "Técnico"
+      "technician": "Técnico",
+      "processStages": "Etapas do Processo"
     },
     "errors": {
       "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",
