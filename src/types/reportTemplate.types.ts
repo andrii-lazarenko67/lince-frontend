@@ -171,11 +171,42 @@ export interface GeneratedReportState {
 
 // Data collected for report generation
 export interface GeneratedReportData {
+  client: {
+    id: number;
+    name: string;
+    address?: string;
+    contact?: string;
+    phone?: string;
+    email?: string;
+    logo?: string;
+    brandColor?: string;
+  };
   systems: unknown[];
   dailyLogs: unknown[];
   inspections: unknown[];
   incidents: unknown[];
   products: unknown[];
+  productUsages?: unknown[];
   period: GeneratedReportPeriod;
+  summary?: {
+    totalSystems: number;
+    totalReadings: number;
+    outOfRangeCount: number;
+    totalInspections: number;
+    totalIncidents: number;
+    openIncidents: number;
+    totalProducts?: number;
+  };
+  conclusion?: string;
+  signature?: {
+    name?: string;
+    role?: string;
+    registration?: string;
+    signatureImage?: string;
+  };
   generatedAt: string;
+  generatedBy: {
+    id: number;
+    name: string;
+  };
 }

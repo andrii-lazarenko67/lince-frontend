@@ -234,7 +234,8 @@ const ReportGeneratorTab: React.FC = () => {
       generatedBy: {
         id: user?.id || 0,
         name: user?.name || ''
-      }
+      },
+      isServiceProvider: user?.isServiceProvider || false
     };
   }, [reportData, currentReport, currentClient, periodType, startDate, endDate, user]);
 
