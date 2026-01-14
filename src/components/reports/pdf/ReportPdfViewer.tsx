@@ -2,7 +2,7 @@
  * Report PDF Viewer Component
  * Provides preview and download functionality for PDF reports
  */
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
 import {
   Box,
@@ -14,7 +14,8 @@ import {
   DialogActions,
   IconButton,
   Tooltip,
-  Alert
+  Alert,
+  Typography
 } from '@mui/material';
 import {
   Download as DownloadIcon,
@@ -24,13 +25,16 @@ import {
 } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { ReportPdfDocument } from './ReportPdfDocument';
+import { ChartImageBatchGenerator } from './ChartImageGenerator';
 import type { ReportPdfProps, ReportData } from './ReportPdfDocument';
-import type { ReportTemplateConfig } from '../../../types';
+import type { ReportTemplateConfig, ReportChartData, ChartConfig } from '../../../types';
+import { DEFAULT_CHART_CONFIG } from '../../../types';
 
 interface ReportPdfViewerProps {
   reportName: string;
   config: ReportTemplateConfig;
   data: ReportData;
+  chartData?: ReportChartData | null;
   onUpload?: (pdfBlob: Blob) => Promise<void>;
   showPreviewButton?: boolean;
   showDownloadButton?: boolean;
@@ -41,6 +45,7 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
   reportName,
   config,
   data,
+  chartData,
   onUpload,
   showPreviewButton = true,
   showDownloadButton = true,
@@ -51,10 +56,74 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
+  // State for generated chart images
+  const [fieldChartImages, setFieldChartImages] = useState<Map<number, string>>(new Map());
+  const [laboratoryChartImages, setLaboratoryChartImages] = useState<Map<number, string>>(new Map());
+  const [chartsGenerating, setChartsGenerating] = useState(false);
+  const [chartsReady, setChartsReady] = useState(false);
+
+  // Determine if charts should be generated
+  const analysesBlock = config.blocks?.find(b => b.type === 'analyses');
+  const shouldGenerateCharts = analysesBlock?.includeCharts && chartData &&
+    (chartData.fieldCharts.length > 0 || chartData.laboratoryCharts.length > 0);
+
+  // Get chart config from analyses block
+  const chartConfig: ChartConfig = analysesBlock?.chartConfig || DEFAULT_CHART_CONFIG;
+
+  // Handle chart images generation
+  const handleFieldChartsGenerated = useCallback((images: Map<number, string>) => {
+    setFieldChartImages(images);
+  }, []);
+
+  const handleLaboratoryChartsGenerated = useCallback((images: Map<number, string>) => {
+    setLaboratoryChartImages(images);
+  }, []);
+
+  // Check if all charts are ready
+  useEffect(() => {
+    if (!shouldGenerateCharts) {
+      setChartsReady(true);
+      return;
+    }
+
+    const fieldCount = chartData?.fieldCharts.length || 0;
+    const labCount = chartData?.laboratoryCharts.length || 0;
+
+    const fieldReady = fieldCount === 0 || fieldChartImages.size === fieldCount;
+    const labReady = labCount === 0 || laboratoryChartImages.size === labCount;
+
+    if (fieldReady && labReady) {
+      setChartsReady(true);
+      setChartsGenerating(false);
+    }
+  }, [shouldGenerateCharts, chartData, fieldChartImages.size, laboratoryChartImages.size]);
+
+  // Start chart generation when component mounts
+  useEffect(() => {
+    if (shouldGenerateCharts && !chartsReady) {
+      setChartsGenerating(true);
+    }
+  }, [shouldGenerateCharts, chartsReady]);
+
+  // Build report data with chart images
+  const dataWithCharts: ReportData = useMemo(() => {
+    if (!shouldGenerateCharts || !chartsReady) {
+      return data;
+    }
+
+    return {
+      ...data,
+      chartImages: {
+        field: fieldChartImages.size > 0 ? fieldChartImages : undefined,
+        laboratory: laboratoryChartImages.size > 0 ? laboratoryChartImages : undefined
+      }
+    };
+  }, [data, shouldGenerateCharts, chartsReady, fieldChartImages, laboratoryChartImages]);
+
   const documentProps: ReportPdfProps = {
     reportName,
     config,
-    data,
+    data: dataWithCharts,
     t
   };
 
@@ -86,17 +155,50 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
 
   const filename = `${reportName.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
 
+  // Show loading state while charts are generating
+  const isLoading = Boolean(shouldGenerateCharts) && !chartsReady;
+
   return (
     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+      {/* Hidden chart generators */}
+      {shouldGenerateCharts && chartData && chartsGenerating && (
+        <>
+          {chartData.fieldCharts.length > 0 && (
+            <ChartImageBatchGenerator
+              chartSeriesList={chartData.fieldCharts}
+              chartConfig={chartConfig}
+              onAllImagesGenerated={handleFieldChartsGenerated}
+            />
+          )}
+          {chartData.laboratoryCharts.length > 0 && (
+            <ChartImageBatchGenerator
+              chartSeriesList={chartData.laboratoryCharts}
+              chartConfig={chartConfig}
+              onAllImagesGenerated={handleLaboratoryChartsGenerated}
+            />
+          )}
+        </>
+      )}
+
+      {/* Loading indicator while generating charts */}
+      {isLoading && (
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <CircularProgress size={14} />
+          {t('reports.charts.generating')}
+        </Typography>
+      )}
+
       {showPreviewButton && (
         <Tooltip title={t('reports.history.pdf')}>
-          <IconButton onClick={handleOpenPreview} color="primary">
-            <PreviewIcon />
-          </IconButton>
+          <span>
+            <IconButton onClick={handleOpenPreview} color="primary" disabled={isLoading}>
+              <PreviewIcon />
+            </IconButton>
+          </span>
         </Tooltip>
       )}
 
-      {showDownloadButton && (
+      {showDownloadButton && !isLoading && (
         <PDFDownloadLink
           document={<ReportPdfDocument {...documentProps} />}
           fileName={filename}

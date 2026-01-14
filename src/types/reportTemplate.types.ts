@@ -10,6 +10,77 @@ export type ReportBlockType =
   | 'signature'
   | 'attachments';
 
+// Chart configuration types
+export type ChartType = 'bar' | 'line' | 'area';
+export type ChartAggregation = 'daily' | 'weekly' | 'monthly';
+
+export interface ChartColorConfig {
+  primary: string;           // Bar/line color (default: template primaryColor)
+  specLimitLine: string;     // Red line color (default: '#dc2626')
+  background: string;        // Chart background (default: '#ffffff')
+  gridLines: string;         // Grid line color (default: '#e5e7eb')
+  text: string;              // Text/label color (default: '#374151')
+}
+
+export interface ChartParameterConfig {
+  monitoringPointId: number;
+  color?: string;            // Override color for this parameter
+  showSpecLimit: boolean;    // Show the red limit line
+}
+
+export interface ChartConfig {
+  enabled: boolean;
+  chartType: ChartType;
+  aggregation: ChartAggregation;
+  parameters: ChartParameterConfig[];
+  colors: ChartColorConfig;
+  showLegend: boolean;
+  showDataLabels: boolean;
+  title?: string;            // Optional chart title
+}
+
+// Chart data structure for rendering
+export interface ChartDataPoint {
+  date: string;              // ISO date string
+  label: string;             // Formatted label (e.g., "Jan", "01/15")
+  value: number | null;
+  isOutOfRange: boolean;
+}
+
+export interface ChartSeriesData {
+  monitoringPointId: number;
+  monitoringPointName: string;
+  parameterName: string;
+  unit: string;
+  minValue: number | null;   // Specification limit (lower)
+  maxValue: number | null;   // Specification limit (upper)
+  data: ChartDataPoint[];
+  color: string;
+  showSpecLimit?: boolean;
+}
+
+export interface ReportChartData {
+  fieldCharts: ChartSeriesData[];
+  laboratoryCharts: ChartSeriesData[];
+}
+
+// Default chart configuration
+export const DEFAULT_CHART_CONFIG: ChartConfig = {
+  enabled: false,
+  chartType: 'bar',
+  aggregation: 'daily',
+  parameters: [],
+  colors: {
+    primary: '#1976d2',
+    specLimitLine: '#dc2626',
+    background: '#ffffff',
+    gridLines: '#e5e7eb',
+    text: '#374151'
+  },
+  showLegend: true,
+  showDataLabels: true
+};
+
 export interface ReportBlock {
   type: ReportBlockType;
   enabled: boolean;
@@ -24,6 +95,8 @@ export interface ReportBlock {
   showFieldDetailed?: boolean;        // Field Monitoring Analysis – Detailed
   showLaboratoryOverview?: boolean;   // Laboratory Monitoring Analysis – Overview
   showLaboratoryDetailed?: boolean;   // Laboratory Monitoring Analysis – Detailed
+  // Chart configuration for analyses block
+  chartConfig?: ChartConfig;
 }
 
 export interface ReportBranding {
@@ -97,7 +170,18 @@ export const DEFAULT_TEMPLATE_CONFIG: ReportTemplateConfig = {
     { type: 'identification', enabled: true, order: 1 },
     { type: 'scope', enabled: true, order: 2 },
     { type: 'systems', enabled: true, order: 3, includePhotos: true },
-    { type: 'analyses', enabled: true, order: 4, includeCharts: true, highlightAlerts: false, showFieldOverview: true, showFieldDetailed: false, showLaboratoryOverview: true, showLaboratoryDetailed: false },
+    {
+      type: 'analyses',
+      enabled: true,
+      order: 4,
+      includeCharts: true,
+      highlightAlerts: false,
+      showFieldOverview: true,
+      showFieldDetailed: false,
+      showLaboratoryOverview: true,
+      showLaboratoryDetailed: false,
+      chartConfig: DEFAULT_CHART_CONFIG
+    },
     { type: 'inspections', enabled: true, order: 5, includePhotos: true },
     { type: 'occurrences', enabled: true, order: 6, includeTimeline: true },
     { type: 'conclusion', enabled: true, order: 7 },
@@ -214,4 +298,6 @@ export interface GeneratedReportData {
     id: number;
     name: string;
   };
+  // Chart data for PDF rendering
+  chartData?: ReportChartData;
 }

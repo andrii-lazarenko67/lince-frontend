@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { MonitoringPoint, MonitoringPointState, CreateMonitoringPointRequest, UpdateMonitoringPointRequest } from '../../types';
+import type { MonitoringPoint, MonitoringPointState, CreateMonitoringPointRequest, UpdateMonitoringPointRequest, MonitoringPointForChart } from '../../types';
 import { setLoading } from './uiSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
 
 const initialState: MonitoringPointState = {
   monitoringPoints: [],
   currentMonitoringPoint: null,
+  monitoringPointsForChart: [],
   error: null
 };
 
@@ -85,6 +86,25 @@ export const deleteMonitoringPoint = createAsyncThunk(
   }
 );
 
+// Fetch monitoring points for chart configuration
+export const fetchMonitoringPointsForChart = createAsyncThunk(
+  'monitoringPoints/fetchForChart',
+  async (systemIds: number[], { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const queryParam = systemIds.length > 0 ? `?systemIds=${systemIds.join(',')}` : '';
+      const response = await axiosInstance.get<{ success: boolean; data: MonitoringPointForChart[] }>(
+        `/monitoring-points/for-chart-config${queryParam}`
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch monitoring points for chart'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const monitoringPointSlice = createSlice({
   name: 'monitoringPoints',
   initialState,
@@ -119,6 +139,10 @@ const monitoringPointSlice = createSlice({
       })
       .addCase(deleteMonitoringPoint.fulfilled, (state, action) => {
         state.monitoringPoints = state.monitoringPoints.filter(mp => mp.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(fetchMonitoringPointsForChart.fulfilled, (state, action) => {
+        state.monitoringPointsForChart = action.payload;
         state.error = null;
       });
   }

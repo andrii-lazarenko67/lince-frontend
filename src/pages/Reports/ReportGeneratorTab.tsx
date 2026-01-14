@@ -756,6 +756,7 @@ const ReportGeneratorTab: React.FC = () => {
                     reportName={currentReport.name}
                     config={getSelectedTemplate()?.config || currentReport.config}
                     data={getPdfReportData()!}
+                    chartData={reportData?.chartData ?? null}
                     onUpload={handlePdfUpload}
                     showPreviewButton
                     showDownloadButton

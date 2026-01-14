@@ -36,7 +36,9 @@ import {
 } from '@mui/icons-material';
 import { useAppDispatch } from '../../hooks';
 import { updateReportTemplate } from '../../store/slices/reportTemplateSlice';
-import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType } from '../../types';
+import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType, ChartConfig } from '../../types';
+import { DEFAULT_CHART_CONFIG } from '../../types';
+import ChartConfigPanel from '../../components/reports/ChartConfigPanel';
 
 interface ReportTemplateEditorProps {
   template: ReportTemplate;
@@ -88,6 +90,12 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
   const handleBlockOptionChange = useCallback((blockType: ReportBlockType, option: string, value: boolean) => {
     setBlocks(prev => prev.map(block =>
       block.type === blockType ? { ...block, [option]: value } : block
+    ));
+  }, []);
+
+  const handleChartConfigChange = useCallback((chartConfig: ChartConfig) => {
+    setBlocks(prev => prev.map(block =>
+      block.type === 'analyses' ? { ...block, chartConfig } : block
     ));
   }, []);
 
@@ -271,7 +279,15 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                           control={
                             <Switch
                               checked={block.includeCharts || false}
-                              onChange={(e) => handleBlockOptionChange(block.type, 'includeCharts', e.target.checked)}
+                              onChange={(e) => {
+                                handleBlockOptionChange(block.type, 'includeCharts', e.target.checked);
+                                // Initialize chart config when enabling charts
+                                if (e.target.checked && !block.chartConfig) {
+                                  handleChartConfigChange({ ...DEFAULT_CHART_CONFIG, enabled: true });
+                                } else if (!e.target.checked && block.chartConfig) {
+                                  handleChartConfigChange({ ...block.chartConfig, enabled: false });
+                                }
+                              }}
                               size="small"
                             />
                           }
@@ -287,6 +303,21 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                           }
                           label={t('reports.blocks.options.highlightAlerts')}
                         />
+
+                        {/* Chart Configuration Panel */}
+                        {block.includeCharts && (
+                          <Box sx={{ width: '100%', mt: 2, p: 2, bgcolor: 'action.hover', borderRadius: 1 }}>
+                            <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                              {t('reports.charts.configuration')}
+                            </Typography>
+                            <ChartConfigPanel
+                              chartConfig={block.chartConfig || { ...DEFAULT_CHART_CONFIG, enabled: true }}
+                              onChange={handleChartConfigChange}
+                              selectedSystemIds={[]}
+                            />
+                          </Box>
+                        )}
+
                         <Box sx={{ width: '100%', mt: 1 }}>
                           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
                             {t('reports.blocks.options.analysisViews')}

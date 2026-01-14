@@ -140,6 +140,11 @@ export interface ReportData {
   generatedAt: string;
   generatedBy: { id: number; name: string };
   isServiceProvider?: boolean;
+  // Chart images as base64 strings (keyed by monitoringPointId)
+  chartImages?: {
+    field?: Map<number, string>;
+    laboratory?: Map<number, string>;
+  };
 }
 
 export interface ReportPdfProps {
@@ -407,6 +412,32 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
     fontSize: 8,
     color: '#6b7280',
     textAlign: 'center'
+  },
+  chartContainer: {
+    marginTop: 15,
+    marginBottom: 10
+  },
+  chartImage: {
+    width: '100%',
+    maxHeight: 250,
+    objectFit: 'contain'
+  },
+  chartTitle: {
+    fontSize: 10,
+    fontFamily: 'Helvetica-Bold',
+    color: '#374151',
+    marginBottom: 5,
+    textAlign: 'center'
+  },
+  chartsSection: {
+    marginTop: 20,
+    marginBottom: 15
+  },
+  chartsSectionTitle: {
+    fontSize: 11,
+    fontFamily: 'Helvetica-Bold',
+    color: primaryColor,
+    marginBottom: 10
   }
 });
 
@@ -819,6 +850,28 @@ const AnalysesDetailedTable: React.FC<AnalysesViewProps> = ({ logs, styles, t })
   );
 };
 
+// Helper to render chart images
+const renderChartImages = (
+  chartImages: Map<number, string> | undefined,
+  styles: ReturnType<typeof createStyles>,
+  title: string
+) => {
+  if (!chartImages || chartImages.size === 0) return null;
+
+  const images = Array.from(chartImages.entries());
+
+  return (
+    <View style={styles.chartsSection}>
+      <Text style={styles.chartsSectionTitle}>{title}</Text>
+      {images.map(([mpId, base64]) => (
+        <View key={mpId} style={styles.chartContainer}>
+          <Image src={base64} style={styles.chartImage} />
+        </View>
+      ))}
+    </View>
+  );
+};
+
 const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   // Split logs by recordType
   const fieldLogs = data.dailyLogs.filter(log => log.recordType === 'field');
@@ -837,6 +890,11 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   // Check if at least one section is enabled
   const hasAnySectionEnabled = showFieldOverview || showFieldDetailed || showLaboratoryOverview || showLaboratoryDetailed;
 
+  // Check for chart images
+  const hasFieldCharts = data.chartImages?.field && data.chartImages.field.size > 0;
+  const hasLaboratoryCharts = data.chartImages?.laboratory && data.chartImages.laboratory.size > 0;
+  const showCharts = block.includeCharts && (hasFieldCharts || hasLaboratoryCharts);
+
   return (
     <View>
       {!hasAnyLogs || !hasAnySectionEnabled ? (
@@ -854,6 +912,15 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
             </>
           )}
 
+          {/* Field Charts */}
+          {showCharts && hasFieldCharts && (
+            renderChartImages(
+              data.chartImages?.field,
+              styles,
+              t('reports.charts.fieldChartsTitle')
+            )
+          )}
+
           {/* Field Monitoring Analysis – Detailed */}
           {showFieldDetailed && hasFieldLogs && (
             <View style={{ marginTop: showFieldOverview ? 15 : 0 }}>
@@ -868,6 +935,15 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryOverviewTitle')}</Text>
               <AnalysesOverviewTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
             </View>
+          )}
+
+          {/* Laboratory Charts */}
+          {showCharts && hasLaboratoryCharts && (
+            renderChartImages(
+              data.chartImages?.laboratory,
+              styles,
+              t('reports.charts.laboratoryChartsTitle')
+            )
           )}
 
           {/* Laboratory Monitoring Analysis – Detailed */}

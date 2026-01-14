@@ -101,6 +101,34 @@
       "footerText": "Footer text",
       "footerHelp": "Use {page} and {pages} for page numbers"
     },
+    "charts": {
+      "configuration": "Chart Configuration",
+      "enableToConfig": "Enable charts to configure settings",
+      "chartType": "Chart Type",
+      "types": {
+        "bar": "Bar Chart",
+        "line": "Line Chart",
+        "area": "Area Chart"
+      },
+      "aggregation": "Data Aggregation",
+      "aggregations": {
+        "daily": "Daily",
+        "weekly": "Weekly",
+        "monthly": "Monthly"
+      },
+      "selectParameters": "Select Parameters",
+      "noParameters": "No monitoring points available for charting",
+      "hasLimits": "Has Limits",
+      "showLimit": "Show Limit",
+      "colors": "Colors",
+      "primaryColor": "Chart Color",
+      "limitColor": "Limit Line Color",
+      "showLegend": "Show Legend",
+      "showDataLabels": "Show Data Labels",
+      "generating": "Generating charts...",
+      "fieldChartsTitle": "Field Monitoring Charts",
+      "laboratoryChartsTitle": "Laboratory Monitoring Charts"
+    },
     "generator": {
       "steps": {
         "template": "Select Template",

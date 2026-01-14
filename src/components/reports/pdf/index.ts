@@ -18,3 +18,13 @@ export type {
 } from './ReportPdfDocument';
 
 export { ReportPdfViewer, generatePdfBlob, downloadPdf } from './ReportPdfViewer';
+
+// Chart image generation components
+export {
+  ChartImageGenerator,
+  ChartImageBatchGenerator
+} from './ChartImageGenerator';
+export type {
+  ChartImageGeneratorProps,
+  ChartImageBatchGeneratorProps
+} from './ChartImageGenerator';

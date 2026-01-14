@@ -101,6 +101,34 @@
       "footerText": "Texto do rodapé",
       "footerHelp": "Use {page} e {pages} para números de página"
     },
+    "charts": {
+      "configuration": "Configuração do Gráfico",
+      "enableToConfig": "Ative os gráficos para configurar",
+      "chartType": "Tipo de Gráfico",
+      "types": {
+        "bar": "Gráfico de Barras",
+        "line": "Gráfico de Linhas",
+        "area": "Gráfico de Área"
+      },
+      "aggregation": "Agregação de Dados",
+      "aggregations": {
+        "daily": "Diário",
+        "weekly": "Semanal",
+        "monthly": "Mensal"
+      },
+      "selectParameters": "Selecionar Parâmetros",
+      "noParameters": "Nenhum ponto de monitoramento disponível para gráficos",
+      "hasLimits": "Com Limites",
+      "showLimit": "Mostrar Limite",
+      "colors": "Cores",
+      "primaryColor": "Cor do Gráfico",
+      "limitColor": "Cor da Linha de Limite",
+      "showLegend": "Mostrar Legenda",
+      "showDataLabels": "Mostrar Rótulos de Dados",
+      "generating": "Gerando gráficos...",
+      "fieldChartsTitle": "Gráficos de Monitoramento de Campo",
+      "laboratoryChartsTitle": "Gráficos de Monitoramento Laboratorial"
+    },
     "generator": {
       "steps": {
         "template": "Selecionar Modelo",
