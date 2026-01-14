@@ -53,7 +53,7 @@
         "description": "List of monitored systems with details"
       },
       "analyses": {
-        "title": "Analyses",
+        "title": "Field Monitoring Analysis – Overview",
         "description": "Daily log entries and parameter readings"
       },
       "inspections": {

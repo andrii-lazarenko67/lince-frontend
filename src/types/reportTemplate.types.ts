@@ -92,7 +92,7 @@ export const DEFAULT_TEMPLATE_CONFIG: ReportTemplateConfig = {
     { type: 'identification', enabled: true, order: 1 },
     { type: 'scope', enabled: true, order: 2 },
     { type: 'systems', enabled: true, order: 3, includePhotos: true },
-    { type: 'analyses', enabled: true, order: 4, includeCharts: true, highlightAlerts: true },
+    { type: 'analyses', enabled: true, order: 4, includeCharts: true, highlightAlerts: false },
     { type: 'inspections', enabled: true, order: 5, includePhotos: true },
     { type: 'occurrences', enabled: true, order: 6, includeTimeline: true },
     { type: 'conclusion', enabled: true, order: 7 },

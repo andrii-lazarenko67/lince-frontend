@@ -53,7 +53,7 @@
         "description": "Lista de sistemas monitorados com detalhes"
       },
       "analyses": {
-        "title": "Análises",
+        "title": "Análise de Monitoramento de Campo – Visão Geral",
         "description": "Registros diários e leituras de parâmetros"
       },
       "inspections": {
