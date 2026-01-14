@@ -287,6 +287,16 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                           }
                           label={t('reports.blocks.options.highlightAlerts')}
                         />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.includeDetailedAnalysis || false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'includeDetailedAnalysis', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.includeDetailedAnalysis')}
+                        />
                       </>
                     )}
                     {block.type === 'inspections' && (

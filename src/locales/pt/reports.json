@@ -54,6 +54,7 @@
       },
       "analyses": {
         "title": "Análise de Monitoramento de Campo – Visão Geral",
+        "detailedTitle": "Análise de Monitoramento de Campo – Detalhada",
         "description": "Registros diários e leituras de parâmetros"
       },
       "inspections": {
@@ -80,7 +81,8 @@
         "includePhotos": "Incluir fotos",
         "includeCharts": "Incluir gráficos",
         "highlightAlerts": "Destacar alertas",
-        "includeTimeline": "Incluir linha do tempo"
+        "includeTimeline": "Incluir linha do tempo",
+        "includeDetailedAnalysis": "Incluir análise detalhada"
       }
     },
     "branding": {
@@ -182,7 +184,12 @@
       "totalInspections": "Total de inspeções",
       "totalOccurrences": "Total de ocorrências",
       "technician": "Técnico",
-      "processStages": "Etapas do Processo"
+      "processStages": "Etapas do Processo",
+      "parameter": "Parâmetro",
+      "expectedRange": "Faixa Esperada",
+      "observations": "Observações",
+      "noDetailedAnalyses": "Nenhum dado de análise detalhada disponível",
+      "valueOutOfRange": "Valor fora da faixa esperada"
     },
     "errors": {
       "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",

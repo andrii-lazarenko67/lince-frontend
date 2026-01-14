@@ -54,6 +54,7 @@
       },
       "analyses": {
         "title": "Field Monitoring Analysis – Overview",
+        "detailedTitle": "Field Monitoring Analysis – Detailed",
         "description": "Daily log entries and parameter readings"
       },
       "inspections": {
@@ -80,7 +81,8 @@
         "includePhotos": "Include photos",
         "includeCharts": "Include charts",
         "highlightAlerts": "Highlight alerts",
-        "includeTimeline": "Include timeline"
+        "includeTimeline": "Include timeline",
+        "includeDetailedAnalysis": "Include detailed analysis"
       }
     },
     "branding": {
@@ -182,7 +184,12 @@
       "totalInspections": "Total inspections",
       "totalOccurrences": "Total occurrences",
       "technician": "Technician",
-      "processStages": "Process Stages"
+      "processStages": "Process Stages",
+      "parameter": "Parameter",
+      "expectedRange": "Expected Range",
+      "observations": "Observations",
+      "noDetailedAnalyses": "No detailed analysis data available",
+      "valueOutOfRange": "Value out of expected range"
     },
     "errors": {
       "datesRequired": "Start date and end date are required for custom reports",
