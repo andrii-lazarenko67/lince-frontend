@@ -510,28 +510,37 @@ const ScopeBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
   </View>
 );
 
-const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
-  <View>
-    <Text style={styles.sectionTitle}>{t('reports.blocks.systems.title')}</Text>
-    {data.systems.length === 0 ? (
-      <Text style={styles.textMuted}>{t('reports.pdf.noSystems')}</Text>
-    ) : (
-      <>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.name')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.pdf.type')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
-            <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.description')}</Text>
-          </View>
-          {data.systems.map((system, idx) => (
-            <View key={system.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{system.name}</Text>
-              <Text style={styles.tableCell}>{system.systemType?.name || '-'}</Text>
-              <Text style={styles.tableCell}>{system.status || '-'}</Text>
-              <Text style={[styles.tableCell, { flex: 2 }]}>{system.description || '-'}</Text>
+const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+  // Translate system status
+  const getStatusLabel = (status?: string): string => {
+    if (!status) return '-';
+    // Try to translate using systems namespace, fallback to raw value
+    const translated = t(`systems.${status}`, { defaultValue: status });
+    return translated;
+  };
+
+  return (
+    <View>
+      <Text style={styles.sectionTitle}>{t('reports.blocks.systems.title')}</Text>
+      {data.systems.length === 0 ? (
+        <Text style={styles.textMuted}>{t('reports.pdf.noSystems')}</Text>
+      ) : (
+        <>
+          <View style={styles.table}>
+            <View style={styles.tableHeader}>
+              <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.name')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.type')}</Text>
+              <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+              <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.description')}</Text>
             </View>
-          ))}
+            {data.systems.map((system, idx) => (
+              <View key={system.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+                <Text style={[styles.tableCell, { flex: 2 }]}>{system.name}</Text>
+                <Text style={styles.tableCell}>{system.systemType?.name || '-'}</Text>
+                <Text style={styles.tableCell}>{getStatusLabel(system.status)}</Text>
+                <Text style={[styles.tableCell, { flex: 2 }]}>{system.description || '-'}</Text>
+              </View>
+            ))}
         </View>
         {block.includePhotos && data.systems.some(s => s.photos && s.photos.length > 0) && (
           <View style={styles.photoGrid}>
@@ -550,7 +559,8 @@ const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
       </>
     )}
   </View>
-);
+  );
+};
 
 const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
   <View>
