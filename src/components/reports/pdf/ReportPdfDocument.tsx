@@ -626,9 +626,13 @@ const formatRange = (min?: number, max?: number): string => {
 };
 
 // Detailed Analysis sub-component - shows date x parameter matrix
+// Limited to last 7 days to prevent table overflow
+const MAX_DETAILED_DAYS = 7;
+
 const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
-  // Build unique dates sorted chronologically
-  const uniqueDates = [...new Set(data.dailyLogs.map(log => log.date))].sort();
+  // Build unique dates sorted chronologically, take only last 7 days
+  const allDates = [...new Set(data.dailyLogs.map(log => log.date))].sort();
+  const uniqueDates = allDates.slice(-MAX_DETAILED_DAYS);
 
   // Build unique monitoring points with their ranges
   const monitoringPointMap = new Map<number, {
@@ -639,7 +643,8 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
     unit?: string;
   }>();
 
-  // Build a map of date+mpId -> entry data
+  // Build a map of date+mpId -> entry data (only for the last 7 days)
+  const dateSet = new Set(uniqueDates);
   const valueMap = new Map<string, {
     value: number | null;
     isOutOfRange?: boolean;
@@ -648,30 +653,32 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
     mpName: string;
   }>();
 
-  data.dailyLogs.forEach(log => {
-    log.entries?.forEach(entry => {
-      if (entry.monitoringPoint) {
-        const mp = entry.monitoringPoint;
-        if (!monitoringPointMap.has(mp.id)) {
-          monitoringPointMap.set(mp.id, {
-            id: mp.id,
-            name: mp.name,
-            minValue: mp.minValue,
-            maxValue: mp.maxValue,
-            unit: mp.unit?.symbol
+  data.dailyLogs
+    .filter(log => dateSet.has(log.date)) // Only include logs from last 7 days
+    .forEach(log => {
+      log.entries?.forEach(entry => {
+        if (entry.monitoringPoint) {
+          const mp = entry.monitoringPoint;
+          if (!monitoringPointMap.has(mp.id)) {
+            monitoringPointMap.set(mp.id, {
+              id: mp.id,
+              name: mp.name,
+              minValue: mp.minValue,
+              maxValue: mp.maxValue,
+              unit: mp.unit?.symbol
+            });
+          }
+          const key = `${log.date}_${mp.id}`;
+          valueMap.set(key, {
+            value: entry.value,
+            isOutOfRange: entry.isOutOfRange,
+            notes: entry.notes,
+            date: log.date,
+            mpName: mp.name
           });
         }
-        const key = `${log.date}_${mp.id}`;
-        valueMap.set(key, {
-          value: entry.value,
-          isOutOfRange: entry.isOutOfRange,
-          notes: entry.notes,
-          date: log.date,
-          mpName: mp.name
-        });
-      }
+      });
     });
-  });
 
   const monitoringPoints = Array.from(monitoringPointMap.values());
 
@@ -696,10 +703,10 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
     return <Text style={styles.textMuted}>{t('reports.pdf.noDetailedAnalyses')}</Text>;
   }
 
-  // Calculate column widths
-  const paramColWidth = 150;
-  const rangeColWidth = 80;
-  const dateColWidth = 45;
+  // Dynamic column sizing based on number of dates
+  // A4 width ~515pt usable, parameter col needs ~140pt, range col ~70pt
+  // Remaining space distributed among date columns
+  const dateCount = uniqueDates.length;
 
   return (
     <View>
@@ -707,14 +714,20 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
       <View style={styles.table}>
         {/* Header row with dates */}
         <View style={styles.tableHeader}>
-          <Text style={[styles.tableHeaderCell, { width: paramColWidth, flex: 0 }]}>
+          <Text style={[styles.tableHeaderCell, { flex: 2.5, minWidth: 120 }]}>
             {t('reports.pdf.parameter')}
           </Text>
-          <Text style={[styles.tableHeaderCell, { width: rangeColWidth, flex: 0, textAlign: 'center' }]}>
+          <Text style={[styles.tableHeaderCell, { flex: 1.2, minWidth: 60, textAlign: 'center' }]}>
             {t('reports.pdf.expectedRange')}
           </Text>
           {uniqueDates.map(date => (
-            <Text key={date} style={[styles.tableHeaderCell, { width: dateColWidth, flex: 0, textAlign: 'center' }]}>
+            <Text
+              key={date}
+              style={[
+                styles.tableHeaderCell,
+                { flex: 1, minWidth: dateCount > 7 ? 35 : 45, textAlign: 'center', fontSize: dateCount > 10 ? 7 : 8 }
+              ]}
+            >
               {formatShortDate(date)}
             </Text>
           ))}
@@ -723,10 +736,10 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
         {/* Data rows - one per monitoring point */}
         {monitoringPoints.map((mp, idx) => (
           <View key={mp.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
-            <Text style={[styles.tableCell, { width: paramColWidth, flex: 0 }]}>
+            <Text style={[styles.tableCell, { flex: 2.5, minWidth: 120 }]}>
               {mp.name} {mp.unit ? `(${mp.unit})` : ''}
             </Text>
-            <Text style={[styles.tableCell, { width: rangeColWidth, flex: 0, textAlign: 'center' }]}>
+            <Text style={[styles.tableCell, { flex: 1.2, minWidth: 60, textAlign: 'center' }]}>
               {formatRange(mp.minValue, mp.maxValue)}
             </Text>
             {uniqueDates.map(date => {
@@ -738,7 +751,7 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
                   key={date}
                   style={[
                     styles.tableCell,
-                    { width: dateColWidth, flex: 0, textAlign: 'center' },
+                    { flex: 1, minWidth: dateCount > 7 ? 35 : 45, textAlign: 'center', fontSize: dateCount > 10 ? 7 : 8 },
                     isOutOfRange ? styles.tableCellAlert : {}
                   ]}
                 >
