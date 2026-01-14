@@ -436,6 +436,12 @@ const IdentificationBlock: React.FC<BlockProps & { reportName: string }> = ({
         <Text style={styles.infoLabel}>{t('reports.pdf.client')}:</Text>
         <Text style={styles.infoValue}>{data.client.name}</Text>
       </View>
+      {data.client.email && (
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>{t('common.email')}:</Text>
+          <Text style={styles.infoValue}>{data.client.email}</Text>
+        </View>
+      )}
       {data.client.address && (
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>{t('common.address')}:</Text>
@@ -446,6 +452,12 @@ const IdentificationBlock: React.FC<BlockProps & { reportName: string }> = ({
         <View style={styles.infoRow}>
           <Text style={styles.infoLabel}>{t('common.contact')}:</Text>
           <Text style={styles.infoValue}>{data.client.contact}</Text>
+        </View>
+      )}
+      {data.client.phone && (
+        <View style={styles.infoRow}>
+          <Text style={styles.infoLabel}>{t('common.phone')}:</Text>
+          <Text style={styles.infoValue}>{data.client.phone}</Text>
         </View>
       )}
       <View style={styles.infoRow}>
@@ -785,6 +797,9 @@ export const ReportPdfDocument: React.FC<ReportPdfProps> = ({
     .filter(block => block.enabled)
     .sort((a, b) => a.order - b.order);
 
+  // Blocks that should NOT wrap (keep together on one page if they fit)
+  const noWrapBlocks = ['identification', 'signature', 'conclusion'];
+
   const renderBlock = (block: ReportBlock) => {
     const props: BlockProps = { data, block, styles, t };
 
@@ -818,7 +833,7 @@ export const ReportPdfDocument: React.FC<ReportPdfProps> = ({
         <ReportHeader branding={branding} client={data.client} styles={styles} />
 
         {enabledBlocks.map(block => (
-          <View key={block.type} wrap={false}>
+          <View key={block.type} wrap={!noWrapBlocks.includes(block.type)}>
             {renderBlock(block)}
           </View>
         ))}

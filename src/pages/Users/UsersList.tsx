@@ -1,20 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchUsers, createUser, updateUser, deleteUser } from '../../store/slices/userSlice';
+import { fetchUsers, createUser, updateUser, deleteUser, uploadUserAvatar } from '../../store/slices/userSlice';
 import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import { CameraAlt } from '@mui/icons-material';
 import type { User, CreateUserRequest } from '../../types';
 
 const UsersList: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { users } = useAppSelector((state) => state.users);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [deletingUser, setDeletingUser] = useState<User | null>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [formData, setFormData] = useState<CreateUserRequest & { password?: string }>({
     name: '',
     email: '',
@@ -38,6 +41,7 @@ const UsersList: React.FC = () => {
         password: '',
         phone: user.phone || ''
       });
+      setAvatarPreview(user.avatar || null);
     } else {
       setEditingUser(null);
       setFormData({
@@ -47,6 +51,7 @@ const UsersList: React.FC = () => {
         role: 'technician',
         phone: ''
       });
+      setAvatarPreview(null);
     }
     setErrors({});
     setIsFormOpen(true);
@@ -55,6 +60,39 @@ const UsersList: React.FC = () => {
   const handleCloseForm = () => {
     setIsFormOpen(false);
     setEditingUser(null);
+    setAvatarPreview(null);
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !editingUser) return;
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!validTypes.includes(file.type)) {
+      alert(t('users.form.invalidImageType'));
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert(t('users.form.fileSizeLimit'));
+      return;
+    }
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatarPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload to server
+    setLoading(true);
+    await dispatch(uploadUserAvatar({ id: editingUser.id, file }));
+    setLoading(false);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -252,6 +290,39 @@ const UsersList: React.FC = () => {
       {/* Create/Edit Modal */}
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingUser ? t('users.form.editUser') : t('users.form.addUser')}>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Avatar Upload (only for editing) */}
+          {editingUser && (
+            <div className="flex flex-col items-center mb-4">
+              <div className="relative">
+                {avatarPreview ? (
+                  <img src={avatarPreview} alt="Avatar" className="w-20 h-20 rounded-full object-cover" />
+                ) : (
+                  <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-600 text-2xl font-medium">
+                      {formData.name?.charAt(0).toUpperCase() || '?'}
+                    </span>
+                  </div>
+                )}
+                <button
+                  type="button"
+                  onClick={triggerFileInput}
+                  className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1.5 shadow-lg transition-colors"
+                  title={t('users.form.uploadAvatar')}
+                >
+                  <CameraAlt style={{ fontSize: 16 }} />
+                </button>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                onChange={handleAvatarChange}
+                className="hidden"
+              />
+              <span className="text-xs text-gray-500 mt-2">{t('users.form.avatarHint')}</span>
+            </div>
+          )}
+
           <Input
             type="text"
             name="name"

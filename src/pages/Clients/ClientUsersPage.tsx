@@ -264,7 +264,7 @@ const ClientUsersPage: React.FC = () => {
       </Paper>
 
       {/* Add User Dialog */}
-      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={addDialogOpen} onClose={() => setAddDialogOpen(false)} maxWidth="sm" fullWidth container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('settings.clients.addUser', 'Add User')}</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 3 }}>
@@ -345,7 +345,7 @@ const ClientUsersPage: React.FC = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('settings.clients.removeUser', 'Remove User')}</DialogTitle>
         <DialogContent>
           <Typography>

@@ -262,7 +262,7 @@ const ClientsPage: React.FC = () => {
       </Menu>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+      <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)} container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('settings.clients.deleteClient')}</DialogTitle>
         <DialogContent>
           <Typography>

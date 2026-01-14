@@ -74,8 +74,8 @@ const Sidebar: React.FC = () => {
     { name: t('nav.products'), path: '/products', icon: <InventoryIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.reports'), path: '/reports', icon: <AssessmentIcon /> },
     { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager', 'admin'] },
-    { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['manager', 'admin'] },
-    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] }
+    { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['admin'] },
+    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['admin'] }
   ];
 
   const filteredNavItems = navItems.filter(item => {
@@ -226,8 +226,8 @@ const Sidebar: React.FC = () => {
         open={sidebarOpen}
         onClose={handleCloseSidebar}
         ModalProps={{
-          disableEnforceFocus: false,
-          disableAutoFocus: false
+          keepMounted: true, // Better mobile performance
+          container: document.getElementById('modal-root') || document.body
         }}
         sx={{
           display: { xs: 'block', lg: 'none' },
@@ -241,7 +241,6 @@ const Sidebar: React.FC = () => {
       <Box
         data-desktop-drawer="true"
         sx={{ display: { xs: 'none', lg: 'block' } }}
-        aria-hidden={sidebarOpen && isMobile ? 'true' : undefined}
       >
         <Drawer
           variant="permanent"

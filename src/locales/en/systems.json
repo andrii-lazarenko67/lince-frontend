@@ -49,8 +49,10 @@
       "parentNotFound": "Parent system not found",
       "typeRequired": "System type is required",
       "typeNotFound": "System type not found",
+      "typeInvalidOrDeleted": "The system type is no longer valid. Please select a new type.",
       "cannotBeOwnParent": "System cannot be its own parent",
       "circularReference": "Cannot create circular reference in system hierarchy",
+      "hierarchyTooDeep": "System hierarchy is too deep. Maximum depth exceeded.",
       "hasSubSystems": "Cannot delete system with sub-systems. Please delete sub-systems first.",
       "hasRelatedRecords": "Cannot delete system with existing records (daily logs, inspections, or incidents). Please remove these records first."
     },
@@ -91,7 +93,9 @@
     "noChecklistItems": "No checklist items configured for this system",
     "deleteConfirm": "Are you sure you want to delete this checklist item? This action cannot be undone.",
     "errors": {
-      "notFound": "Checklist item not found"
+      "notFound": "Checklist item not found",
+      "nameRequired": "Checklist item name is required",
+      "invalidOrder": "Display order must be a non-negative number"
     },
     "success": {
       "deactivated": "Checklist item deactivated successfully"

@@ -11,6 +11,9 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
+// Get the modal root container to prevent aria-hidden issues
+const getModalContainer = () => document.getElementById('modal-root') || document.body;
+
 const Modal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
@@ -40,6 +43,7 @@ const Modal: React.FC<ModalProps> = ({
       onClose={onClose}
       maxWidth={getMaxWidth()}
       fullWidth
+      container={getModalContainer}
     >
       {title && (
         <DialogTitle sx={{ m: 0, p: 2, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

@@ -49,8 +49,10 @@
       "parentNotFound": "Sistema pai não encontrado",
       "typeRequired": "Tipo de sistema é obrigatório",
       "typeNotFound": "Tipo de sistema não encontrado",
+      "typeInvalidOrDeleted": "O tipo de sistema não é mais válido. Por favor, selecione um novo tipo.",
       "cannotBeOwnParent": "Sistema não pode ser seu próprio pai",
       "circularReference": "Não é possível criar referência circular na hierarquia do sistema",
+      "hierarchyTooDeep": "A hierarquia do sistema é muito profunda. Profundidade máxima excedida.",
       "hasSubSystems": "Não é possível excluir sistema com sub-sistemas. Exclua os sub-sistemas primeiro.",
       "hasRelatedRecords": "Não é possível excluir sistema com registros existentes (registros diários, inspeções ou ocorrências). Remova esses registros primeiro."
     },
@@ -91,7 +93,9 @@
     "noChecklistItems": "Nenhum item de verificação configurado para este sistema",
     "deleteConfirm": "Tem certeza que deseja excluir este item de verificação? Esta ação não pode ser desfeita.",
     "errors": {
-      "notFound": "Item de verificação não encontrado"
+      "notFound": "Item de verificação não encontrado",
+      "nameRequired": "Nome do item de verificação é obrigatório",
+      "invalidOrder": "A ordem de exibição deve ser um número não negativo"
     },
     "success": {
       "deactivated": "Item de verificação desativado com sucesso"

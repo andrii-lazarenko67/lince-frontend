@@ -336,7 +336,7 @@ const ReportHistoryTab: React.FC = () => {
       </Menu>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
+      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('reports.history.deleteConfirmTitle')}</DialogTitle>
         <DialogContent>
           <Typography>

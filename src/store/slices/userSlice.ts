@@ -95,6 +95,26 @@ export const deleteUser = createAsyncThunk(
   }
 );
 
+export const uploadUserAvatar = createAsyncThunk(
+  'users/uploadAvatar',
+  async ({ id, file }: { id: number; file: File }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const formData = new FormData();
+      formData.append('avatar', file);
+      const response = await axiosInstance.put<{ success: boolean; data: User }>(`/users/${id}/avatar`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data.data;
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { message?: string } } };
+      return rejectWithValue(err.response?.data?.message || 'Failed to upload avatar');
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: 'users',
   initialState,
@@ -132,6 +152,13 @@ const userSlice = createSlice({
       })
       .addCase(deleteUser.fulfilled, (state, action) => {
         state.users = state.users.filter(u => u.id !== action.payload);
+        state.error = null;
+      })
+      .addCase(uploadUserAvatar.fulfilled, (state, action) => {
+        const index = state.users.findIndex(u => u.id === action.payload.id);
+        if (index !== -1) {
+          state.users[index] = action.payload;
+        }
         state.error = null;
       });
   }

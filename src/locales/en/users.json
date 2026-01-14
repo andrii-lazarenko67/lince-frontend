@@ -81,7 +81,11 @@
       "emailRequired": "Email is required",
       "passwordRequired": "Password is required for new users",
       "passwordLength": "Password must be at least 6 characters",
-      "deleteConfirm": "Are you sure you want to delete {{name}}? This action cannot be undone."
+      "deleteConfirm": "Are you sure you want to delete {{name}}? This action cannot be undone.",
+      "uploadAvatar": "Upload Avatar",
+      "avatarHint": "Click camera to upload avatar (JPG, PNG, GIF, max 5MB)",
+      "invalidImageType": "Invalid image type. Please use JPG, PNG, GIF, or WebP.",
+      "fileSizeLimit": "File size must be less than 5MB"
     },
     "export": {
       "title": "Users Report",

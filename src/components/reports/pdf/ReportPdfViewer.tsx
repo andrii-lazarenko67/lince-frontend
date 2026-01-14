@@ -144,6 +144,7 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
         onClose={handleClosePreview}
         maxWidth="lg"
         fullWidth
+        container={document.getElementById('modal-root') || undefined}
         PaperProps={{
           sx: { height: '90vh' }
         }}

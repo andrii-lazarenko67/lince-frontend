@@ -81,7 +81,11 @@
       "emailRequired": "E-mail é obrigatório",
       "passwordRequired": "Senha é obrigatória para novos usuários",
       "passwordLength": "A senha deve ter pelo menos 6 caracteres",
-      "deleteConfirm": "Tem certeza que deseja excluir {{name}}? Esta ação não pode ser desfeita."
+      "deleteConfirm": "Tem certeza que deseja excluir {{name}}? Esta ação não pode ser desfeita.",
+      "uploadAvatar": "Enviar Avatar",
+      "avatarHint": "Clique na câmera para enviar avatar (JPG, PNG, GIF, máx 5MB)",
+      "invalidImageType": "Tipo de imagem inválido. Use JPG, PNG, GIF ou WebP.",
+      "fileSizeLimit": "O tamanho do arquivo deve ser menor que 5MB"
     },
     "export": {
       "title": "Relatório de Usuários",

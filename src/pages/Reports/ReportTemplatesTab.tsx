@@ -314,7 +314,7 @@ const ReportTemplatesTab: React.FC = () => {
       </Menu>
 
       {/* Create Template Dialog */}
-      <Dialog open={isCreateDialogOpen} onClose={() => setIsCreateDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog open={isCreateDialogOpen} onClose={() => setIsCreateDialogOpen(false)} maxWidth="sm" fullWidth container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('reports.templates.create')}</DialogTitle>
         <DialogContent>
           <TextField
@@ -351,7 +351,7 @@ const ReportTemplatesTab: React.FC = () => {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
+      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)} container={document.getElementById('modal-root') || undefined}>
         <DialogTitle>{t('reports.templates.deleteConfirmTitle')}</DialogTitle>
         <DialogContent>
           <Typography>

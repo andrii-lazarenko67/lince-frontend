@@ -140,7 +140,7 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
   const sortedBlocks = [...blocks].sort((a, b) => a.order - b.order);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth container={document.getElementById('modal-root') || undefined}>
       <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         {t('reports.templates.editTemplate')}
         <IconButton onClick={onClose} size="small">
