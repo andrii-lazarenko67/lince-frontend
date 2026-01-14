@@ -53,7 +53,6 @@ const ReportGeneratorTab: React.FC = () => {
   const { templates, currentTemplate } = useAppSelector((state) => state.reportTemplates);
   const { systems } = useAppSelector((state) => state.systems);
   const { generating, error, currentReport, reportData } = useAppSelector((state) => state.generatedReports);
-  const { currentClient } = useAppSelector((state) => state.clients);
   const { user } = useAppSelector((state) => state.auth);
 
   const [activeStep, setActiveStep] = useState(0);
@@ -184,8 +183,9 @@ const ReportGeneratorTab: React.FC = () => {
   const getPdfReportData = useCallback((): ReportData | null => {
     if (!reportData || !currentReport) return null;
 
-    // Define client with explicit types to get around Client not having logo/brandColor
-    const clientInfo = currentClient as {
+    // Use client data from reportData (returned by backend generate endpoint)
+    // This contains all client fields: id, name, address, contact, phone, email, logo, brandColor
+    const clientFromReport = reportData.client as {
       id?: number;
       name?: string;
       address?: string;
@@ -194,7 +194,7 @@ const ReportGeneratorTab: React.FC = () => {
       email?: string;
       logo?: string;
       brandColor?: string;
-    } | null;
+    } | undefined;
 
     // Calculate totals from logs
     const logs = reportData.dailyLogs as Array<{ entries?: Array<{ isOutOfRange?: boolean }> }>;
@@ -202,16 +202,19 @@ const ReportGeneratorTab: React.FC = () => {
     const outOfRangeCount = logs?.reduce((sum, log) =>
       sum + (log.entries?.filter(e => e.isOutOfRange).length || 0), 0) || 0;
 
+    // Use generatedBy from reportData if available (backend returns this)
+    const generatedByFromReport = reportData.generatedBy as { id?: number; name?: string } | undefined;
+
     return {
       client: {
-        id: clientInfo?.id || 0,
-        name: clientInfo?.name || '',
-        address: clientInfo?.address || '',
-        contact: clientInfo?.contact || '',
-        phone: clientInfo?.phone || '',
-        email: clientInfo?.email || '',
-        logo: clientInfo?.logo || '',
-        brandColor: clientInfo?.brandColor || ''
+        id: clientFromReport?.id || 0,
+        name: clientFromReport?.name || '',
+        address: clientFromReport?.address || '',
+        contact: clientFromReport?.contact || '',
+        phone: clientFromReport?.phone || '',
+        email: clientFromReport?.email || '',
+        logo: clientFromReport?.logo || '',
+        brandColor: clientFromReport?.brandColor || ''
       },
       period: {
         type: periodType,
@@ -232,12 +235,12 @@ const ReportGeneratorTab: React.FC = () => {
       },
       generatedAt: reportData.generatedAt || new Date().toISOString(),
       generatedBy: {
-        id: user?.id || 0,
-        name: user?.name || ''
+        id: generatedByFromReport?.id || user?.id || 0,
+        name: generatedByFromReport?.name || user?.name || ''
       },
       isServiceProvider: user?.isServiceProvider || false
     };
-  }, [reportData, currentReport, currentClient, periodType, startDate, endDate, user]);
+  }, [reportData, currentReport, periodType, startDate, endDate, user]);
 
   const canProceed = (step: number): boolean => {
     switch (step) {
