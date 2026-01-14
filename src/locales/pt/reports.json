@@ -85,7 +85,7 @@
         "includeCharts": "Incluir gráficos",
         "highlightAlerts": "Destacar alertas",
         "includeTimeline": "Incluir linha do tempo",
-        "includeDetailedAnalysis": "Incluir análise detalhada"
+        "analysisViews": "Visualizações de Análise"
       }
     },
     "branding": {

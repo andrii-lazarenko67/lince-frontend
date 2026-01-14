@@ -85,7 +85,7 @@
         "includeCharts": "Include charts",
         "highlightAlerts": "Highlight alerts",
         "includeTimeline": "Include timeline",
-        "includeDetailedAnalysis": "Include detailed analysis"
+        "analysisViews": "Analysis Views"
       }
     },
     "branding": {

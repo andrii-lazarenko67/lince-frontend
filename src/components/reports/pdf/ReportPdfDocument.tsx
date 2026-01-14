@@ -828,9 +828,18 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   const hasLaboratoryLogs = laboratoryLogs.length > 0;
   const hasAnyLogs = data.dailyLogs.length > 0;
 
+  // Determine which sections to show (default to true for overview, false for detailed)
+  const showFieldOverview = block.showFieldOverview !== false;
+  const showFieldDetailed = block.showFieldDetailed === true;
+  const showLaboratoryOverview = block.showLaboratoryOverview !== false;
+  const showLaboratoryDetailed = block.showLaboratoryDetailed === true;
+
+  // Check if at least one section is enabled
+  const hasAnySectionEnabled = showFieldOverview || showFieldDetailed || showLaboratoryOverview || showLaboratoryDetailed;
+
   return (
     <View>
-      {!hasAnyLogs ? (
+      {!hasAnyLogs || !hasAnySectionEnabled ? (
         <>
           <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.title')}</Text>
           <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>
@@ -838,26 +847,32 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
       ) : (
         <>
           {/* Field Monitoring Analysis – Overview */}
-          <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldOverviewTitle')}</Text>
-          <AnalysesOverviewTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
+          {showFieldOverview && (
+            <>
+              <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldOverviewTitle')}</Text>
+              <AnalysesOverviewTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
+            </>
+          )}
 
-          {/* Field Monitoring Analysis – Detailed (if enabled) */}
-          {block.includeDetailedAnalysis && hasFieldLogs && (
-            <View style={{ marginTop: 15 }}>
+          {/* Field Monitoring Analysis – Detailed */}
+          {showFieldDetailed && hasFieldLogs && (
+            <View style={{ marginTop: showFieldOverview ? 15 : 0 }}>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldDetailedTitle')}</Text>
               <AnalysesDetailedTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
             </View>
           )}
 
           {/* Laboratory Monitoring Analysis – Overview */}
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryOverviewTitle')}</Text>
-            <AnalysesOverviewTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
-          </View>
+          {showLaboratoryOverview && (
+            <View style={{ marginTop: (showFieldOverview || showFieldDetailed) ? 20 : 0 }}>
+              <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryOverviewTitle')}</Text>
+              <AnalysesOverviewTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
+            </View>
+          )}
 
-          {/* Laboratory Monitoring Analysis – Detailed (if enabled) */}
-          {block.includeDetailedAnalysis && hasLaboratoryLogs && (
-            <View style={{ marginTop: 15 }}>
+          {/* Laboratory Monitoring Analysis – Detailed */}
+          {showLaboratoryDetailed && hasLaboratoryLogs && (
+            <View style={{ marginTop: showLaboratoryOverview ? 15 : ((showFieldOverview || showFieldDetailed) ? 20 : 0) }}>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryDetailedTitle')}</Text>
               <AnalysesDetailedTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
             </View>

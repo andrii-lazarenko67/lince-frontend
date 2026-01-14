@@ -19,8 +19,11 @@ export interface ReportBlock {
   includeCharts?: boolean;
   highlightAlerts?: boolean;
   includeTimeline?: boolean;
-  // Analyses block options
-  includeDetailedAnalysis?: boolean;  // Show detailed date x parameter matrix
+  // Analyses block options - 4 individual view toggles
+  showFieldOverview?: boolean;        // Field Monitoring Analysis – Overview
+  showFieldDetailed?: boolean;        // Field Monitoring Analysis – Detailed
+  showLaboratoryOverview?: boolean;   // Laboratory Monitoring Analysis – Overview
+  showLaboratoryDetailed?: boolean;   // Laboratory Monitoring Analysis – Detailed
 }
 
 export interface ReportBranding {
@@ -94,7 +97,7 @@ export const DEFAULT_TEMPLATE_CONFIG: ReportTemplateConfig = {
     { type: 'identification', enabled: true, order: 1 },
     { type: 'scope', enabled: true, order: 2 },
     { type: 'systems', enabled: true, order: 3, includePhotos: true },
-    { type: 'analyses', enabled: true, order: 4, includeCharts: true, highlightAlerts: false, includeDetailedAnalysis: false },
+    { type: 'analyses', enabled: true, order: 4, includeCharts: true, highlightAlerts: false, showFieldOverview: true, showFieldDetailed: false, showLaboratoryOverview: true, showLaboratoryDetailed: false },
     { type: 'inspections', enabled: true, order: 5, includePhotos: true },
     { type: 'occurrences', enabled: true, order: 6, includeTimeline: true },
     { type: 'conclusion', enabled: true, order: 7 },

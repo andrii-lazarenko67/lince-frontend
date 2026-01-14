@@ -287,16 +287,53 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                           }
                           label={t('reports.blocks.options.highlightAlerts')}
                         />
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={block.includeDetailedAnalysis || false}
-                              onChange={(e) => handleBlockOptionChange(block.type, 'includeDetailedAnalysis', e.target.checked)}
-                              size="small"
+                        <Box sx={{ width: '100%', mt: 1 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                            {t('reports.blocks.options.analysisViews')}
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, ml: 1 }}>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showFieldOverview !== false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showFieldOverview', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.analyses.fieldOverviewTitle')}
                             />
-                          }
-                          label={t('reports.blocks.options.includeDetailedAnalysis')}
-                        />
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showFieldDetailed || false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showFieldDetailed', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.analyses.fieldDetailedTitle')}
+                            />
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showLaboratoryOverview !== false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showLaboratoryOverview', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.analyses.laboratoryOverviewTitle')}
+                            />
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showLaboratoryDetailed || false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showLaboratoryDetailed', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.analyses.laboratoryDetailedTitle')}
+                            />
+                          </Box>
+                        </Box>
                       </>
                     )}
                     {block.type === 'inspections' && (
