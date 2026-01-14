@@ -60,26 +60,78 @@ export const ChartImageGenerator: React.FC<ChartImageGeneratorProps> = ({
   const buildChartData = useCallback((): ChartData<'bar' | 'line', (number | null)[], string> => {
     const labels = chartSeries.data.map(d => d.label);
     const values = chartSeries.data.map(d => d.value);
+    const outOfRangeFlags = chartSeries.data.map(d => d.isOutOfRange);
 
     // Determine chart type
     const chartType = chartConfig.chartType || 'bar';
+    const primaryColor = chartSeries.color || chartConfig.colors?.primary || '#1976d2';
+    const outOfRangeColor = '#dc2626'; // Red for out-of-range values
 
-    // Build datasets
-    const datasets: ChartData<'bar' | 'line', (number | null)[], string>['datasets'] = [
-      {
+    // Convert hex color to rgba for area chart fill
+    const hexToRgba = (hex: string, alpha: number): string => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
+    // Build datasets based on chart type
+    const datasets: ChartData<'bar' | 'line', (number | null)[], string>['datasets'] = [];
+
+    if (chartType === 'bar') {
+      // Bar chart - individual bar colors based on out-of-range status
+      datasets.push({
         label: `${chartSeries.parameterName} (${chartSeries.unit})`,
         data: values,
-        backgroundColor: chartType === 'bar'
-          ? chartSeries.color || chartConfig.colors?.primary || '#1976d2'
-          : 'transparent',
-        borderColor: chartSeries.color || chartConfig.colors?.primary || '#1976d2',
-        borderWidth: chartType === 'line' ? 2 : 1,
-        fill: chartType === 'area',
+        backgroundColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? hexToRgba(outOfRangeColor, 0.8) : hexToRgba(primaryColor, 0.8)
+        ),
+        borderColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? outOfRangeColor : primaryColor
+        ),
+        borderWidth: 1,
+        borderRadius: 4, // Rounded bar corners
+        borderSkipped: false
+      });
+    } else if (chartType === 'area') {
+      // Area chart - filled area under the line
+      datasets.push({
+        label: `${chartSeries.parameterName} (${chartSeries.unit})`,
+        data: values,
+        backgroundColor: hexToRgba(primaryColor, 0.3), // Semi-transparent fill
+        borderColor: primaryColor,
+        borderWidth: 2,
+        fill: true, // Enable area fill
+        tension: 0.4, // Smooth curve
+        pointRadius: 4,
+        pointBackgroundColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? outOfRangeColor : primaryColor
+        ),
+        pointBorderColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? outOfRangeColor : primaryColor
+        ),
+        pointBorderWidth: 2
+      });
+    } else {
+      // Line chart
+      datasets.push({
+        label: `${chartSeries.parameterName} (${chartSeries.unit})`,
+        data: values,
+        backgroundColor: 'transparent',
+        borderColor: primaryColor,
+        borderWidth: 2,
+        fill: false,
         tension: 0.3,
-        pointRadius: chartType === 'line' ? 4 : 0,
-        pointBackgroundColor: chartSeries.color || chartConfig.colors?.primary || '#1976d2'
-      }
-    ];
+        pointRadius: 5,
+        pointBackgroundColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? outOfRangeColor : primaryColor
+        ),
+        pointBorderColor: outOfRangeFlags.map(isOOR =>
+          isOOR ? outOfRangeColor : primaryColor
+        ),
+        pointBorderWidth: 2
+      });
+    }
 
     return {
       labels,
