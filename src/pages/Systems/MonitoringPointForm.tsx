@@ -26,10 +26,10 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   const { units } = useAppSelector((state) => state.units);
   const { loading } = useAppSelector((state) => state.ui);
 
-  const [formData, setFormData] = useState<CreateMonitoringPointRequest>({
+  const [formData, setFormData] = useState<Omit<CreateMonitoringPointRequest, 'parameterId'> & { parameterId: number | '' }>({
     systemId: systemId,
     name: '',
-    parameterId: 0,
+    parameterId: '',
     unitId: null,
     minValue: undefined,
     maxValue: undefined,
@@ -60,7 +60,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
       setFormData({
         systemId: systemId,
         name: '',
-        parameterId: 0,
+        parameterId: '',
         unitId: null,
         minValue: undefined,
         maxValue: undefined,
@@ -107,7 +107,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
   const validate = () => {
     const newErrors: Record<string, string> = {};
     if (!formData.name.trim()) newErrors.name = t('common.required');
-    if (!formData.parameterId || formData.parameterId === 0) newErrors.parameterId = t('common.required');
+    if (formData.parameterId === '' || formData.parameterId === 0) newErrors.parameterId = t('common.required');
     // Unit is now optional - no validation required
     if (formData.minValue !== undefined && formData.maxValue !== undefined) {
       if (formData.minValue >= formData.maxValue) {
@@ -125,12 +125,15 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     // Auto-disable alerts if no range is set
     const alertEnabled = hasRange ? formData.alertEnabled : false;
 
+    // parameterId is guaranteed to be a number after validation
+    const parameterId = formData.parameterId as number;
+
     if (monitoringPoint) {
       const result = await dispatch(updateMonitoringPoint({
         id: monitoringPoint.id,
         data: {
           name: formData.name,
-          parameterId: formData.parameterId,
+          parameterId,
           unitId: formData.unitId,
           minValue: formData.minValue,
           maxValue: formData.maxValue,
@@ -143,6 +146,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
     } else {
       const result = await dispatch(createMonitoringPoint({
         ...formData,
+        parameterId,
         alertEnabled
       }));
       if (createMonitoringPoint.fulfilled.match(result)) {
@@ -182,7 +186,7 @@ const MonitoringPointForm: React.FC<MonitoringPointFormProps> = ({
 
         <Select
           name="parameterId"
-          value={formData.parameterId.toString()}
+          value={formData.parameterId === '' ? '' : formData.parameterId.toString()}
           onChange={handleChange}
           options={parameterOptions}
           label={t('monitoringPoints.parameter')}
