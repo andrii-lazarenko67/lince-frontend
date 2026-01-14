@@ -53,9 +53,12 @@
         "description": "Lista de sistemas monitorados com detalhes"
       },
       "analyses": {
-        "title": "Análise de Monitoramento de Campo – Visão Geral",
-        "detailedTitle": "Análise de Monitoramento de Campo – Detalhada",
-        "description": "Registros diários e leituras de parâmetros"
+        "title": "Análises",
+        "description": "Registros diários e leituras de parâmetros",
+        "fieldOverviewTitle": "Análise de Monitoramento de Campo – Visão Geral",
+        "fieldDetailedTitle": "Análise de Monitoramento de Campo – Detalhada",
+        "laboratoryOverviewTitle": "Análise de Monitoramento Laboratorial – Visão Geral",
+        "laboratoryDetailedTitle": "Análise de Monitoramento Laboratorial – Detalhada"
       },
       "inspections": {
         "title": "Inspeções",

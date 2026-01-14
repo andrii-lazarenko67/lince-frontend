@@ -625,14 +625,60 @@ const formatRange = (min?: number, max?: number): string => {
   return `${minStr} – ${maxStr}`;
 };
 
-// Detailed Analysis sub-component - shows date x parameter matrix
-// Limited to last 7 days to prevent table overflow
+// Limit detailed analysis to last 7 days to prevent table overflow
 const MAX_DETAILED_DAYS = 7;
 
-const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
+// Overview Analysis sub-component - shows summary table
+// Now accepts filtered logs instead of using data.dailyLogs directly
+interface AnalysesViewProps extends BlockProps {
+  logs: ReportDailyLog[];
+}
+
+const AnalysesOverviewTable: React.FC<AnalysesViewProps> = ({ logs, block, styles, t }) => {
+  if (logs.length === 0) {
+    return <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>;
+  }
+
+  return (
+    <View style={styles.table}>
+      <View style={styles.tableHeader}>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.user')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.entries')}</Text>
+        {block.highlightAlerts && (
+          <Text style={styles.tableHeaderCell}>{t('reports.dailyLogs.alerts')}</Text>
+        )}
+      </View>
+      {logs.map((log, idx) => {
+        const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
+        return (
+          <View key={log.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+            <Text style={styles.tableCell}>{formatDate(log.date)}</Text>
+            <Text style={styles.tableCell}>{log.system?.name || log.stage?.name || '-'}</Text>
+            <Text style={styles.tableCell}>{log.user?.name || '-'}</Text>
+            <Text style={styles.tableCell}>{log.entries?.length || 0}</Text>
+            {block.highlightAlerts && (
+              <Text style={[styles.tableCell, outOfRange > 0 ? styles.tableCellAlert : {}]}>
+                {outOfRange}
+              </Text>
+            )}
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
+// Detailed Analysis table - accepts filtered logs
+const AnalysesDetailedTable: React.FC<AnalysesViewProps> = ({ logs, styles, t }) => {
   // Build unique dates sorted chronologically, take only last 7 days
-  const allDates = [...new Set(data.dailyLogs.map(log => log.date))].sort();
+  const allDates = [...new Set(logs.map(log => log.date))].sort();
   const uniqueDates = allDates.slice(-MAX_DETAILED_DAYS);
+
+  if (uniqueDates.length === 0) {
+    return <Text style={styles.textMuted}>{t('reports.pdf.noDetailedAnalyses')}</Text>;
+  }
 
   // Build unique monitoring points with their ranges
   const monitoringPointMap = new Map<number, {
@@ -653,8 +699,8 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
     mpName: string;
   }>();
 
-  data.dailyLogs
-    .filter(log => dateSet.has(log.date)) // Only include logs from last 7 days
+  logs
+    .filter(log => dateSet.has(log.date))
     .forEach(log => {
       log.entries?.forEach(entry => {
         if (entry.monitoringPoint) {
@@ -682,7 +728,11 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
 
   const monitoringPoints = Array.from(monitoringPointMap.values());
 
-  // Collect all observations (entries with notes and out-of-range)
+  if (monitoringPoints.length === 0) {
+    return <Text style={styles.textMuted}>{t('reports.pdf.noDetailedAnalyses')}</Text>;
+  }
+
+  // Collect observations
   const observations: Array<{ date: string; mpName: string; value: number | null; notes?: string; isOutOfRange?: boolean }> = [];
   valueMap.forEach((entry) => {
     if (entry.notes || entry.isOutOfRange) {
@@ -695,24 +745,11 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
       });
     }
   });
-
-  // Sort observations by date
   observations.sort((a, b) => a.date.localeCompare(b.date));
-
-  if (monitoringPoints.length === 0 || uniqueDates.length === 0) {
-    return <Text style={styles.textMuted}>{t('reports.pdf.noDetailedAnalyses')}</Text>;
-  }
-
-  // Dynamic column sizing based on number of dates
-  // A4 width ~515pt usable, parameter col needs ~140pt, range col ~70pt
-  // Remaining space distributed among date columns
-  const dateCount = uniqueDates.length;
 
   return (
     <View>
-      {/* Detailed Analysis Table */}
       <View style={styles.table}>
-        {/* Header row with dates */}
         <View style={styles.tableHeader}>
           <Text style={[styles.tableHeaderCell, { flex: 2.5, minWidth: 120 }]}>
             {t('reports.pdf.parameter')}
@@ -721,19 +758,12 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
             {t('reports.pdf.expectedRange')}
           </Text>
           {uniqueDates.map(date => (
-            <Text
-              key={date}
-              style={[
-                styles.tableHeaderCell,
-                { flex: 1, minWidth: dateCount > 7 ? 35 : 45, textAlign: 'center', fontSize: dateCount > 10 ? 7 : 8 }
-              ]}
-            >
+            <Text key={date} style={[styles.tableHeaderCell, { flex: 1, minWidth: 45, textAlign: 'center' }]}>
               {formatShortDate(date)}
             </Text>
           ))}
         </View>
 
-        {/* Data rows - one per monitoring point */}
         {monitoringPoints.map((mp, idx) => (
           <View key={mp.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
             <Text style={[styles.tableCell, { flex: 2.5, minWidth: 120 }]}>
@@ -751,7 +781,7 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
                   key={date}
                   style={[
                     styles.tableCell,
-                    { flex: 1, minWidth: dateCount > 7 ? 35 : 45, textAlign: 'center', fontSize: dateCount > 10 ? 7 : 8 },
+                    { flex: 1, minWidth: 45, textAlign: 'center' },
                     isOutOfRange ? styles.tableCellAlert : {}
                   ]}
                 >
@@ -763,7 +793,6 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
         ))}
       </View>
 
-      {/* Observations section */}
       {observations.length > 0 && (
         <View style={{ marginTop: 12 }}>
           <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 6 }]}>
@@ -790,60 +819,54 @@ const AnalysesDetailedView: React.FC<BlockProps> = ({ data, styles, t }) => {
   );
 };
 
-// Overview Analysis sub-component - shows summary table
-const AnalysesOverviewView: React.FC<BlockProps> = ({ data, block, styles, t }) => (
-  <View style={styles.table}>
-    <View style={styles.tableHeader}>
-      <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
-      <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
-      <Text style={styles.tableHeaderCell}>{t('reports.dailyLogs.type')}</Text>
-      <Text style={styles.tableHeaderCell}>{t('reports.pdf.user')}</Text>
-      <Text style={styles.tableHeaderCell}>{t('reports.pdf.entries')}</Text>
-      {block.highlightAlerts && (
-        <Text style={styles.tableHeaderCell}>{t('reports.dailyLogs.alerts')}</Text>
+const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+  // Split logs by recordType
+  const fieldLogs = data.dailyLogs.filter(log => log.recordType === 'field');
+  const laboratoryLogs = data.dailyLogs.filter(log => log.recordType === 'laboratory');
+
+  const hasFieldLogs = fieldLogs.length > 0;
+  const hasLaboratoryLogs = laboratoryLogs.length > 0;
+  const hasAnyLogs = data.dailyLogs.length > 0;
+
+  return (
+    <View>
+      {!hasAnyLogs ? (
+        <>
+          <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.title')}</Text>
+          <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>
+        </>
+      ) : (
+        <>
+          {/* Field Monitoring Analysis – Overview */}
+          <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldOverviewTitle')}</Text>
+          <AnalysesOverviewTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
+
+          {/* Field Monitoring Analysis – Detailed (if enabled) */}
+          {block.includeDetailedAnalysis && hasFieldLogs && (
+            <View style={{ marginTop: 15 }}>
+              <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldDetailedTitle')}</Text>
+              <AnalysesDetailedTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
+            </View>
+          )}
+
+          {/* Laboratory Monitoring Analysis – Overview */}
+          <View style={{ marginTop: 20 }}>
+            <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryOverviewTitle')}</Text>
+            <AnalysesOverviewTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
+          </View>
+
+          {/* Laboratory Monitoring Analysis – Detailed (if enabled) */}
+          {block.includeDetailedAnalysis && hasLaboratoryLogs && (
+            <View style={{ marginTop: 15 }}>
+              <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryDetailedTitle')}</Text>
+              <AnalysesDetailedTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
+            </View>
+          )}
+        </>
       )}
     </View>
-    {data.dailyLogs.map((log, idx) => {
-      const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
-      return (
-        <View key={log.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
-          <Text style={styles.tableCell}>{formatDate(log.date)}</Text>
-          <Text style={styles.tableCell}>{log.system?.name || log.stage?.name || '-'}</Text>
-          <Text style={styles.tableCell}>{log.recordType || '-'}</Text>
-          <Text style={styles.tableCell}>{log.user?.name || '-'}</Text>
-          <Text style={styles.tableCell}>{log.entries?.length || 0}</Text>
-          {block.highlightAlerts && (
-            <Text style={[styles.tableCell, outOfRange > 0 ? styles.tableCellAlert : {}]}>
-              {outOfRange}
-            </Text>
-          )}
-        </View>
-      );
-    })}
-  </View>
-);
-
-const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
-  <View>
-    {/* Overview Section */}
-    <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.title')}</Text>
-    {data.dailyLogs.length === 0 ? (
-      <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>
-    ) : (
-      <>
-        <AnalysesOverviewView data={data} block={block} styles={styles} t={t} />
-
-        {/* Detailed Section - only if enabled */}
-        {block.includeDetailedAnalysis && (
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.detailedTitle')}</Text>
-            <AnalysesDetailedView data={data} block={block} styles={styles} t={t} />
-          </View>
-        )}
-      </>
-    )}
-  </View>
-);
+  );
+};
 
 const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
   <View>

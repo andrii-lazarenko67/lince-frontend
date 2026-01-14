@@ -53,9 +53,12 @@
         "description": "List of monitored systems with details"
       },
       "analyses": {
-        "title": "Field Monitoring Analysis – Overview",
-        "detailedTitle": "Field Monitoring Analysis – Detailed",
-        "description": "Daily log entries and parameter readings"
+        "title": "Analyses",
+        "description": "Daily log entries and parameter readings",
+        "fieldOverviewTitle": "Field Monitoring Analysis – Overview",
+        "fieldDetailedTitle": "Field Monitoring Analysis – Detailed",
+        "laboratoryOverviewTitle": "Laboratory Monitoring Analysis – Overview",
+        "laboratoryDetailedTitle": "Laboratory Monitoring Analysis – Detailed"
       },
       "inspections": {
         "title": "Inspections",
