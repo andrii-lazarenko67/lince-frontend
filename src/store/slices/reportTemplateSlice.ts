@@ -150,6 +150,48 @@ export const duplicateReportTemplate = createAsyncThunk(
   }
 );
 
+export const uploadTemplateLogo = createAsyncThunk(
+  'reportTemplates/uploadLogo',
+  async ({ id, file }: { id: number; file: File }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const formData = new FormData();
+      formData.append('logo', file);
+      const response = await axiosInstance.post<{ success: boolean; data: ReportTemplate }>(
+        `/report-templates/${id}/logo`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to upload template logo'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
+export const deleteTemplateLogo = createAsyncThunk(
+  'reportTemplates/deleteLogo',
+  async (id: number, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.delete<{ success: boolean; data: ReportTemplate }>(
+        `/report-templates/${id}/logo`
+      );
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to delete template logo'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 const reportTemplateSlice = createSlice({
   name: 'reportTemplates',
   initialState,
@@ -239,6 +281,26 @@ const reportTemplateSlice = createSlice({
       // Duplicate template
       .addCase(duplicateReportTemplate.fulfilled, (state, action) => {
         state.templates.push(action.payload);
+      })
+      // Upload logo
+      .addCase(uploadTemplateLogo.fulfilled, (state, action) => {
+        const index = state.templates.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.templates[index] = action.payload;
+        }
+        if (state.currentTemplate?.id === action.payload.id) {
+          state.currentTemplate = action.payload;
+        }
+      })
+      // Delete logo
+      .addCase(deleteTemplateLogo.fulfilled, (state, action) => {
+        const index = state.templates.findIndex(t => t.id === action.payload.id);
+        if (index !== -1) {
+          state.templates[index] = action.payload;
+        }
+        if (state.currentTemplate?.id === action.payload.id) {
+          state.currentTemplate = action.payload;
+        }
       });
   }
 });

@@ -39,6 +39,7 @@ interface ReportPdfViewerProps {
   showPreviewButton?: boolean;
   showDownloadButton?: boolean;
   showUploadButton?: boolean;
+  templateLogo?: string | null;
 }
 
 export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
@@ -49,7 +50,8 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
   onUpload,
   showPreviewButton = true,
   showDownloadButton = true,
-  showUploadButton = true
+  showUploadButton = true,
+  templateLogo
 }) => {
   const { t } = useTranslation();
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -127,7 +129,8 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
     reportName,
     config,
     data: dataWithCharts,
-    t
+    t,
+    templateLogo
   };
 
   const handleOpenPreview = useCallback(() => {

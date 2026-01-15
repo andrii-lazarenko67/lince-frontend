@@ -153,6 +153,7 @@ export interface ReportPdfProps {
   config: ReportTemplateConfig;
   data: ReportData;
   t: (key: string, options?: Record<string, unknown>) => string;
+  templateLogo?: string | null;
 }
 
 // Create styles with dynamic primary color
@@ -1702,8 +1703,10 @@ const ReportHeader: React.FC<{
   branding: ReportBranding;
   client: ReportClient;
   styles: ReturnType<typeof createStyles>;
-}> = ({ branding, client, styles }) => {
-  const logoSrc = branding.showLogo ? client.logo : undefined;
+  templateLogo?: string | null;
+}> = ({ branding, client, styles, templateLogo }) => {
+  // Template logo takes priority over client logo
+  const logoSrc = branding.showLogo ? (templateLogo || client.logo) : undefined;
 
   return (
     <View style={styles.header}>
@@ -1733,7 +1736,8 @@ export const ReportPdfDocument: React.FC<ReportPdfProps> = ({
   reportName,
   config,
   data,
-  t
+  t,
+  templateLogo
 }) => {
   const { blocks, branding } = config;
   const primaryColor = branding.primaryColor || '#1976d2';
@@ -1777,7 +1781,7 @@ export const ReportPdfDocument: React.FC<ReportPdfProps> = ({
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <ReportHeader branding={branding} client={data.client} styles={styles} />
+        <ReportHeader branding={branding} client={data.client} styles={styles} templateLogo={templateLogo} />
 
         {enabledBlocks.map(block => (
           <View key={block.type} wrap={!noWrapBlocks.includes(block.type)}>

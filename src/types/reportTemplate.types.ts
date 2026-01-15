@@ -141,6 +141,7 @@ export interface ReportTemplate {
   clientId: number | null;
   name: string;
   description: string | null;
+  logo: string | null;
   type: ReportTemplateType;
   config: ReportTemplateConfig;
   isDefault: boolean;

@@ -122,6 +122,37 @@ export const downloadReportPdf = createAsyncThunk(
   }
 );
 
+export const downloadReportWord = createAsyncThunk(
+  'generatedReports/downloadWord',
+  async ({ id, reportName }: { id: number; reportName: string }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.get(`/generated-reports/${id}/download-word`, {
+        responseType: 'blob'
+      });
+
+      // Create blob and download
+      const blob = new Blob([response.data as BlobPart], {
+        type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${reportName.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      return { success: true };
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to download Word document'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 export const deleteGeneratedReport = createAsyncThunk(
   'generatedReports/delete',
   async (id: number, { dispatch, rejectWithValue }) => {

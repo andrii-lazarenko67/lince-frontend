@@ -31,8 +31,11 @@
         "notFound": "Modelo não encontrado",
         "nameRequired": "Nome do modelo é obrigatório",
         "cannotEditGlobal": "Não é possível editar modelos globais",
-        "cannotDeleteGlobal": "Não é possível excluir modelos globais"
+        "cannotDeleteGlobal": "Não é possível excluir modelos globais",
+        "noFile": "Nenhum arquivo fornecido"
       },
+      "logoUploaded": "Logo enviado com sucesso",
+      "logoDeleted": "Logo removido com sucesso",
       "created": "Modelo criado com sucesso",
       "updatedSuccess": "Modelo atualizado com sucesso",
       "deleted": "Modelo excluído com sucesso",
@@ -106,7 +109,12 @@
       }
     },
     "branding": {
-      "showLogo": "Mostrar logo",
+      "templateLogo": "Logo do Modelo",
+      "noLogo": "Sem logo",
+      "uploadLogo": "Enviar Logo",
+      "removeLogo": "Remover Logo",
+      "logoHelp": "Envie um logo para usar neste modelo. Este logo aparecerá nos relatórios gerados no lugar do logo do cliente.",
+      "showLogo": "Mostrar logo no relatório",
       "logoPosition": "Posição do logo",
       "left": "Esquerda",
       "center": "Centro",
@@ -213,6 +221,7 @@
       "by": "por",
       "pdf": "PDF",
       "downloadPdf": "Baixar PDF",
+      "downloadWord": "Baixar Word (.docx)",
       "noPdf": "PDF não disponível",
       "download": "Baixar",
       "empty": "Nenhum relatório gerado ainda",

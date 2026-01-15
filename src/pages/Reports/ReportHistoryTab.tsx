@@ -29,19 +29,20 @@ import {
   Tooltip
 } from '@mui/material';
 import {
-  Download as DownloadIcon,
   Delete as DeleteIcon,
   MoreVert as MoreIcon,
   FilterList as FilterIcon,
   Refresh as RefreshIcon,
   PictureAsPdf as PdfIcon,
-  CloudOff as NoPdfIcon
+  CloudOff as NoPdfIcon,
+  Description as WordIcon
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchGeneratedReports,
   deleteGeneratedReport,
-  downloadReportPdf
+  downloadReportPdf,
+  downloadReportWord
 } from '../../store/slices/generatedReportSlice';
 import type { GeneratedReport } from '../../types';
 
@@ -100,6 +101,16 @@ const ReportHistoryTab: React.FC = () => {
     if (downloadReportPdf.fulfilled.match(result) && result.payload.url) {
       window.open(result.payload.url, '_blank');
     }
+  };
+
+  const handleDownloadWord = async () => {
+    if (!selectedReport) return;
+    handleMenuClose();
+
+    await dispatch(downloadReportWord({
+      id: selectedReport.id,
+      reportName: selectedReport.name
+    }));
   };
 
   const handleDeleteClick = () => {
@@ -218,7 +229,7 @@ const ReportHistoryTab: React.FC = () => {
               <TableCell>{t('reports.history.template')}</TableCell>
               <TableCell>{t('reports.history.systems')}</TableCell>
               <TableCell>{t('reports.history.generatedAt')}</TableCell>
-              <TableCell>{t('reports.history.pdf')}</TableCell>
+              <TableCell>{t('reports.history.download')}</TableCell>
               <TableCell align="right">{t('common.actions')}</TableCell>
             </TableRow>
           </TableHead>
@@ -262,21 +273,34 @@ const ReportHistoryTab: React.FC = () => {
                   )}
                 </TableCell>
                 <TableCell>
-                  {report.pdfUrl ? (
-                    <Tooltip title={t('reports.history.downloadPdf')}>
+                  <Box sx={{ display: 'flex', gap: 0.5 }}>
+                    {report.pdfUrl ? (
+                      <Tooltip title={t('reports.history.downloadPdf')}>
+                        <IconButton
+                          size="small"
+                          color="primary"
+                          onClick={() => window.open(report.pdfUrl!, '_blank')}
+                        >
+                          <PdfIcon />
+                        </IconButton>
+                      </Tooltip>
+                    ) : (
+                      <Tooltip title={t('reports.history.noPdf')}>
+                        <IconButton size="small" disabled>
+                          <NoPdfIcon color="disabled" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    <Tooltip title={t('reports.history.downloadWord')}>
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => window.open(report.pdfUrl!, '_blank')}
+                        onClick={() => dispatch(downloadReportWord({ id: report.id, reportName: report.name }))}
                       >
-                        <PdfIcon />
+                        <WordIcon />
                       </IconButton>
                     </Tooltip>
-                  ) : (
-                    <Tooltip title={t('reports.history.noPdf')}>
-                      <NoPdfIcon color="disabled" />
-                    </Tooltip>
-                  )}
+                  </Box>
                 </TableCell>
                 <TableCell align="right">
                   <IconButton
@@ -322,11 +346,17 @@ const ReportHistoryTab: React.FC = () => {
         {selectedReport?.pdfUrl && (
           <MenuItem onClick={handleDownload}>
             <ListItemIcon>
-              <DownloadIcon fontSize="small" />
+              <PdfIcon fontSize="small" />
             </ListItemIcon>
-            <ListItemText>{t('reports.history.download')}</ListItemText>
+            <ListItemText>{t('reports.history.downloadPdf')}</ListItemText>
           </MenuItem>
         )}
+        <MenuItem onClick={handleDownloadWord}>
+          <ListItemIcon>
+            <WordIcon fontSize="small" color="primary" />
+          </ListItemIcon>
+          <ListItemText>{t('reports.history.downloadWord')}</ListItemText>
+        </MenuItem>
         <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
           <ListItemIcon>
             <DeleteIcon fontSize="small" color="error" />

@@ -27,7 +27,9 @@ import {
   ListItem,
   ListItemText,
   ListItemIcon,
-  Divider
+  Divider,
+  Tooltip,
+  IconButton
 } from '@mui/material';
 import {
   Description as TemplateIcon,
@@ -37,12 +39,13 @@ import {
   PictureAsPdf as PdfIcon,
   CheckCircle as CheckIcon,
   AutoAwesome as AiIcon,
-  Edit as EditIcon
+  Edit as EditIcon,
+  Description as WordIcon
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchReportTemplates, fetchDefaultTemplate } from '../../store/slices/reportTemplateSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { generateReport, uploadReportPdf } from '../../store/slices/generatedReportSlice';
+import { generateReport, uploadReportPdf, downloadReportWord } from '../../store/slices/generatedReportSlice';
 import { ReportPdfViewer } from '../../components/reports/pdf';
 import type { ReportData } from '../../components/reports/pdf';
 import type { ReportTemplate, GeneratedReportPeriod } from '../../types';
@@ -69,6 +72,7 @@ const ReportGeneratorTab: React.FC = () => {
   const [includeCharts, setIncludeCharts] = useState(true);
   const [generationComplete, setGenerationComplete] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [downloadingWord, setDownloadingWord] = useState(false);
   const [conclusionText, setConclusionText] = useState('');
   const [generatingConclusion, setGeneratingConclusion] = useState(false);
   const [signatureName, setSignatureName] = useState('');
@@ -228,6 +232,21 @@ const ReportGeneratorTab: React.FC = () => {
       await dispatch(uploadReportPdf({ id: currentReport.id, pdfBlob }));
     } finally {
       setUploading(false);
+    }
+  }, [currentReport, dispatch]);
+
+  // Handle Word document download
+  const handleDownloadWord = useCallback(async () => {
+    if (!currentReport) return;
+
+    setDownloadingWord(true);
+    try {
+      await dispatch(downloadReportWord({
+        id: currentReport.id,
+        reportName: currentReport.name
+      }));
+    } finally {
+      setDownloadingWord(false);
     }
   }, [currentReport, dispatch]);
 
@@ -941,7 +960,18 @@ const ReportGeneratorTab: React.FC = () => {
                     showPreviewButton
                     showDownloadButton
                     showUploadButton={!currentReport.pdfUrl}
+                    templateLogo={getSelectedTemplate()?.logo}
                   />
+                  {/* Word Document Download Button */}
+                  <Tooltip title={t('reports.history.downloadWord')}>
+                    <IconButton
+                      color="primary"
+                      onClick={handleDownloadWord}
+                      disabled={downloadingWord}
+                    >
+                      {downloadingWord ? <CircularProgress size={20} /> : <WordIcon />}
+                    </IconButton>
+                  </Tooltip>
                   {uploading && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <CircularProgress size={20} />

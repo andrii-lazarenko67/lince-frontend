@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -23,7 +23,8 @@ import {
   AccordionSummary,
   AccordionDetails,
   Tooltip,
-  Chip
+  Chip,
+  CircularProgress
 } from '@mui/material';
 import {
   DragHandle as DragIcon,
@@ -32,10 +33,12 @@ import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
   ArrowUpward as MoveUpIcon,
-  ArrowDownward as MoveDownIcon
+  ArrowDownward as MoveDownIcon,
+  CloudUpload as UploadIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import { useAppDispatch } from '../../hooks';
-import { updateReportTemplate } from '../../store/slices/reportTemplateSlice';
+import { updateReportTemplate, uploadTemplateLogo, deleteTemplateLogo } from '../../store/slices/reportTemplateSlice';
 import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType, ChartConfig, OccurrenceCriticalityFilter } from '../../types';
 import { DEFAULT_CHART_CONFIG } from '../../types';
 import ChartConfigPanel from '../../components/reports/ChartConfigPanel';
@@ -70,6 +73,7 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
 
   const [name, setName] = useState(template.name);
   const [description, setDescription] = useState(template.description || '');
+  const [logo, setLogo] = useState<string | null>(template.logo);
   const [blocks, setBlocks] = useState<ReportBlock[]>(template.config?.blocks || []);
   const [branding, setBranding] = useState<ReportBranding>(template.config?.branding || {
     showLogo: true,
@@ -81,7 +85,9 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
     footerText: 'Page {page} of {pages}'
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | false>('blocks');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleBlockToggle = useCallback((blockType: ReportBlockType) => {
     setBlocks(prev => prev.map(block =>
@@ -118,6 +124,37 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
   const handleBrandingChange = useCallback((field: keyof ReportBranding, value: string | boolean) => {
     setBranding(prev => ({ ...prev, [field]: value }));
   }, []);
+
+  const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setIsUploadingLogo(true);
+    try {
+      const result = await dispatch(uploadTemplateLogo({ id: template.id, file }));
+      if (uploadTemplateLogo.fulfilled.match(result)) {
+        setLogo(result.payload.logo);
+      }
+    } finally {
+      setIsUploadingLogo(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleLogoDelete = async () => {
+    setIsUploadingLogo(true);
+    try {
+      const result = await dispatch(deleteTemplateLogo(template.id));
+      if (deleteTemplateLogo.fulfilled.match(result)) {
+        setLogo(null);
+      }
+    } finally {
+      setIsUploadingLogo(false);
+    }
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -525,6 +562,86 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
           </AccordionSummary>
           <AccordionDetails>
             <Grid container spacing={3}>
+              {/* Template Logo Section */}
+              <Grid item xs={12}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  {t('reports.branding.templateLogo')}
+                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                  {logo ? (
+                    <Box
+                      component="img"
+                      src={logo}
+                      alt="Template logo"
+                      sx={{
+                        width: 100,
+                        height: 100,
+                        objectFit: 'contain',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        borderRadius: 1,
+                        bgcolor: 'background.paper'
+                      }}
+                    />
+                  ) : (
+                    <Box
+                      sx={{
+                        width: 100,
+                        height: 100,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px dashed',
+                        borderColor: 'divider',
+                        borderRadius: 1,
+                        bgcolor: 'action.hover'
+                      }}
+                    >
+                      <Typography variant="caption" color="text.secondary">
+                        {t('reports.branding.noLogo')}
+                      </Typography>
+                    </Box>
+                  )}
+                  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      style={{ display: 'none' }}
+                      onChange={handleLogoUpload}
+                    />
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={isUploadingLogo ? <CircularProgress size={16} /> : <UploadIcon />}
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploadingLogo}
+                    >
+                      {t('reports.branding.uploadLogo')}
+                    </Button>
+                    {logo && (
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="error"
+                        startIcon={isUploadingLogo ? <CircularProgress size={16} /> : <DeleteIcon />}
+                        onClick={handleLogoDelete}
+                        disabled={isUploadingLogo}
+                      >
+                        {t('reports.branding.removeLogo')}
+                      </Button>
+                    )}
+                  </Box>
+                </Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 1 }}>
+                  {t('reports.branding.logoHelp')}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={12}>
+                <Divider />
+              </Grid>
+
               <Grid item xs={12} sm={6}>
                 <FormControlLabel
                   control={

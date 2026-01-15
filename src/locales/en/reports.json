@@ -31,8 +31,11 @@
         "notFound": "Template not found",
         "nameRequired": "Template name is required",
         "cannotEditGlobal": "Cannot edit global templates",
-        "cannotDeleteGlobal": "Cannot delete global templates"
+        "cannotDeleteGlobal": "Cannot delete global templates",
+        "noFile": "No file provided"
       },
+      "logoUploaded": "Logo uploaded successfully",
+      "logoDeleted": "Logo removed successfully",
       "created": "Template created successfully",
       "updatedSuccess": "Template updated successfully",
       "deleted": "Template deleted successfully",
@@ -106,7 +109,12 @@
       }
     },
     "branding": {
-      "showLogo": "Show logo",
+      "templateLogo": "Template Logo",
+      "noLogo": "No logo",
+      "uploadLogo": "Upload Logo",
+      "removeLogo": "Remove Logo",
+      "logoHelp": "Upload a logo to use in this template. This logo will appear in generated reports instead of the client logo.",
+      "showLogo": "Show logo in report",
       "logoPosition": "Logo position",
       "left": "Left",
       "center": "Center",
@@ -213,6 +221,7 @@
       "by": "by",
       "pdf": "PDF",
       "downloadPdf": "Download PDF",
+      "downloadWord": "Download Word (.docx)",
       "noPdf": "PDF not available",
       "download": "Download",
       "empty": "No reports generated yet",
