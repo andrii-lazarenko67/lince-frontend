@@ -59,6 +59,29 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
+export interface FetchUsersParams {
+  page?: number;
+  limit?: number;
+  role?: string;
+  isActive?: boolean;
+  search?: string;
+}
+
+export interface UserPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface UserState {
+  users: User[];
+  currentUser: User | null;
+  pagination: UserPagination;
+  loading: boolean;
+  error: string | null;
+}
+
 export interface AuthState {
   user: User | null;
   token: string | null;

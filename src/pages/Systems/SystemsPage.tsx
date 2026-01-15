@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from '../../hooks';
-import { fetchSystems } from '../../store/slices/systemSlice';
+import { useAppSelector } from '../../hooks';
 import { Card, Button, ExportDropdown, ViewModeToggle } from '../../components/common';
 import SystemsList from "./SystemsList";
 import SystemForm from "./SystemForm";
@@ -10,15 +9,9 @@ import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 
 const SystemsPage: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch = useAppDispatch();
-  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchSystems({}));
-  }, [dispatch, selectedClientId]);
 
   const getStatusLabel = (status: string) => {
     switch (status) {

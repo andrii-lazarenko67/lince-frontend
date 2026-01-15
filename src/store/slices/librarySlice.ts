@@ -1,26 +1,40 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Document, LibraryState, CreateDocumentRequest, UpdateDocumentRequest } from '../../types';
+import type { Document, LibraryState, CreateDocumentRequest, UpdateDocumentRequest, FetchDocumentsParams, LibraryPagination } from '../../types';
 import { setLoading } from './uiSlice';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
+
+interface FetchDocumentsResponse {
+  success: boolean;
+  data: Document[];
+  pagination: LibraryPagination;
+}
 
 const initialState: LibraryState = {
   documents: [],
   currentDocument: null,
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
 export const fetchDocuments = createAsyncThunk(
   'library/fetchAll',
-  async (params: { category?: string; systemId?: number; search?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchDocumentsParams = {}, { rejectWithValue }) => {
     try {
-      dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: Document[] }>('/library', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchDocumentsResponse>('/library', { params });
+      return {
+        documents: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       const err = error as { response?: { data?: { message?: string } } };
       return rejectWithValue(err.response?.data?.message || 'Failed to fetch documents');
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 );
@@ -148,9 +162,20 @@ const librarySlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDocuments.fulfilled, (state, action) => {
-        state.documents = action.payload;
+      // fetchDocuments
+      .addCase(fetchDocuments.pending, (state) => {
+        state.loading = true;
         state.error = null;
+      })
+      .addCase(fetchDocuments.fulfilled, (state, action) => {
+        state.documents = action.payload.documents;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(fetchDocuments.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchDocumentById.fulfilled, (state, action) => {
         state.currentDocument = action.payload;
@@ -158,6 +183,7 @@ const librarySlice = createSlice({
       })
       .addCase(uploadDocument.fulfilled, (state, action) => {
         state.documents.unshift(action.payload);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
         state.error = null;
       })
       .addCase(updateDocument.fulfilled, (state, action) => {
@@ -182,6 +208,7 @@ const librarySlice = createSlice({
       })
       .addCase(deleteDocument.fulfilled, (state, action) => {
         state.documents = state.documents.filter(d => d.id !== action.payload);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       })
       .addCase(searchDocuments.fulfilled, (state, action) => {

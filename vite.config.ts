@@ -16,7 +16,33 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
-    sourcemap: false
+    sourcemap: false,
+    // Target modern browsers for smaller bundles
+    target: 'es2020',
+    // Split CSS per chunk for better caching
+    cssCodeSplit: true,
+    // Increase warning limit for legitimate large vendor chunks
+    chunkSizeWarningLimit: 600,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Core React libraries
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          // MUI core
+          'vendor-mui': ['@mui/material', '@emotion/react', '@emotion/styled'],
+          // MUI icons (large package)
+          'vendor-mui-icons': ['@mui/icons-material'],
+          // State management
+          'vendor-redux': ['@reduxjs/toolkit', 'react-redux'],
+          // Charts - only loaded on pages with charts
+          'vendor-charts': ['chart.js', 'react-chartjs-2'],
+          // PDF renderer (heavy) - only loaded on Reports page
+          'vendor-pdf': ['@react-pdf/renderer', 'buffer'],
+          // i18n
+          'vendor-i18n': ['i18next', 'react-i18next'],
+        }
+      }
+    }
   },
   define: {
     // Polyfill for @react-pdf/renderer which uses Buffer

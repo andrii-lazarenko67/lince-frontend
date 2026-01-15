@@ -1,4 +1,5 @@
 export { default as GlobalLoader } from './GlobalLoader';
+export { default as PageLoader } from './PageLoader';
 export { default as Button } from './Button';
 export { default as Input } from './Input';
 export { default as DateInput } from './DateInput';
@@ -14,3 +15,4 @@ export { default as Checkbox } from './Checkbox';
 export { default as StatCard } from './StatCard';
 export { default as ExportDropdown } from './ExportDropdown';
 export { default as ViewModeToggle } from './ViewModeToggle';
+export { default as PaginatedTable } from './PaginatedTable';

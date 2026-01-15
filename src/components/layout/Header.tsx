@@ -113,18 +113,20 @@ const Header: React.FC = () => {
             </Badge>
           </IconButton>
 
-          {/* Settings */}
-          <IconButton
-            onClick={goToSettings}
-            sx={{
-              color: 'white',
-              '&:hover': {
-                bgcolor: 'rgba(255, 255, 255, 0.2)'
-              }
-            }}
-          >
-            <SettingsIcon />
-          </IconButton>
+          {/* Settings - Admin only */}
+          {user?.role === 'admin' && (
+            <IconButton
+              onClick={goToSettings}
+              sx={{
+                color: 'white',
+                '&:hover': {
+                  bgcolor: 'rgba(255, 255, 255, 0.2)'
+                }
+              }}
+            >
+              <SettingsIcon />
+            </IconButton>
+          )}
 
           {/* Logout */}
           <IconButton

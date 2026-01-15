@@ -1,24 +1,41 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest, AssignableUser } from '../../types';
+import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest, AssignableUser, FetchIncidentsParams, IncidentPagination } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
+
+interface FetchIncidentsResponse {
+  success: boolean;
+  data: Incident[];
+  pagination: IncidentPagination;
+}
 
 const initialState: IncidentState = {
   incidents: [],
   currentIncident: null,
   assignableUsers: [],
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
 export const fetchIncidents = createAsyncThunk(
   'incidents/fetchAll',
-  async (params: { systemId?: number; stageId?: number; status?: string; priority?: string; startDate?: string; endDate?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchIncidentsParams = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: Incident[] }>('/incidents', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchIncidentsResponse>('/incidents', { params });
+      return {
+        incidents: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch incidents'));
     } finally {
@@ -211,9 +228,19 @@ const incidentSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIncidents.fulfilled, (state, action) => {
-        state.incidents = action.payload;
+      .addCase(fetchIncidents.pending, (state) => {
+        state.loading = true;
         state.error = null;
+      })
+      .addCase(fetchIncidents.fulfilled, (state, action) => {
+        state.incidents = action.payload.incidents;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(fetchIncidents.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchIncidentById.fulfilled, (state, action) => {
         state.currentIncident = action.payload;
@@ -221,6 +248,7 @@ const incidentSlice = createSlice({
       })
       .addCase(createIncident.fulfilled, (state, action) => {
         state.incidents.unshift(action.payload);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
         state.error = null;
       })
       .addCase(updateIncident.fulfilled, (state, action) => {
@@ -264,6 +292,7 @@ const incidentSlice = createSlice({
       })
       .addCase(deleteIncident.fulfilled, (state, action) => {
         state.incidents = state.incidents.filter(i => i.id !== action.payload);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       })
       .addCase(addIncidentPhotos.fulfilled, (state, action) => {

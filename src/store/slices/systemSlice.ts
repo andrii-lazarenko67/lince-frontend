@@ -1,26 +1,40 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { System, SystemState, CreateSystemRequest, UpdateSystemRequest } from '../../types';
+import type { System, SystemState, CreateSystemRequest, UpdateSystemRequest, FetchSystemsParams, SystemPagination } from '../../types';
 import { setLoading } from './uiSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
+
+interface FetchSystemsResponse {
+  success: boolean;
+  data: System[];
+  pagination: SystemPagination;
+}
 
 const initialState: SystemState = {
   systems: [],
   currentSystem: null,
+  pagination: {
+    page: 1,
+    limit: 100,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
 export const fetchSystems = createAsyncThunk(
   'systems/fetchAll',
-  async (params: { status?: string; systemTypeId?: string; search?: string; parentId?: string | number | null } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchSystemsParams = {}, { rejectWithValue }) => {
     try {
-      dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: System[] }>('/systems', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchSystemsResponse>('/systems', { params });
+      return {
+        systems: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch systems'));
-    } finally {
-      dispatch(setLoading(false));
     }
   }
 );
@@ -103,11 +117,19 @@ const systemSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // fetchSystems
+      .addCase(fetchSystems.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(fetchSystems.fulfilled, (state, action) => {
-        state.systems = action.payload;
+        state.systems = action.payload.systems;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
         state.error = null;
       })
       .addCase(fetchSystems.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload as string;
       })
       .addCase(fetchSystemById.fulfilled, (state, action) => {
@@ -117,6 +139,7 @@ const systemSlice = createSlice({
       .addCase(createSystem.fulfilled, (state, action) => {
         const newSystem = action.payload;
         state.systems.push(newSystem);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
 
         // If this system has a parent, update the parent's children array
         if (newSystem.parentId) {
@@ -213,6 +236,7 @@ const systemSlice = createSlice({
 
         // Remove the system from the systems array
         state.systems = state.systems.filter(s => s.id !== deletedId);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       })
       .addCase(deleteSystem.rejected, (state, action) => {

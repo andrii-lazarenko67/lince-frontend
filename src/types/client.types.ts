@@ -66,11 +66,26 @@ export interface ClientStats {
   products: number;
 }
 
+export interface ClientPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface FetchClientsParams {
+  search?: string;
+  isActive?: boolean;
+  page?: number;
+  limit?: number;
+}
+
 export interface ClientState {
   clients: Client[];
   currentClient: Client | null;
   currentClientStats: ClientStats | null;
   selectedClientId: number | null;
+  pagination: ClientPagination;
   loading: boolean;
   error: string | null;
 }

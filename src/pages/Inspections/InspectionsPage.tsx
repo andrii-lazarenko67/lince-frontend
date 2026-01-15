@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
+import { useAppDispatch, useAppSelector, useAppNavigation, usePagination } from '../../hooks';
 import { fetchInspections } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, DateInput, ExportDropdown, ViewModeToggle } from '../../components/common';
-import InspectionsList from "./InspectionsList"
+import { Card, Button, Select, DateInput, ExportDropdown, ViewModeToggle, PaginatedTable, Badge } from '../../components/common';
 import InspectionsChartView from './InspectionsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
+import type { Inspection } from '../../types';
 
 const InspectionsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
-  const { inspections } = useAppSelector((state) => state.inspections);
-  const { goToNewInspection } = useAppNavigation();
+  const { inspections, pagination, loading } = useAppSelector((state) => state.inspections);
+  const { goToNewInspection, goToInspectionDetail } = useAppNavigation();
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
@@ -25,24 +25,47 @@ const InspectionsPage: React.FC = () => {
     endDate: ''
   });
 
-  useEffect(() => {
-    dispatch(fetchSystems({ parentId: 'null' }));
-    dispatch(fetchInspections({}));
-  }, [dispatch, selectedClientId]);
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    resetPage
+  } = usePagination();
 
-  const handleApplyFilters = () => {
+  // Load inspections with current pagination and filters
+  const loadInspections = useCallback(() => {
     dispatch(fetchInspections({
+      page: apiPage,
+      limit: apiLimit,
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
       stageId: filters.stageId ? Number(filters.stageId) : undefined,
       status: filters.status || undefined,
       startDate: filters.startDate || undefined,
       endDate: filters.endDate || undefined
     }));
+  }, [dispatch, apiPage, apiLimit, filters]);
+
+  // Initial load and when pagination/filters change
+  useEffect(() => {
+    loadInspections();
+  }, [loadInspections]);
+
+  // Load systems once
+  useEffect(() => {
+    dispatch(fetchSystems({ parentId: 'null' }));
+  }, [dispatch, selectedClientId]);
+
+  const handleApplyFilters = () => {
+    resetPage();
   };
 
   const handleClearFilters = () => {
     setFilters({ systemId: '', stageId: '', status: '', startDate: '', endDate: '' });
-    dispatch(fetchInspections({}));
+    resetPage();
   };
 
   const getExportData = () => {
@@ -118,6 +141,73 @@ const InspectionsPage: React.FC = () => {
     { value: 'pending', label: t('inspections.filters.pending') },
     // { value: 'completed', label: t('inspections.filters.completed') },
     { value: 'viewed', label: t('inspections.filters.viewed') }
+  ];
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Badge variant="warning">{t('inspections.status.pending')}</Badge>;
+      case 'viewed':
+        return <Badge variant="success">{t('inspections.status.viewed')}</Badge>;
+      case 'completed':
+        return <Badge variant="danger">{t('inspections.status.completed')}</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
+  };
+
+  const columns = [
+    {
+      key: 'date',
+      header: t('inspections.list.date'),
+      render: (inspection: Inspection) => (
+        <span className="font-medium text-gray-900">
+          {new Date(inspection.date).toLocaleDateString()}
+        </span>
+      )
+    },
+    {
+      key: 'system',
+      header: t('inspections.list.system'),
+      render: (inspection: Inspection) => inspection.system?.name || '-'
+    },
+    {
+      key: 'stage',
+      header: t('inspections.list.stage'),
+      render: (inspection: Inspection) => inspection.stage?.name || '-'
+    },
+    {
+      key: 'user',
+      header: t('inspections.list.inspector'),
+      render: (inspection: Inspection) => inspection.user?.name || '-'
+    },
+    {
+      key: 'status',
+      header: t('inspections.list.status'),
+      render: (inspection: Inspection) => getStatusBadge(inspection.status)
+    },
+    {
+      key: 'items',
+      header: t('inspections.list.items'),
+      render: (inspection: Inspection) => {
+        const total = inspection.items?.length || 0;
+        const conforme = inspection.items?.filter(i => i.status === 'C').length || 0;
+        const noConforme = inspection.items?.filter(i => i.status === 'NC').length || 0;
+        return (
+          <div className="flex items-center space-x-2">
+            <span>{conforme}/{total} {t('inspections.list.conforme')}</span>
+            {noConforme > 0 && (
+              <Badge variant="danger">{noConforme} {t('inspections.list.nc')}</Badge>
+            )}
+          </div>
+        );
+      }
+    },
+    {
+      key: 'createdAt',
+      header: t('inspections.list.created'),
+      render: (inspection: Inspection) => new Date(inspection.createdAt).toLocaleString()
+    }
   ];
 
   return (
@@ -213,7 +303,19 @@ const InspectionsPage: React.FC = () => {
           </div>
 
           <Card noPadding>
-            <InspectionsList />
+            <PaginatedTable
+              columns={columns}
+              data={inspections}
+              keyExtractor={(inspection: Inspection) => inspection.id}
+              onRowClick={(inspection: Inspection) => goToInspectionDetail(inspection.id)}
+              emptyMessage={t('inspections.list.emptyMessage')}
+              loading={loading}
+              pagination={pagination}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Card>
         </>
       ) : (

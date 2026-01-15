@@ -18,3 +18,4 @@ export type * from './systemPhoto.types';
 export type * from './client.types';
 export type * from './reportTemplate.types';
 export { DEFAULT_CHART_CONFIG } from './reportTemplate.types';
+export * from './pagination.types';

@@ -3,7 +3,13 @@
  * Provides preview and download functionality for PDF reports
  */
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
+import { Buffer } from 'buffer';
 import { PDFViewer, PDFDownloadLink, pdf } from '@react-pdf/renderer';
+
+// Polyfill Buffer for @react-pdf/renderer - only loaded when PDF is used
+if (typeof window !== 'undefined' && !window.Buffer) {
+  window.Buffer = Buffer;
+}
 import {
   Box,
   Button,

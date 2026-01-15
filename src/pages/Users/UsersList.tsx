@@ -1,16 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector, usePagination } from '../../hooks';
 import { fetchUsers, createUser, updateUser, deleteUser, uploadUserAvatar } from '../../store/slices/userSlice';
-import { Card, Button, Table, Badge, Modal, Input, Select } from '../../components/common';
+import { Card, Button, Badge, Modal, Input, Select, PaginatedTable } from '../../components/common';
 import { CameraAlt } from '@mui/icons-material';
 import type { User, CreateUserRequest } from '../../types';
 
 const UsersList: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { users } = useAppSelector((state) => state.users);
+  const { users, pagination, loading: storeLoading } = useAppSelector((state) => state.users);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage
+  } = usePagination();
 
   const [loading, setLoading] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -27,9 +37,15 @@ const UsersList: React.FC = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Load users with current pagination
+  const loadUsers = useCallback(() => {
+    dispatch(fetchUsers({ page: apiPage, limit: apiLimit }));
+  }, [dispatch, apiPage, apiLimit]);
+
+  // Initial load and when pagination changes
   useEffect(() => {
-    dispatch(fetchUsers({}));
-  }, [dispatch]);
+    loadUsers();
+  }, [loadUsers]);
 
   const handleOpenForm = (user?: User) => {
     if (user) {
@@ -273,18 +289,18 @@ const UsersList: React.FC = () => {
           </Button>
         }
       >
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        ) : (
-          <Table
-            columns={columns}
-            data={users}
-            keyExtractor={(user) => user.id}
-            emptyMessage={t('users.list.emptyMessage')}
-          />
-        )}
+        <PaginatedTable
+          columns={columns}
+          data={users}
+          keyExtractor={(user: User) => user.id}
+          emptyMessage={t('users.list.emptyMessage')}
+          loading={storeLoading || loading}
+          pagination={pagination}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
       </Card>
 
       {/* Create/Edit Modal */}

@@ -4,6 +4,8 @@ import type {
   Client,
   ClientState,
   ClientStats,
+  ClientPagination,
+  FetchClientsParams,
   CreateClientRequest,
   UpdateClientRequest,
   UserClient,
@@ -19,17 +21,41 @@ const initialState: ClientState = {
   currentClient: null,
   currentClientStats: null,
   selectedClientId: null,
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
   loading: false,
   error: null
 };
 
+interface FetchClientsResponse {
+  success: boolean;
+  data: Client[];
+  pagination: ClientPagination;
+}
+
 export const fetchClients = createAsyncThunk(
   'clients/fetchAll',
-  async (_, { dispatch, rejectWithValue }) => {
+  async (params: FetchClientsParams = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: Client[] }>('/clients');
-      return response.data.data;
+      const queryParams = new URLSearchParams();
+      if (params.search) queryParams.append('search', params.search);
+      if (params.isActive !== undefined) queryParams.append('isActive', String(params.isActive));
+      if (params.page) queryParams.append('page', String(params.page));
+      if (params.limit) queryParams.append('limit', String(params.limit));
+
+      const queryString = queryParams.toString();
+      const url = queryString ? `/clients?${queryString}` : '/clients';
+
+      const response = await axiosInstance.get<FetchClientsResponse>(url);
+      return {
+        clients: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch clients'));
     } finally {
@@ -287,7 +313,8 @@ const clientSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchClients.fulfilled, (state, action) => {
-        state.clients = action.payload;
+        state.clients = action.payload.clients;
+        state.pagination = action.payload.pagination;
         state.loading = false;
       })
       .addCase(fetchClients.rejected, (state, action) => {
@@ -310,6 +337,8 @@ const clientSlice = createSlice({
       // Create client
       .addCase(createClient.fulfilled, (state, action) => {
         state.clients.push(action.payload);
+        state.pagination.total += 1;
+        state.pagination.totalPages = Math.ceil(state.pagination.total / state.pagination.limit);
       })
       // Update client
       .addCase(updateClient.fulfilled, (state, action) => {
@@ -324,6 +353,8 @@ const clientSlice = createSlice({
       // Delete client
       .addCase(deleteClient.fulfilled, (state, action) => {
         state.clients = state.clients.filter(c => c.id !== action.payload);
+        state.pagination.total = Math.max(0, state.pagination.total - 1);
+        state.pagination.totalPages = Math.ceil(state.pagination.total / state.pagination.limit);
         if (state.selectedClientId === action.payload) {
           state.selectedClientId = null;
           localStorage.removeItem('selectedClientId');

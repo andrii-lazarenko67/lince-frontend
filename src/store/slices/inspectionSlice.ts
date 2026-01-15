@@ -1,24 +1,41 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest } from '../../types';
+import type { Inspection, InspectionState, ChecklistItem, CreateInspectionRequest, UpdateInspectionRequest, FetchInspectionsParams, InspectionPagination } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
+
+interface FetchInspectionsResponse {
+  success: boolean;
+  data: Inspection[];
+  pagination: InspectionPagination;
+}
 
 const initialState: InspectionState = {
   inspections: [],
   currentInspection: null,
   checklistItems: [],
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
 export const fetchInspections = createAsyncThunk(
   'inspections/fetchAll',
-  async (params: { systemId?: number; stageId?: number; userId?: number; status?: string; startDate?: string; endDate?: string } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchInspectionsParams = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: Inspection[] }>('/inspections', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchInspectionsResponse>('/inspections', { params });
+      return {
+        inspections: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch inspections'));
     } finally {
@@ -183,9 +200,19 @@ const inspectionSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchInspections.fulfilled, (state, action) => {
-        state.inspections = action.payload;
+      .addCase(fetchInspections.pending, (state) => {
+        state.loading = true;
         state.error = null;
+      })
+      .addCase(fetchInspections.fulfilled, (state, action) => {
+        state.inspections = action.payload.inspections;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(fetchInspections.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchInspectionById.fulfilled, (state, action) => {
         state.currentInspection = action.payload;
@@ -197,6 +224,7 @@ const inspectionSlice = createSlice({
       })
       .addCase(createInspection.fulfilled, (state, action) => {
         state.inspections.unshift(action.payload);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
         state.error = null;
       })
       .addCase(updateInspection.fulfilled, (state, action) => {
@@ -215,6 +243,7 @@ const inspectionSlice = createSlice({
       })
       .addCase(deleteInspection.fulfilled, (state, action) => {
         state.inspections = state.inspections.filter(i => i.id !== action.payload);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       })
       .addCase(addInspectionPhotos.fulfilled, (state, action) => {

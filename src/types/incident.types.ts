@@ -69,9 +69,29 @@ export interface AssignableUser {
   role: string;
 }
 
+export interface FetchIncidentsParams {
+  page?: number;
+  limit?: number;
+  systemId?: number;
+  stageId?: number;
+  status?: string;
+  priority?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface IncidentPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface IncidentState {
   incidents: Incident[];
   currentIncident: Incident | null;
   assignableUsers: AssignableUser[];
+  pagination: IncidentPagination;
+  loading: boolean;
   error: string | null;
 }

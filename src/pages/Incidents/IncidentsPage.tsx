@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
+import { useAppDispatch, useAppSelector, useAppNavigation, usePagination } from '../../hooks';
 import { fetchIncidents } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Select, DateInput, Table, Badge, ExportDropdown, ViewModeToggle } from '../../components/common';
+import { Card, Button, Select, DateInput, Badge, ExportDropdown, ViewModeToggle, PaginatedTable } from '../../components/common';
 import IncidentsChartView from './IncidentsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Incident } from '../../types';
@@ -13,7 +13,7 @@ const IncidentsPage: React.FC = () => {
   const dispatch = useAppDispatch();
   const { selectedClientId } = useAppSelector((state) => state.clients);
   const { systems } = useAppSelector((state) => state.systems);
-  const { incidents } = useAppSelector((state) => state.incidents);
+  const { incidents, pagination, loading } = useAppSelector((state) => state.incidents);
   const { goToNewIncident, goToIncidentDetail } = useAppNavigation();
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
@@ -26,13 +26,22 @@ const IncidentsPage: React.FC = () => {
     endDate: ''
   });
 
-  useEffect(() => {
-    dispatch(fetchSystems({ parentId: 'null' }));
-    dispatch(fetchIncidents({}));
-  }, [dispatch, selectedClientId]);
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    resetPage
+  } = usePagination();
 
-  const handleApplyFilters = () => {
+  // Load incidents with current pagination and filters
+  const loadIncidents = useCallback(() => {
     dispatch(fetchIncidents({
+      page: apiPage,
+      limit: apiLimit,
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
       stageId: filters.stageId ? Number(filters.stageId) : undefined,
       status: filters.status || undefined,
@@ -40,11 +49,25 @@ const IncidentsPage: React.FC = () => {
       startDate: filters.startDate || undefined,
       endDate: filters.endDate || undefined
     }));
+  }, [dispatch, apiPage, apiLimit, filters]);
+
+  // Initial load and when pagination/filters change
+  useEffect(() => {
+    loadIncidents();
+  }, [loadIncidents]);
+
+  // Load systems once
+  useEffect(() => {
+    dispatch(fetchSystems({ parentId: 'null' }));
+  }, [dispatch, selectedClientId]);
+
+  const handleApplyFilters = () => {
+    resetPage();
   };
 
   const handleClearFilters = () => {
     setFilters({ systemId: '', stageId: '', status: '', priority: '', startDate: '', endDate: '' });
-    dispatch(fetchIncidents({}));
+    resetPage();
   };
 
   const getExportData = () => {
@@ -304,12 +327,18 @@ const IncidentsPage: React.FC = () => {
           </div>
 
           <Card noPadding>
-            <Table
+            <PaginatedTable
               columns={columns}
               data={incidents}
-              keyExtractor={(incident) => incident.id}
-              onRowClick={(incident) => goToIncidentDetail(incident.id)}
+              keyExtractor={(incident: Incident) => incident.id}
+              onRowClick={(incident: Incident) => goToIncidentDetail(incident.id)}
               emptyMessage={t('incidents.page.emptyMessage')}
+              loading={loading}
+              pagination={pagination}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Card>
         </>

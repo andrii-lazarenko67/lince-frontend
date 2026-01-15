@@ -62,8 +62,26 @@ export interface UpdateSystemRequest {
   parentId?: number | null;
 }
 
+export interface FetchSystemsParams {
+  page?: number;
+  limit?: number;
+  status?: string;
+  systemTypeId?: string;
+  search?: string;
+  parentId?: string | number | null;
+}
+
+export interface SystemPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface SystemState {
   systems: System[];
   currentSystem: System | null;
+  pagination: SystemPagination;
+  loading: boolean;
   error: string | null;
 }

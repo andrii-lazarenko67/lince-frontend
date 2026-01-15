@@ -76,10 +76,29 @@ export interface AddProductUsageRequest {
   date?: string;
 }
 
+export interface FetchProductsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  typeId?: number;
+  systemId?: number;
+  isActive?: boolean;
+  lowStock?: boolean;
+}
+
+export interface ProductPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface ProductState {
   products: Product[];
   productTypes: ProductType[];
   currentProduct: Product | null;
   usages: ProductUsage[];
+  pagination: ProductPagination;
+  loading: boolean;
   error: string | null;
 }

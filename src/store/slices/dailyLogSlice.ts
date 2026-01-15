@@ -1,30 +1,40 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest } from '../../types';
+import type { DailyLog, DailyLogState, CreateDailyLogRequest, UpdateDailyLogRequest, FetchDailyLogsParams, DailyLogPagination } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
+
+interface FetchDailyLogsResponse {
+  success: boolean;
+  data: DailyLog[];
+  pagination: DailyLogPagination;
+}
 
 const initialState: DailyLogState = {
   dailyLogs: [],
   currentDailyLog: null,
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
 export const fetchDailyLogs = createAsyncThunk(
   'dailyLogs/fetchAll',
-  async (params: {
-    systemId?: number;
-    stageId?: number;
-    userId?: number;
-    recordType?: 'field' | 'laboratory';
-    startDate?: string;
-    endDate?: string;
-  } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchDailyLogsParams = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: DailyLog[] }>('/daily-logs', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchDailyLogsResponse>('/daily-logs', { params });
+      return {
+        dailyLogs: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch daily logs'));
     } finally {
@@ -141,9 +151,19 @@ const dailyLogSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchDailyLogs.fulfilled, (state, action) => {
-        state.dailyLogs = action.payload;
+      .addCase(fetchDailyLogs.pending, (state) => {
+        state.loading = true;
         state.error = null;
+      })
+      .addCase(fetchDailyLogs.fulfilled, (state, action) => {
+        state.dailyLogs = action.payload.dailyLogs;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(fetchDailyLogs.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchDailyLogsBySystem.fulfilled, (state, action) => {
         state.dailyLogs = action.payload;
@@ -155,6 +175,7 @@ const dailyLogSlice = createSlice({
       })
       .addCase(createDailyLog.fulfilled, (state, action) => {
         state.dailyLogs.unshift(action.payload);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
         state.error = null;
       })
       .addCase(updateDailyLog.fulfilled, (state, action) => {
@@ -166,6 +187,7 @@ const dailyLogSlice = createSlice({
       })
       .addCase(deleteDailyLog.fulfilled, (state, action) => {
         state.dailyLogs = state.dailyLogs.filter(dl => dl.id !== action.payload);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       });
   }

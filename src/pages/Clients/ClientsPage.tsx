@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   Chip,
   Avatar,
   Menu,
@@ -41,18 +42,46 @@ const ClientsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { goTo } = useAppNavigation();
-  const { clients, loading } = useAppSelector((state) => state.clients);
+  const { clients, loading, pagination } = useAppSelector((state) => state.clients);
   const { user } = useAppSelector((state) => state.auth);
 
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(0); // MUI TablePagination uses 0-based index
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
+  // Fetch clients with pagination params
+  const loadClients = useCallback(() => {
+    dispatch(fetchClients({
+      search: searchTerm || undefined,
+      page: page + 1, // Backend uses 1-based index
+      limit: rowsPerPage
+    }));
+  }, [dispatch, searchTerm, page, rowsPerPage]);
+
   useEffect(() => {
-    dispatch(fetchClients());
-  }, [dispatch]);
+    loadClients();
+  }, [loadClients]);
+
+  // Handle page change
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  // Handle rows per page change
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to first page when changing rows per page
+  };
+
+  // Handle search with debounce reset to first page
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+    setPage(0); // Reset to first page when searching
+  };
 
   // Redirect if not a service provider
   if (!user?.isServiceProvider) {
@@ -108,12 +137,6 @@ const ClientsPage: React.FC = () => {
     }
   };
 
-  const filteredClients = clients.filter(client =>
-    client.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    client.contact?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
@@ -141,7 +164,7 @@ const ClientsPage: React.FC = () => {
           fullWidth
           placeholder={t('common.search')}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={handleSearchChange}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
@@ -159,7 +182,7 @@ const ClientsPage: React.FC = () => {
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
             <CircularProgress />
           </Box>
-        ) : filteredClients.length === 0 ? (
+        ) : clients.length === 0 ? (
           <Box sx={{ textAlign: 'center', py: 6 }}>
             <BusinessIcon sx={{ fontSize: 64, color: 'text.secondary', mb: 2 }} />
             <Typography variant="h6" color="text.secondary" gutterBottom>
@@ -190,7 +213,7 @@ const ClientsPage: React.FC = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {filteredClients.map((client) => (
+                {clients.map((client) => (
                   <TableRow
                     key={client.id}
                     hover
@@ -238,6 +261,19 @@ const ClientsPage: React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+        )}
+        {/* Pagination - always show when there are clients or after search */}
+        {!loading && (clients.length > 0 || pagination.total > 0) && (
+          <TablePagination
+            component="div"
+            count={pagination.total}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            rowsPerPageOptions={[5, 10, 25, 50]}
+            labelRowsPerPage={t('common.rowsPerPage')}
+          />
         )}
       </Paper>
 

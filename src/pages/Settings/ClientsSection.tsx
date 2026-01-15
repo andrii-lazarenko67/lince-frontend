@@ -30,7 +30,7 @@ const ClientsSection: React.FC = () => {
 
   useEffect(() => {
     if (isServiceProvider) {
-      dispatch(fetchClients());
+      dispatch(fetchClients({ limit: 100 }));
     }
   }, [dispatch, isServiceProvider]);
 

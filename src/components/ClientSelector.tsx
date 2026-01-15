@@ -13,7 +13,8 @@ const ClientSelector: React.FC = () => {
 
   useEffect(() => {
     if (isServiceProvider) {
-      dispatch(fetchClients());
+      // Fetch all clients for the selector dropdown (use high limit to get all)
+      dispatch(fetchClients({ limit: 100 }));
       dispatch(loadSelectedClientFromStorage());
     }
   }, [dispatch, isServiceProvider]);

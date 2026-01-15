@@ -71,9 +71,29 @@ export interface UpdateInspectionRequest {
   }[];
 }
 
+export interface FetchInspectionsParams {
+  page?: number;
+  limit?: number;
+  systemId?: number;
+  stageId?: number;
+  userId?: number;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface InspectionPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface InspectionState {
   inspections: Inspection[];
   currentInspection: Inspection | null;
   checklistItems: ChecklistItem[];
+  pagination: InspectionPagination;
+  loading: boolean;
   error: string | null;
 }

@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppSelector, useAppNavigation } from '../../hooks';
-import { Table, Badge, Button } from '../../components/common';
+import { useAppSelector, useAppNavigation, useAppDispatch, usePagination } from '../../hooks';
+import { PaginatedTable, Badge, Button } from '../../components/common';
 import { ChevronRight, ExpandMore, AccountTree, Add } from '@mui/icons-material';
 import type { System } from '../../types';
 import SystemForm from './SystemForm';
+import { fetchSystems } from '../../store/slices/systemSlice';
 
 const SystemsList: React.FC = () => {
   const { t } = useTranslation();
-  const { systems } = useAppSelector((state) => state.systems);
+  const dispatch = useAppDispatch();
+  const { systems, pagination, loading } = useAppSelector((state) => state.systems);
   const { goToSystemDetail } = useAppNavigation();
   const [expandedSystems, setExpandedSystems] = useState<Set<number>>(new Set());
   const [isStageFormOpen, setIsStageFormOpen] = useState(false);
   const [selectedParentId, setSelectedParentId] = useState<number | null>(null);
+
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage
+  } = usePagination({ initialRowsPerPage: 25 });
+
+  // Load systems with current pagination
+  const loadSystems = useCallback(() => {
+    dispatch(fetchSystems({ page: apiPage, limit: apiLimit }));
+  }, [dispatch, apiPage, apiLimit]);
+
+  // Initial load and when pagination changes
+  useEffect(() => {
+    loadSystems();
+  }, [loadSystems]);
 
   const handleCloseStageForm = () => {
     setIsStageFormOpen(false);
@@ -161,12 +183,18 @@ const SystemsList: React.FC = () => {
 
   return (
     <>
-      <Table
+      <PaginatedTable
         columns={columns}
         data={hierarchicalSystems}
-        keyExtractor={(system) => system.id}
-        onRowClick={(system) => goToSystemDetail(system.id)}
+        keyExtractor={(system: System & { level: number; hasChildren: boolean }) => system.id}
+        onRowClick={(system: System & { level: number; hasChildren: boolean }) => goToSystemDetail(system.id)}
         emptyMessage={t('systems.noSystems')}
+        loading={loading}
+        pagination={pagination}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
       />
 
       <SystemForm

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
+import { useAppDispatch, useAppSelector, useAppNavigation, usePagination } from '../../hooks';
 import { fetchProducts, fetchProductTypes, createProduct, updateProduct } from '../../store/slices/productSlice';
 import { fetchUnits } from '../../store/slices/unitSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Table, Badge, Modal, Input, Select, TextArea, ExportDropdown, ViewModeToggle } from '../../components/common';
+import { Card, Button, Badge, Modal, Input, Select, TextArea, ExportDropdown, ViewModeToggle, PaginatedTable } from '../../components/common';
 import ProductsChartView from './ProductsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Product, CreateProductRequest } from '../../types';
@@ -13,7 +13,7 @@ const ProductsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { selectedClientId } = useAppSelector((state) => state.clients);
-  const { products, productTypes } = useAppSelector((state) => state.products);
+  const { products, productTypes, pagination, loading } = useAppSelector((state) => state.products);
   const { units } = useAppSelector((state) => state.units);
   const { systems } = useAppSelector((state) => state.systems);
   const { goToProductDetail } = useAppNavigation();
@@ -38,24 +38,47 @@ const ProductsPage: React.FC = () => {
     recommendedDosage: ''
   });
 
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    resetPage
+  } = usePagination();
+
+  // Load products with current pagination and filters
+  const loadProducts = useCallback(() => {
+    dispatch(fetchProducts({
+      page: apiPage,
+      limit: apiLimit,
+      systemId: filters.systemId ? Number(filters.systemId) : undefined,
+      typeId: filters.typeId ? Number(filters.typeId) : undefined,
+      lowStock: filters.lowStock || undefined
+    }));
+  }, [dispatch, apiPage, apiLimit, filters]);
+
+  // Initial load and when pagination/filters change
   useEffect(() => {
-    dispatch(fetchProducts({}));
+    loadProducts();
+  }, [loadProducts]);
+
+  // Load related data once
+  useEffect(() => {
     dispatch(fetchProductTypes());
     dispatch(fetchUnits());
     dispatch(fetchSystems({ parentId: 'null' }));
   }, [dispatch, selectedClientId]);
 
   const handleApplyFilters = () => {
-    dispatch(fetchProducts({
-      systemId: filters.systemId ? Number(filters.systemId) : undefined,
-      typeId: filters.typeId ? Number(filters.typeId) : undefined,
-      lowStock: filters.lowStock || undefined
-    }));
+    resetPage();
   };
 
   const handleClearFilters = () => {
     setFilters({ systemId: '', stageId: '', typeId: '', lowStock: false });
-    dispatch(fetchProducts({}));
+    resetPage();
   };
 
   const handleOpenForm = (product?: Product) => {
@@ -339,12 +362,18 @@ const ProductsPage: React.FC = () => {
           </div>
 
           <Card noPadding>
-            <Table
+            <PaginatedTable
               columns={columns}
               data={products}
-              keyExtractor={(product) => product.id}
-              onRowClick={(product) => goToProductDetail(product.id)}
+              keyExtractor={(product: Product) => product.id}
+              onRowClick={(product: Product) => goToProductDetail(product.id)}
               emptyMessage={t('products.emptyMessage')}
+              loading={loading}
+              pagination={pagination}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Card>
         </>

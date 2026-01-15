@@ -69,8 +69,28 @@ export interface UpdateDailyLogRequest {
   }[];
 }
 
+export interface FetchDailyLogsParams {
+  page?: number;
+  limit?: number;
+  systemId?: number;
+  stageId?: number;
+  userId?: number;
+  recordType?: 'field' | 'laboratory';
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface DailyLogPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface DailyLogState {
   dailyLogs: DailyLog[];
   currentDailyLog: DailyLog | null;
+  pagination: DailyLogPagination;
+  loading: boolean;
   error: string | null;
 }

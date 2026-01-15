@@ -37,8 +37,25 @@ export interface UpdateDocumentRequest {
   fileName?: string;
 }
 
+export interface FetchDocumentsParams {
+  page?: number;
+  limit?: number;
+  category?: string;
+  systemId?: number;
+  search?: string;
+}
+
+export interface LibraryPagination {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface LibraryState {
   documents: Document[];
   currentDocument: Document | null;
+  pagination: LibraryPagination;
+  loading: boolean;
   error: string | null;
 }

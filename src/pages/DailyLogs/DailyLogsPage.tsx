@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
+import { useAppDispatch, useAppSelector, useAppNavigation, usePagination } from '../../hooks';
 import { fetchDailyLogs } from '../../store/slices/dailyLogSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, ExportDropdown, ViewModeToggle } from '../../components/common';
-import DailyLogsList from "./DailyLogsList"
+import { Card, Button, ExportDropdown, ViewModeToggle, PaginatedTable, Badge } from '../../components/common';
 import DailyLogFilters from "./DailyLogFilters"
 import DailyLogsChartView from './DailyLogsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
+import type { DailyLog } from '../../types';
 
 const DailyLogsPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { selectedClientId } = useAppSelector((state) => state.clients);
-  const { dailyLogs } = useAppSelector((state) => state.dailyLogs);
-  const { goToNewDailyLog } = useAppNavigation();
+  const { dailyLogs, pagination, loading } = useAppSelector((state) => state.dailyLogs);
+  const { goToNewDailyLog, goToDailyLogDetail } = useAppNavigation();
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
@@ -25,24 +25,47 @@ const DailyLogsPage: React.FC = () => {
     endDate: ''
   });
 
-  useEffect(() => {
-    dispatch(fetchSystems({ parentId: 'null' }));
-    dispatch(fetchDailyLogs({}));
-  }, [dispatch, selectedClientId]);
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    resetPage
+  } = usePagination();
 
-  const handleApplyFilters = () => {
+  // Load daily logs with current pagination and filters
+  const loadDailyLogs = useCallback(() => {
     dispatch(fetchDailyLogs({
+      page: apiPage,
+      limit: apiLimit,
       systemId: filters.systemId ? Number(filters.systemId) : undefined,
       stageId: filters.stageId ? Number(filters.stageId) : undefined,
       recordType: filters.recordType ? (filters.recordType as 'field' | 'laboratory') : undefined,
       startDate: filters.startDate || undefined,
       endDate: filters.endDate || undefined
     }));
+  }, [dispatch, apiPage, apiLimit, filters]);
+
+  // Initial load and when pagination/filters change
+  useEffect(() => {
+    loadDailyLogs();
+  }, [loadDailyLogs]);
+
+  // Load systems once
+  useEffect(() => {
+    dispatch(fetchSystems({ parentId: 'null' }));
+  }, [dispatch, selectedClientId]);
+
+  const handleApplyFilters = () => {
+    resetPage();
   };
 
   const handleClearFilters = () => {
     setFilters({ systemId: '', stageId: '', recordType: '', startDate: '', endDate: '' });
-    dispatch(fetchDailyLogs({}));
+    resetPage();
   };
 
   const getExportData = () => {
@@ -108,6 +131,69 @@ const DailyLogsPage: React.FC = () => {
     );
   };
 
+  const columns = [
+    {
+      key: 'recordType',
+      header: t('dailyLogs.list.type'),
+      render: (log: DailyLog) => (
+        <Badge variant={log.recordType === 'field' ? 'primary' : 'info'}>
+          {log.recordType === 'field' ? t('dailyLogs.list.field') : t('dailyLogs.list.lab')}
+        </Badge>
+      )
+    },
+    {
+      key: 'date',
+      header: t('dailyLogs.list.date'),
+      render: (log: DailyLog) => (
+        <span className="font-medium text-gray-900">
+          {new Date(log.date).toLocaleDateString()}
+        </span>
+      )
+    },
+    {
+      key: 'system',
+      header: t('dailyLogs.list.system'),
+      render: (log: DailyLog) => (
+        <div>
+          <div>{log.system?.name || '-'}</div>
+          {log.stage && (
+            <div className="text-xs text-gray-500">{t('dailyLogs.list.stage')}: {log.stage.name}</div>
+          )}
+        </div>
+      )
+    },
+    {
+      key: 'period',
+      header: t('dailyLogs.list.period'),
+      render: (log: DailyLog) => log.period ? t(`dailyLogs.period.${log.period}`, { defaultValue: log.period }) : '-'
+    },
+    {
+      key: 'laboratory',
+      header: t('dailyLogs.list.laboratory'),
+      render: (log: DailyLog) => log.recordType === 'laboratory' ? (log.laboratory || '-') : '-'
+    },
+    {
+      key: 'user',
+      header: t('dailyLogs.list.recordedBy'),
+      render: (log: DailyLog) => log.user?.name || '-'
+    },
+    {
+      key: 'entries',
+      header: t('dailyLogs.list.entries'),
+      render: (log: DailyLog) => {
+        const outOfRange = log.entries?.filter(e => e.isOutOfRange).length || 0;
+        return (
+          <div className="flex items-center space-x-2">
+            <span>{log.entries?.length || 0}</span>
+            {outOfRange > 0 && (
+              <Badge variant="danger">{t('dailyLogs.list.alert', { count: outOfRange })}</Badge>
+            )}
+          </div>
+        );
+      }
+    }
+  ];
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -142,7 +228,19 @@ const DailyLogsPage: React.FC = () => {
           />
 
           <Card noPadding>
-            <DailyLogsList />
+            <PaginatedTable
+              columns={columns}
+              data={dailyLogs}
+              keyExtractor={(log: DailyLog) => log.id}
+              onRowClick={(log: DailyLog) => goToDailyLogDetail(log.id)}
+              emptyMessage={t('dailyLogs.list.emptyMessage')}
+              loading={loading}
+              pagination={pagination}
+              page={page}
+              rowsPerPage={rowsPerPage}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Card>
         </>
       ) : (

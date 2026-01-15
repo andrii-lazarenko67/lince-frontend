@@ -1,9 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Product, ProductType, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest } from '../../types';
+import type { Product, ProductType, ProductState, ProductUsage, CreateProductRequest, UpdateProductRequest, FetchProductsParams, ProductPagination } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { updatePaginationAfterCreate, updatePaginationAfterDelete } from '../../utils/paginationHelpers';
 
 interface RecordUsageRequest {
   systemId?: number;
@@ -13,11 +14,24 @@ interface RecordUsageRequest {
   date?: string;
 }
 
+interface FetchProductsResponse {
+  success: boolean;
+  data: Product[];
+  pagination: ProductPagination;
+}
+
 const initialState: ProductState = {
   products: [],
   productTypes: [],
   currentProduct: null,
   usages: [],
+  pagination: {
+    page: 1,
+    limit: 10,
+    total: 0,
+    totalPages: 0
+  },
+  loading: false,
   error: null
 };
 
@@ -80,11 +94,14 @@ export const deleteProductType = createAsyncThunk(
 
 export const fetchProducts = createAsyncThunk(
   'products/fetchAll',
-  async (params: { isActive?: boolean; lowStock?: boolean; systemId?: number; typeId?: number } = {}, { dispatch, rejectWithValue }) => {
+  async (params: FetchProductsParams = {}, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
-      const response = await axiosInstance.get<{ success: boolean; data: Product[] }>('/products', { params });
-      return response.data.data;
+      const response = await axiosInstance.get<FetchProductsResponse>('/products', { params });
+      return {
+        products: response.data.data,
+        pagination: response.data.pagination
+      };
     } catch (error: unknown) {
       return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch products'));
     } finally {
@@ -239,9 +256,19 @@ const productSlice = createSlice({
         state.productTypes = state.productTypes.filter(t => t.id !== action.payload);
         state.error = null;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
+      .addCase(fetchProducts.pending, (state) => {
+        state.loading = true;
         state.error = null;
+      })
+      .addCase(fetchProducts.fulfilled, (state, action) => {
+        state.products = action.payload.products;
+        state.pagination = action.payload.pagination;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(fetchProducts.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       })
       .addCase(fetchProductById.fulfilled, (state, action) => {
         state.currentProduct = action.payload;
@@ -249,6 +276,7 @@ const productSlice = createSlice({
       })
       .addCase(createProduct.fulfilled, (state, action) => {
         state.products.unshift(action.payload);
+        state.pagination = updatePaginationAfterCreate(state.pagination);
         state.error = null;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
@@ -302,6 +330,7 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.fulfilled, (state, action) => {
         state.products = state.products.filter(p => p.id !== action.payload);
+        state.pagination = updatePaginationAfterDelete(state.pagination);
         state.error = null;
       });
   }

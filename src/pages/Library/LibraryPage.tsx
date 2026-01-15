@@ -1,21 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchDocuments, uploadDocument, searchDocuments } from '../../store/slices/librarySlice';
+import { useAppDispatch, useAppSelector, useAppNavigation, usePagination } from '../../hooks';
+import { fetchDocuments, uploadDocument } from '../../store/slices/librarySlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
-import { Card, Button, Input, Select, Table, Badge, Modal, TextArea, FileUpload } from '../../components/common';
+import { Card, Button, Input, Select, Badge, Modal, TextArea, FileUpload, PaginatedTable } from '../../components/common';
 import type { Document } from '../../types';
 
 const LibraryPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { selectedClientId } = useAppSelector((state) => state.clients);
-  const { documents } = useAppSelector((state) => state.library);
+  const { documents, pagination, loading } = useAppSelector((state) => state.library);
   const { systems } = useAppSelector((state) => state.systems);
   const { goToDocumentDetail } = useAppNavigation();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
+
+  // Use the pagination hook
+  const {
+    page,
+    rowsPerPage,
+    apiPage,
+    apiLimit,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    resetPage
+  } = usePagination();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [uploadData, setUploadData] = useState({
     title: '',
@@ -28,8 +39,23 @@ const LibraryPage: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
 
+  // Load documents with current pagination and filters
+  const loadDocuments = useCallback(() => {
+    dispatch(fetchDocuments({
+      page: apiPage,
+      limit: apiLimit,
+      category: categoryFilter || undefined,
+      search: searchQuery || undefined
+    }));
+  }, [dispatch, apiPage, apiLimit, categoryFilter, searchQuery]);
+
+  // Initial load and when pagination/filters change
   useEffect(() => {
-    dispatch(fetchDocuments({}));
+    loadDocuments();
+  }, [loadDocuments]);
+
+  // Load systems once
+  useEffect(() => {
     dispatch(fetchSystems({}));
   }, [dispatch, selectedClientId]);
 
@@ -46,16 +72,12 @@ const LibraryPage: React.FC = () => {
   }, [uploadData.systemId, systems]);
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      dispatch(searchDocuments(searchQuery));
-    } else {
-      dispatch(fetchDocuments({ category: categoryFilter || undefined }));
-    }
+    resetPage();
   };
 
   const handleFilterChange = (category: string) => {
     setCategoryFilter(category);
-    dispatch(fetchDocuments({ category: category || undefined }));
+    resetPage();
   };
 
   const handleUpload = async () => {
@@ -199,12 +221,18 @@ const LibraryPage: React.FC = () => {
       </div>
 
       <Card noPadding>
-        <Table
+        <PaginatedTable
           columns={columns}
           data={documents}
-          keyExtractor={(doc) => doc.id}
-          onRowClick={(doc) => goToDocumentDetail(doc.id)}
+          keyExtractor={(doc: Document) => doc.id}
+          onRowClick={(doc: Document) => goToDocumentDetail(doc.id)}
           emptyMessage={t('library.emptyMessage')}
+          loading={loading}
+          pagination={pagination}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
 
