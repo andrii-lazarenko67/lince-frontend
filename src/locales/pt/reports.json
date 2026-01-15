@@ -62,7 +62,9 @@
       },
       "inspections": {
         "title": "Inspeções",
-        "description": "Registros de inspeção e resultados de checklist"
+        "description": "Registros de inspeção e resultados de checklist",
+        "overviewTitle": "Inspeções – Visão Geral",
+        "detailedTitle": "Inspeções – Visão Detalhada"
       },
       "occurrences": {
         "title": "Ocorrências",
@@ -85,7 +87,9 @@
         "includeCharts": "Incluir gráficos",
         "highlightAlerts": "Destacar alertas",
         "includeTimeline": "Incluir linha do tempo",
-        "analysisViews": "Visualizações de Análise"
+        "analysisViews": "Visualizações de Análise",
+        "inspectionViews": "Visualizações de Inspeção",
+        "highlightOnlyNC": "Destacar apenas não conformidades"
       }
     },
     "branding": {
@@ -220,7 +224,11 @@
       "expectedRange": "Faixa Esperada",
       "observations": "Observações",
       "noDetailedAnalyses": "Nenhum dado de análise detalhada disponível",
-      "valueOutOfRange": "Valor fora da faixa esperada"
+      "valueOutOfRange": "Valor fora da faixa esperada",
+      "noNCInspections": "Nenhuma inspeção com não conformidades encontrada",
+      "inspectionsWithNC": "{{count}} de {{total}} inspeções têm não conformidades",
+      "checklistItem": "Item da Checklist",
+      "comment": "Comentário"
     },
     "errors": {
       "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",
@@ -386,7 +394,11 @@
       "approved": "Aprovada",
       "compliant": "Conforme",
       "nonCompliant": "Não Conforme",
-      "noInspections": "Nenhuma inspeção neste relatório"
+      "noInspections": "Nenhuma inspeção neste relatório",
+      "statusC": "C",
+      "statusNC": "NC",
+      "statusNA": "N/A",
+      "statusNV": "NV"
     },
     "incidents": {
       "title": "Relatório de Ocorrências",

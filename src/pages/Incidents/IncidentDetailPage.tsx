@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchIncidentById, updateIncidentStatus, addIncidentComment, assignIncident, addIncidentPhotos } from '../../store/slices/incidentSlice';
-import { fetchUsers } from '../../store/slices/userSlice';
+import { fetchIncidentById, updateIncidentStatus, addIncidentComment, assignIncident, addIncidentPhotos, fetchAssignableUsers } from '../../store/slices/incidentSlice';
 import { Card, Badge, Button, Modal, Select, TextArea, Input } from '../../components/common';
 import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
 
@@ -16,8 +15,7 @@ const IncidentDetailPage: React.FC = () => {
   const { t } = useTranslation();
   const { id } = useParams<{ id: string }>();
   const dispatch = useAppDispatch();
-  const { currentIncident } = useAppSelector((state) => state.incidents);
-  const { users } = useAppSelector((state) => state.users);
+  const { currentIncident, assignableUsers } = useAppSelector((state) => state.incidents);
   const { user } = useAppSelector((state) => state.auth);
   const { goBack } = useAppNavigation();
 
@@ -37,9 +35,9 @@ const IncidentDetailPage: React.FC = () => {
     if (id) {
       dispatch(fetchIncidentById(Number(id)));
     }
-    // Only fetch users if current user has permission (admin/manager)
+    // Only fetch assignable users if current user has permission (admin/manager)
     if (canManage) {
-      dispatch(fetchUsers({}));
+      dispatch(fetchAssignableUsers());
     }
   }, [dispatch, id, canManage]);
 
@@ -183,7 +181,7 @@ const IncidentDetailPage: React.FC = () => {
     );
   }
 
-  const userOptions = users.map(u => ({ value: u.id, label: u.name }));
+  const userOptions = assignableUsers.map(u => ({ value: u.id, label: u.name }));
   const statusOptions = [
     { value: 'open', label: t('incidents.detail.statusOpen') },
     { value: 'in_progress', label: t('incidents.detail.statusInProgress') },

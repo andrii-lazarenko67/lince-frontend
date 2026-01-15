@@ -103,6 +103,10 @@ export interface ReportBlock {
   // Separate field and laboratory chart configs (new structure)
   fieldChartConfig?: ChartConfig;
   laboratoryChartConfig?: ChartConfig;
+  // Inspections block options
+  showInspectionOverview?: boolean;   // Inspections – Overview
+  showInspectionDetailed?: boolean;   // Inspections – Detailed View
+  highlightOnlyNonConformities?: boolean;  // Default: true - highlight only NC inspections
 }
 
 export interface ReportBranding {
@@ -188,7 +192,15 @@ export const DEFAULT_TEMPLATE_CONFIG: ReportTemplateConfig = {
       showLaboratoryDetailed: false,
       chartConfig: DEFAULT_CHART_CONFIG
     },
-    { type: 'inspections', enabled: true, order: 5, includePhotos: true },
+    {
+      type: 'inspections',
+      enabled: true,
+      order: 5,
+      includePhotos: true,
+      showInspectionOverview: true,
+      showInspectionDetailed: false,
+      highlightOnlyNonConformities: true
+    },
     { type: 'occurrences', enabled: true, order: 6, includeTimeline: true },
     { type: 'conclusion', enabled: true, order: 7 },
     { type: 'signature', enabled: true, order: 8 },

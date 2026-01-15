@@ -339,8 +339,8 @@ const ProductDosageSection: React.FC<ProductDosageSectionProps> = ({ productId, 
 
           <Select
             name="unitId"
-            value={formData.unitId.toString()}
-            onChange={(e) => setFormData({ ...formData, unitId: parseInt(e.target.value) })}
+            value={formData.unitId === 0 ? '' : formData.unitId.toString()}
+            onChange={(e) => setFormData({ ...formData, unitId: parseInt(e.target.value) || 0 })}
             options={unitOptions}
             label={t('productDosage.form.unit')}
             placeholder={t('productDosage.form.selectUnit')}

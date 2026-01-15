@@ -48,7 +48,12 @@ export const store = configureStore({
     clients: clientSlice,
     reportTemplates: reportTemplateSlice,
     generatedReports: generatedReportSlice
-  }
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false
+    })
 });
 
 export type RootState = ReturnType<typeof store.getState>;

@@ -368,16 +368,55 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                       </>
                     )}
                     {block.type === 'inspections' && (
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={block.includePhotos || false}
-                            onChange={(e) => handleBlockOptionChange(block.type, 'includePhotos', e.target.checked)}
-                            size="small"
-                          />
-                        }
-                        label={t('reports.blocks.options.includePhotos')}
-                      />
+                      <>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.includePhotos || false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'includePhotos', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.includePhotos')}
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.highlightOnlyNonConformities !== false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'highlightOnlyNonConformities', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.highlightOnlyNC')}
+                        />
+                        <Box sx={{ width: '100%', mt: 1 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                            {t('reports.blocks.options.inspectionViews')}
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, ml: 1 }}>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showInspectionOverview !== false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showInspectionOverview', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.inspections.overviewTitle')}
+                            />
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showInspectionDetailed || false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showInspectionDetailed', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.inspections.detailedTitle')}
+                            />
+                          </Box>
+                        </Box>
+                      </>
                     )}
                     {block.type === 'occurrences' && (
                       <FormControlLabel

@@ -143,16 +143,6 @@ const ReportGeneratorTab: React.FC = () => {
       endDate
     };
 
-    console.log('[ReportGenerator] Generating report with:', {
-      templateId: selectedTemplateId,
-      periodType,
-      startDate,
-      endDate,
-      period,
-      systemIds: selectedSystemIds,
-      includeCharts
-    });
-
     const name = reportName || `${t('reports.generator.reportPrefix')} ${new Date().toLocaleDateString()}`;
 
     const result = await dispatch(generateReport({
@@ -167,18 +157,10 @@ const ReportGeneratorTab: React.FC = () => {
       }
     }));
 
-    console.log('[ReportGenerator] Generate result:', result);
 
     if (generateReport.fulfilled.match(result)) {
-      console.log('[ReportGenerator] Report generated successfully');
-      console.log('[ReportGenerator] reportData:', result.payload.reportData);
-      console.log('[ReportGenerator] chartData:', result.payload.reportData?.chartData);
       if (result.payload.reportData?.chartData) {
-        console.log('[ReportGenerator] fieldCharts count:', result.payload.reportData.chartData.fieldCharts?.length);
-        console.log('[ReportGenerator] laboratoryCharts count:', result.payload.reportData.chartData.laboratoryCharts?.length);
         if (result.payload.reportData.chartData.fieldCharts?.length > 0) {
-          console.log('[ReportGenerator] First fieldChart data points:', result.payload.reportData.chartData.fieldCharts[0].data?.length);
-          console.log('[ReportGenerator] First fieldChart sample:', result.payload.reportData.chartData.fieldCharts[0].data?.slice(0, 5));
         }
       }
       setGenerationComplete(true);

@@ -77,9 +77,10 @@ export interface ReportDailyLog {
 
 export interface ReportInspectionItem {
   id: number;
-  status: 'compliant' | 'non_compliant' | 'not_verified';
+  status: 'C' | 'NC' | 'NA' | 'NV';  // C=Compliant, NC=Non-Compliant, NA=Not Applicable, NV=Not Verified
+  comment?: string;
   notes?: string;
-  checklistItem?: { id: number; name: string };
+  checklistItem?: { id: number; name: string; description?: string };
 }
 
 export interface ReportInspection {
@@ -959,49 +960,255 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   );
 };
 
-const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => (
-  <View>
-    <Text style={styles.sectionTitle}>{t('reports.blocks.inspections.title')}</Text>
-    {data.inspections.length === 0 ? (
-      <Text style={styles.textMuted}>{t('reports.pdf.noInspections')}</Text>
-    ) : (
-      <>
-        <View style={styles.table}>
-          <View style={styles.tableHeader}>
-            <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.inspections.inspector')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
-            <Text style={styles.tableHeaderCell}>{t('reports.inspections.itemsChecked')}</Text>
+// Helper function to count inspection items by status
+const countInspectionItemsByStatus = (items: ReportInspectionItem[] | undefined) => {
+  const counts = { C: 0, NC: 0, NA: 0, NV: 0 };
+  items?.forEach(item => {
+    if (counts[item.status] !== undefined) {
+      counts[item.status]++;
+    }
+  });
+  return counts;
+};
+
+// Check if inspection has non-conformities
+const hasNonConformities = (inspection: ReportInspection): boolean => {
+  return inspection.items?.some(item => item.status === 'NC') || false;
+};
+
+// Inspection Overview Table Component
+const InspectionsOverviewTable: React.FC<{
+  inspections: ReportInspection[];
+  styles: ReturnType<typeof createStyles>;
+  t: (key: string, options?: Record<string, unknown>) => string;
+  highlightOnlyNC: boolean;
+}> = ({ inspections, styles, t, highlightOnlyNC }) => {
+  // Filter inspections if highlighting only NC
+  const displayInspections = highlightOnlyNC
+    ? inspections.filter(hasNonConformities)
+    : inspections;
+
+  if (displayInspections.length === 0) {
+    return (
+      <Text style={styles.textMuted}>
+        {highlightOnlyNC
+          ? t('reports.pdf.noNCInspections')
+          : t('reports.pdf.noInspections')}
+      </Text>
+    );
+  }
+
+  return (
+    <View style={styles.table}>
+      <View style={styles.tableHeader}>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.inspections.inspector')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+        <Text style={[styles.tableHeaderCell, { textAlign: 'center' }]}>{t('reports.inspections.compliant')}</Text>
+        <Text style={[styles.tableHeaderCell, { textAlign: 'center' }]}>{t('reports.inspections.nonCompliant')}</Text>
+      </View>
+      {displayInspections.map((insp, idx) => {
+        const counts = countInspectionItemsByStatus(insp.items);
+        const hasNC = counts.NC > 0;
+        return (
+          <View key={insp.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+            <Text style={styles.tableCell}>{formatDate(insp.date)}</Text>
+            <Text style={styles.tableCell}>{insp.system?.name || '-'}</Text>
+            <Text style={styles.tableCell}>{insp.user?.name || '-'}</Text>
+            <Text style={styles.tableCell}>{t(`reports.inspections.${insp.status}`)}</Text>
+            <Text style={[styles.tableCell, { textAlign: 'center', color: '#16a34a' }]}>{counts.C}</Text>
+            <Text style={[styles.tableCell, { textAlign: 'center' }, hasNC ? styles.tableCellAlert : {}]}>
+              {counts.NC}
+            </Text>
           </View>
-          {data.inspections.map((insp, idx) => (
-            <View key={insp.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
-              <Text style={styles.tableCell}>{formatDate(insp.date)}</Text>
-              <Text style={styles.tableCell}>{insp.system?.name || '-'}</Text>
-              <Text style={styles.tableCell}>{insp.user?.name || '-'}</Text>
-              <Text style={styles.tableCell}>{insp.status}</Text>
-              <Text style={styles.tableCell}>{insp.items?.length || 0}</Text>
+        );
+      })}
+    </View>
+  );
+};
+
+// Inspection Detailed View Component
+const InspectionsDetailedView: React.FC<{
+  inspections: ReportInspection[];
+  block: ReportBlock;
+  styles: ReturnType<typeof createStyles>;
+  t: (key: string, options?: Record<string, unknown>) => string;
+  highlightOnlyNC: boolean;
+}> = ({ inspections, block, styles, t, highlightOnlyNC }) => {
+  // Filter inspections if highlighting only NC
+  const displayInspections = highlightOnlyNC
+    ? inspections.filter(hasNonConformities)
+    : inspections;
+
+  if (displayInspections.length === 0) {
+    return (
+      <Text style={styles.textMuted}>
+        {highlightOnlyNC
+          ? t('reports.pdf.noNCInspections')
+          : t('reports.pdf.noInspections')}
+      </Text>
+    );
+  }
+
+  // Get status label
+  const getStatusLabel = (status: string): string => {
+    switch (status) {
+      case 'C': return t('reports.inspections.statusC');
+      case 'NC': return t('reports.inspections.statusNC');
+      case 'NA': return t('reports.inspections.statusNA');
+      case 'NV': return t('reports.inspections.statusNV');
+      default: return status;
+    }
+  };
+
+  // Get status style
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'C': return { color: '#16a34a' };  // Green for compliant
+      case 'NC': return { color: '#dc2626', fontFamily: 'Helvetica-Bold' as const };  // Red bold for NC
+      case 'NA': return { color: '#6b7280' };  // Gray for NA
+      case 'NV': return { color: '#f59e0b' };  // Amber for not verified
+      default: return {};
+    }
+  };
+
+  return (
+    <View>
+      {displayInspections.map((insp) => (
+        <View key={insp.id} style={{ marginBottom: 15 }}>
+          {/* Inspection Header */}
+          <View style={[styles.infoBox, { marginBottom: 8 }]}>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.date')}:</Text>
+              <Text style={styles.infoValue}>{formatDate(insp.date)}</Text>
             </View>
-          ))}
-        </View>
-        {block.includePhotos && data.inspections.some(i => i.photos && i.photos.length > 0) && (
-          <View style={styles.photoGrid}>
-            {data.inspections.flatMap(insp =>
-              (insp.photos || []).slice(0, 4).map(photo => (
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.system')}:</Text>
+              <Text style={styles.infoValue}>{insp.system?.name || '-'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.inspections.inspector')}:</Text>
+              <Text style={styles.infoValue}>{insp.user?.name || '-'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.status')}:</Text>
+              <Text style={styles.infoValue}>{t(`reports.inspections.${insp.status}`)}</Text>
+            </View>
+          </View>
+
+          {/* Checklist Items Table */}
+          {insp.items && insp.items.length > 0 && (
+            <View style={styles.table}>
+              <View style={styles.tableHeader}>
+                <Text style={[styles.tableHeaderCell, { flex: 3 }]}>{t('reports.pdf.checklistItem')}</Text>
+                <Text style={[styles.tableHeaderCell, { flex: 1, textAlign: 'center' }]}>{t('reports.pdf.status')}</Text>
+                <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.comment')}</Text>
+              </View>
+              {insp.items.map((item, itemIdx) => (
+                <View key={item.id} style={[styles.tableRow, itemIdx % 2 === 1 ? styles.tableRowAlt : {}]}>
+                  <Text style={[styles.tableCell, { flex: 3 }]}>
+                    {item.checklistItem?.name || '-'}
+                  </Text>
+                  <Text style={[styles.tableCell, { flex: 1, textAlign: 'center' }, getStatusStyle(item.status)]}>
+                    {getStatusLabel(item.status)}
+                  </Text>
+                  <Text style={[styles.tableCell, { flex: 2 }]}>
+                    {item.comment || item.notes || '-'}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Conclusion */}
+          {insp.conclusion && (
+            <View style={{ marginTop: 8 }}>
+              <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 4 }]}>
+                {t('reports.pdf.conclusion')}:
+              </Text>
+              <Text style={styles.text}>{insp.conclusion}</Text>
+            </View>
+          )}
+
+          {/* Photos for this inspection */}
+          {block.includePhotos && insp.photos && insp.photos.length > 0 && (
+            <View style={[styles.photoGrid, { marginTop: 8 }]}>
+              {insp.photos.slice(0, 4).map(photo => (
                 <View key={photo.id} style={styles.photoContainer}>
                   <Image src={photo.url} style={styles.photo} />
                   {photo.description && (
                     <Text style={styles.photoCaption}>{photo.description}</Text>
                   )}
                 </View>
-              ))
-            )}
-          </View>
-        )}
-      </>
-    )}
-  </View>
-);
+              ))}
+            </View>
+          )}
+        </View>
+      ))}
+    </View>
+  );
+};
+
+const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+  // Determine which views to show (default: overview true, detailed false)
+  const showOverview = block.showInspectionOverview !== false;
+  const showDetailed = block.showInspectionDetailed === true;
+  const highlightOnlyNC = block.highlightOnlyNonConformities !== false;
+
+  // Check if at least one view is enabled
+  const hasAnyViewEnabled = showOverview || showDetailed;
+
+  if (data.inspections.length === 0 || !hasAnyViewEnabled) {
+    return (
+      <View>
+        <Text style={styles.sectionTitle}>{t('reports.blocks.inspections.title')}</Text>
+        <Text style={styles.textMuted}>{t('reports.pdf.noInspections')}</Text>
+      </View>
+    );
+  }
+
+  // Count inspections with NC for summary
+  const totalWithNC = data.inspections.filter(hasNonConformities).length;
+
+  return (
+    <View>
+      {/* Overview Section */}
+      {showOverview && (
+        <>
+          <Text style={styles.sectionTitle}>{t('reports.blocks.inspections.overviewTitle')}</Text>
+          {highlightOnlyNC && totalWithNC > 0 && (
+            <View style={[styles.infoBox, { backgroundColor: '#fef2f2', marginBottom: 8 }]}>
+              <Text style={[styles.text, { color: '#dc2626' }]}>
+                ⚠ {t('reports.pdf.inspectionsWithNC', { count: totalWithNC, total: data.inspections.length })}
+              </Text>
+            </View>
+          )}
+          <InspectionsOverviewTable
+            inspections={data.inspections}
+            styles={styles}
+            t={t}
+            highlightOnlyNC={highlightOnlyNC}
+          />
+        </>
+      )}
+
+      {/* Detailed Section */}
+      {showDetailed && (
+        <View style={{ marginTop: showOverview ? 20 : 0 }}>
+          <Text style={styles.sectionTitle}>{t('reports.blocks.inspections.detailedTitle')}</Text>
+          <InspectionsDetailedView
+            inspections={data.inspections}
+            block={block}
+            styles={styles}
+            t={t}
+            highlightOnlyNC={highlightOnlyNC}
+          />
+        </View>
+      )}
+    </View>
+  );
+};
 
 const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   const getPriorityStyle = (priority: string) => {

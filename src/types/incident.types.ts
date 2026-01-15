@@ -62,8 +62,16 @@ export interface UpdateIncidentRequest {
   status?: IncidentStatus;
 }
 
+export interface AssignableUser {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export interface IncidentState {
   incidents: Incident[];
   currentIncident: Incident | null;
+  assignableUsers: AssignableUser[];
   error: string | null;
 }

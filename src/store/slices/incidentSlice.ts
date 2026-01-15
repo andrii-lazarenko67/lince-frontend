@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest } from '../../types';
+import type { Incident, IncidentState, IncidentComment, CreateIncidentRequest, UpdateIncidentRequest, AssignableUser } from '../../types';
 import { setLoading } from './uiSlice';
 import { fetchUnreadCount } from './notificationSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
@@ -8,6 +8,7 @@ import { getApiErrorMessage } from '../../utils/apiMessages';
 const initialState: IncidentState = {
   incidents: [],
   currentIncident: null,
+  assignableUsers: [],
   error: null
 };
 
@@ -184,6 +185,19 @@ export const addIncidentPhotos = createAsyncThunk(
   }
 );
 
+// Fetch users that can be assigned to incidents (for managers and admins)
+export const fetchAssignableUsers = createAsyncThunk(
+  'incidents/fetchAssignableUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get<{ success: boolean; data: AssignableUser[] }>('/incidents/assignable-users');
+      return response.data.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch assignable users'));
+    }
+  }
+);
+
 const incidentSlice = createSlice({
   name: 'incidents',
   initialState,
@@ -260,6 +274,10 @@ const incidentSlice = createSlice({
         if (index !== -1) {
           state.incidents[index] = { ...state.incidents[index], photos: action.payload.photos };
         }
+        state.error = null;
+      })
+      .addCase(fetchAssignableUsers.fulfilled, (state, action) => {
+        state.assignableUsers = action.payload;
         state.error = null;
       });
   }

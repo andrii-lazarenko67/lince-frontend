@@ -62,7 +62,9 @@
       },
       "inspections": {
         "title": "Inspections",
-        "description": "Inspection records and checklist results"
+        "description": "Inspection records and checklist results",
+        "overviewTitle": "Inspections – Overview",
+        "detailedTitle": "Inspections – Detailed View"
       },
       "occurrences": {
         "title": "Occurrences",
@@ -85,7 +87,9 @@
         "includeCharts": "Include charts",
         "highlightAlerts": "Highlight alerts",
         "includeTimeline": "Include timeline",
-        "analysisViews": "Analysis Views"
+        "analysisViews": "Analysis Views",
+        "inspectionViews": "Inspection Views",
+        "highlightOnlyNC": "Highlight only non-conformities"
       }
     },
     "branding": {
@@ -220,7 +224,11 @@
       "expectedRange": "Expected Range",
       "observations": "Observations",
       "noDetailedAnalyses": "No detailed analysis data available",
-      "valueOutOfRange": "Value out of expected range"
+      "valueOutOfRange": "Value out of expected range",
+      "noNCInspections": "No inspections with non-conformities found",
+      "inspectionsWithNC": "{{count}} of {{total}} inspections have non-conformities",
+      "checklistItem": "Checklist Item",
+      "comment": "Comment"
     },
     "errors": {
       "datesRequired": "Start date and end date are required for custom reports",
@@ -386,7 +394,11 @@
       "viewed": "Viewed",
       "compliant": "Compliant",
       "nonCompliant": "Non-Compliant",
-      "noInspections": "No inspections in this report"
+      "noInspections": "No inspections in this report",
+      "statusC": "C",
+      "statusNC": "NC",
+      "statusNA": "N/A",
+      "statusNV": "NV"
     },
     "incidents": {
       "title": "Incidents Report",
