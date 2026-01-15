@@ -1243,14 +1243,18 @@ const filterIncidentsByCriticality = (
 
   // If filter is not 'all', filter by specific criticality
   if (criticalityFilter && criticalityFilter !== 'all') {
-    return incidents.filter(inc => inc.priority === criticalityFilter);
+    const filtered = incidents.filter(inc => inc.priority === criticalityFilter);
+    // Fallback: if filter results in empty, return all incidents
+    return filtered.length > 0 ? filtered : incidents;
   }
 
   // If showOnlyHighestCriticality is true, filter by highest priority level
   if (showOnlyHighestCriticality) {
     const highestPriority = getHighestPriority(incidents);
     if (highestPriority) {
-      return incidents.filter(inc => inc.priority === highestPriority);
+      const filtered = incidents.filter(inc => inc.priority === highestPriority);
+      // Fallback: if filter results in empty (e.g., priority field missing), return all incidents
+      return filtered.length > 0 ? filtered : incidents;
     }
   }
 

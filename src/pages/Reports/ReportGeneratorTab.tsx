@@ -159,10 +159,6 @@ const ReportGeneratorTab: React.FC = () => {
 
 
     if (generateReport.fulfilled.match(result)) {
-      if (result.payload.reportData?.chartData) {
-        if (result.payload.reportData.chartData.fieldCharts?.length > 0) {
-        }
-      }
       setGenerationComplete(true);
       setActiveStep(5);
     }
