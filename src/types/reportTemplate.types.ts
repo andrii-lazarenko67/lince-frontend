@@ -62,6 +62,9 @@ export interface ChartSeriesData {
 export interface ReportChartData {
   fieldCharts: ChartSeriesData[];
   laboratoryCharts: ChartSeriesData[];
+  // Chart configs passed from backend
+  fieldChartConfig?: ChartConfig;
+  laboratoryChartConfig?: ChartConfig;
 }
 
 // Default chart configuration
@@ -97,6 +100,9 @@ export interface ReportBlock {
   showLaboratoryDetailed?: boolean;   // Laboratory Monitoring Analysis – Detailed
   // Chart configuration for analyses block
   chartConfig?: ChartConfig;
+  // Separate field and laboratory chart configs (new structure)
+  fieldChartConfig?: ChartConfig;
+  laboratoryChartConfig?: ChartConfig;
 }
 
 export interface ReportBranding {

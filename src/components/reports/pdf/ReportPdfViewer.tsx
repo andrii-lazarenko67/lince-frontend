@@ -67,8 +67,11 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
   const shouldGenerateCharts = analysesBlock?.includeCharts && chartData &&
     (chartData.fieldCharts.length > 0 || chartData.laboratoryCharts.length > 0);
 
-  // Get chart config from analyses block
-  const chartConfig: ChartConfig = analysesBlock?.chartConfig || DEFAULT_CHART_CONFIG;
+  // Get chart config from analyses block - support both old and new config structure
+  // Use fieldChartConfig for field charts, laboratoryChartConfig for lab charts
+  // Also check if chartData has the configs embedded from backend
+  const fieldChartConfig: ChartConfig = chartData?.fieldChartConfig || analysesBlock?.fieldChartConfig || analysesBlock?.chartConfig || DEFAULT_CHART_CONFIG;
+  const laboratoryChartConfig: ChartConfig = chartData?.laboratoryChartConfig || analysesBlock?.laboratoryChartConfig || analysesBlock?.chartConfig || DEFAULT_CHART_CONFIG;
 
   // Handle chart images generation
   const handleFieldChartsGenerated = useCallback((images: Map<number, string>) => {
@@ -160,20 +163,20 @@ export const ReportPdfViewer: React.FC<ReportPdfViewerProps> = ({
 
   return (
     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-      {/* Hidden chart generators */}
+      {/* Hidden chart generators - use separate configs for field and laboratory charts */}
       {shouldGenerateCharts && chartData && chartsGenerating && (
         <>
           {chartData.fieldCharts.length > 0 && (
             <ChartImageBatchGenerator
               chartSeriesList={chartData.fieldCharts}
-              chartConfig={chartConfig}
+              chartConfig={fieldChartConfig}
               onAllImagesGenerated={handleFieldChartsGenerated}
             />
           )}
           {chartData.laboratoryCharts.length > 0 && (
             <ChartImageBatchGenerator
               chartSeriesList={chartData.laboratoryCharts}
-              chartConfig={chartConfig}
+              chartConfig={laboratoryChartConfig}
               onAllImagesGenerated={handleLaboratoryChartsGenerated}
             />
           )}
