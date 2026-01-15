@@ -84,6 +84,9 @@ export const DEFAULT_CHART_CONFIG: ChartConfig = {
   showDataLabels: true
 };
 
+// Occurrence criticality filter type
+export type OccurrenceCriticalityFilter = 'all' | 'critical' | 'high' | 'medium' | 'low';
+
 export interface ReportBlock {
   type: ReportBlockType;
   enabled: boolean;
@@ -107,6 +110,12 @@ export interface ReportBlock {
   showInspectionOverview?: boolean;   // Inspections – Overview
   showInspectionDetailed?: boolean;   // Inspections – Detailed View
   highlightOnlyNonConformities?: boolean;  // Default: true - highlight only NC inspections
+  // Occurrences block options
+  showOccurrenceOverview?: boolean;   // Occurrences – Overview
+  showOccurrenceDetailed?: boolean;   // Occurrences – Detailed View
+  showOnlyHighestCriticality?: boolean;  // Default: true - show only highest criticality
+  criticalityFilter?: OccurrenceCriticalityFilter;  // Filter by criticality level
+  includeComments?: boolean;          // Include occurrence comments in detailed view
 }
 
 export interface ReportBranding {
@@ -201,7 +210,18 @@ export const DEFAULT_TEMPLATE_CONFIG: ReportTemplateConfig = {
       showInspectionDetailed: false,
       highlightOnlyNonConformities: true
     },
-    { type: 'occurrences', enabled: true, order: 6, includeTimeline: true },
+    {
+      type: 'occurrences',
+      enabled: true,
+      order: 6,
+      includeTimeline: true,
+      includePhotos: true,
+      includeComments: true,
+      showOccurrenceOverview: true,
+      showOccurrenceDetailed: false,
+      showOnlyHighestCriticality: true,
+      criticalityFilter: 'all'
+    },
     { type: 'conclusion', enabled: true, order: 7 },
     { type: 'signature', enabled: true, order: 8 },
     { type: 'attachments', enabled: false, order: 9 }

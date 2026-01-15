@@ -36,9 +36,11 @@ import {
 } from '@mui/icons-material';
 import { useAppDispatch } from '../../hooks';
 import { updateReportTemplate } from '../../store/slices/reportTemplateSlice';
-import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType, ChartConfig } from '../../types';
+import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType, ChartConfig, OccurrenceCriticalityFilter } from '../../types';
 import { DEFAULT_CHART_CONFIG } from '../../types';
 import ChartConfigPanel from '../../components/reports/ChartConfigPanel';
+
+const CRITICALITY_OPTIONS: OccurrenceCriticalityFilter[] = ['all', 'critical', 'high', 'medium', 'low'];
 
 interface ReportTemplateEditorProps {
   template: ReportTemplate;
@@ -87,7 +89,7 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
     ));
   }, []);
 
-  const handleBlockOptionChange = useCallback((blockType: ReportBlockType, option: string, value: boolean) => {
+  const handleBlockOptionChange = useCallback((blockType: ReportBlockType, option: string, value: boolean | string) => {
     setBlocks(prev => prev.map(block =>
       block.type === blockType ? { ...block, [option]: value } : block
     ));
@@ -419,16 +421,91 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                       </>
                     )}
                     {block.type === 'occurrences' && (
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={block.includeTimeline || false}
-                            onChange={(e) => handleBlockOptionChange(block.type, 'includeTimeline', e.target.checked)}
-                            size="small"
-                          />
-                        }
-                        label={t('reports.blocks.options.includeTimeline')}
-                      />
+                      <>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.includePhotos || false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'includePhotos', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.includePhotos')}
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.includeTimeline || false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'includeTimeline', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.includeTimeline')}
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.includeComments || false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'includeComments', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.includeComments')}
+                        />
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={block.showOnlyHighestCriticality !== false}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'showOnlyHighestCriticality', e.target.checked)}
+                              size="small"
+                            />
+                          }
+                          label={t('reports.blocks.options.showOnlyHighestCriticality')}
+                        />
+                        <Box sx={{ width: '100%', mt: 1 }}>
+                          <FormControl size="small" sx={{ minWidth: 200 }}>
+                            <InputLabel>{t('reports.blocks.options.criticalityFilter')}</InputLabel>
+                            <Select
+                              value={block.criticalityFilter || 'all'}
+                              label={t('reports.blocks.options.criticalityFilter')}
+                              onChange={(e) => handleBlockOptionChange(block.type, 'criticalityFilter', e.target.value)}
+                            >
+                              {CRITICALITY_OPTIONS.map((option) => (
+                                <MenuItem key={option} value={option}>
+                                  {t(`reports.blocks.occurrences.criticality.${option}`)}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Box>
+                        <Box sx={{ width: '100%', mt: 1 }}>
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                            {t('reports.blocks.options.occurrenceViews')}
+                          </Typography>
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, ml: 1 }}>
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showOccurrenceOverview !== false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showOccurrenceOverview', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.occurrences.overviewTitle')}
+                            />
+                            <FormControlLabel
+                              control={
+                                <Switch
+                                  checked={block.showOccurrenceDetailed || false}
+                                  onChange={(e) => handleBlockOptionChange(block.type, 'showOccurrenceDetailed', e.target.checked)}
+                                  size="small"
+                                />
+                              }
+                              label={t('reports.blocks.occurrences.detailedTitle')}
+                            />
+                          </Box>
+                        </Box>
+                      </>
                     )}
                   </Box>
                 )}

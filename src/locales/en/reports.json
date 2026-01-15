@@ -68,7 +68,16 @@
       },
       "occurrences": {
         "title": "Occurrences",
-        "description": "Incidents and issues recorded during the period"
+        "description": "Incidents and issues recorded during the period",
+        "overviewTitle": "Occurrences – Overview",
+        "detailedTitle": "Occurrences – Detailed View",
+        "criticality": {
+          "all": "All Criticalities",
+          "critical": "Critical Only",
+          "high": "High Only",
+          "medium": "Medium Only",
+          "low": "Low Only"
+        }
       },
       "conclusion": {
         "title": "Conclusion",
@@ -87,9 +96,13 @@
         "includeCharts": "Include charts",
         "highlightAlerts": "Highlight alerts",
         "includeTimeline": "Include timeline",
+        "includeComments": "Include comments",
         "analysisViews": "Analysis Views",
         "inspectionViews": "Inspection Views",
-        "highlightOnlyNC": "Highlight only non-conformities"
+        "occurrenceViews": "Occurrence Views",
+        "highlightOnlyNC": "Highlight only non-conformities",
+        "showOnlyHighestCriticality": "Show only highest criticality",
+        "criticalityFilter": "Criticality Filter"
       }
     },
     "branding": {
@@ -228,7 +241,10 @@
       "noNCInspections": "No inspections with non-conformities found",
       "inspectionsWithNC": "{{count}} of {{total}} inspections have non-conformities",
       "checklistItem": "Checklist Item",
-      "comment": "Comment"
+      "comment": "Comment",
+      "comments": "Comments",
+      "timeline": "Timeline",
+      "showingOccurrences": "Showing {{shown}} of {{total}} occurrences"
     },
     "errors": {
       "datesRequired": "Start date and end date are required for custom reports",

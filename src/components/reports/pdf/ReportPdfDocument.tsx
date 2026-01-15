@@ -1210,7 +1210,59 @@ const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   );
 };
 
-const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+// Priority order for filtering (highest to lowest)
+const PRIORITY_ORDER: Record<string, number> = {
+  'critical': 4,
+  'high': 3,
+  'medium': 2,
+  'low': 1
+};
+
+// Helper function to get highest priority level in incidents
+const getHighestPriority = (incidents: ReportIncident[]): string | null => {
+  if (incidents.length === 0) return null;
+  let highest = 'low';
+  let highestOrder = 0;
+  incidents.forEach(inc => {
+    const order = PRIORITY_ORDER[inc.priority] || 0;
+    if (order > highestOrder) {
+      highestOrder = order;
+      highest = inc.priority;
+    }
+  });
+  return highest;
+};
+
+// Filter incidents based on criticality settings
+const filterIncidentsByCriticality = (
+  incidents: ReportIncident[],
+  showOnlyHighestCriticality: boolean,
+  criticalityFilter: string
+): ReportIncident[] => {
+  if (incidents.length === 0) return [];
+
+  // If filter is not 'all', filter by specific criticality
+  if (criticalityFilter && criticalityFilter !== 'all') {
+    return incidents.filter(inc => inc.priority === criticalityFilter);
+  }
+
+  // If showOnlyHighestCriticality is true, filter by highest priority level
+  if (showOnlyHighestCriticality) {
+    const highestPriority = getHighestPriority(incidents);
+    if (highestPriority) {
+      return incidents.filter(inc => inc.priority === highestPriority);
+    }
+  }
+
+  return incidents;
+};
+
+// Occurrences Overview Table Component
+const OccurrencesOverviewTable: React.FC<{
+  incidents: ReportIncident[];
+  styles: ReturnType<typeof createStyles>;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}> = ({ incidents, styles, t }) => {
   const getPriorityStyle = (priority: string) => {
     switch (priority) {
       case 'critical': return styles.badgeCritical;
@@ -1229,51 +1281,255 @@ const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
     }
   };
 
+  if (incidents.length === 0) {
+    return <Text style={styles.textMuted}>{t('reports.pdf.noOccurrences')}</Text>;
+  }
+
+  return (
+    <View style={styles.table}>
+      <View style={styles.tableHeader}>
+        <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.title')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.priority')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
+        <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+      </View>
+      {incidents.map((inc, idx) => (
+        <View key={inc.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
+          <Text style={[styles.tableCell, { flex: 2 }]}>{inc.title}</Text>
+          <Text style={styles.tableCell}>{inc.system?.name || '-'}</Text>
+          <Text style={[styles.tableCell, getPriorityStyle(inc.priority)]}>
+            {t(`reports.incidents.${inc.priority}`)}
+          </Text>
+          <Text style={[styles.tableCell, getStatusStyle(inc.status)]}>
+            {t(`reports.incidents.${inc.status}`)}
+          </Text>
+          <Text style={styles.tableCell}>{formatDate(inc.createdAt)}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
+
+// Occurrences Detailed View Component
+const OccurrencesDetailedView: React.FC<{
+  incidents: ReportIncident[];
+  block: ReportBlock;
+  styles: ReturnType<typeof createStyles>;
+  t: (key: string, options?: Record<string, unknown>) => string;
+}> = ({ incidents, block, styles, t }) => {
+  const getPriorityStyle = (priority: string) => {
+    switch (priority) {
+      case 'critical': return styles.badgeCritical;
+      case 'high': return styles.badgeHigh;
+      case 'medium': return styles.badgeMedium;
+      default: return styles.badgeLow;
+    }
+  };
+
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'open': return styles.statusOpen;
+      case 'in_progress': return styles.statusInProgress;
+      case 'resolved': return styles.statusResolved;
+      default: return styles.statusClosed;
+    }
+  };
+
+  if (incidents.length === 0) {
+    return <Text style={styles.textMuted}>{t('reports.pdf.noOccurrences')}</Text>;
+  }
+
   return (
     <View>
-      <Text style={styles.sectionTitle}>{t('reports.blocks.occurrences.title')}</Text>
-      {data.incidents.length === 0 ? (
-        <Text style={styles.textMuted}>{t('reports.pdf.noOccurrences')}</Text>
-      ) : (
-        <>
-          <View style={styles.table}>
-            <View style={styles.tableHeader}>
-              <Text style={[styles.tableHeaderCell, { flex: 2 }]}>{t('reports.pdf.title')}</Text>
-              <Text style={styles.tableHeaderCell}>{t('reports.pdf.system')}</Text>
-              <Text style={styles.tableHeaderCell}>{t('reports.pdf.priority')}</Text>
-              <Text style={styles.tableHeaderCell}>{t('reports.pdf.status')}</Text>
-              <Text style={styles.tableHeaderCell}>{t('reports.pdf.date')}</Text>
+      {incidents.map((inc) => (
+        <View key={inc.id} style={{ marginBottom: 15 }}>
+          {/* Occurrence Header */}
+          <View style={[styles.infoBox, { marginBottom: 8 }]}>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.title')}:</Text>
+              <Text style={styles.infoValue}>{inc.title}</Text>
             </View>
-            {data.incidents.map((inc, idx) => (
-              <View key={inc.id} style={[styles.tableRow, idx % 2 === 1 ? styles.tableRowAlt : {}]}>
-                <Text style={[styles.tableCell, { flex: 2 }]}>{inc.title}</Text>
-                <Text style={styles.tableCell}>{inc.system?.name || '-'}</Text>
-                <Text style={[styles.tableCell, getPriorityStyle(inc.priority)]}>
-                  {t(`reports.incidents.${inc.priority}`)}
-                </Text>
-                <Text style={[styles.tableCell, getStatusStyle(inc.status)]}>
-                  {t(`reports.incidents.${inc.status}`)}
-                </Text>
-                <Text style={styles.tableCell}>{formatDate(inc.createdAt)}</Text>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.system')}:</Text>
+              <Text style={styles.infoValue}>{inc.system?.name || '-'}</Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.priority')}:</Text>
+              <Text style={[styles.infoValue, getPriorityStyle(inc.priority)]}>
+                {t(`reports.incidents.${inc.priority}`)}
+              </Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.pdf.status')}:</Text>
+              <Text style={[styles.infoValue, getStatusStyle(inc.status)]}>
+                {t(`reports.incidents.${inc.status}`)}
+              </Text>
+            </View>
+            <View style={styles.infoRow}>
+              <Text style={styles.infoLabel}>{t('reports.incidents.createdAt')}:</Text>
+              <Text style={styles.infoValue}>{formatDateTime(inc.createdAt)}</Text>
+            </View>
+            {inc.reporter && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('reports.incidents.reporter')}:</Text>
+                <Text style={styles.infoValue}>{inc.reporter.name}</Text>
               </View>
-            ))}
+            )}
+            {inc.assignee && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('reports.incidents.assignedTo')}:</Text>
+                <Text style={styles.infoValue}>{inc.assignee.name}</Text>
+              </View>
+            )}
+            {inc.resolvedAt && (
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>{t('reports.incidents.resolvedAt')}:</Text>
+                <Text style={[styles.infoValue, { color: '#16a34a' }]}>{formatDateTime(inc.resolvedAt)}</Text>
+              </View>
+            )}
           </View>
-          {block.includeTimeline && data.incidents.length > 0 && (
-            <View style={styles.timeline}>
-              {data.incidents.slice(0, 5).map(inc => (
-                <View key={inc.id} style={styles.timelineItem}>
-                  <Text style={styles.timelineDate}>{formatDateTime(inc.createdAt)}</Text>
-                  <Text style={styles.text}>{inc.title}</Text>
-                  {inc.resolvedAt && (
-                    <Text style={[styles.textMuted, { color: '#16a34a' }]}>
-                      ✓ {t('reports.incidents.resolved')}: {formatDateTime(inc.resolvedAt)}
-                    </Text>
+
+          {/* Description */}
+          {inc.description && (
+            <View style={{ marginTop: 8 }}>
+              <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 4 }]}>
+                {t('reports.pdf.description')}:
+              </Text>
+              <Text style={styles.text}>{inc.description}</Text>
+            </View>
+          )}
+
+          {/* Comments */}
+          {block.includeComments && inc.comments && inc.comments.length > 0 && (
+            <View style={{ marginTop: 8 }}>
+              <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 4 }]}>
+                {t('reports.pdf.comments')} ({inc.comments.length}):
+              </Text>
+              {inc.comments.map((comment) => (
+                <View key={comment.id} style={{ marginBottom: 4, paddingLeft: 8, borderLeftWidth: 2, borderLeftColor: '#e5e7eb' }}>
+                  <Text style={styles.textMuted}>
+                    {comment.user?.name || '-'} - {formatDateTime(comment.createdAt)}
+                  </Text>
+                  <Text style={styles.text}>{comment.content}</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {/* Photos */}
+          {block.includePhotos && inc.photos && inc.photos.length > 0 && (
+            <View style={[styles.photoGrid, { marginTop: 8 }]}>
+              {inc.photos.slice(0, 4).map(photo => (
+                <View key={photo.id} style={styles.photoContainer}>
+                  <Image src={photo.url} style={styles.photo} />
+                  {photo.description && (
+                    <Text style={styles.photoCaption}>{photo.description}</Text>
                   )}
                 </View>
               ))}
             </View>
           )}
+        </View>
+      ))}
+    </View>
+  );
+};
+
+const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
+  // Determine which views to show (default: overview true, detailed false)
+  const showOverview = block.showOccurrenceOverview !== false;
+  const showDetailed = block.showOccurrenceDetailed === true;
+  const showOnlyHighestCriticality = block.showOnlyHighestCriticality !== false;
+  const criticalityFilter = block.criticalityFilter || 'all';
+
+  // Check if at least one view is enabled
+  const hasAnyViewEnabled = showOverview || showDetailed;
+
+  // Filter incidents based on criticality settings
+  const filteredIncidents = filterIncidentsByCriticality(
+    data.incidents,
+    showOnlyHighestCriticality,
+    criticalityFilter
+  );
+
+  if (data.incidents.length === 0 || !hasAnyViewEnabled) {
+    return (
+      <View>
+        <Text style={styles.sectionTitle}>{t('reports.blocks.occurrences.title')}</Text>
+        <Text style={styles.textMuted}>{t('reports.pdf.noOccurrences')}</Text>
+      </View>
+    );
+  }
+
+  // Calculate summary info
+  const totalIncidents = data.incidents.length;
+  const criticalCount = data.incidents.filter(i => i.priority === 'critical').length;
+  const highCount = data.incidents.filter(i => i.priority === 'high').length;
+
+  return (
+    <View>
+      {/* Overview Section */}
+      {showOverview && (
+        <>
+          <Text style={styles.sectionTitle}>{t('reports.blocks.occurrences.overviewTitle')}</Text>
+          {/* Summary info */}
+          {(showOnlyHighestCriticality || criticalityFilter !== 'all') && (
+            <View style={[styles.infoBox, { marginBottom: 8 }]}>
+              <Text style={styles.text}>
+                {t('reports.pdf.showingOccurrences', {
+                  shown: filteredIncidents.length,
+                  total: totalIncidents
+                })}
+              </Text>
+              {(criticalCount > 0 || highCount > 0) && (
+                <Text style={[styles.text, { color: '#dc2626', marginTop: 4 }]}>
+                  {criticalCount > 0 && `${t('reports.incidents.critical')}: ${criticalCount}`}
+                  {criticalCount > 0 && highCount > 0 && ' | '}
+                  {highCount > 0 && `${t('reports.incidents.high')}: ${highCount}`}
+                </Text>
+              )}
+            </View>
+          )}
+          <OccurrencesOverviewTable
+            incidents={filteredIncidents}
+            styles={styles}
+            t={t}
+          />
         </>
+      )}
+
+      {/* Timeline (if enabled) */}
+      {block.includeTimeline && filteredIncidents.length > 0 && (
+        <View style={[styles.timeline, { marginTop: showOverview ? 15 : 0 }]}>
+          <Text style={[styles.text, { fontFamily: 'Helvetica-Bold', marginBottom: 8 }]}>
+            {t('reports.pdf.timeline')}
+          </Text>
+          {filteredIncidents.slice(0, 5).map(inc => (
+            <View key={inc.id} style={styles.timelineItem}>
+              <Text style={styles.timelineDate}>{formatDateTime(inc.createdAt)}</Text>
+              <Text style={styles.text}>{inc.title}</Text>
+              {inc.resolvedAt && (
+                <Text style={[styles.textMuted, { color: '#16a34a' }]}>
+                  {t('reports.incidents.resolved')}: {formatDateTime(inc.resolvedAt)}
+                </Text>
+              )}
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Detailed Section */}
+      {showDetailed && (
+        <View style={{ marginTop: showOverview ? 20 : 0 }}>
+          <Text style={styles.sectionTitle}>{t('reports.blocks.occurrences.detailedTitle')}</Text>
+          <OccurrencesDetailedView
+            incidents={filteredIncidents}
+            block={block}
+            styles={styles}
+            t={t}
+          />
+        </View>
       )}
     </View>
   );

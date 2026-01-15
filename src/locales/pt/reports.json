@@ -68,7 +68,16 @@
       },
       "occurrences": {
         "title": "Ocorrências",
-        "description": "Incidentes e problemas registrados durante o período"
+        "description": "Incidentes e problemas registrados durante o período",
+        "overviewTitle": "Ocorrências – Visão Geral",
+        "detailedTitle": "Ocorrências – Visão Detalhada",
+        "criticality": {
+          "all": "Todas as Criticidades",
+          "critical": "Somente Crítica",
+          "high": "Somente Alta",
+          "medium": "Somente Média",
+          "low": "Somente Baixa"
+        }
       },
       "conclusion": {
         "title": "Conclusão",
@@ -87,9 +96,13 @@
         "includeCharts": "Incluir gráficos",
         "highlightAlerts": "Destacar alertas",
         "includeTimeline": "Incluir linha do tempo",
+        "includeComments": "Incluir comentários",
         "analysisViews": "Visualizações de Análise",
         "inspectionViews": "Visualizações de Inspeção",
-        "highlightOnlyNC": "Destacar apenas não conformidades"
+        "occurrenceViews": "Visualizações de Ocorrência",
+        "highlightOnlyNC": "Destacar apenas não conformidades",
+        "showOnlyHighestCriticality": "Mostrar apenas maior criticidade",
+        "criticalityFilter": "Filtro de Criticidade"
       }
     },
     "branding": {
@@ -228,7 +241,10 @@
       "noNCInspections": "Nenhuma inspeção com não conformidades encontrada",
       "inspectionsWithNC": "{{count}} de {{total}} inspeções têm não conformidades",
       "checklistItem": "Item da Checklist",
-      "comment": "Comentário"
+      "comment": "Comentário",
+      "comments": "Comentários",
+      "timeline": "Linha do Tempo",
+      "showingOccurrences": "Mostrando {{shown}} de {{total}} ocorrências"
     },
     "errors": {
       "datesRequired": "Data inicial e data final são obrigatórias para relatórios personalizados",
