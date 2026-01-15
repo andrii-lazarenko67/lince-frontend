@@ -1542,34 +1542,128 @@ const OccurrencesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
 const ConclusionBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
   <View>
     <Text style={styles.sectionTitle}>{t('reports.blocks.conclusion.title')}</Text>
-    <View style={styles.summaryGrid}>
-      <View style={styles.summaryItem}>
-        <Text style={styles.summaryValue}>{data.summary.totalSystems}</Text>
-        <Text style={styles.summaryLabel}>{t('reports.pdf.totalSystems')}</Text>
+
+    {/* Summary Statistics Section */}
+    <View style={{
+      backgroundColor: '#f8fafc',
+      borderRadius: 6,
+      padding: 15,
+      marginBottom: 15,
+      borderWidth: 1,
+      borderColor: '#e2e8f0'
+    }}>
+      <Text style={{
+        fontSize: 11,
+        fontFamily: 'Helvetica-Bold',
+        color: '#475569',
+        marginBottom: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 0.5
+      }}>
+        {t('reports.pdf.reportSummary', { defaultValue: 'Report Summary' })}
+      </Text>
+      <View style={styles.summaryGrid}>
+        <View style={styles.summaryItem}>
+          <Text style={[styles.summaryValue, { color: '#1e40af' }]}>{data.summary.totalSystems}</Text>
+          <Text style={styles.summaryLabel}>{t('reports.pdf.totalSystems')}</Text>
+        </View>
+        <View style={styles.summaryItem}>
+          <Text style={[styles.summaryValue, { color: '#047857' }]}>{data.summary.totalReadings}</Text>
+          <Text style={styles.summaryLabel}>{t('reports.pdf.totalAnalyses')}</Text>
+        </View>
+        <View style={styles.summaryItem}>
+          <Text style={[styles.summaryValue, { color: '#7c3aed' }]}>{data.summary.totalInspections}</Text>
+          <Text style={styles.summaryLabel}>{t('reports.pdf.totalInspections')}</Text>
+        </View>
+        <View style={styles.summaryItem}>
+          <Text style={[styles.summaryValue, { color: '#ea580c' }]}>{data.summary.totalIncidents}</Text>
+          <Text style={styles.summaryLabel}>{t('reports.pdf.totalOccurrences')}</Text>
+        </View>
       </View>
-      <View style={styles.summaryItem}>
-        <Text style={styles.summaryValue}>{data.summary.totalReadings}</Text>
-        <Text style={styles.summaryLabel}>{t('reports.pdf.totalAnalyses')}</Text>
-      </View>
-      <View style={styles.summaryItem}>
-        <Text style={styles.summaryValue}>{data.summary.totalInspections}</Text>
-        <Text style={styles.summaryLabel}>{t('reports.pdf.totalInspections')}</Text>
-      </View>
-      <View style={styles.summaryItem}>
-        <Text style={styles.summaryValue}>{data.summary.totalIncidents}</Text>
-        <Text style={styles.summaryLabel}>{t('reports.pdf.totalOccurrences')}</Text>
-      </View>
+
+      {/* Alert indicator for out of range readings */}
+      {data.summary.outOfRangeCount > 0 && (
+        <View style={{
+          backgroundColor: '#fef2f2',
+          borderRadius: 4,
+          padding: 10,
+          marginTop: 12,
+          borderLeftWidth: 3,
+          borderLeftColor: '#dc2626'
+        }}>
+          <Text style={{ fontSize: 10, color: '#dc2626', fontFamily: 'Helvetica-Bold' }}>
+            ⚠ {t('reports.pdf.alertsFound', { defaultValue: 'Alerts Found' })}: {data.summary.outOfRangeCount} {t('reports.statistics.outOfRange').toLowerCase()}
+          </Text>
+        </View>
+      )}
+
+      {/* Open incidents indicator */}
+      {data.summary.openIncidents > 0 && (
+        <View style={{
+          backgroundColor: '#fef3c7',
+          borderRadius: 4,
+          padding: 10,
+          marginTop: 8,
+          borderLeftWidth: 3,
+          borderLeftColor: '#f59e0b'
+        }}>
+          <Text style={{ fontSize: 10, color: '#92400e', fontFamily: 'Helvetica-Bold' }}>
+            ⚡ {t('reports.pdf.openIncidents', { defaultValue: 'Open Incidents' })}: {data.summary.openIncidents}
+          </Text>
+        </View>
+      )}
     </View>
-    {data.summary.outOfRangeCount > 0 && (
-      <View style={[styles.infoBox, { backgroundColor: '#fef2f2' }]}>
-        <Text style={[styles.text, { color: '#dc2626' }]}>
-          ⚠ {data.summary.outOfRangeCount} {t('reports.statistics.outOfRange').toLowerCase()}
+
+    {/* Conclusion Text Section */}
+    {data.conclusion && (
+      <View style={{
+        backgroundColor: '#f0f9ff',
+        borderRadius: 6,
+        padding: 15,
+        borderWidth: 1,
+        borderColor: '#bae6fd',
+        borderLeftWidth: 4,
+        borderLeftColor: '#0284c7'
+      }}>
+        <Text style={{
+          fontSize: 11,
+          fontFamily: 'Helvetica-Bold',
+          color: '#0369a1',
+          marginBottom: 10,
+          textTransform: 'uppercase',
+          letterSpacing: 0.5
+        }}>
+          {t('reports.pdf.conclusionText', { defaultValue: 'Conclusion' })}
+        </Text>
+        <Text style={{
+          fontSize: 10,
+          color: '#334155',
+          lineHeight: 1.6,
+          textAlign: 'justify'
+        }}>
+          {data.conclusion}
         </Text>
       </View>
     )}
-    {data.conclusion && (
-      <View style={styles.conclusionBox}>
-        <Text style={styles.text}>{data.conclusion}</Text>
+
+    {/* Empty state when no conclusion */}
+    {!data.conclusion && (
+      <View style={{
+        backgroundColor: '#f1f5f9',
+        borderRadius: 6,
+        padding: 15,
+        borderStyle: 'dashed',
+        borderWidth: 1,
+        borderColor: '#cbd5e1'
+      }}>
+        <Text style={{
+          fontSize: 10,
+          color: '#64748b',
+          fontStyle: 'italic',
+          textAlign: 'center'
+        }}>
+          {t('reports.pdf.noConclusionProvided', { defaultValue: 'No conclusion provided for this report.' })}
+        </Text>
       </View>
     )}
   </View>

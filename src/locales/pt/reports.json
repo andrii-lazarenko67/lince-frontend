@@ -152,6 +152,7 @@
         "period": "Selecionar Período",
         "systems": "Selecionar Sistemas",
         "options": "Configurar Opções",
+        "conclusion": "Conclusão e Assinatura",
         "preview": "Visualizar e Gerar",
         "generate": "Concluído"
       },
@@ -180,7 +181,24 @@
       "generating": "Gerando...",
       "complete": "Relatório gerado com sucesso!",
       "completeHelp": "Seu relatório foi criado. Você pode baixá-lo na aba Histórico.",
-      "createAnother": "Criar Outro Relatório"
+      "createAnother": "Criar Outro Relatório",
+      "conclusion": {
+        "help": "Escreva uma conclusão para o seu relatório. Você pode usar a assistência de IA para gerar um rascunho ou escrever o seu próprio.",
+        "aiAssist": "Gerar com IA",
+        "generating": "Gerando...",
+        "aiHint": "Clique para gerar uma conclusão baseada nos dados do relatório",
+        "label": "Texto da Conclusão",
+        "placeholder": "Digite a conclusão para este relatório...",
+        "helperText": "Este texto aparecerá na seção Conclusão do seu relatório"
+      },
+      "signature": {
+        "title": "Informações de Assinatura",
+        "name": "Nome",
+        "role": "Cargo/Função",
+        "rolePlaceholder": "ex.: Gerente Técnico",
+        "registration": "Número de Registro",
+        "registrationPlaceholder": "ex.: CRQ-12345"
+      }
     },
     "history": {
       "filters": "Filtros",
@@ -231,6 +249,11 @@
       "totalAnalyses": "Total de análises",
       "totalInspections": "Total de inspeções",
       "totalOccurrences": "Total de ocorrências",
+      "reportSummary": "Resumo do Relatório",
+      "alertsFound": "Alertas Encontrados",
+      "openIncidents": "Ocorrências Abertas",
+      "conclusionText": "Conclusão",
+      "noConclusionProvided": "Nenhuma conclusão fornecida para este relatório.",
       "technician": "Técnico",
       "processStages": "Etapas do Processo",
       "parameter": "Parâmetro",

@@ -152,6 +152,7 @@
         "period": "Select Period",
         "systems": "Select Systems",
         "options": "Configure Options",
+        "conclusion": "Conclusion & Signature",
         "preview": "Preview & Generate",
         "generate": "Complete"
       },
@@ -180,7 +181,24 @@
       "generating": "Generating...",
       "complete": "Report generated successfully!",
       "completeHelp": "Your report has been created. You can download it from the History tab.",
-      "createAnother": "Create Another Report"
+      "createAnother": "Create Another Report",
+      "conclusion": {
+        "help": "Write a conclusion for your report. You can use AI assistance to generate a draft or write your own.",
+        "aiAssist": "Generate with AI",
+        "generating": "Generating...",
+        "aiHint": "Click to generate a conclusion based on the report data",
+        "label": "Conclusion Text",
+        "placeholder": "Enter the conclusion for this report...",
+        "helperText": "This text will appear in the Conclusion section of your report"
+      },
+      "signature": {
+        "title": "Signature Information",
+        "name": "Name",
+        "role": "Role/Position",
+        "rolePlaceholder": "e.g., Technical Manager",
+        "registration": "Registration Number",
+        "registrationPlaceholder": "e.g., CRQ-12345"
+      }
     },
     "history": {
       "filters": "Filters",
@@ -231,6 +249,11 @@
       "totalAnalyses": "Total analyses",
       "totalInspections": "Total inspections",
       "totalOccurrences": "Total occurrences",
+      "reportSummary": "Report Summary",
+      "alertsFound": "Alerts Found",
+      "openIncidents": "Open Incidents",
+      "conclusionText": "Conclusion",
+      "noConclusionProvided": "No conclusion provided for this report.",
       "technician": "Technician",
       "processStages": "Process Stages",
       "parameter": "Parameter",

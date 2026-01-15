@@ -285,6 +285,13 @@ export interface GenerateReportRequest {
   systemIds: number[];
   period: GeneratedReportPeriod;
   filters?: GeneratedReportFilters;
+  conclusion?: string;
+  signature?: {
+    name?: string;
+    role?: string;
+    registration?: string;
+    signatureImage?: string;
+  };
 }
 
 export interface GeneratedReportState {

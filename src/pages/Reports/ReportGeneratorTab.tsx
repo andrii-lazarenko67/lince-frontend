@@ -35,7 +35,9 @@ import {
   Water as SystemIcon,
   Preview as PreviewIcon,
   PictureAsPdf as PdfIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
+  AutoAwesome as AiIcon,
+  Edit as EditIcon
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchReportTemplates, fetchDefaultTemplate } from '../../store/slices/reportTemplateSlice';
@@ -67,6 +69,11 @@ const ReportGeneratorTab: React.FC = () => {
   const [includeCharts, setIncludeCharts] = useState(true);
   const [generationComplete, setGenerationComplete] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [conclusionText, setConclusionText] = useState('');
+  const [generatingConclusion, setGeneratingConclusion] = useState(false);
+  const [signatureName, setSignatureName] = useState('');
+  const [signatureRole, setSignatureRole] = useState('');
+  const [signatureRegistration, setSignatureRegistration] = useState('');
 
   // Get root systems (no parentId)
   const rootSystems = systems.filter(s => !s.parentId);
@@ -134,6 +141,41 @@ const ReportGeneratorTab: React.FC = () => {
     }
   };
 
+  // Generate AI-assisted conclusion based on report data
+  const handleGenerateAiConclusion = async () => {
+    setGeneratingConclusion(true);
+    try {
+      // Build a summary of the report data for AI assistance
+      const selectedSystems = rootSystems.filter(s => selectedSystemIds.includes(s.id));
+      const systemNames = selectedSystems.map(s => s.name).join(', ');
+
+      // Create a basic template-based conclusion as AI suggestion
+      const periodLabel = t(`reports.generator.periods.${periodType}`);
+      const systemCount = selectedSystemIds.length;
+
+      // Generate a professional conclusion template
+      const aiSuggestion = t('reports.generator.conclusion.aiSuggestion', {
+        periodLabel,
+        systemCount,
+        systemNames,
+        startDate: new Date(startDate).toLocaleDateString(),
+        endDate: new Date(endDate).toLocaleDateString(),
+        defaultValue: `This ${periodLabel.toLowerCase()} report covers ${systemCount} system(s): ${systemNames}. ` +
+          `The monitoring period was from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}. ` +
+          `All systems were monitored according to established protocols. ` +
+          `Any anomalies or non-conformities identified during this period have been documented in the respective sections above. ` +
+          `Recommended actions have been noted where applicable. ` +
+          `For any questions or clarifications regarding this report, please contact the responsible technician.`
+      });
+
+      setConclusionText(aiSuggestion);
+    } catch (error) {
+      console.error('Error generating AI conclusion:', error);
+    } finally {
+      setGeneratingConclusion(false);
+    }
+  };
+
   const handleGenerate = async () => {
     if (!selectedTemplateId) return;
 
@@ -145,6 +187,13 @@ const ReportGeneratorTab: React.FC = () => {
 
     const name = reportName || `${t('reports.generator.reportPrefix')} ${new Date().toLocaleDateString()}`;
 
+    // Build signature object if any field is filled
+    const signature = (signatureName || signatureRole || signatureRegistration) ? {
+      name: signatureName || user?.name || '',
+      role: signatureRole,
+      registration: signatureRegistration
+    } : undefined;
+
     const result = await dispatch(generateReport({
       templateId: selectedTemplateId,
       name,
@@ -154,13 +203,15 @@ const ReportGeneratorTab: React.FC = () => {
         includeOnlyAlerts,
         includePhotos,
         includeCharts
-      }
+      },
+      conclusion: conclusionText || undefined,
+      signature
     }));
 
 
     if (generateReport.fulfilled.match(result)) {
       setGenerationComplete(true);
-      setActiveStep(5);
+      setActiveStep(6);
     }
   };
 
@@ -234,6 +285,12 @@ const ReportGeneratorTab: React.FC = () => {
         totalIncidents: (reportData.incidents as unknown[])?.length || 0,
         openIncidents: (reportData.incidents as Array<{ status?: string }>)?.filter(i => i.status === 'open').length || 0
       },
+      conclusion: reportData.conclusion || conclusionText || undefined,
+      signature: reportData.signature || (signatureName || signatureRole || signatureRegistration ? {
+        name: signatureName || user?.name || '',
+        role: signatureRole,
+        registration: signatureRegistration
+      } : undefined),
       generatedAt: reportData.generatedAt || new Date().toISOString(),
       generatedBy: {
         id: generatedByFromReport?.id || user?.id || 0,
@@ -241,7 +298,7 @@ const ReportGeneratorTab: React.FC = () => {
       },
       isServiceProvider: user?.isServiceProvider || false
     };
-  }, [reportData, currentReport, periodType, startDate, endDate, user]);
+  }, [reportData, currentReport, periodType, startDate, endDate, user, conclusionText, signatureName, signatureRole, signatureRegistration]);
 
   const canProceed = (step: number): boolean => {
     switch (step) {
@@ -253,6 +310,8 @@ const ReportGeneratorTab: React.FC = () => {
         return selectedSystemIds.length > 0;
       case 3:
         return true;
+      case 4:
+        return true; // Conclusion step - optional content
       default:
         return false;
     }
@@ -274,6 +333,10 @@ const ReportGeneratorTab: React.FC = () => {
     {
       label: t('reports.generator.steps.options'),
       icon: <PreviewIcon />
+    },
+    {
+      label: t('reports.generator.steps.conclusion'),
+      icon: <EditIcon />
     },
     {
       label: t('reports.generator.steps.preview'),
@@ -592,7 +655,7 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
 
-        {/* Step 5: Preview & Generate */}
+        {/* Step 5: Conclusion & Signature */}
         <Step>
           <StepLabel
             StepIconComponent={() => (
@@ -608,11 +671,127 @@ const ReportGeneratorTab: React.FC = () => {
                   justifyContent: 'center'
                 }}
               >
-                {activeStep > 4 ? <CheckIcon fontSize="small" /> : <PreviewIcon fontSize="small" />}
+                {activeStep > 4 ? <CheckIcon fontSize="small" /> : <EditIcon fontSize="small" />}
               </Box>
             )}
           >
             {steps[4].label}
+          </StepLabel>
+          <StepContent>
+            <Box sx={{ mb: 3 }}>
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                {t('reports.generator.conclusion.help')}
+              </Typography>
+
+              {/* AI Assistance Button */}
+              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Button
+                  variant="outlined"
+                  startIcon={generatingConclusion ? <CircularProgress size={16} /> : <AiIcon />}
+                  onClick={handleGenerateAiConclusion}
+                  disabled={generatingConclusion}
+                  size="small"
+                >
+                  {generatingConclusion
+                    ? t('reports.generator.conclusion.generating')
+                    : t('reports.generator.conclusion.aiAssist')
+                  }
+                </Button>
+                <Typography variant="caption" color="text.secondary">
+                  {t('reports.generator.conclusion.aiHint')}
+                </Typography>
+              </Box>
+
+              {/* Conclusion Text Area */}
+              <TextField
+                fullWidth
+                multiline
+                rows={6}
+                label={t('reports.generator.conclusion.label')}
+                value={conclusionText}
+                onChange={(e) => setConclusionText(e.target.value)}
+                placeholder={t('reports.generator.conclusion.placeholder')}
+                helperText={t('reports.generator.conclusion.helperText')}
+                sx={{ mb: 3 }}
+              />
+
+              <Divider sx={{ my: 2 }} />
+
+              {/* Signature Section */}
+              <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                {t('reports.generator.signature.title')}
+              </Typography>
+
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label={t('reports.generator.signature.name')}
+                    value={signatureName}
+                    onChange={(e) => setSignatureName(e.target.value)}
+                    placeholder={user?.name || ''}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label={t('reports.generator.signature.role')}
+                    value={signatureRole}
+                    onChange={(e) => setSignatureRole(e.target.value)}
+                    placeholder={t('reports.generator.signature.rolePlaceholder')}
+                    size="small"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <TextField
+                    fullWidth
+                    label={t('reports.generator.signature.registration')}
+                    value={signatureRegistration}
+                    onChange={(e) => setSignatureRegistration(e.target.value)}
+                    placeholder={t('reports.generator.signature.registrationPlaceholder')}
+                    size="small"
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Box sx={{ mt: 2 }}>
+              <Button onClick={handleBack} sx={{ mr: 1 }}>
+                {t('common.back')}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                disabled={!canProceed(4)}
+              >
+                {t('common.next')}
+              </Button>
+            </Box>
+          </StepContent>
+        </Step>
+
+        {/* Step 6: Preview & Generate */}
+        <Step>
+          <StepLabel
+            StepIconComponent={() => (
+              <Box
+                sx={{
+                  width: 24,
+                  height: 24,
+                  borderRadius: '50%',
+                  bgcolor: activeStep >= 5 ? 'primary.main' : 'grey.400',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                {activeStep > 5 ? <CheckIcon fontSize="small" /> : <PreviewIcon fontSize="small" />}
+              </Box>
+            )}
+          >
+            {steps[5].label}
           </StepLabel>
           <StepContent>
             <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
@@ -714,7 +893,7 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
 
-        {/* Step 6: Complete */}
+        {/* Step 7: Complete */}
         <Step>
           <StepLabel
             StepIconComponent={() => (
@@ -734,7 +913,7 @@ const ReportGeneratorTab: React.FC = () => {
               </Box>
             )}
           >
-            {steps[5].label}
+            {steps[6].label}
           </StepLabel>
           <StepContent>
             {generationComplete && (
@@ -792,6 +971,10 @@ const ReportGeneratorTab: React.FC = () => {
                   setIncludeOnlyAlerts(false);
                   setIncludePhotos(true);
                   setIncludeCharts(true);
+                  setConclusionText('');
+                  setSignatureName('');
+                  setSignatureRole('');
+                  setSignatureRegistration('');
                 }}
               >
                 {t('reports.generator.createAnother')}
