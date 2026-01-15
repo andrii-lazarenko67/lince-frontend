@@ -286,9 +286,11 @@ const ReportHistoryTab: React.FC = () => {
                       </Tooltip>
                     ) : (
                       <Tooltip title={t('reports.history.noPdf')}>
-                        <IconButton size="small" disabled>
-                          <NoPdfIcon color="disabled" />
-                        </IconButton>
+                        <span>
+                          <IconButton size="small" disabled>
+                            <NoPdfIcon color="disabled" />
+                          </IconButton>
+                        </span>
                       </Tooltip>
                     )}
                     <Tooltip title={t('reports.history.downloadWord')}>
