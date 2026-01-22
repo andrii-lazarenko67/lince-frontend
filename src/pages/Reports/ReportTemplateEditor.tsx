@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dialog,
@@ -24,8 +24,10 @@ import {
   AccordionDetails,
   Tooltip,
   Chip,
-  CircularProgress
+  CircularProgress,
+  OutlinedInput
 } from '@mui/material';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import {
   DragHandle as DragIcon,
   ExpandMore as ExpandIcon,
@@ -37,8 +39,9 @@ import {
   CloudUpload as UploadIcon,
   Delete as DeleteIcon
 } from '@mui/icons-material';
-import { useAppDispatch } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { updateReportTemplate, uploadTemplateLogo, deleteTemplateLogo } from '../../store/slices/reportTemplateSlice';
+import { fetchSystemTypes } from '../../store/slices/systemTypeSlice';
 import type { ReportTemplate, ReportBlock, ReportBranding, ReportBlockType, ChartConfig, OccurrenceCriticalityFilter } from '../../types';
 import { DEFAULT_CHART_CONFIG } from '../../types';
 import ChartConfigPanel from '../../components/reports/ChartConfigPanel';
@@ -70,10 +73,12 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
 }) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const { systemTypes } = useAppSelector((state) => state.systemTypes);
 
   const [name, setName] = useState(template.name);
   const [description, setDescription] = useState(template.description || '');
   const [logo, setLogo] = useState<string | null>(template.logo);
+  const [systemTypeIds, setSystemTypeIds] = useState<number[]>(template.systemTypeIds || []);
   const [blocks, setBlocks] = useState<ReportBlock[]>(template.config?.blocks || []);
   const [branding, setBranding] = useState<ReportBranding>(template.config?.branding || {
     showLogo: true,
@@ -88,6 +93,13 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const [expandedSection, setExpandedSection] = useState<string | false>('blocks');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch system types on mount
+  useEffect(() => {
+    if (systemTypes.length === 0) {
+      dispatch(fetchSystemTypes());
+    }
+  }, [dispatch, systemTypes.length]);
 
   const handleBlockToggle = useCallback((blockType: ReportBlockType) => {
     setBlocks(prev => prev.map(block =>
@@ -156,6 +168,11 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
     }
   };
 
+  const handleSystemTypeChange = (event: SelectChangeEvent<number[]>) => {
+    const value = event.target.value;
+    setSystemTypeIds(typeof value === 'string' ? [] : value);
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -164,6 +181,7 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
         data: {
           name,
           description: description || undefined,
+          systemTypeIds: systemTypeIds.length > 0 ? systemTypeIds : undefined,
           config: {
             blocks,
             branding
@@ -211,7 +229,47 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
             onChange={(e) => setDescription(e.target.value)}
             multiline
             rows={2}
+            sx={{ mb: 2 }}
           />
+
+          {/* System Type Filter */}
+          <FormControl fullWidth>
+            <InputLabel id="system-types-label">
+              {t('reports.templates.systemTypes')}
+            </InputLabel>
+            <Select
+              labelId="system-types-label"
+              multiple
+              value={systemTypeIds}
+              onChange={handleSystemTypeChange}
+              input={<OutlinedInput label={t('reports.templates.systemTypes')} />}
+              renderValue={(selected) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  {selected.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                      {t('reports.templates.allSystemTypes')}
+                    </Typography>
+                  ) : (
+                    selected.map((id) => {
+                      const systemType = systemTypes.find((st) => st.id === id);
+                      return systemType ? (
+                        <Chip key={id} label={systemType.name} size="small" />
+                      ) : null;
+                    })
+                  )}
+                </Box>
+              )}
+            >
+              {systemTypes.map((systemType) => (
+                <MenuItem key={systemType.id} value={systemType.id}>
+                  {systemType.name}
+                </MenuItem>
+              ))}
+            </Select>
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
+              {t('reports.templates.systemTypesHelp')}
+            </Typography>
+          </FormControl>
         </Box>
 
         <Accordion

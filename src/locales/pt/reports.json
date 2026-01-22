@@ -26,6 +26,9 @@
       "deleteConfirmMessage": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
       "reportBlocks": "Blocos do Relatório",
       "blocksHelp": "Ative ou desative blocos e arraste para reordená-los. Cada bloco representa uma seção do seu relatório.",
+      "systemTypes": "Tipos de Sistema",
+      "systemTypesHelp": "Selecione os tipos de sistema para os quais este modelo foi projetado. Deixe vazio para mostrar para todos os clientes.",
+      "allSystemTypes": "Todos os Tipos de Sistema",
       "branding": "Marca e Aparência",
       "errors": {
         "notFound": "Modelo não encontrado",

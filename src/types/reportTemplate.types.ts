@@ -147,6 +147,7 @@ export interface ReportTemplate {
   isDefault: boolean;
   isGlobal: boolean;
   isActive: boolean;
+  systemTypeIds: number[] | null;  // Array of system type IDs this template is designed for
   createdAt: string;
   updatedAt: string;
   user?: {
@@ -166,6 +167,7 @@ export interface CreateReportTemplateRequest {
   config?: ReportTemplateConfig;
   isDefault?: boolean;
   clientId?: number;
+  systemTypeIds?: number[];  // Optional system type IDs for filtering
 }
 
 export interface UpdateReportTemplateRequest {
@@ -174,6 +176,7 @@ export interface UpdateReportTemplateRequest {
   type?: ReportTemplateType;
   config?: ReportTemplateConfig;
   isDefault?: boolean;
+  systemTypeIds?: number[];  // Optional system type IDs for filtering
 }
 
 export interface ReportTemplateState {

@@ -26,6 +26,9 @@
       "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone.",
       "reportBlocks": "Report Blocks",
       "blocksHelp": "Enable or disable blocks and drag to reorder them. Each block represents a section of your report.",
+      "systemTypes": "System Types",
+      "systemTypesHelp": "Select system types this template is designed for. Leave empty to show for all clients.",
+      "allSystemTypes": "All System Types",
       "branding": "Branding & Appearance",
       "errors": {
         "notFound": "Template not found",
