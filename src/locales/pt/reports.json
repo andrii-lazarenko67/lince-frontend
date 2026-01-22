@@ -182,9 +182,16 @@
       "selectAll": "Selecionar Todos os Sistemas",
       "configureOptionsHelp": "Configure o que incluir no relatório",
       "options": {
+        "title": "Opções",
+        "onlyAlerts": "Apenas Alertas",
+        "photos": "Fotos",
+        "charts": "Gráficos",
         "includeOnlyAlerts": "Incluir apenas itens com alertas/não conformes",
         "includePhotos": "Incluir fotos",
-        "includeCharts": "Incluir gráficos"
+        "includeCharts": "Incluir gráficos",
+        "selectParameters": "Selecionar Parâmetros para Gráficos",
+        "selectParametersHelp": "Escolha quais pontos de monitoramento incluir nos gráficos. Se nenhum for selecionado, todos os parâmetros serão incluídos.",
+        "noParametersSelected": "Nenhum parâmetro selecionado. Todos os parâmetros serão incluídos nos gráficos por padrão."
       },
       "summary": "Resumo do Relatório",
       "reportName": "Nome do Relatório",

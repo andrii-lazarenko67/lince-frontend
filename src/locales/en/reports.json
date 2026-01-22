@@ -182,9 +182,16 @@
       "selectAll": "Select All Systems",
       "configureOptionsHelp": "Configure what to include in the report",
       "options": {
+        "title": "Options",
+        "onlyAlerts": "Alerts Only",
+        "photos": "Photos",
+        "charts": "Charts",
         "includeOnlyAlerts": "Include only items with alerts/non-compliant",
         "includePhotos": "Include photos",
-        "includeCharts": "Include charts"
+        "includeCharts": "Include charts",
+        "selectParameters": "Select Parameters for Charts",
+        "selectParametersHelp": "Choose which monitoring points to include in charts. If none are selected, all parameters will be included.",
+        "noParametersSelected": "No parameters selected. All parameters will be included in charts by default."
       },
       "summary": "Report Summary",
       "reportName": "Report Name",

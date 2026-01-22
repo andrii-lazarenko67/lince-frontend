@@ -255,6 +255,7 @@ export interface GeneratedReportFilters {
   includeOnlyAlerts?: boolean;
   includePhotos?: boolean;
   includeCharts?: boolean;
+  selectedMonitoringPointIds?: number[];  // Specific monitoring points for charts
 }
 
 export interface GeneratedReport {

@@ -46,10 +46,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchReportTemplates, fetchDefaultTemplate } from '../../store/slices/reportTemplateSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
+import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
 import { generateReport, uploadReportPdf, downloadReportWord } from '../../store/slices/generatedReportSlice';
 import { ReportPdfViewer } from '../../components/reports/pdf';
 import type { ReportData } from '../../components/reports/pdf';
-import type { ReportTemplate, GeneratedReportPeriod } from '../../types';
+import type { ReportTemplate, GeneratedReportPeriod, MonitoringPoint } from '../../types';
 
 type PeriodType = 'daily' | 'weekly' | 'monthly' | 'custom';
 
@@ -58,6 +59,7 @@ const ReportGeneratorTab: React.FC = () => {
   const dispatch = useAppDispatch();
   const { templates, currentTemplate } = useAppSelector((state) => state.reportTemplates);
   const { systems } = useAppSelector((state) => state.systems);
+  const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
   const { generating, error, currentReport, reportData } = useAppSelector((state) => state.generatedReports);
   const { user } = useAppSelector((state) => state.auth);
 
@@ -71,6 +73,8 @@ const ReportGeneratorTab: React.FC = () => {
   const [includeOnlyAlerts, setIncludeOnlyAlerts] = useState(false);
   const [includePhotos, setIncludePhotos] = useState(true);
   const [includeCharts, setIncludeCharts] = useState(true);
+  const [selectedMonitoringPointIds, setSelectedMonitoringPointIds] = useState<number[]>([]);
+  const [availableMonitoringPoints, setAvailableMonitoringPoints] = useState<MonitoringPoint[]>([]);
   const [generationComplete, setGenerationComplete] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [downloadingWord, setDownloadingWord] = useState(false);
@@ -87,7 +91,23 @@ const ReportGeneratorTab: React.FC = () => {
     dispatch(fetchReportTemplates());
     dispatch(fetchSystems({}));
     dispatch(fetchDefaultTemplate());
+    dispatch(fetchMonitoringPoints({}));
   }, [dispatch]);
+
+  // Update available monitoring points when selected systems change
+  useEffect(() => {
+    if (selectedSystemIds.length > 0) {
+      // Filter monitoring points for selected systems
+      const filtered = monitoringPoints.filter(mp => selectedSystemIds.includes(mp.systemId));
+      setAvailableMonitoringPoints(filtered);
+
+      // Clear selections that are no longer valid
+      setSelectedMonitoringPointIds(prev => prev.filter(id => filtered.some(mp => mp.id === id)));
+    } else {
+      setAvailableMonitoringPoints([]);
+      setSelectedMonitoringPointIds([]);
+    }
+  }, [selectedSystemIds, monitoringPoints]);
 
   useEffect(() => {
     // Auto-select default template
@@ -146,6 +166,22 @@ const ReportGeneratorTab: React.FC = () => {
     }
   };
 
+  const handleMonitoringPointToggle = (mpId: number) => {
+    setSelectedMonitoringPointIds(prev =>
+      prev.includes(mpId)
+        ? prev.filter(id => id !== mpId)
+        : [...prev, mpId]
+    );
+  };
+
+  const handleSelectAllMonitoringPoints = () => {
+    if (selectedMonitoringPointIds.length === availableMonitoringPoints.length) {
+      setSelectedMonitoringPointIds([]);
+    } else {
+      setSelectedMonitoringPointIds(availableMonitoringPoints.map(mp => mp.id));
+    }
+  };
+
   // Generate AI-assisted conclusion based on report data
   const handleGenerateAiConclusion = async () => {
     setGeneratingConclusion(true);
@@ -201,7 +237,8 @@ const ReportGeneratorTab: React.FC = () => {
       filters: {
         includeOnlyAlerts,
         includePhotos,
-        includeCharts
+        includeCharts,
+        selectedMonitoringPointIds: selectedMonitoringPointIds.length > 0 ? selectedMonitoringPointIds : undefined
       },
       conclusion: conclusionText || undefined,
       signature
@@ -654,6 +691,58 @@ const ReportGeneratorTab: React.FC = () => {
                   label={t('reports.generator.options.includeCharts')}
                 />
               </FormGroup>
+
+              {/* Chart Parameter Selection */}
+              {includeCharts && availableMonitoringPoints.length > 0 && (
+                <Box sx={{ mt: 3, p: 2, bgcolor: 'background.paper', border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                    {t('reports.generator.options.selectParameters')}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {t('reports.generator.options.selectParametersHelp')}
+                  </Typography>
+
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedMonitoringPointIds.length === availableMonitoringPoints.length && availableMonitoringPoints.length > 0}
+                          indeterminate={selectedMonitoringPointIds.length > 0 && selectedMonitoringPointIds.length < availableMonitoringPoints.length}
+                          onChange={handleSelectAllMonitoringPoints}
+                        />
+                      }
+                      label={<Typography fontWeight="bold">{t('reports.generator.selectAll')}</Typography>}
+                    />
+                    <Divider sx={{ my: 1 }} />
+                    {availableMonitoringPoints.map((mp) => {
+                      const systemName = systems.find(s => s.id === mp.systemId)?.name || '';
+                      const parameterName = mp.parameterObj?.name || mp.name;
+                      const unit = mp.unitObj?.abbreviation || '';
+                      const label = `${parameterName} (${systemName})${unit ? ` - ${unit}` : ''}`;
+
+                      return (
+                        <FormControlLabel
+                          key={mp.id}
+                          control={
+                            <Checkbox
+                              checked={selectedMonitoringPointIds.includes(mp.id)}
+                              onChange={() => handleMonitoringPointToggle(mp.id)}
+                            />
+                          }
+                          label={label}
+                          sx={{ ml: 2 }}
+                        />
+                      );
+                    })}
+                  </FormGroup>
+
+                  {selectedMonitoringPointIds.length === 0 && (
+                    <Alert severity="info" sx={{ mt: 2 }}>
+                      {t('reports.generator.options.noParametersSelected')}
+                    </Alert>
+                  )}
+                </Box>
+              )}
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button onClick={handleBack} sx={{ mr: 1 }}>
