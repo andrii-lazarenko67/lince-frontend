@@ -8,6 +8,7 @@ import type {
 } from '../../types';
 import { setLoading } from './uiSlice';
 import { getApiErrorMessage } from '../../utils/apiMessages';
+import { downloadBlob } from '../../utils/downloadFile';
 
 const initialState: GeneratedReportState = {
   reports: [],
@@ -132,18 +133,14 @@ export const downloadReportWord = createAsyncThunk(
         responseType: 'blob'
       });
 
-      // Create blob and download
+      // Create blob with proper MIME type and download using utility
       const blob = new Blob([response.data as BlobPart], {
         type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${reportName.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+
+      // Use the cross-platform download utility (works on mobile)
+      const filename = `${reportName.replace(/[^a-zA-Z0-9]/g, '_')}.docx`;
+      downloadBlob(blob, filename);
 
       return { success: true };
     } catch (error: unknown) {

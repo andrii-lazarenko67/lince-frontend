@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
+import { downloadFromUrl } from '../../utils/downloadFile';
 import {
   Box,
   Paper,
@@ -100,7 +101,9 @@ const ReportHistoryTab: React.FC = () => {
 
     const result = await dispatch(downloadReportPdf(selectedReport.id));
     if (downloadReportPdf.fulfilled.match(result) && result.payload.url) {
-      window.open(result.payload.url, '_blank');
+      // Use cross-platform download utility (works on mobile)
+      const filename = `${selectedReport.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+      await downloadFromUrl(result.payload.url, filename);
     }
   };
 
@@ -281,7 +284,10 @@ const ReportHistoryTab: React.FC = () => {
                         <IconButton
                           size="small"
                           color="primary"
-                          onClick={() => window.open(report.pdfUrl!, '_blank')}
+                          onClick={() => {
+                            const filename = `${report.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+                            downloadFromUrl(report.pdfUrl!, filename);
+                          }}
                         >
                           <PdfIcon />
                         </IconButton>
