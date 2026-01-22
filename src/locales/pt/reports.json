@@ -177,6 +177,12 @@
       "startDate": "Data Inicial",
       "endDate": "Data Final",
       "selectAll": "Selecionar Todos os Sistemas",
+      "configureOptionsHelp": "Configure o que incluir no relatório",
+      "options": {
+        "includeOnlyAlerts": "Incluir apenas itens com alertas/não conformes",
+        "includePhotos": "Incluir fotos",
+        "includeCharts": "Incluir gráficos"
+      },
       "summary": "Resumo do Relatório",
       "reportName": "Nome do Relatório",
       "reportPrefix": "Relatório",
@@ -197,7 +203,8 @@
         "aiHint": "Clique para gerar uma conclusão baseada nos dados do relatório",
         "label": "Texto da Conclusão",
         "placeholder": "Digite a conclusão para este relatório...",
-        "helperText": "Este texto aparecerá na seção Conclusão do seu relatório"
+        "helperText": "Este texto aparecerá na seção Conclusão do seu relatório",
+        "aiSuggestion": "Este relatório {{periodLabel}} abrange {{systemCount}} sistema(s): {{systemNames}}. O período de monitoramento foi de {{startDate}} a {{endDate}}. Todos os sistemas foram monitorados de acordo com os protocolos estabelecidos. Quaisquer anomalias ou não conformidades identificadas durante este período foram documentadas nas respectivas seções acima. Ações recomendadas foram anotadas quando aplicável. Para quaisquer dúvidas ou esclarecimentos sobre este relatório, entre em contato com o técnico responsável."
       },
       "signature": {
         "title": "Informações de Assinatura",

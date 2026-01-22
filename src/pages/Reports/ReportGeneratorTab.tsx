@@ -154,22 +154,16 @@ const ReportGeneratorTab: React.FC = () => {
       const systemNames = selectedSystems.map(s => s.name).join(', ');
 
       // Create a basic template-based conclusion as AI suggestion
-      const periodLabel = t(`reports.generator.periods.${periodType}`);
+      const periodLabel = t(`reports.generator.periods.${periodType}`).toLowerCase();
       const systemCount = selectedSystemIds.length;
 
-      // Generate a professional conclusion template
+      // Generate a professional conclusion template using i18n
       const aiSuggestion = t('reports.generator.conclusion.aiSuggestion', {
         periodLabel,
         systemCount,
         systemNames,
         startDate: new Date(startDate).toLocaleDateString(),
-        endDate: new Date(endDate).toLocaleDateString(),
-        defaultValue: `This ${periodLabel.toLowerCase()} report covers ${systemCount} system(s): ${systemNames}. ` +
-          `The monitoring period was from ${new Date(startDate).toLocaleDateString()} to ${new Date(endDate).toLocaleDateString()}. ` +
-          `All systems were monitored according to established protocols. ` +
-          `Any anomalies or non-conformities identified during this period have been documented in the respective sections above. ` +
-          `Recommended actions have been noted where applicable. ` +
-          `For any questions or clarifications regarding this report, please contact the responsible technician.`
+        endDate: new Date(endDate).toLocaleDateString()
       });
 
       setConclusionText(aiSuggestion);
@@ -626,7 +620,7 @@ const ReportGeneratorTab: React.FC = () => {
           <StepContent>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                {t('reports.generator.configureOptionsHelp', 'Configure what to include in the report')}
+                {t('reports.generator.configureOptionsHelp')}
               </Typography>
 
               <FormGroup>
@@ -637,7 +631,7 @@ const ReportGeneratorTab: React.FC = () => {
                       onChange={(e) => setIncludeOnlyAlerts(e.target.checked)}
                     />
                   }
-                  label={t('reports.generator.options.includeOnlyAlerts', 'Include only items with alerts/non-compliant')}
+                  label={t('reports.generator.options.includeOnlyAlerts')}
                 />
                 <FormControlLabel
                   control={
@@ -646,7 +640,7 @@ const ReportGeneratorTab: React.FC = () => {
                       onChange={(e) => setIncludePhotos(e.target.checked)}
                     />
                   }
-                  label={t('reports.generator.options.includePhotos', 'Include photos')}
+                  label={t('reports.generator.options.includePhotos')}
                 />
                 <FormControlLabel
                   control={
@@ -655,7 +649,7 @@ const ReportGeneratorTab: React.FC = () => {
                       onChange={(e) => setIncludeCharts(e.target.checked)}
                     />
                   }
-                  label={t('reports.generator.options.includeCharts', 'Include charts')}
+                  label={t('reports.generator.options.includeCharts')}
                 />
               </FormGroup>
             </Box>

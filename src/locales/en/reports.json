@@ -177,6 +177,12 @@
       "startDate": "Start Date",
       "endDate": "End Date",
       "selectAll": "Select All Systems",
+      "configureOptionsHelp": "Configure what to include in the report",
+      "options": {
+        "includeOnlyAlerts": "Include only items with alerts/non-compliant",
+        "includePhotos": "Include photos",
+        "includeCharts": "Include charts"
+      },
       "summary": "Report Summary",
       "reportName": "Report Name",
       "reportPrefix": "Report",
@@ -197,7 +203,8 @@
         "aiHint": "Click to generate a conclusion based on the report data",
         "label": "Conclusion Text",
         "placeholder": "Enter the conclusion for this report...",
-        "helperText": "This text will appear in the Conclusion section of your report"
+        "helperText": "This text will appear in the Conclusion section of your report",
+        "aiSuggestion": "This {{periodLabel}} report covers {{systemCount}} system(s): {{systemNames}}. The monitoring period was from {{startDate}} to {{endDate}}. All systems were monitored according to established protocols. Any anomalies or non-conformities identified during this period have been documented in the respective sections above. Recommended actions have been noted where applicable. For any questions or clarifications regarding this report, please contact the responsible technician."
       },
       "signature": {
         "title": "Signature Information",
