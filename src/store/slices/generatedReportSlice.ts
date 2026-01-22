@@ -124,10 +124,11 @@ export const downloadReportPdf = createAsyncThunk(
 
 export const downloadReportWord = createAsyncThunk(
   'generatedReports/downloadWord',
-  async ({ id, reportName }: { id: number; reportName: string }, { dispatch, rejectWithValue }) => {
+  async ({ id, reportName, language }: { id: number; reportName: string; language?: string }, { dispatch, rejectWithValue }) => {
     try {
       dispatch(setLoading(true));
       const response = await axiosInstance.get(`/generated-reports/${id}/download-word`, {
+        params: { language: language || 'pt' },
         responseType: 'blob'
       });
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 import {
   Box,
   Stepper,
@@ -237,7 +238,8 @@ const ReportGeneratorTab: React.FC = () => {
     try {
       await dispatch(downloadReportWord({
         id: currentReport.id,
-        reportName: currentReport.name
+        reportName: currentReport.name,
+        language: i18next.language
       }));
     } finally {
       setDownloadingWord(false);

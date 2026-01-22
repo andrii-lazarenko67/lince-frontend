@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 import {
   Box,
   Paper,
@@ -109,7 +110,8 @@ const ReportHistoryTab: React.FC = () => {
 
     await dispatch(downloadReportWord({
       id: selectedReport.id,
-      reportName: selectedReport.name
+      reportName: selectedReport.name,
+      language: i18next.language
     }));
   };
 
@@ -297,7 +299,7 @@ const ReportHistoryTab: React.FC = () => {
                       <IconButton
                         size="small"
                         color="primary"
-                        onClick={() => dispatch(downloadReportWord({ id: report.id, reportName: report.name }))}
+                        onClick={() => dispatch(downloadReportWord({ id: report.id, reportName: report.name, language: i18next.language }))}
                       >
                         <WordIcon />
                       </IconButton>
