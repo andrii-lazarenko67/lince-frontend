@@ -151,6 +151,24 @@ export const downloadReportWord = createAsyncThunk(
   }
 );
 
+export const sendReportEmail = createAsyncThunk(
+  'generatedReports/sendEmail',
+  async ({ id, to, cc, bcc, language }: { id: number; to: string; cc?: string[]; bcc?: string[]; language?: string }, { dispatch, rejectWithValue }) => {
+    try {
+      dispatch(setLoading(true));
+      const response = await axiosInstance.post<{ success: boolean; messageKey: string }>(
+        `/generated-reports/${id}/send-email`,
+        { to, cc, bcc, language: language || 'pt' }
+      );
+      return response.data;
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to send report email'));
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }
+);
+
 export const deleteGeneratedReport = createAsyncThunk(
   'generatedReports/delete',
   async (id: number, { dispatch, rejectWithValue }) => {

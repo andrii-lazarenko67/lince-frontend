@@ -245,6 +245,20 @@
       "deleteConfirmTitle": "Delete Report",
       "deleteConfirmMessage": "Are you sure you want to delete \"{{name}}\"? This action cannot be undone."
     },
+    "email": {
+      "sendViaEmail": "Send via Email",
+      "enterRecipient": "Enter the recipient's email address to send this report.",
+      "recipientEmail": "Recipient Email",
+      "recipientHelp": "The report will be sent as a Word document attachment",
+      "send": "Send Email",
+      "sending": "Sending...",
+      "sent": "Report sent successfully!",
+      "errors": {
+        "recipientRequired": "Recipient email is required",
+        "invalidEmail": "Invalid email address",
+        "notConfigured": "Email service is not configured. Please contact your administrator."
+      }
+    },
     "pdf": {
       "technicalReport": "Technical Report",
       "period": "Period",

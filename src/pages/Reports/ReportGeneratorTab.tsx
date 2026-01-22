@@ -30,7 +30,12 @@ import {
   ListItemIcon,
   Divider,
   Tooltip,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText
 } from '@mui/material';
 import {
   Description as TemplateIcon,
@@ -41,13 +46,14 @@ import {
   CheckCircle as CheckIcon,
   AutoAwesome as AiIcon,
   Edit as EditIcon,
-  Description as WordIcon
+  Description as WordIcon,
+  Email as EmailIcon
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchReportTemplates, fetchDefaultTemplate } from '../../store/slices/reportTemplateSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
-import { generateReport, uploadReportPdf, downloadReportWord } from '../../store/slices/generatedReportSlice';
+import { generateReport, uploadReportPdf, downloadReportWord, sendReportEmail } from '../../store/slices/generatedReportSlice';
 import { ReportPdfViewer } from '../../components/reports/pdf';
 import type { ReportData } from '../../components/reports/pdf';
 import type { ReportTemplate, GeneratedReportPeriod, MonitoringPoint } from '../../types';
@@ -83,6 +89,9 @@ const ReportGeneratorTab: React.FC = () => {
   const [signatureName, setSignatureName] = useState('');
   const [signatureRole, setSignatureRole] = useState('');
   const [signatureRegistration, setSignatureRegistration] = useState('');
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [emailRecipient, setEmailRecipient] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   // Get root systems (no parentId)
   const rootSystems = systems.filter(s => !s.parentId);
@@ -282,6 +291,27 @@ const ReportGeneratorTab: React.FC = () => {
       setDownloadingWord(false);
     }
   }, [currentReport, dispatch]);
+
+  // Handle send report via email
+  const handleSendEmail = useCallback(async () => {
+    if (!currentReport || !emailRecipient.trim()) return;
+
+    setSendingEmail(true);
+    try {
+      const result = await dispatch(sendReportEmail({
+        id: currentReport.id,
+        to: emailRecipient.trim(),
+        language: i18next.language
+      }));
+
+      if (sendReportEmail.fulfilled.match(result)) {
+        setEmailDialogOpen(false);
+        setEmailRecipient('');
+      }
+    } finally {
+      setSendingEmail(false);
+    }
+  }, [currentReport, emailRecipient, dispatch]);
 
   // Transform reportData to ReportData format for PDF viewer
   const getPdfReportData = useCallback((): ReportData | null => {
@@ -1057,6 +1087,16 @@ const ReportGeneratorTab: React.FC = () => {
                       {downloadingWord ? <CircularProgress size={20} /> : <WordIcon />}
                     </IconButton>
                   </Tooltip>
+                  {/* Send Email Button */}
+                  <Tooltip title={t('reports.email.sendViaEmail')}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => setEmailDialogOpen(true)}
+                      disabled={sendingEmail}
+                    >
+                      {sendingEmail ? <CircularProgress size={20} /> : <EmailIcon />}
+                    </IconButton>
+                  </Tooltip>
                   {uploading && (
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                       <CircularProgress size={20} />
@@ -1098,6 +1138,50 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
       </Stepper>
+
+      {/* Email Dialog */}
+      <Dialog
+        open={emailDialogOpen}
+        onClose={() => !sendingEmail && setEmailDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>{t('reports.email.sendViaEmail')}</DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ mb: 2 }}>
+            {t('reports.email.enterRecipient')}
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label={t('reports.email.recipientEmail')}
+            type="email"
+            fullWidth
+            variant="outlined"
+            value={emailRecipient}
+            onChange={(e) => setEmailRecipient(e.target.value)}
+            disabled={sendingEmail}
+            placeholder="example@email.com"
+            helperText={t('reports.email.recipientHelp')}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setEmailDialogOpen(false)}
+            disabled={sendingEmail}
+          >
+            {t('common.cancel')}
+          </Button>
+          <Button
+            onClick={handleSendEmail}
+            variant="contained"
+            disabled={sendingEmail || !emailRecipient.trim()}
+            startIcon={sendingEmail ? <CircularProgress size={16} /> : <EmailIcon />}
+          >
+            {sendingEmail ? t('reports.email.sending') : t('reports.email.send')}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

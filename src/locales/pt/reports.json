@@ -245,6 +245,20 @@
       "deleteConfirmTitle": "Excluir Relatório",
       "deleteConfirmMessage": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita."
     },
+    "email": {
+      "sendViaEmail": "Enviar por E-mail",
+      "enterRecipient": "Digite o endereço de e-mail do destinatário para enviar este relatório.",
+      "recipientEmail": "E-mail do Destinatário",
+      "recipientHelp": "O relatório será enviado como anexo em formato Word",
+      "send": "Enviar E-mail",
+      "sending": "Enviando...",
+      "sent": "Relatório enviado com sucesso!",
+      "errors": {
+        "recipientRequired": "E-mail do destinatário é obrigatório",
+        "invalidEmail": "Endereço de e-mail inválido",
+        "notConfigured": "Serviço de e-mail não está configurado. Entre em contato com o administrador."
+      }
+    },
     "pdf": {
       "technicalReport": "Relatório Técnico",
       "period": "Período",
