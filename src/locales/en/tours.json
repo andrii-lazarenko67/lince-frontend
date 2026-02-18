@@ -56,5 +56,169 @@
         "content": "Great job! You now know the basics of the dashboard. Explore other sections to learn more, or click 'Finish' to start using LINCE."
       }
     }
+  },
+  "clients": {
+    "list": {
+      "title": "Clients Management Tour",
+      "description": "Learn how to manage your clients and their information",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Client Management!",
+          "content": "This tour will show you how to manage clients, add new ones, and keep track of all client information. Let's get started!"
+        },
+        "header": {
+          "title": "Clients Page Header",
+          "content": "See an overview of your client management section. The header shows the total number of clients you're managing."
+        },
+        "addButton": {
+          "title": "Add New Client",
+          "content": "Click here to add a new client. You'll be able to enter all their information including name, contact details, and address."
+        },
+        "search": {
+          "title": "Search Clients",
+          "content": "Quickly find clients by typing their name, email, or phone number. The results update as you type!"
+        },
+        "table": {
+          "title": "Clients Table",
+          "content": "View all your clients in this organized table. You can see their name, contact person, email, phone, and current status. Click any row to view full details."
+        },
+        "actions": {
+          "title": "Client Actions",
+          "content": "Click the menu icon to edit client information, manage their users, or delete the client if needed."
+        },
+        "pagination": {
+          "title": "Pagination",
+          "content": "Navigate through multiple pages of clients and adjust how many clients are shown per page."
+        },
+        "complete": {
+          "title": "Client Management Mastered!",
+          "content": "You now know how to manage your clients effectively. Try adding a new client or exploring their details!"
+        }
+      }
+    },
+    "add": {
+      "title": "Add Client Tour",
+      "description": "Step-by-step guide to adding a new client",
+      "steps": {
+        "welcome": {
+          "title": "Let's Add a New Client!",
+          "content": "This form will help you register a new client with all their essential information. We'll guide you through each section."
+        },
+        "form": {
+          "title": "Client Information Form",
+          "content": "Fill out this form with your client's details. All required fields are marked with an asterisk (*)."
+        },
+        "basicInfo": {
+          "title": "Basic Information",
+          "content": "Enter the client's name and select whether they are currently active. You can also upload a logo if available."
+        },
+        "contactInfo": {
+          "title": "Contact Information",
+          "content": "Provide contact details including the contact person's name, email, phone, and physical address for the client."
+        },
+        "submit": {
+          "title": "Save Client",
+          "content": "Once you've filled in all the required information, click here to save the new client. You'll be redirected to the client details page."
+        },
+        "complete": {
+          "title": "Client Addition Complete!",
+          "content": "Great! You now know how to add new clients. Make sure to keep their information up to date."
+        }
+      }
+    },
+    "detail": {
+      "title": "Client Details Tour",
+      "description": "Explore client details and management options",
+      "steps": {
+        "welcome": {
+          "title": "Client Details Page!",
+          "content": "Here you can view and manage all information about this client. Let's explore what you can do."
+        },
+        "header": {
+          "title": "Client Header",
+          "content": "View the client's name, logo, and status at a glance. This header provides quick identification."
+        },
+        "info": {
+          "title": "Client Information",
+          "content": "See all the client's details including contact information, address, and other important data organized in sections."
+        },
+        "edit": {
+          "title": "Edit Client",
+          "content": "Click here to modify any of the client's information. You can update contact details, status, or upload a new logo."
+        },
+        "users": {
+          "title": "Manage Users",
+          "content": "Add, edit, or remove users associated with this client. Control who has access to their systems and data."
+        },
+        "complete": {
+          "title": "Client Details Explored!",
+          "content": "You're now familiar with the client details page. Keep your client information accurate and up to date!"
+        }
+      }
+    },
+    "users": {
+      "title": "Client Users Tour",
+      "description": "Learn how to manage user access to clients",
+      "steps": {
+        "welcome": {
+          "title": "Client User Management!",
+          "content": "Control who has access to this client and their permission levels. Let's see how it works!"
+        },
+        "header": {
+          "title": "Users Page Header",
+          "content": "View the client name and manage all users who have access to this client's data."
+        },
+        "addButton": {
+          "title": "Add User Access",
+          "content": "Click here to grant a user access to this client. You can select from available users and set their access level."
+        },
+        "table": {
+          "title": "Users Table",
+          "content": "See all users who have access to this client, their roles, and current access levels. You can modify permissions or remove access from here."
+        },
+        "accessLevel": {
+          "title": "Access Levels",
+          "content": "Change user access levels: View Only (read-only), Edit (create & modify data), or Admin (full access including user management)."
+        },
+        "complete": {
+          "title": "User Management Complete!",
+          "content": "You now know how to control user access to clients. Keep permissions up to date for security!"
+        }
+      }
+    },
+    "firstSetup": {
+      "title": "First Client Setup Tour",
+      "description": "Welcome! Let's add your first client to get started",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to LINCE!",
+          "content": "Great to have you here! Before you can start managing water treatment systems, you need to add your first client. This quick tour will guide you through the process."
+        },
+        "header": {
+          "title": "Getting Started",
+          "content": "This page helps you add your first client. A client represents an organization or location you'll be managing water treatment systems for."
+        },
+        "form": {
+          "title": "Client Information Form",
+          "content": "Fill out this simple form with your client's basic information. Only the client name is required to get started - you can always add more details later."
+        },
+        "requiredFields": {
+          "title": "Client Name (Required)",
+          "content": "Enter the name of your client. This is the only required field. The client name will appear throughout the system when you're managing their water treatment systems."
+        },
+        "contactFields": {
+          "title": "Contact Information (Optional)",
+          "content": "Add contact details like address, contact person, phone, and email. These are optional but helpful for keeping all client information in one place."
+        },
+        "submit": {
+          "title": "Add Client & Continue",
+          "content": "Once you've entered at least the client name, click here to save your first client and continue to the dashboard. You'll be able to add more clients later!"
+        },
+        "complete": {
+          "title": "You're All Set!",
+          "content": "Perfect! You now know how to add your first client. Once you submit this form, you'll be taken to the dashboard where you can start managing water treatment systems."
+        }
+      }
+    }
   }
 }

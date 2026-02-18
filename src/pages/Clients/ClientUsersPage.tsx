@@ -26,12 +26,14 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
-  Autocomplete
+  Autocomplete,
+  Tooltip
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   PersonAdd as PersonAddIcon,
-  Delete as DeleteIcon
+  Delete as DeleteIcon,
+  HelpOutline
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import {
@@ -43,6 +45,7 @@ import {
   removeUserAccess
 } from '../../store/slices/clientSlice';
 import type { User } from '../../types/auth.types';
+import { useTour, useAutoStartTour, CLIENTS_USERS_TOUR } from '../../tours';
 
 const ClientUsersPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -55,6 +58,10 @@ const ClientUsersPage: React.FC = () => {
   const [availableUsers, setAvailableUsers] = useState<User[]>([]);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(CLIENTS_USERS_TOUR);
 
   const [addDialogOpen, setAddDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -153,7 +160,7 @@ const ClientUsersPage: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }} data-tour="users-header">
         <IconButton onClick={goBack} sx={{ mr: 2 }}>
           <ArrowBackIcon />
         </IconButton>
@@ -165,10 +172,26 @@ const ClientUsersPage: React.FC = () => {
             {currentClient?.name} - {t('settings.clients.userAccess', 'User Access')}
           </Typography>
         </Box>
+        <Tooltip title={isCompleted(CLIENTS_USERS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(CLIENTS_USERS_TOUR)}
+            sx={{
+              color: 'primary.main',
+              mr: 1,
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
         <Button
           variant="contained"
           startIcon={<PersonAddIcon />}
           onClick={() => setAddDialogOpen(true)}
+          data-tour="add-user-button"
         >
           {t('settings.clients.addUser', 'Add User')}
         </Button>
@@ -179,7 +202,7 @@ const ClientUsersPage: React.FC = () => {
       {success && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>{success}</Alert>}
 
       {/* Users Table */}
-      <Paper>
+      <Paper data-tour="users-table">
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
             <CircularProgress />
@@ -229,7 +252,7 @@ const ClientUsersPage: React.FC = () => {
                       />
                     </TableCell>
                     <TableCell>
-                      <FormControl size="small" sx={{ minWidth: 120 }}>
+                      <FormControl size="small" sx={{ minWidth: 120 }} data-tour="access-level">
                         <Select
                           value={clientUser.accessLevel}
                           onChange={(e) => handleAccessLevelChange(clientUser.userId, e.target.value as 'view' | 'edit' | 'admin')}

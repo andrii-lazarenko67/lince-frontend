@@ -11,12 +11,14 @@ import {
   IconButton,
   CircularProgress,
   Alert as MuiAlert,
-  Avatar
+  Avatar,
+  Tooltip
 } from '@mui/material';
-import { ArrowBack as ArrowBackIcon, PhotoCamera as PhotoCameraIcon, Business as BusinessIcon } from '@mui/icons-material';
+import { ArrowBack as ArrowBackIcon, PhotoCamera as PhotoCameraIcon, Business as BusinessIcon, HelpOutline } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createClient, uploadClientLogo } from '../../store/slices/clientSlice';
 import { setSelectedClient } from '../../store/slices/clientSlice';
+import { useTour, useAutoStartTour, CLIENTS_ADD_TOUR } from '../../tours';
 
 const AddClientPage: React.FC = () => {
   const { t } = useTranslation();
@@ -41,6 +43,10 @@ const AddClientPage: React.FC = () => {
   const [formError, setFormError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(CLIENTS_ADD_TOUR);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -141,6 +147,20 @@ const AddClientPage: React.FC = () => {
             {t('settings.clients.subtitle', 'Manage your clients')}
           </Typography>
         </Box>
+        <Tooltip title={isCompleted(CLIENTS_ADD_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(CLIENTS_ADD_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </Box>
 
       {/* Error Alert */}
@@ -150,10 +170,10 @@ const AddClientPage: React.FC = () => {
         </MuiAlert>
       )}
 
-      <Paper sx={{ p: 3 }}>
+      <Paper sx={{ p: 3 }} data-tour="client-form">
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} data-tour="basic-info">
               <TextField
                 fullWidth
                 label={t('settings.clients.name', 'Client Name')}
@@ -182,7 +202,7 @@ const AddClientPage: React.FC = () => {
                 onChange={handleChange}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} data-tour="contact-info">
               <TextField
                 fullWidth
                 label={t('settings.clients.contact', 'Contact Person')}
@@ -284,6 +304,7 @@ const AddClientPage: React.FC = () => {
                   variant="contained"
                   disabled={isSubmitting}
                   startIcon={isSubmitting ? <CircularProgress size={20} /> : undefined}
+                  data-tour="submit-button"
                 >
                   {t('settings.clients.addClient', 'Add Client')}
                 </Button>

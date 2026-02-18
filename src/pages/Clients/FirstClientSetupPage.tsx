@@ -5,6 +5,9 @@ import { createClient, setSelectedClient } from '../../store/slices/clientSlice'
 import { Input, Button, Alert } from '../../components/common';
 import { GlobalLoader } from '../../components/common';
 import LanguageSwitcher from '../../components/LanguageSwitcher';
+import { useTour, useAutoStartTour, CLIENTS_FIRST_SETUP_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 /**
  * Standalone page for service providers to add their first client after signup.
@@ -14,6 +17,10 @@ const FirstClientSetupPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { goToDashboard } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(CLIENTS_FIRST_SETUP_TOUR);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -62,12 +69,26 @@ const FirstClientSetupPage: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 py-8">
       <GlobalLoader />
-      <div className="absolute top-4 right-4">
+      <div className="absolute top-4 right-4 flex items-center gap-2">
+        <Tooltip title={isCompleted(CLIENTS_FIRST_SETUP_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(CLIENTS_FIRST_SETUP_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
         <LanguageSwitcher />
       </div>
       <div className="max-w-md w-full mx-4">
         <div className="bg-white rounded-lg shadow-lg p-8">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8" data-tour="setup-header">
             <h1 className="text-3xl font-bold text-blue-600">
               {t('clients.addFirst.title', 'Add Your First Client')}
             </h1>
@@ -84,52 +105,56 @@ const FirstClientSetupPage: React.FC = () => {
             />
           )}
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              label={t('settings.clients.name', 'Client Name')}
-              placeholder={t('settings.clients.namePlaceholder', 'Enter client name')}
-              required
-            />
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-tour="client-form">
+            <div data-tour="required-fields">
+              <Input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                label={t('settings.clients.name', 'Client Name')}
+                placeholder={t('settings.clients.namePlaceholder', 'Enter client name')}
+                required
+              />
+            </div>
 
-            <Input
-              type="text"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              label={t('settings.clients.address', 'Address')}
-              placeholder={t('settings.clients.addressPlaceholder', 'Enter address')}
-            />
+            <div data-tour="contact-fields">
+              <Input
+                type="text"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                label={t('settings.clients.address', 'Address')}
+                placeholder={t('settings.clients.addressPlaceholder', 'Enter address')}
+              />
 
-            <Input
-              type="text"
-              name="contact"
-              value={formData.contact}
-              onChange={handleChange}
-              label={t('settings.clients.contact', 'Contact Person')}
-              placeholder={t('settings.clients.contactPlaceholder', 'Enter contact name')}
-            />
+              <Input
+                type="text"
+                name="contact"
+                value={formData.contact}
+                onChange={handleChange}
+                label={t('settings.clients.contact', 'Contact Person')}
+                placeholder={t('settings.clients.contactPlaceholder', 'Enter contact name')}
+              />
 
-            <Input
-              type="tel"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              label={t('settings.clients.phone', 'Phone')}
-              placeholder={t('settings.clients.phonePlaceholder', 'Enter phone number')}
-            />
+              <Input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                label={t('settings.clients.phone', 'Phone')}
+                placeholder={t('settings.clients.phonePlaceholder', 'Enter phone number')}
+              />
 
-            <Input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              label={t('settings.clients.email', 'Email')}
-              placeholder={t('settings.clients.emailPlaceholder', 'Enter email address')}
-            />
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                label={t('settings.clients.email', 'Email')}
+                placeholder={t('settings.clients.emailPlaceholder', 'Enter email address')}
+              />
+            </div>
 
             <Button
               type="submit"
@@ -137,6 +162,7 @@ const FirstClientSetupPage: React.FC = () => {
               fullWidth
               className="mt-4"
               disabled={isSubmitting}
+              data-tour="submit-button"
             >
               {isSubmitting
                 ? t('common.saving', 'Saving...')

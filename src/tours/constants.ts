@@ -28,9 +28,13 @@ export const REPORTS_HISTORY_TOUR = 'reports-history';
 export const REPORTS_WORKFLOW_TOUR = 'reports-workflow';
 export const PRODUCTS_LIST_TOUR = 'products-list';
 export const PRODUCTS_MODAL_TOUR = 'products-modal';
+// Clients module tours
 export const CLIENTS_LIST_TOUR = 'clients-list';
 export const CLIENTS_ADD_TOUR = 'clients-add';
 export const CLIENTS_DETAIL_TOUR = 'clients-detail';
+export const CLIENTS_USERS_TOUR = 'clients-users';
+export const CLIENTS_FIRST_SETUP_TOUR = 'clients-first-setup';
+
 export const LIBRARY_LIST_TOUR = 'library-list';
 export const LIBRARY_UPLOAD_TOUR = 'library-upload';
 export const PROFILE_TOUR = 'profile-overview';

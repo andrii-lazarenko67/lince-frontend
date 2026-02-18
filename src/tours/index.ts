@@ -15,12 +15,19 @@ export * from './constants';
 
 // Export tour configurations
 export { dashboardTour } from './configs/operations/dashboardTour';
+export { clientsListTour, clientsAddTour, clientsDetailTour, clientsUsersTour, clientsFirstSetupTour } from './configs/management/clientsTour';
 
 // Central tour registry
 import { dashboardTour } from './configs/operations/dashboardTour';
+import { clientsListTour, clientsAddTour, clientsDetailTour, clientsUsersTour, clientsFirstSetupTour } from './configs/management/clientsTour';
 import type { TourConfig } from './types';
 
 export const allTours: TourConfig[] = [
-  dashboardTour
+  dashboardTour,
+  clientsListTour,
+  clientsAddTour,
+  clientsDetailTour,
+  clientsUsersTour,
+  clientsFirstSetupTour
   // More tours will be added here in future phases
 ];

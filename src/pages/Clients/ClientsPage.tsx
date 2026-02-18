@@ -23,7 +23,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  CircularProgress
+  CircularProgress,
+  Tooltip
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -32,11 +33,13 @@ import {
   Edit as EditIcon,
   Delete as DeleteIcon,
   Business as BusinessIcon,
-  People as PeopleIcon
+  People as PeopleIcon,
+  HelpOutline
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchClients, deleteClient } from '../../store/slices/clientSlice';
 import type { Client } from '../../types';
+import { useTour, useAutoStartTour, CLIENTS_LIST_TOUR } from '../../tours';
 
 const ClientsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -52,6 +55,10 @@ const ClientsPage: React.FC = () => {
   const [selectedClient, setSelectedClient] = useState<Client | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(CLIENTS_LIST_TOUR);
 
   // Fetch clients with pagination params
   const loadClients = useCallback(() => {
@@ -140,7 +147,7 @@ const ClientsPage: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }} data-tour="clients-header">
         <Box>
           <Typography variant="h4" fontWeight="bold" color="primary">
             {t('settings.clients.title')}
@@ -149,17 +156,34 @@ const ClientsPage: React.FC = () => {
             {t('settings.clients.subtitle')}
           </Typography>
         </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => goTo('/clients/new')}
-        >
-          {t('settings.clients.addClient')}
-        </Button>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Tooltip title={isCompleted(CLIENTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(CLIENTS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => goTo('/clients/new')}
+            data-tour="add-client-button"
+          >
+            {t('settings.clients.addClient')}
+          </Button>
+        </Box>
       </Box>
 
       {/* Search */}
-      <Paper sx={{ p: 2, mb: 3 }}>
+      <Paper sx={{ p: 2, mb: 3 }} data-tour="search-clients">
         <TextField
           fullWidth
           placeholder={t('common.search')}
@@ -177,7 +201,7 @@ const ClientsPage: React.FC = () => {
       </Paper>
 
       {/* Clients Table */}
-      <Paper>
+      <Paper data-tour="clients-table">
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
             <CircularProgress />
@@ -252,6 +276,7 @@ const ClientsPage: React.FC = () => {
                       <IconButton
                         size="small"
                         onClick={(e) => handleMenuOpen(e, client)}
+                        data-tour="client-actions"
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -268,6 +293,7 @@ const ClientsPage: React.FC = () => {
             component="div"
             count={pagination.total}
             page={page}
+            data-tour="pagination"
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}

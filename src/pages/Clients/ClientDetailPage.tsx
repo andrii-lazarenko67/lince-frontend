@@ -16,16 +16,19 @@ import {
   Divider,
   Alert,
   Card,
-  CardContent
+  CardContent,
+  Tooltip
 } from '@mui/material';
 import {
   ArrowBack as ArrowBackIcon,
   PhotoCamera as PhotoCameraIcon,
   Save as SaveIcon,
-  Business as BusinessIcon
+  Business as BusinessIcon,
+  HelpOutline
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchClientById, updateClient, clearCurrentClient, fetchClientStats, uploadClientLogo } from '../../store/slices/clientSlice';
+import { useTour, useAutoStartTour, CLIENTS_DETAIL_TOUR } from '../../tours';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -64,6 +67,10 @@ const ClientDetailPage: React.FC = () => {
   const [success, setSuccess] = useState('');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(CLIENTS_DETAIL_TOUR);
 
   useEffect(() => {
     if (id) {
@@ -177,7 +184,7 @@ const ClientDetailPage: React.FC = () => {
   return (
     <Box sx={{ p: 3 }}>
       {/* Header */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }} data-tour="client-header">
         <IconButton onClick={goBack} sx={{ mr: 2 }}>
           <ArrowBackIcon />
         </IconButton>
@@ -189,9 +196,25 @@ const ClientDetailPage: React.FC = () => {
             {t('settings.clients.editClient')}
           </Typography>
         </Box>
+        <Tooltip title={isCompleted(CLIENTS_DETAIL_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(CLIENTS_DETAIL_TOUR)}
+            sx={{
+              color: 'primary.main',
+              mr: 1,
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
         <Button
           variant="outlined"
           onClick={() => goTo(`/clients/${id}/users`)}
+          data-tour="manage-users"
         >
           {t('settings.clients.manageUsers', 'Manage Users')}
         </Button>
@@ -257,7 +280,7 @@ const ClientDetailPage: React.FC = () => {
         </Grid>
       )}
 
-      <Paper sx={{ p: 3 }}>
+      <Paper sx={{ p: 3 }} data-tour="client-info">
         <Tabs value={tabValue} onChange={(_, v) => setTabValue(v)} sx={{ mb: 2 }}>
           <Tab label={t('settings.clients.details', 'Details')} />
           <Tab label={t('settings.clients.branding', 'Branding')} />
@@ -322,6 +345,7 @@ const ClientDetailPage: React.FC = () => {
                     variant="contained"
                     startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
                     disabled={saving}
+                    data-tour="edit-button"
                   >
                     {t('common.save')}
                   </Button>

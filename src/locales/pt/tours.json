@@ -56,5 +56,169 @@
         "content": "Ótimo trabalho! Agora você conhece o básico do painel. Explore outras seções para aprender mais, ou clique em 'Concluir' para começar a usar o LINCE."
       }
     }
+  },
+  "clients": {
+    "list": {
+      "title": "Tour de Gestão de Clientes",
+      "description": "Aprenda a gerenciar seus clientes e suas informações",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo à Gestão de Clientes!",
+          "content": "Este tour mostrará como gerenciar clientes, adicionar novos e manter o controle de todas as informações dos clientes. Vamos começar!"
+        },
+        "header": {
+          "title": "Cabeçalho da Página de Clientes",
+          "content": "Veja uma visão geral da sua seção de gestão de clientes. O cabeçalho mostra o número total de clientes que você está gerenciando."
+        },
+        "addButton": {
+          "title": "Adicionar Novo Cliente",
+          "content": "Clique aqui para adicionar um novo cliente. Você poderá inserir todas as informações, incluindo nome, detalhes de contato e endereço."
+        },
+        "search": {
+          "title": "Buscar Clientes",
+          "content": "Encontre clientes rapidamente digitando seu nome, e-mail ou número de telefone. Os resultados são atualizados conforme você digita!"
+        },
+        "table": {
+          "title": "Tabela de Clientes",
+          "content": "Visualize todos os seus clientes nesta tabela organizada. Você pode ver nome, pessoa de contato, e-mail, telefone e status atual. Clique em qualquer linha para ver detalhes completos."
+        },
+        "actions": {
+          "title": "Ações do Cliente",
+          "content": "Clique no ícone de menu para editar informações do cliente, gerenciar seus usuários ou excluir o cliente, se necessário."
+        },
+        "pagination": {
+          "title": "Paginação",
+          "content": "Navegue por várias páginas de clientes e ajuste quantos clientes são mostrados por página."
+        },
+        "complete": {
+          "title": "Gestão de Clientes Dominada!",
+          "content": "Agora você sabe como gerenciar seus clientes de forma eficaz. Experimente adicionar um novo cliente ou explorar seus detalhes!"
+        }
+      }
+    },
+    "add": {
+      "title": "Tour de Adicionar Cliente",
+      "description": "Guia passo a passo para adicionar um novo cliente",
+      "steps": {
+        "welcome": {
+          "title": "Vamos Adicionar um Novo Cliente!",
+          "content": "Este formulário ajudará você a registrar um novo cliente com todas as informações essenciais. Vamos orientá-lo em cada seção."
+        },
+        "form": {
+          "title": "Formulário de Informações do Cliente",
+          "content": "Preencha este formulário com os detalhes do seu cliente. Todos os campos obrigatórios estão marcados com um asterisco (*)."
+        },
+        "basicInfo": {
+          "title": "Informações Básicas",
+          "content": "Digite o nome do cliente e selecione se ele está ativo no momento. Você também pode fazer upload de um logotipo, se disponível."
+        },
+        "contactInfo": {
+          "title": "Informações de Contato",
+          "content": "Forneça detalhes de contato, incluindo nome da pessoa de contato, e-mail, telefone e endereço físico do cliente."
+        },
+        "submit": {
+          "title": "Salvar Cliente",
+          "content": "Depois de preencher todas as informações obrigatórias, clique aqui para salvar o novo cliente. Você será redirecionado para a página de detalhes do cliente."
+        },
+        "complete": {
+          "title": "Adição de Cliente Concluída!",
+          "content": "Ótimo! Agora você sabe como adicionar novos clientes. Certifique-se de manter suas informações atualizadas."
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes do Cliente",
+      "description": "Explore detalhes e opções de gerenciamento do cliente",
+      "steps": {
+        "welcome": {
+          "title": "Página de Detalhes do Cliente!",
+          "content": "Aqui você pode visualizar e gerenciar todas as informações sobre este cliente. Vamos explorar o que você pode fazer."
+        },
+        "header": {
+          "title": "Cabeçalho do Cliente",
+          "content": "Veja o nome, logotipo e status do cliente rapidamente. Este cabeçalho fornece identificação rápida."
+        },
+        "info": {
+          "title": "Informações do Cliente",
+          "content": "Veja todos os detalhes do cliente, incluindo informações de contato, endereço e outros dados importantes organizados em seções."
+        },
+        "edit": {
+          "title": "Editar Cliente",
+          "content": "Clique aqui para modificar qualquer informação do cliente. Você pode atualizar detalhes de contato, status ou fazer upload de um novo logotipo."
+        },
+        "users": {
+          "title": "Gerenciar Usuários",
+          "content": "Adicione, edite ou remova usuários associados a este cliente. Controle quem tem acesso aos sistemas e dados deles."
+        },
+        "complete": {
+          "title": "Detalhes do Cliente Explorados!",
+          "content": "Agora você está familiarizado com a página de detalhes do cliente. Mantenha as informações do cliente precisas e atualizadas!"
+        }
+      }
+    },
+    "users": {
+      "title": "Tour de Usuários do Cliente",
+      "description": "Aprenda a gerenciar o acesso de usuários aos clientes",
+      "steps": {
+        "welcome": {
+          "title": "Gerenciamento de Usuários do Cliente!",
+          "content": "Controle quem tem acesso a este cliente e seus níveis de permissão. Vamos ver como funciona!"
+        },
+        "header": {
+          "title": "Cabeçalho da Página de Usuários",
+          "content": "Veja o nome do cliente e gerencie todos os usuários que têm acesso aos dados deste cliente."
+        },
+        "addButton": {
+          "title": "Adicionar Acesso de Usuário",
+          "content": "Clique aqui para conceder acesso de um usuário a este cliente. Você pode selecionar dos usuários disponíveis e definir seu nível de acesso."
+        },
+        "table": {
+          "title": "Tabela de Usuários",
+          "content": "Veja todos os usuários que têm acesso a este cliente, seus papéis e níveis de acesso atuais. Você pode modificar permissões ou remover acesso daqui."
+        },
+        "accessLevel": {
+          "title": "Níveis de Acesso",
+          "content": "Altere os níveis de acesso do usuário: Somente Visualização (somente leitura), Edição (criar e modificar dados) ou Admin (acesso completo incluindo gerenciamento de usuários)."
+        },
+        "complete": {
+          "title": "Gerenciamento de Usuários Concluído!",
+          "content": "Agora você sabe como controlar o acesso de usuários aos clientes. Mantenha as permissões atualizadas para segurança!"
+        }
+      }
+    },
+    "firstSetup": {
+      "title": "Tour de Configuração do Primeiro Cliente",
+      "description": "Bem-vindo! Vamos adicionar seu primeiro cliente para começar",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo ao LINCE!",
+          "content": "Ótimo ter você aqui! Antes de começar a gerenciar sistemas de tratamento de água, você precisa adicionar seu primeiro cliente. Este tour rápido vai guiá-lo pelo processo."
+        },
+        "header": {
+          "title": "Começando",
+          "content": "Esta página ajuda você a adicionar seu primeiro cliente. Um cliente representa uma organização ou local para o qual você gerenciará sistemas de tratamento de água."
+        },
+        "form": {
+          "title": "Formulário de Informações do Cliente",
+          "content": "Preencha este formulário simples com as informações básicas do seu cliente. Somente o nome do cliente é obrigatório para começar - você sempre pode adicionar mais detalhes depois."
+        },
+        "requiredFields": {
+          "title": "Nome do Cliente (Obrigatório)",
+          "content": "Digite o nome do seu cliente. Este é o único campo obrigatório. O nome do cliente aparecerá em todo o sistema quando você estiver gerenciando os sistemas de tratamento de água dele."
+        },
+        "contactFields": {
+          "title": "Informações de Contato (Opcional)",
+          "content": "Adicione detalhes de contato como endereço, pessoa de contato, telefone e e-mail. Estes são opcionais, mas úteis para manter todas as informações do cliente em um só lugar."
+        },
+        "submit": {
+          "title": "Adicionar Cliente e Continuar",
+          "content": "Depois de digitar pelo menos o nome do cliente, clique aqui para salvar seu primeiro cliente e continuar para o painel. Você poderá adicionar mais clientes depois!"
+        },
+        "complete": {
+          "title": "Tudo Pronto!",
+          "content": "Perfeito! Agora você sabe como adicionar seu primeiro cliente. Depois de enviar este formulário, você será levado ao painel onde poderá começar a gerenciar sistemas de tratamento de água."
+        }
+      }
+    }
   }
 }
