@@ -1,0 +1,56 @@
+{
+  "ai": {
+    "chat": {
+      "title": "Assistente IA",
+      "welcome": "Olá! Sou seu Assistente IA LINCE. Estou aqui para ajudar com sistemas de tratamento de água, análises e qualquer dúvida que você tenha. Como posso te ajudar hoje?",
+      "placeholder": "Pergunte-me qualquer coisa...",
+      "hint": "Pressione Enter para enviar, Shift+Enter para nova linha",
+      "openAssistant": "Abrir Assistente IA",
+      "clearHistory": "Limpar conversa",
+      "error": "Desculpe, não consegui processar sua solicitação. Por favor, tente novamente.",
+      "thinking": "Pensando..."
+    },
+    "context": {
+      "dashboard": "Painel",
+      "systems": "Sistemas",
+      "monitoring-points": "Pontos de Monitoramento",
+      "daily-logs": "Registros Diários",
+      "inspections": "Inspeções",
+      "incidents": "Incidentes",
+      "reports": "Relatórios",
+      "products": "Produtos"
+    },
+    "help": {
+      "getHelp": "Obter Ajuda da IA",
+      "quickHelp": "Ajuda Rápida",
+      "askAi": "Perguntar à IA",
+      "loading": "Obtendo ajuda..."
+    },
+    "suggestions": {
+      "title": "Sugestões da IA",
+      "analyzing": "Analisando dados...",
+      "noSuggestions": "Nenhuma sugestão no momento",
+      "viewDetails": "Ver Detalhes"
+    },
+    "setup": {
+      "wizard": "Assistente de Configuração IA",
+      "gettingSuggestions": "Obtendo sugestões da IA...",
+      "applyConfiguration": "Aplicar Configuração",
+      "skipWizard": "Pular Assistente"
+    },
+    "alerts": {
+      "interpretation": "Interpretação da IA",
+      "gettingInterpretation": "Analisando alerta...",
+      "recommendations": "Recomendações",
+      "urgency": "Urgência"
+    },
+    "errors": {
+      "messageRequired": "Por favor, digite uma mensagem",
+      "notConfigured": "Assistente IA não está configurado. Entre em contato com o administrador.",
+      "measurementsRequired": "Dados de medição são obrigatórios",
+      "systemTypeRequired": "Tipo de sistema é obrigatório",
+      "pageRequired": "Contexto da página é obrigatório",
+      "alertRequired": "Dados do alerta são obrigatórios"
+    }
+  }
+}

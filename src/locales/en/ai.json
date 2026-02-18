@@ -1,0 +1,56 @@
+{
+  "ai": {
+    "chat": {
+      "title": "AI Assistant",
+      "welcome": "Hello! I'm your LINCE AI Assistant. I'm here to help you with water treatment systems, analysis, and any questions you have. How can I assist you today?",
+      "placeholder": "Ask me anything...",
+      "hint": "Press Enter to send, Shift+Enter for new line",
+      "openAssistant": "Open AI Assistant",
+      "clearHistory": "Clear conversation",
+      "error": "Sorry, I couldn't process your request. Please try again.",
+      "thinking": "Thinking..."
+    },
+    "context": {
+      "dashboard": "Dashboard",
+      "systems": "Systems",
+      "monitoring-points": "Monitoring Points",
+      "daily-logs": "Daily Logs",
+      "inspections": "Inspections",
+      "incidents": "Incidents",
+      "reports": "Reports",
+      "products": "Products"
+    },
+    "help": {
+      "getHelp": "Get AI Help",
+      "quickHelp": "Quick Help",
+      "askAi": "Ask AI",
+      "loading": "Getting help..."
+    },
+    "suggestions": {
+      "title": "AI Suggestions",
+      "analyzing": "Analyzing data...",
+      "noSuggestions": "No suggestions at this time",
+      "viewDetails": "View Details"
+    },
+    "setup": {
+      "wizard": "AI Setup Wizard",
+      "gettingSuggestions": "Getting AI suggestions...",
+      "applyConfiguration": "Apply Configuration",
+      "skipWizard": "Skip Wizard"
+    },
+    "alerts": {
+      "interpretation": "AI Interpretation",
+      "gettingInterpretation": "Analyzing alert...",
+      "recommendations": "Recommendations",
+      "urgency": "Urgency"
+    },
+    "errors": {
+      "messageRequired": "Please enter a message",
+      "notConfigured": "AI Assistant is not configured. Please contact your administrator.",
+      "measurementsRequired": "Measurements data is required",
+      "systemTypeRequired": "System type is required",
+      "pageRequired": "Page context is required",
+      "alertRequired": "Alert data is required"
+    }
+  }
+}

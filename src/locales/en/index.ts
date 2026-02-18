@@ -15,6 +15,7 @@ import { settings } from './settings.json';
 import { profile } from './profile.json';
 import { notifications, photoGallery } from './notifications.json';
 import { clients } from './clients.json';
+import { ai } from './ai.json';
 
 export default {
   common,
@@ -39,4 +40,5 @@ export default {
   notifications,
   photoGallery,
   clients,
+  ai,
 };
