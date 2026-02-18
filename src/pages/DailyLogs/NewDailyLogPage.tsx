@@ -6,6 +6,9 @@ import { fetchSystems } from '../../store/slices/systemSlice';
 import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
 import { Card, Button, Select, Input, TextArea } from '../../components/common';
 import type { RecordType, TimeMode } from '../../types';
+import { useTour, useAutoStartTour, DAILY_LOGS_NEW_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface EntryValue {
   monitoringPointId: number;
@@ -20,6 +23,10 @@ const NewDailyLogPage: React.FC = () => {
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
   const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToDailyLogs } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(DAILY_LOGS_NEW_TOUR);
 
   const [recordType, setRecordType] = useState<RecordType>('field');
   const [formData, setFormData] = useState({
@@ -180,14 +187,28 @@ const NewDailyLogPage: React.FC = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </button>
-        <div>
+        <div className="flex-1" data-tour="new-log-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('dailyLogs.new.title')}</h1>
           <p className="text-gray-500 mt-1">{t('dailyLogs.new.description', { type: recordType === 'field' ? t('dailyLogs.new.fieldAnalyses') : t('dailyLogs.new.laboratoryAnalyses') })}</p>
         </div>
+        <Tooltip title={isCompleted(DAILY_LOGS_NEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(DAILY_LOGS_NEW_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <div className="flex justify-end space-x-3 mb-6">
+        <div className="flex justify-end space-x-3 mb-6" data-tour="action-buttons">
           <Button type="button" variant="danger" onClick={goBack} disabled={loading}>
             {t('dailyLogs.new.cancel')}
           </Button>
@@ -197,69 +218,75 @@ const NewDailyLogPage: React.FC = () => {
         </div>
 
         {/* Record Type Selection */}
-        <Card title={t('dailyLogs.new.recordType')}>
-          <div className="flex flex-col gap-6">
-            <Select
-              name="recordType"
-              value={recordType}
-              onChange={(e) => setRecordType(e.target.value as RecordType)}
-              options={recordTypeOptions}
-              label={t('dailyLogs.new.recordType')}
-              required
-            />
-            <p className="text-sm text-gray-600">
-              {recordType === 'field'
-                ? t('dailyLogs.new.fieldRecordInfo')
-                : t('dailyLogs.new.laboratoryRecordInfo')}
-            </p>
-          </div>
-        </Card>
+        <div data-tour="record-type">
+          <Card title={t('dailyLogs.new.recordType')}>
+            <div className="flex flex-col gap-6">
+              <Select
+                name="recordType"
+                value={recordType}
+                onChange={(e) => setRecordType(e.target.value as RecordType)}
+                options={recordTypeOptions}
+                label={t('dailyLogs.new.recordType')}
+                required
+              />
+              <p className="text-sm text-gray-600">
+                {recordType === 'field'
+                  ? t('dailyLogs.new.fieldRecordInfo')
+                  : t('dailyLogs.new.laboratoryRecordInfo')}
+              </p>
+            </div>
+          </Card>
+        </div>
 
         {/* Record Information */}
-        <Card title={t('dailyLogs.new.recordInformation')} className="mt-6">
-          <div className="flex flex-col gap-6">
-            {/* System Selection */}
-            <Select
-              name="systemId"
-              value={formData.systemId}
-              onChange={handleChange}
-              options={systemOptions}
-              label={t('dailyLogs.new.system')}
-              placeholder={t('dailyLogs.new.selectSystem')}
-              required
-            />
-
-            {/* Stage Selection (only if stages available) */}
-            {availableStages.length > 0 && (
+        <div data-tour="system-selection">
+          <Card title={t('dailyLogs.new.recordInformation')} className="mt-6">
+            <div className="flex flex-col gap-6">
+              {/* System Selection */}
               <Select
-                name="stageId"
-                value={formData.stageId}
+                name="systemId"
+                value={formData.systemId}
                 onChange={handleChange}
-                options={availableStages}
-                label={t('dailyLogs.new.stage')}
-                placeholder={t('dailyLogs.new.stageOptional')}
+                options={systemOptions}
+                label={t('dailyLogs.new.system')}
+                placeholder={t('dailyLogs.new.selectSystem')}
+                required
               />
-            )}
 
-            {/* Date */}
-            <Input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              label={recordType === 'field' ? t('dailyLogs.new.date') : t('dailyLogs.new.recordDate')}
-              required
-            />
+              {/* Stage Selection (only if stages available) */}
+              {availableStages.length > 0 && (
+                <Select
+                  name="stageId"
+                  value={formData.stageId}
+                  onChange={handleChange}
+                  options={availableStages}
+                  label={t('dailyLogs.new.stage')}
+                  placeholder={t('dailyLogs.new.stageOptional')}
+                />
+              )}
 
-            {/* Period */}
-            <Input
-              type="text"
-              name="period"
-              value={formData.period}
-              onChange={handleChange}
-              label={t('dailyLogs.new.period')}
-              placeholder={t('dailyLogs.new.periodPlaceholder')}
-            />
+              {/* Date and Period */}
+              <div data-tour="date-period">
+                <div className="flex flex-col gap-6">
+                  <Input
+                    type="date"
+                    name="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    label={recordType === 'field' ? t('dailyLogs.new.date') : t('dailyLogs.new.recordDate')}
+                    required
+                  />
+
+                  <Input
+                    type="text"
+                    name="period"
+                    value={formData.period}
+                    onChange={handleChange}
+                    label={t('dailyLogs.new.period')}
+                    placeholder={t('dailyLogs.new.periodPlaceholder')}
+                  />
+                </div>
+              </div>
 
             {/* Time (Optional) */}
             <div>
@@ -379,47 +406,50 @@ const NewDailyLogPage: React.FC = () => {
             </div>
           </div>
         </Card>
+        </div>
 
         {/* Monitoring Values */}
         {monitoringPoints.length > 0 && (
-          <Card title={t('dailyLogs.new.monitoringValues')} className="mt-6">
-            <div className="space-y-4">
-              {monitoringPoints.map((mp, index) => (
-                <div key={mp.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
-                  <div>
-                    <p className="text-sm font-medium text-gray-700">{mp.name}</p>
-                    <p className="text-xs text-gray-500">
-                      {mp.parameterObj?.name || '-'}
-                      {mp.unitObj ? ` (${mp.unitObj.abbreviation})` : ` (${t('dailyLogs.new.na')})`}
-                      {' | '}
-                      {mp.minValue !== null && mp.maxValue !== null ? (
-                        <span>{t('dailyLogs.new.range')}: {mp.minValue} - {mp.maxValue}</span>
-                      ) : (
-                        <span className="text-gray-400">{t('dailyLogs.new.range')}: {t('dailyLogs.new.na')}</span>
-                      )}
-                    </p>
+          <div data-tour="monitoring-values">
+            <Card title={t('dailyLogs.new.monitoringValues')} className="mt-6">
+              <div className="space-y-4">
+                {monitoringPoints.map((mp, index) => (
+                  <div key={mp.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium text-gray-700">{mp.name}</p>
+                      <p className="text-xs text-gray-500">
+                        {mp.parameterObj?.name || '-'}
+                        {mp.unitObj ? ` (${mp.unitObj.abbreviation})` : ` (${t('dailyLogs.new.na')})`}
+                        {' | '}
+                        {mp.minValue !== null && mp.maxValue !== null ? (
+                          <span>{t('dailyLogs.new.range')}: {mp.minValue} - {mp.maxValue}</span>
+                        ) : (
+                          <span className="text-gray-400">{t('dailyLogs.new.range')}: {t('dailyLogs.new.na')}</span>
+                        )}
+                      </p>
+                    </div>
+
+                    <Input
+                      type="number"
+                      name={`value-${mp.id}`}
+                      value={entries[index]?.value || ''}
+                      onChange={(e) => handleEntryChange(index, 'value', e.target.value)}
+                      placeholder={t('dailyLogs.new.enterValue', { name: mp.parameterObj?.name || t('dailyLogs.new.value') })}
+                      step="0.01"
+                    />
+
+                    <Input
+                      type="text"
+                      name={`notes-${mp.id}`}
+                      value={entries[index]?.notes || ''}
+                      onChange={(e) => handleEntryChange(index, 'notes', e.target.value)}
+                      placeholder={t('dailyLogs.new.notesOptional')}
+                    />
                   </div>
-
-                  <Input
-                    type="number"
-                    name={`value-${mp.id}`}
-                    value={entries[index]?.value || ''}
-                    onChange={(e) => handleEntryChange(index, 'value', e.target.value)}
-                    placeholder={t('dailyLogs.new.enterValue', { name: mp.parameterObj?.name || t('dailyLogs.new.value') })}
-                    step="0.01"
-                  />
-
-                  <Input
-                    type="text"
-                    name={`notes-${mp.id}`}
-                    value={entries[index]?.notes || ''}
-                    onChange={(e) => handleEntryChange(index, 'notes', e.target.value)}
-                    placeholder={t('dailyLogs.new.notesOptional')}
-                  />
-                </div>
-              ))}
-            </div>
-          </Card>
+                ))}
+              </div>
+            </Card>
+          </div>
         )}
 
         {formData.systemId && monitoringPoints.length === 0 && (

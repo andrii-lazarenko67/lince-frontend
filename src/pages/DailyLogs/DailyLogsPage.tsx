@@ -8,6 +8,9 @@ import DailyLogFilters from "./DailyLogFilters"
 import DailyLogsChartView from './DailyLogsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { DailyLog } from '../../types';
+import { useTour, useAutoStartTour, DAILY_LOGS_LIST_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 const DailyLogsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -15,6 +18,10 @@ const DailyLogsPage: React.FC = () => {
   const { selectedClientId } = useAppSelector((state) => state.clients);
   const { dailyLogs, pagination, loading } = useAppSelector((state) => state.dailyLogs);
   const { goToNewDailyLog, goToDailyLogDetail } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(DAILY_LOGS_LIST_TOUR);
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
@@ -196,52 +203,76 @@ const DailyLogsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="dailylogs-header">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t('dailyLogs.title')}</h1>
           <p className="text-gray-500 mt-1">{t('dailyLogs.description')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <ViewModeToggle
-            value={viewMode}
-            onChange={setViewMode}
-          />
-          <ExportDropdown
-            onExportPDF={handleExportPDF}
-            onExportHTML={handleExportHTML}
-            onExportCSV={handleExportCSV}
-            disabled={dailyLogs.length === 0}
-          />
-          <Button variant="primary" onClick={goToNewDailyLog}>
-            {t('dailyLogs.newLog')}
-          </Button>
+          <Tooltip title={isCompleted(DAILY_LOGS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(DAILY_LOGS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <div data-tour="view-mode">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={dailyLogs.length === 0}
+            />
+          </div>
+          <div data-tour="new-log-button">
+            <Button variant="primary" onClick={goToNewDailyLog}>
+              {t('dailyLogs.newLog')}
+            </Button>
+          </div>
         </div>
       </div>
 
       {viewMode === 'table' ? (
         <>
-          <DailyLogFilters
-            filters={filters}
-            onChange={setFilters}
-            onApply={handleApplyFilters}
-            onClear={handleClearFilters}
-          />
-
-          <Card noPadding>
-            <PaginatedTable
-              columns={columns}
-              data={dailyLogs}
-              keyExtractor={(log: DailyLog) => log.id}
-              onRowClick={(log: DailyLog) => goToDailyLogDetail(log.id)}
-              emptyMessage={t('dailyLogs.list.emptyMessage')}
-              loading={loading}
-              pagination={pagination}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
+          <div data-tour="filters">
+            <DailyLogFilters
+              filters={filters}
+              onChange={setFilters}
+              onApply={handleApplyFilters}
+              onClear={handleClearFilters}
             />
-          </Card>
+          </div>
+
+          <div data-tour="dailylogs-table">
+            <Card noPadding>
+              <PaginatedTable
+                columns={columns}
+                data={dailyLogs}
+                keyExtractor={(log: DailyLog) => log.id}
+                onRowClick={(log: DailyLog) => goToDailyLogDetail(log.id)}
+                emptyMessage={t('dailyLogs.list.emptyMessage')}
+                loading={loading}
+                pagination={pagination}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Card>
+          </div>
         </>
       ) : (
         <DailyLogsChartView dailyLogs={dailyLogs} />

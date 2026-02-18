@@ -15,6 +15,114 @@
     "management": "Gestão",
     "administration": "Administração"
   },
+  "dailyLogs": {
+    "list": {
+      "title": "Tour de Registros Diários",
+      "description": "Aprenda a gerenciar e rastrear registros diários de tratamento de água",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo aos Registros Diários!",
+          "content": "Os registros diários são onde você registra medições de campo e resultados de laboratório para seus sistemas de tratamento de água. Vamos explorar como gerenciá-los de forma eficaz!"
+        },
+        "header": {
+          "title": "Página de Registros Diários",
+          "content": "Esta página mostra todos os seus registros diários - tanto medições de campo quanto análises de laboratório. Você pode visualizar, filtrar e exportar seus registros daqui."
+        },
+        "viewMode": {
+          "title": "Alternar Modo de Visualização",
+          "content": "Alterne entre visualização em tabela (lista detalhada) e visualização em gráfico (gráficos visuais) para analisar seus dados de diferentes maneiras. Perfeito para identificar tendências!"
+        },
+        "export": {
+          "title": "Exportar Seus Dados",
+          "content": "Exporte seus registros diários para formato PDF, HTML ou CSV para relatórios, documentação de conformidade ou análise offline."
+        },
+        "newLog": {
+          "title": "Criar Novo Registro",
+          "content": "Clique aqui para registrar um novo registro diário - seja medições de campo feitas no local ou resultados de análise de laboratório."
+        },
+        "filters": {
+          "title": "Filtrar Seus Registros",
+          "content": "Use filtros para encontrar registros específicos por sistema, etapa, tipo de registro (campo/laboratório) ou intervalo de datas. Ótimo para análise focada!"
+        },
+        "table": {
+          "title": "Tabela de Registros Diários",
+          "content": "Veja todos os seus registros com detalhes principais: tipo, data, sistema, período, laboratório, registrado por e número de entradas. Alertas mostram se algum parâmetro está fora da faixa. Clique em qualquer linha para ver detalhes completos."
+        },
+        "pagination": {
+          "title": "Navegação",
+          "content": "Navegue por várias páginas de registros e ajuste quantos registros são mostrados por página."
+        },
+        "complete": {
+          "title": "Registros Diários Dominados!",
+          "content": "Agora você sabe como gerenciar registros diários de forma eficaz. Comece a registrar seus dados de tratamento de água para acompanhar o desempenho do sistema!"
+        }
+      }
+    },
+    "new": {
+      "title": "Tour de Criar Registro Diário",
+      "description": "Aprenda a registrar medições de campo e resultados de laboratório",
+      "steps": {
+        "welcome": {
+          "title": "Registre um Novo Registro Diário!",
+          "content": "Este formulário ajuda você a registrar dados diários de tratamento de água - seja medições de campo feitas no local ou resultados de análise de laboratório. Vamos percorrê-lo!"
+        },
+        "header": {
+          "title": "Formulário de Novo Registro",
+          "content": "Esta página permite criar uma nova entrada de registro diário. Você pode registrar medições de campo ou análise de laboratório para qualquer um dos seus sistemas."
+        },
+        "actionButtons": {
+          "title": "Salvar ou Cancelar",
+          "content": "Use estes botões para salvar seu registro diário quando terminar, ou cancelar para voltar sem salvar as alterações."
+        },
+        "recordType": {
+          "title": "Tipo de Registro",
+          "content": "Escolha entre Registro de Campo (medições feitas no local) ou Registro de Laboratório (análise realizada em laboratório). Isso determina quais campos você precisará preencher."
+        },
+        "systemSelection": {
+          "title": "Selecionar Sistema",
+          "content": "Escolha para qual sistema de tratamento de água você está registrando dados. Se o sistema tiver etapas, você pode opcionalmente selecionar uma etapa específica."
+        },
+        "datePeriod": {
+          "title": "Data e Período",
+          "content": "Digite a data da medição e opcionalmente especifique o período (manhã, tarde, etc.). Você também pode adicionar a hora exata se necessário."
+        },
+        "monitoringValues": {
+          "title": "Digite as Medições",
+          "content": "Registre valores para cada ponto de monitoramento. Você verá o nome do parâmetro, unidade e faixa aceitável. Digite pelo menos um valor para salvar o registro. Valores fora da faixa dispararão alertas!"
+        },
+        "complete": {
+          "title": "Pronto para Registrar!",
+          "content": "Agora você sabe como criar registros diários. Preencha as informações obrigatórias e valores de monitoramento, depois clique em Salvar para registrar seus dados!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes do Registro Diário",
+      "description": "Aprenda a revisar entradas de registros diários e valores de monitoramento",
+      "steps": {
+        "welcome": {
+          "title": "Visualizar Detalhes do Registro Diário!",
+          "content": "Esta página mostra detalhes completos de uma entrada de registro diário, incluindo todos os valores de monitoramento e seu status. Vamos explorar quais informações estão disponíveis!"
+        },
+        "header": {
+          "title": "Visão Geral do Registro",
+          "content": "Veja o tipo de registro (campo/laboratório), data e nome do sistema rapidamente. Isso fornece contexto rápido sobre o registro que você está visualizando."
+        },
+        "recordInfo": {
+          "title": "Informações do Registro",
+          "content": "Visualize todos os detalhes sobre este registro: tipo de registro, sistema, data, período, hora e quem registrou. Para registros de laboratório, você também verá o nome do laboratório e detalhes da coleta. O emblema de status alerta se algum parâmetro está fora da faixa."
+        },
+        "monitoringEntries": {
+          "title": "Valores de Monitoramento",
+          "content": "Veja todas as medições registradas com seu ponto de monitoramento, valor, faixa esperada e status. Valores fora da faixa são destacados em vermelho com um emblema de perigo, facilitando a identificação de problemas que precisam de atenção!"
+        },
+        "complete": {
+          "title": "Detalhes Revisados!",
+          "content": "Agora você sabe como revisar detalhes de registros diários. Use esta página para analisar dados registrados, verificar valores fora da faixa e garantir que o desempenho do sistema está no caminho certo!"
+        }
+      }
+    }
+  },
   "dashboard": {
     "title": "Tour do Painel",
     "description": "Aprenda a usar o painel principal e entender as métricas principais",

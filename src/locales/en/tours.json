@@ -15,6 +15,114 @@
     "management": "Management",
     "administration": "Administration"
   },
+  "dailyLogs": {
+    "list": {
+      "title": "Daily Logs Tour",
+      "description": "Learn how to manage and track daily water treatment logs",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Daily Logs!",
+          "content": "Daily logs are where you record field measurements and laboratory results for your water treatment systems. Let's explore how to manage them effectively!"
+        },
+        "header": {
+          "title": "Daily Logs Page",
+          "content": "This page shows all your daily logs - both field measurements and laboratory analysis. You can view, filter, and export your records from here."
+        },
+        "viewMode": {
+          "title": "View Mode Toggle",
+          "content": "Switch between table view (detailed list) and chart view (visual graphs) to analyze your data in different ways. Perfect for spotting trends!"
+        },
+        "export": {
+          "title": "Export Your Data",
+          "content": "Export your daily logs to PDF, HTML, or CSV format for reports, compliance documentation, or offline analysis."
+        },
+        "newLog": {
+          "title": "Create New Log",
+          "content": "Click here to record a new daily log - either field measurements taken on-site or laboratory analysis results."
+        },
+        "filters": {
+          "title": "Filter Your Logs",
+          "content": "Use filters to find specific logs by system, stage, record type (field/lab), or date range. Great for focused analysis!"
+        },
+        "table": {
+          "title": "Daily Logs Table",
+          "content": "View all your logs with key details: type, date, system, period, laboratory, recorded by, and number of entries. Alerts show if any parameters are out of range. Click any row to see full details."
+        },
+        "pagination": {
+          "title": "Navigation",
+          "content": "Navigate through multiple pages of logs and adjust how many records are shown per page."
+        },
+        "complete": {
+          "title": "Daily Logs Mastered!",
+          "content": "You now know how to manage daily logs effectively. Start recording your water treatment data to keep track of system performance!"
+        }
+      }
+    },
+    "new": {
+      "title": "Create Daily Log Tour",
+      "description": "Learn how to record field measurements and laboratory results",
+      "steps": {
+        "welcome": {
+          "title": "Record a New Daily Log!",
+          "content": "This form helps you record daily water treatment data - either field measurements taken on-site or laboratory analysis results. Let's walk through it!"
+        },
+        "header": {
+          "title": "New Log Form",
+          "content": "This page lets you create a new daily log entry. You can record field measurements or laboratory analysis for any of your systems."
+        },
+        "actionButtons": {
+          "title": "Save or Cancel",
+          "content": "Use these buttons to save your daily log when you're done, or cancel to go back without saving changes."
+        },
+        "recordType": {
+          "title": "Record Type",
+          "content": "Choose between Field Record (measurements taken on-site) or Laboratory Record (analysis performed in a lab). This determines which fields you'll need to fill."
+        },
+        "systemSelection": {
+          "title": "Select System",
+          "content": "Choose which water treatment system you're recording data for. If the system has stages, you can optionally select a specific stage."
+        },
+        "datePeriod": {
+          "title": "Date and Period",
+          "content": "Enter the date of the measurement and optionally specify the period (morning, afternoon, etc.). You can also add the exact time if needed."
+        },
+        "monitoringValues": {
+          "title": "Enter Measurements",
+          "content": "Record values for each monitoring point. You'll see the parameter name, unit, and acceptable range. Enter at least one value to save the log. Out-of-range values will trigger alerts!"
+        },
+        "complete": {
+          "title": "Ready to Record!",
+          "content": "You now know how to create daily logs. Fill in the required information and monitoring values, then click Save to record your data!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Daily Log Details Tour",
+      "description": "Learn how to review daily log entries and monitoring values",
+      "steps": {
+        "welcome": {
+          "title": "View Daily Log Details!",
+          "content": "This page shows complete details of a daily log entry, including all monitoring values and their status. Let's explore what information is available!"
+        },
+        "header": {
+          "title": "Log Overview",
+          "content": "See the log type (field/laboratory), date, and system name at a glance. This gives you quick context about the record you're viewing."
+        },
+        "recordInfo": {
+          "title": "Record Information",
+          "content": "View all details about this log: record type, system, date, period, time, and who recorded it. For laboratory records, you'll also see the lab name and collection details. The status badge alerts you if any parameters are out of range."
+        },
+        "monitoringEntries": {
+          "title": "Monitoring Values",
+          "content": "See all recorded measurements with their monitoring point, value, expected range, and status. Out-of-range values are highlighted in red with a danger badge, making it easy to spot issues that need attention!"
+        },
+        "complete": {
+          "title": "Details Reviewed!",
+          "content": "You now know how to review daily log details. Use this page to analyze recorded data, check for out-of-range values, and ensure system performance is on track!"
+        }
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard Tour",
     "description": "Learn how to use the main dashboard and understand key metrics",
