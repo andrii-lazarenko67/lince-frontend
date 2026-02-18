@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,17 +8,18 @@ import CloseIcon from '@mui/icons-material/Close';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const navLinks = [
-  { label: 'Features', href: '#modules' },
-  { label: 'How It Works', href: '#how-it-works' },
-  { label: 'Industries', href: '#industries' },
-  { label: 'AI', href: '#ai' },
-  { label: 'Pricing', href: '#pricing' },
-  { label: 'FAQ', href: '#faq' },
+const navLinkKeys = [
+  { labelKey: 'features', href: '#modules' },
+  { labelKey: 'howItWorks', href: '#how-it-works' },
+  { labelKey: 'industries', href: '#industries' },
+  { labelKey: 'ai', href: '#ai' },
+  { labelKey: 'pricing', href: '#pricing' },
+  { labelKey: 'faq', href: '#faq' },
 ];
 
 const LandingNav: React.FC = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
@@ -30,7 +32,7 @@ const LandingNav: React.FC = () => {
 
   // Highlight active section in nav
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.slice(1));
+    const sectionIds = navLinkKeys.map((l) => l.href.slice(1));
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => { if (e.isIntersecting) setActiveSection(e.target.id); });
@@ -74,11 +76,11 @@ const LandingNav: React.FC = () => {
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center gap-0.5">
-            {navLinks.map((link) => {
+            {navLinkKeys.map((link) => {
               const isActive = activeSection === link.href.slice(1);
               return (
                 <button
-                  key={link.label}
+                  key={link.labelKey}
                   onClick={() => scrollTo(link.href)}
                   className={`relative px-3.5 py-2 text-sm font-semibold transition-all duration-200 rounded ${
                     isActive
@@ -86,7 +88,7 @@ const LandingNav: React.FC = () => {
                       : 'text-slate-200 hover:text-white hover:bg-white/8'
                   }`}
                 >
-                  {link.label}
+                  {t(`landing.nav.${link.labelKey}`)}
                   {isActive && (
                     <span className="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-5 h-0.5 bg-blue-400 rounded-full" />
                   )}
@@ -95,14 +97,31 @@ const LandingNav: React.FC = () => {
             })}
           </nav>
 
-          {/* Desktop CTA */}
+          {/* Desktop CTA + Language Switcher */}
           <div className="hidden md:flex items-center gap-2">
+            {/* Language switcher */}
+            <div className="flex items-center gap-1 mr-1">
+              {['pt', 'en'].map((lng) => (
+                <button
+                  key={lng}
+                  onClick={() => i18n.changeLanguage(lng)}
+                  className={`px-2 py-1 rounded text-xs font-bold uppercase transition-all ${
+                    i18n.language === lng
+                      ? 'bg-white/15 text-white'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  {lng}
+                </button>
+              ))}
+            </div>
+
             <Button
               variant="text"
               onClick={() => navigate('/login')}
               sx={{ color: '#e2e8f0', fontWeight: 600, '&:hover': { color: '#fff', bgcolor: 'rgba(255,255,255,0.07)' } }}
             >
-              Log In
+              {t('landing.nav.logIn')}
             </Button>
             <Button
               variant="contained"
@@ -116,7 +135,7 @@ const LandingNav: React.FC = () => {
                 '&:hover': { bgcolor: '#2563eb', boxShadow: '0 0 24px rgba(59,130,246,0.5)' },
               }}
             >
-              Get Started Free
+              {t('landing.nav.getStarted')}
             </Button>
           </div>
 
@@ -134,11 +153,11 @@ const LandingNav: React.FC = () => {
       {menuOpen && (
         <div className="md:hidden bg-slate-900/98 backdrop-blur-lg border-t border-slate-700/60">
           <div className="px-4 py-4 space-y-1">
-            {navLinks.map((link) => {
+            {navLinkKeys.map((link) => {
               const isActive = activeSection === link.href.slice(1);
               return (
                 <button
-                  key={link.label}
+                  key={link.labelKey}
                   onClick={() => scrollTo(link.href)}
                   className={`block w-full text-left px-3 py-2.5 rounded text-sm font-semibold transition-all duration-200 ${
                     isActive
@@ -146,18 +165,34 @@ const LandingNav: React.FC = () => {
                       : 'text-slate-200 hover:text-white hover:bg-white/8'
                   }`}
                 >
-                  {link.label}
+                  {t(`landing.nav.${link.labelKey}`)}
                 </button>
               );
             })}
             <div className="pt-3 flex flex-col gap-2 border-t border-slate-800 mt-2">
+              {/* Mobile language switcher */}
+              <div className="flex gap-2 px-1 pb-1">
+                {['pt', 'en'].map((lng) => (
+                  <button
+                    key={lng}
+                    onClick={() => i18n.changeLanguage(lng)}
+                    className={`flex-1 py-2 rounded text-xs font-bold uppercase transition-all ${
+                      i18n.language === lng
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                    }`}
+                  >
+                    {lng}
+                  </button>
+                ))}
+              </div>
               <Button fullWidth variant="outlined" onClick={() => navigate('/login')}
                 sx={{ borderColor: '#334155', color: '#94a3b8', '&:hover': { borderColor: '#475569', color: '#fff' } }}>
-                Log In
+                {t('landing.nav.logIn')}
               </Button>
               <Button fullWidth variant="contained" onClick={() => navigate('/signup')}
                 sx={{ bgcolor: '#3b82f6', '&:hover': { bgcolor: '#2563eb' }, fontWeight: 600 }}>
-                Get Started Free
+                {t('landing.nav.getStarted')}
               </Button>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import Button from '@mui/material/Button';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import PeopleIcon from '@mui/icons-material/People';
@@ -9,43 +10,13 @@ import FilterListIcon from '@mui/icons-material/FilterList';
 import GroupWorkIcon from '@mui/icons-material/GroupWork';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const benefits = [
-  {
-    icon: <PeopleIcon sx={{ fontSize: 20 }} />,
-    title: 'Client Portfolio',
-    desc: 'Register and manage all your clients in one place. Each client has their own dedicated workspace.',
-    color: '#10b981',
-  },
-  {
-    icon: <LockIcon sx={{ fontSize: 20 }} />,
-    title: 'Strict Data Isolation',
-    desc: 'Client A never sees Client B data. Every record is strictly isolated by client_id at the database level.',
-    color: '#3b82f6',
-  },
-  {
-    icon: <SwapHorizIcon sx={{ fontSize: 20 }} />,
-    title: 'Fast Client Switching',
-    desc: "Switch between client contexts instantly. The entire system's working context updates automatically.",
-    color: '#f59e0b',
-  },
-  {
-    icon: <FilterListIcon sx={{ fontSize: 20 }} />,
-    title: 'Per-Client Exports',
-    desc: 'All reports and PDFs are always filtered by the selected client — no accidental data leakage.',
-    color: '#8b5cf6',
-  },
-  {
-    icon: <GroupWorkIcon sx={{ fontSize: 20 }} />,
-    title: 'Team Access Control',
-    desc: 'Assign technicians to specific clients. Users only see the clients they have permission to access.',
-    color: '#ef4444',
-  },
-  {
-    icon: <HandshakeIcon sx={{ fontSize: 20 }} />,
-    title: 'Professional Reports',
-    desc: 'Generate branded PDF reports per client with your company logo, client details, and operational data.',
-    color: '#0d9488',
-  },
+const benefitIcons = [
+  { icon: <PeopleIcon sx={{ fontSize: 20 }} />, color: '#10b981' },
+  { icon: <LockIcon sx={{ fontSize: 20 }} />, color: '#3b82f6' },
+  { icon: <SwapHorizIcon sx={{ fontSize: 20 }} />, color: '#f59e0b' },
+  { icon: <FilterListIcon sx={{ fontSize: 20 }} />, color: '#8b5cf6' },
+  { icon: <GroupWorkIcon sx={{ fontSize: 20 }} />, color: '#ef4444' },
+  { icon: <HandshakeIcon sx={{ fontSize: 20 }} />, color: '#0d9488' },
 ];
 
 const clients = [
@@ -55,8 +26,12 @@ const clients = [
   { name: 'School District Pool', initial: 'S', active: false },
 ];
 
+const animDirs = ['anim-fade-up', 'anim-zoom-in', 'anim-fade-left', 'anim-fade-up', 'anim-zoom-in', 'anim-fade-down'];
+const animDurs = ['anim-duration-fast', 'anim-duration-normal', 'anim-duration-light-slow', 'anim-duration-fast', 'anim-duration-slow', 'anim-duration-normal'];
+
 const ServiceProviderSection: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -71,8 +46,7 @@ const ServiceProviderSection: React.FC = () => {
     return () => observer.disconnect();
   }, []);
 
-  const animDirs = ['anim-fade-up', 'anim-zoom-in', 'anim-fade-left', 'anim-fade-up', 'anim-zoom-in', 'anim-fade-down'];
-  const animDurs = ['anim-duration-fast', 'anim-duration-normal', 'anim-duration-light-slow', 'anim-duration-fast', 'anim-duration-slow', 'anim-duration-normal'];
+  const benefits = t('landing.serviceProvider.benefits', { returnObjects: true }) as { title: string; desc: string }[];
 
   return (
     <section
@@ -81,7 +55,6 @@ const ServiceProviderSection: React.FC = () => {
       className="relative py-24 overflow-hidden"
       style={{ background: 'linear-gradient(180deg, #0a1628 0%, #0d1b2e 100%)' }}
     >
-      {/* Background dot grid */}
       <div
         className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
@@ -96,26 +69,25 @@ const ServiceProviderSection: React.FC = () => {
           <div className={`anim-fade-right anim-duration-normal ${isVisible ? 'anim-visible' : ''}`}>
             <span className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 px-3.5 py-1.5 rounded text-xs font-semibold uppercase tracking-wider mb-6">
               <HandshakeIcon sx={{ fontSize: 13 }} />
-              Service Provider Mode
+              {t('landing.serviceProvider.badge')}
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-white mb-5 leading-tight">
-              Manage All Your Clients{' '}
-              <span className="text-emerald-400">From One Platform</span>
+              {t('landing.serviceProvider.title')}{' '}
+              <span className="text-emerald-400">{t('landing.serviceProvider.titleHighlight')}</span>
             </h2>
             <p className="text-slate-400 text-lg leading-relaxed mb-5">
-              If you provide water treatment services to multiple clients — condominiums, hotels, factories, or municipalities —
-              LINCE's Service Provider Mode is built for you.
+              {t('landing.serviceProvider.description')}
             </p>
             <p className="text-slate-400 leading-relaxed mb-8 border-l-2 border-emerald-500/30 pl-4 text-sm">
-              The entire platform restructures around a{' '}
-              <strong className="text-slate-200">Client → Systems → Data</strong> hierarchy,
-              giving you full operational visibility while maintaining absolute data separation between clients.
+              {t('landing.serviceProvider.hierarchyNote')}{' '}
+              <strong className="text-slate-200">{t('landing.serviceProvider.hierarchy')}</strong>{' '}
+              {t('landing.serviceProvider.hierarchyEnd')}
             </p>
 
             {/* Client switcher mockup */}
             <div className="bg-slate-800/70 border border-slate-700/60 rounded mb-8 overflow-hidden">
               <div className="px-4 py-3 border-b border-slate-700/50">
-                <p className="text-slate-500 text-[11px] uppercase tracking-widest font-medium">Active Client Context</p>
+                <p className="text-slate-500 text-[11px] uppercase tracking-widest font-medium">{t('landing.serviceProvider.contextLabel')}</p>
               </div>
               <div className="p-3 space-y-1">
                 {clients.map((c) => (
@@ -134,7 +106,7 @@ const ServiceProviderSection: React.FC = () => {
                       {c.name}
                     </span>
                     {c.active && (
-                      <span className="ml-auto text-emerald-400 text-[11px] font-semibold">Active</span>
+                      <span className="ml-auto text-emerald-400 text-[11px] font-semibold">{t('landing.serviceProvider.activeLabel')}</span>
                     )}
                   </div>
                 ))}
@@ -153,7 +125,7 @@ const ServiceProviderSection: React.FC = () => {
                 py: 1.25,
               }}
             >
-              Get Service Provider Access
+              {t('landing.serviceProvider.cta')}
             </Button>
           </div>
 
@@ -161,7 +133,7 @@ const ServiceProviderSection: React.FC = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
             {benefits.map((b, i) => (
               <div
-                key={b.title}
+                key={i}
                 className={`group rounded border border-slate-700/60 p-5 transition-all duration-300
                   hover:border-emerald-500/30 hover:bg-slate-800/80
                   ${animDirs[i]} ${animDurs[i]} ${isVisible ? 'anim-visible' : ''}`}
@@ -169,9 +141,9 @@ const ServiceProviderSection: React.FC = () => {
               >
                 <div
                   className="w-10 h-10 rounded mb-3.5 flex items-center justify-center transition-transform group-hover:scale-110 duration-300"
-                  style={{ color: b.color, background: `${b.color}15`, border: `1px solid ${b.color}25` }}
+                  style={{ color: benefitIcons[i].color, background: `${benefitIcons[i].color}15`, border: `1px solid ${benefitIcons[i].color}25` }}
                 >
-                  {b.icon}
+                  {benefitIcons[i].icon}
                 </div>
                 <h4 className="text-white font-semibold text-sm mb-2">{b.title}</h4>
                 <p className="text-slate-400 text-xs leading-relaxed">{b.desc}</p>

@@ -1,0 +1,693 @@
+{
+  "landing": {
+    "nav": {
+      "features": "Funcionalidades",
+      "howItWorks": "Como Funciona",
+      "industries": "Setores",
+      "ai": "IA",
+      "pricing": "Planos",
+      "faq": "FAQ",
+      "logIn": "Entrar",
+      "getStarted": "Começar Grátis"
+    },
+    "hero": {
+      "badge": "Plataforma de Sistemas Hídricos com IA",
+      "headline": {
+        "word1": "Plataforma Completa",
+        "word2Gradient": "de Monitoramento",
+        "connector": "e",
+        "word3Gradient": "Inspeção",
+        "sub": "para Sistemas de Água"
+      },
+      "description": "O LINCE capacita empresas de tratamento de água a gerenciar sistemas, registrar dados em campo, realizar inspeções, rastrear ocorrências e gerar relatórios com IA — tudo em um só lugar.",
+      "startTrial": "Iniciar Teste Grátis",
+      "viewDemo": "Ver Demonstração",
+      "badge1": "Sem necessidade de cartão de crédito",
+      "badge2": "Teste grátis de 14 dias",
+      "badge3": "Acesso completo a todos os módulos",
+      "dashboard": {
+        "title": "Painel do Gestor",
+        "subtitle": "Estação ETA — Unidade A",
+        "live": "Ao Vivo",
+        "systemsOnline": "Sistemas Online",
+        "todaysRecords": "Registros Hoje",
+        "activeAlerts": "Alertas Ativos",
+        "aiInsights": "Insights de IA",
+        "chlorineLabel": "Nível de Cloro (ppm) — Últimos 7 dias",
+        "normal": "Normal",
+        "recentActivity": "Atividade Recente",
+        "activity1Label": "Inspeção concluída",
+        "activity1Time": "2h atrás",
+        "activity2Label": "Alerta de pH resolvido",
+        "activity2Time": "4h atrás",
+        "activity3Label": "Novo registro diário adicionado",
+        "activity3Time": "6h atrás",
+        "aiInsightsActive": "Insights de IA Ativos",
+        "systemsOnlineBadge": "3 Sistemas Online"
+      },
+      "trustedBy": "Utilizado por profissionais de gestão hídrica em diferentes setores",
+      "industries": ["Estações ETE", "Instalações ETA", "Piscinas", "Torres de Resfriamento", "Sistemas de Caldeiras", "ETEs"]
+    },
+    "stats": {
+      "companies": "Empresas",
+      "companiesDesc": "Empresas de tratamento de água usando o LINCE",
+      "inspections": "Inspeções",
+      "inspectionsDesc": "Inspeções de campo registradas na plataforma",
+      "records": "Registros",
+      "recordsDesc": "Registros de monitoramento diário armazenados com segurança",
+      "uptime": "Uptime",
+      "uptimeDesc": "SLA de confiabilidade e disponibilidade da plataforma"
+    },
+    "about": {
+      "badge": "Sobre o LINCE",
+      "title": "A Plataforma Criada para Profissionais de Gestão Hídrica",
+      "description": "O LINCE (Motor de Controle de Monitoramento e Inspeção) é uma plataforma SaaS abrangente projetada desde o início para operações de tratamento de água. Ele unifica coleta de dados, inspeções, gestão de ocorrências e análises com IA em um único sistema intuitivo que melhora o controle operacional e garante conformidade regulatória.",
+      "pillars": [
+        {
+          "title": "Totalmente Configurável",
+          "desc": "Crie sistemas personalizados, pontos de monitoramento, parâmetros e listas de verificação de inspeção adequados à sua operação."
+        },
+        {
+          "title": "Acesso Multifunção",
+          "desc": "Técnicos de campo, gestores e administradores têm fluxos de trabalho e níveis de acesso dedicados."
+        },
+        {
+          "title": "Insights por IA",
+          "desc": "O Claude AI analisa seus dados operacionais para identificar tendências, anomalias e fornecer recomendações práticas."
+        },
+        {
+          "title": "Relatórios para Auditoria",
+          "desc": "Gere relatórios PDF profissionais com fotos, tabelas, gráficos e assinaturas digitais para conformidade."
+        },
+        {
+          "title": "Arquitetura Modular",
+          "desc": "Use apenas os módulos que você precisa — desde registros diários básicos até inspeções completas, ocorrências e gestão de produtos."
+        },
+        {
+          "title": "Específico para o Setor",
+          "desc": "Desenvolvido especificamente para tratamento de água, ETE, ETA, piscinas, torres de resfriamento, caldeiras e setores relacionados."
+        }
+      ]
+    },
+    "profiles": {
+      "badge": "Dois Perfis de Negócio",
+      "title": "O LINCE se Adapta ao Seu Modelo de Negócio",
+      "description": "Seja você quem gerencia suas próprias instalações ou quem atende vários clientes, o LINCE tem um modo projetado especificamente para você.",
+      "endCustomer": {
+        "badge": "Cliente Final",
+        "title": "Para Indústrias e Instalações",
+        "description": "Ideal para empresas que gerenciam seus próprios sistemas de água — fábricas, estações de tratamento, hotéis, condomínios e muito mais.",
+        "features": [
+          "Criar e configurar seus próprios sistemas",
+          "Definir parâmetros de monitoramento e alertas",
+          "Registrar medições e leituras diárias",
+          "Realizar inspeções com fotos",
+          "Rastrear ocorrências e incidentes",
+          "Gerenciar estoque de produtos químicos",
+          "Gerar relatórios de conformidade",
+          "Insights operacionais com IA"
+        ],
+        "examples": ["Estações ETE/ETA", "Piscinas", "Torres de Resfriamento", "Sistemas de Caldeiras"],
+        "cta": "Começar como Cliente Final"
+      },
+      "serviceProvider": {
+        "badge": "Prestador de Serviços",
+        "title": "Para Empresas de Manutenção",
+        "description": "Desenvolvido para empresas que prestam serviços de tratamento de água a múltiplos clientes — empresas de piscinas, prestadores de tratamento de água e consultores.",
+        "features": [
+          "Gestão de portfólio multicliente",
+          "Espaço de trabalho dedicado por cliente",
+          "Isolamento estrito de dados entre clientes",
+          "Geração de relatórios por cliente",
+          "Configurações de sistema por cliente",
+          "Painel centralizado de todos os clientes",
+          "Acesso de equipe com função por cliente",
+          "Relatórios PDF com marca profissional"
+        ],
+        "examples": ["Empresas de Manutenção de Piscinas", "Serviços de Tratamento de Água", "Prestadores ETE/ETA", "Consultores Ambientais"],
+        "cta": "Começar como Prestador de Serviços"
+      }
+    },
+    "modules": {
+      "badge": "10 Módulos Integrados",
+      "title": "Tudo que Você Precisa, em Uma Plataforma",
+      "description": "Da coleta de dados em campo a relatórios com IA — o LINCE cobre todos os aspectos do monitoramento e gestão de sistemas de água.",
+      "tagNew": "Novo",
+      "tagAi": "IA",
+      "items": [
+        {
+          "title": "Sistemas e Monitoramento",
+          "description": "Crie sistemas, pontos de monitoramento e parâmetros. Acompanhe dados em tempo real e defina alertas de limite."
+        },
+        {
+          "title": "Registros Diários",
+          "description": "Técnicos registram medições diárias organizadas por sistema, etapa e parâmetro para fácil análise."
+        },
+        {
+          "title": "Inspeções",
+          "description": "Inspeções estruturadas com listas de verificação personalizadas. Anexe fotos, marque não conformidades, acompanhe o status."
+        },
+        {
+          "title": "Ocorrências e Incidentes",
+          "description": "Registre e acompanhe ocorrências operacionais com níveis de prioridade do aberto ao resolvido."
+        },
+        {
+          "title": "Produtos Químicos",
+          "description": "Gerencie estoque, registros de dosagem e controle de consumo com alertas de estoque baixo."
+        },
+        {
+          "title": "Monte Seu Relatório",
+          "description": "Construtor com arrastar e soltar com blocos personalizados — análises, fotos, conclusões, assinaturas digitais."
+        },
+        {
+          "title": "Biblioteca de Documentos",
+          "description": "Repositório centralizado para documentos técnicos, laudos laboratoriais, ARTs, certificados e referências."
+        },
+        {
+          "title": "Assistente de IA",
+          "description": "O Claude AI analisa dados para gerar insights, detectar anomalias, sugerir ações e produzir relatórios."
+        },
+        {
+          "title": "Painéis e Gráficos",
+          "description": "Painéis interativos com gráficos de linha, barra, área, gauge e mapa de calor. Visualize dados de relance."
+        },
+        {
+          "title": "Notificações Inteligentes",
+          "description": "Alertas automáticos via e-mail ou SMS para valores fora do intervalo, prazos de inspeção e mais."
+        }
+      ]
+    },
+    "howItWorks": {
+      "badge": "Processo Simples em 4 Etapas",
+      "title": "Como o LINCE Funciona",
+      "description": "Da configuração inicial aos insights com IA — coloque toda a sua operação no LINCE em dias, não meses.",
+      "stepLabel": "ETAPA",
+      "steps": [
+        {
+          "title": "Configure Seus Sistemas",
+          "description": "Configure seus sistemas de água, pontos de monitoramento, parâmetros com unidades e limites de alerta, e listas de verificação de inspeção personalizadas.",
+          "detail": [
+            "Criar tipos de sistemas e etapas",
+            "Definir parâmetros de monitoramento",
+            "Configurar limites de alerta",
+            "Criar listas de verificação de inspeção"
+          ]
+        },
+        {
+          "title": "Técnicos Registram Dados em Campo",
+          "description": "Os técnicos acessam o LINCE de qualquer dispositivo para enviar leituras diárias, realizar inspeções com fotos e relatar ocorrências — tudo em tempo real.",
+          "detail": [
+            "Registro de medições diárias",
+            "Inspeções com fotos e listas de verificação",
+            "Relatórios de ocorrências e incidentes",
+            "Registros de dosagem de produtos químicos"
+          ]
+        },
+        {
+          "title": "Gestores Revisam e Controlam",
+          "description": "Os gestores têm visibilidade total através de painéis, alertas e visualizações detalhadas. Revise inspeções, aprove relatórios e acompanhe conformidades.",
+          "detail": [
+            "Visão geral do painel em tempo real",
+            "Alertas automáticos de valores fora do intervalo",
+            "Revisão e aprovação de inspeções",
+            "Comparação entre sistemas"
+          ]
+        },
+        {
+          "title": "IA Gera Insights",
+          "description": "O Claude AI analisa continuamente seus dados para detectar anomalias, identificar tendências, sugerir ações corretivas e gerar relatórios inteligentes.",
+          "detail": [
+            "Detecção de anomalias e alertas",
+            "Análise de tendências por período",
+            "Geração inteligente de relatórios",
+            "Recomendações operacionais"
+          ]
+        }
+      ]
+    },
+    "ai": {
+      "badge": "Integração com Claude AI",
+      "title": "IA que Entende Seus",
+      "titleHighlight": "Sistemas de Água",
+      "description": "O LINCE integra-se com o Claude AI (Anthropic) para fornecer análise inteligente dos seus dados operacionais. A IA entende o contexto do tratamento de água e fornece insights significativos e práticos — não apenas estatísticas genéricas.",
+      "note": "Os recursos de IA são totalmente opcionais e funcionam perfeitamente ao lado da plataforma principal. Adicione capacidades de IA a qualquer momento à medida que suas necessidades crescem — com sua própria chave de API.",
+      "cta": "Experimentar Recursos de IA Grátis",
+      "features": [
+        {
+          "title": "Análise de Tendências",
+          "desc": "Detecte padrões ao longo de dias, semanas e meses para prever o comportamento de equipamentos e prevenir falhas."
+        },
+        {
+          "title": "Detecção de Anomalias",
+          "desc": "A IA sinaliza valores fora dos intervalos esperados automaticamente, mesmo em múltiplos sistemas simultaneamente."
+        },
+        {
+          "title": "Relatórios Inteligentes",
+          "desc": "Gere relatórios detalhados com resumos escritos pela IA, observações e recomendações operacionais."
+        },
+        {
+          "title": "Sugestões Inteligentes",
+          "desc": "Sugestões contextuais com base nos dados atuais — ajustes de dosagem, alertas de manutenção, melhorias de processo."
+        },
+        {
+          "title": "Comparação entre Períodos",
+          "desc": "Compare parâmetros entre períodos, sistemas e pontos de monitoramento para entender variações operacionais."
+        },
+        {
+          "title": "Assistente de Chat com IA",
+          "desc": "Faça perguntas sobre seus dados em linguagem natural e obtenha respostas instantâneas e contextuais."
+        }
+      ],
+      "chat": {
+        "title": "Assistente IA LINCE",
+        "subtitle": "Desenvolvido com Claude · Contextualizado para seus sistemas de água",
+        "active": "Ativo",
+        "userMessage": "Quais foram os níveis de cloro na semana passada e estão dentro do intervalo normal?",
+        "aiPart1": "Com base nos registros da ETA Unidade A da semana passada, os níveis de cloro tiveram média de",
+        "aiStrong1": "1,8 ppm",
+        "aiPart2": "(intervalo: 1,4–2,3 ppm). Todas as leituras estavam dentro do intervalo normal configurado de",
+        "aiStrong2": "1,0–3,0 ppm",
+        "aiPart3": ". No entanto, notei uma leve tendência de queda na quinta e sexta-feira —",
+        "aiAmber": "recomendo verificar as configurações de dosagem do clorador",
+        "aiPart4": "para garantir que os níveis permaneçam acima de 1,5 ppm nos horários de pico."
+      }
+    },
+    "serviceProvider": {
+      "badge": "Modo Prestador de Serviços",
+      "title": "Gerencie Todos os Seus Clientes",
+      "titleHighlight": "em Uma Plataforma",
+      "description": "Se você fornece serviços de tratamento de água a múltiplos clientes — condomínios, hotéis, fábricas ou municípios — o Modo Prestador de Serviços do LINCE foi criado para você.",
+      "hierarchyNote": "A plataforma inteira se reestrutura em torno de uma hierarquia de",
+      "hierarchy": "Cliente → Sistemas → Dados",
+      "hierarchyEnd": ", dando a você visibilidade operacional completa enquanto mantém separação absoluta de dados entre clientes.",
+      "contextLabel": "Contexto do Cliente Ativo",
+      "activeLabel": "Ativo",
+      "cta": "Obter Acesso como Prestador de Serviços",
+      "benefits": [
+        {
+          "title": "Portfólio de Clientes",
+          "desc": "Registre e gerencie todos os seus clientes em um só lugar. Cada cliente tem seu próprio espaço de trabalho dedicado."
+        },
+        {
+          "title": "Isolamento Estrito de Dados",
+          "desc": "O Cliente A nunca vê os dados do Cliente B. Cada registro é estritamente isolado por client_id no nível do banco de dados."
+        },
+        {
+          "title": "Troca Rápida de Cliente",
+          "desc": "Alterne entre contextos de clientes instantaneamente. O contexto de trabalho do sistema inteiro é atualizado automaticamente."
+        },
+        {
+          "title": "Exportações por Cliente",
+          "desc": "Todos os relatórios e PDFs são sempre filtrados pelo cliente selecionado — sem vazamento acidental de dados."
+        },
+        {
+          "title": "Controle de Acesso da Equipe",
+          "desc": "Atribua técnicos a clientes específicos. Os usuários veem apenas os clientes aos quais têm permissão de acesso."
+        },
+        {
+          "title": "Relatórios Profissionais",
+          "desc": "Gere relatórios PDF com marca por cliente com o logotipo da sua empresa, detalhes do cliente e dados operacionais."
+        }
+      ]
+    },
+    "reports": {
+      "badge": "Monte Seu Relatório",
+      "title": "Relatórios Profissionais,",
+      "titleHighlight": "Do Seu Jeito",
+      "description": "Crie modelos de relatório personalizados com os blocos que você precisa. Gere PDFs com marca e dados operacionais reais em segundos — não em horas.",
+      "templateLabel": "Modelo de Relatório",
+      "templateTitle": "Relatório Mensal de Manutenção de Piscina",
+      "serviceProviderBadge": "Prestador de Serviços",
+      "blocksLabel": "Blocos do Relatório (arraste para reordenar)",
+      "clientLabel": "Cliente: Condomínio Paraíso",
+      "generatePdf": "Gerar PDF",
+      "blocks": [
+        "Marca e Logotipo",
+        "Tabelas de Monitoramento",
+        "Fotos de Inspeção",
+        "Lista de Ocorrências",
+        "Assinatura Digital",
+        "Anexos PDF"
+      ],
+      "featureTitle": "Do Modelo ao PDF com Um Clique",
+      "featureDescription": "O construtor de relatórios do LINCE permite criar modelos reutilizáveis para cada tipo de relatório — visitas mensais, inspeções, resumos de ocorrências, análise de água — e gerá-los instantaneamente com dados reais de seus sistemas.",
+      "features": [
+        "Ordenação de blocos por arrastar e soltar",
+        "Salvar e reutilizar modelos de relatório",
+        "Compressão automática de fotos",
+        "Incluir gráficos e linhas de tendência",
+        "Filtros por sistema e período",
+        "Trilha de auditoria com usuário e data",
+        "Opção de exportação em DOCX",
+        "Histórico de downloads e versionamento"
+      ],
+      "cta": "Experimentar o Construtor de Relatórios"
+    },
+    "monitoring": {
+      "badge": "Monitoramento e Análises",
+      "title": "Visualize Seus Dados, Aja Mais Rápido",
+      "description": "Transforme dados brutos de monitoramento em insights práticos com gráficos interativos, alertas automatizados e análise entre sistemas.",
+      "chartTitle": "ETA Unidade A — Cloro (ppm)",
+      "chartSubtitle": "Últimos 12 Meses",
+      "avgPpm": "Média ppm",
+      "status": "Status",
+      "alerts": "Alertas",
+      "normal": "Normal",
+      "alertTitle": "Alerta: pH Fora do Intervalo",
+      "alertDesc": "ETA Unidade A — pH: 8,4 (limite: 7,5) · 2 horas atrás",
+      "features": [
+        {
+          "title": "Painéis com Múltiplos Gráficos",
+          "desc": "Linha, barra, área, gauge, radar, mapa de calor — configure seu painel com os gráficos mais relevantes para sua operação."
+        },
+        {
+          "title": "Sistema de Alertas Automatizados",
+          "desc": "Defina limites para cada parâmetro. Quando os valores saem do intervalo, o LINCE alerta as pessoas certas instantaneamente via e-mail ou SMS."
+        },
+        {
+          "title": "Comparação entre Sistemas",
+          "desc": "Compare o mesmo parâmetro em múltiplos sistemas ou pontos de monitoramento em uma única visualização para identificar variações."
+        },
+        {
+          "title": "Status em Tempo Real",
+          "desc": "Veja o status atual de todos os seus sistemas de relance — online, offline, alerta ou manutenção — no painel."
+        }
+      ]
+    },
+    "industries": {
+      "badge": "8 Setores Atendidos",
+      "title": "Criado para Cada Sistema de Água",
+      "description": "O LINCE é projetado para lidar com os requisitos específicos de todos os setores relacionados à água, com parâmetros e fluxos de trabalho configuráveis para cada segmento.",
+      "items": [
+        {
+          "name": "Estações ETE / ETA",
+          "description": "Estações de Tratamento de Efluentes e Água com monitoramento completo de parâmetros e conformidade regulatória."
+        },
+        {
+          "name": "Piscinas",
+          "description": "Controle de cloro, pH, alcalinidade e turbidez para piscinas em condomínios, hotéis, clubes e escolas."
+        },
+        {
+          "name": "Torres de Resfriamento",
+          "description": "Controle de legionela, tratamento microbiológico e monitoramento operacional completo de sistemas de torres de resfriamento."
+        },
+        {
+          "name": "Sistemas de Caldeiras",
+          "description": "Monitoramento do tratamento da água de caldeiras a vapor, controle de inibidores de corrosão e análises de desempenho."
+        },
+        {
+          "name": "Tratamento de Água",
+          "description": "Gestão completa do processo de tratamento de água com dosagem de produtos químicos, análise e controle de qualidade."
+        },
+        {
+          "name": "Plantas Industriais",
+          "description": "Monitoramento de água de processo para manufatura, processamento de alimentos, farmacêutico e outras instalações industriais."
+        },
+        {
+          "name": "Sistemas Agrícolas",
+          "description": "Monitoramento da qualidade da água de irrigação, controle de fertigação e gestão de sistemas de tratamento."
+        },
+        {
+          "name": "Edifícios e Condomínios",
+          "description": "Gestão do sistema de água predial — reservatórios, distribuição, qualidade da água potável e conformidade."
+        }
+      ]
+    },
+    "benefits": {
+      "badge": "Por que Escolher o LINCE",
+      "title": "Criado para Operações Reais",
+      "description": "Cada funcionalidade do LINCE foi projetada com base em necessidades reais de profissionais de tratamento de água, não em casos de uso teóricos.",
+      "items": [
+        {
+          "title": "Funciona em Qualquer Dispositivo",
+          "desc": "Aplicativo web totalmente responsivo — desktop, tablet e celular. Técnicos em campo, gestores no escritório."
+        },
+        {
+          "title": "Multilíngue",
+          "desc": "Interface completa em Português e Inglês. Troque idiomas a qualquer momento pela barra de navegação.",
+          "highlight": "PT / EN"
+        },
+        {
+          "title": "Nuvem e Segurança",
+          "desc": "Infraestrutura empresarial com backups automáticos, criptografia SSL e SLA de 99,9% de uptime.",
+          "highlight": "99,9%"
+        },
+        {
+          "title": "Alto Desempenho",
+          "desc": "Otimizado com lazy loading, paginação e compressão de imagens — mesmo com grandes conjuntos de dados históricos."
+        },
+        {
+          "title": "Suporte de Onboarding",
+          "desc": "Tours guiados interativos ajudam cada membro da equipe a entender o sistema desde o primeiro dia."
+        },
+        {
+          "title": "Altamente Configurável",
+          "desc": "Tudo é configurável — tipos de sistema, unidades de parâmetros, listas de verificação, modelos de relatório, limites."
+        },
+        {
+          "title": "Documentação Fotográfica",
+          "desc": "Anexe fotos a inspeções, ocorrências, sistemas e documentos. Armazenados com segurança no Cloudinary."
+        },
+        {
+          "title": "Alertas Inteligentes",
+          "desc": "Notificações por e-mail e SMS para valores fora do intervalo, prazos de inspeção, ocorrências e atualizações."
+        }
+      ]
+    },
+    "pricing": {
+      "badge": "Preços Simples e Transparentes",
+      "title": "Escolha o Plano Certo",
+      "description": "Todos os planos incluem 14 dias de teste grátis. Sem necessidade de cartão de crédito. Cancele quando quiser.",
+      "recommended": "Recomendado",
+      "footnote": "Preços em Reais (BRL). Todos os planos incluem 14 dias de teste grátis. Sem necessidade de cartão de crédito para começar.",
+      "plans": [
+        {
+          "name": "Starter",
+          "period": "/mês",
+          "description": "Ideal para pequenas instalações e operações em um único local.",
+          "badge": "",
+          "features": [
+            "Até 3 sistemas",
+            "Até 5 usuários",
+            "Registros diários e monitoramento",
+            "Inspeções com fotos",
+            "Relatórios básicos (PDF)",
+            "Alertas por e-mail",
+            "5 GB de armazenamento de mídia",
+            "Suporte por e-mail"
+          ],
+          "cta": "Iniciar Teste Grátis"
+        },
+        {
+          "name": "Profissional",
+          "period": "/mês",
+          "description": "Para operações em crescimento e prestadores de serviços com múltiplos clientes.",
+          "badge": "Mais Popular",
+          "features": [
+            "Sistemas ilimitados",
+            "Até 25 usuários",
+            "Modo prestador de serviços",
+            "Gestão multicliente",
+            "Modelos de relatório personalizados",
+            "Assistente de IA e insights",
+            "Alertas por e-mail + SMS",
+            "50 GB de armazenamento de mídia",
+            "Módulo de estoque de produtos",
+            "Biblioteca de documentos",
+            "Suporte prioritário"
+          ],
+          "cta": "Iniciar Teste Grátis"
+        },
+        {
+          "name": "Enterprise",
+          "period": "",
+          "description": "Para grandes organizações com requisitos personalizados e suporte dedicado.",
+          "badge": "",
+          "features": [
+            "Tudo do Profissional",
+            "Usuários ilimitados",
+            "Marca personalizada",
+            "Gerente de conta dedicado",
+            "Treinamento personalizado de modelo de IA",
+            "Garantia de SLA",
+            "Armazenamento ilimitado",
+            "Acesso à API",
+            "Onboarding presencial",
+            "Integrações personalizadas"
+          ],
+          "cta": "Falar com Vendas"
+        }
+      ]
+    },
+    "testimonials": {
+      "badge": "Histórias de Clientes",
+      "title": "A Confiança de Profissionais Hídricos",
+      "description": "Veja o que nossos clientes dizem sobre como o LINCE melhorou suas operações.",
+      "items": [
+        {
+          "quote": "O LINCE transformou completamente como gerenciamos nossos clientes de manutenção de piscinas. Saímos de listas de verificação em papel e fotos no WhatsApp para uma plataforma profissional em dias. Nossos clientes adoram os relatórios PDF com marca.",
+          "author": "Carlos M.",
+          "role": "Proprietário",
+          "company": "AquaTech Pool Services",
+          "industry": "Manutenção de Piscinas"
+        },
+        {
+          "quote": "Como gerente de uma estação ETA, acompanhar os requisitos regulatórios era sempre estressante. O LINCE me dá visibilidade em tempo real em todos os pontos de monitoramento e me alerta automaticamente quando os parâmetros saem do intervalo.",
+          "author": "Fernanda R.",
+          "role": "Gerente de Operações",
+          "company": "Sistema Água Pura",
+          "industry": "Estação de Tratamento de Água"
+        },
+        {
+          "quote": "O recurso de insights de IA é notável. Identificou uma correlação entre o consumo de cloro e as flutuações de temperatura que nossa equipe nunca havia notado. Reduzimos os custos com produtos químicos em 15% no primeiro mês.",
+          "author": "Roberto S.",
+          "role": "Diretor Técnico",
+          "company": "HidroControl",
+          "industry": "Tratamento de Água Industrial"
+        },
+        {
+          "quote": "Sendo prestador de serviços com mais de 20 clientes, a organização dos dados era nosso maior desafio. O modo multicliente do LINCE é exatamente o que precisávamos — cada cliente completamente isolado, troca de contexto instantânea.",
+          "author": "Mariana T.",
+          "role": "CEO",
+          "company": "TratAmbi Serviços Ambientais",
+          "industry": "Serviços Ambientais"
+        }
+      ]
+    },
+    "security": {
+      "badge": "Segurança e Conformidade",
+      "title": "Seus Dados Estão",
+      "titleHighlight": "Seguros com o LINCE",
+      "description": "Dados de tratamento de água são críticos. O LINCE é construído com segurança como requisito fundamental — não como um recurso adicional.",
+      "note": "Da criptografia SSL ao controle de acesso baseado em função e trilhas de auditoria completas, cada aspecto da plataforma é projetado para proteger seus dados operacionais e atender aos requisitos regulatórios.",
+      "complianceLine": "Desenvolvido para conformidade regulatória em operações de tratamento de água",
+      "trustBadges": [
+        { "label": "SSL/TLS", "sub": "Criptografado" },
+        { "label": "RBAC", "sub": "Controle de Acesso" },
+        { "label": "Auditoria", "sub": "Trilha Completa" }
+      ],
+      "items": [
+        {
+          "title": "SSL / HTTPS em Todo o Sistema",
+          "desc": "Todos os dados transmitidos entre seu navegador e nossos servidores são criptografados com SSL/TLS."
+        },
+        {
+          "title": "Isolamento de Dados do Cliente",
+          "desc": "No modo prestador de serviços, cada registro inclui client_id para evitar vazamento de dados entre clientes."
+        },
+        {
+          "title": "Controle de Acesso Baseado em Função",
+          "desc": "As funções Admin, Gestor e Técnico têm permissões específicas — os usuários veem apenas o que estão autorizados."
+        },
+        {
+          "title": "Trilha de Auditoria Completa",
+          "desc": "Cada relatório gerado armazena o usuário, data, filtros aplicados e versão do modelo para auditabilidade completa."
+        },
+        {
+          "title": "Armazenamento Seguro de Mídia",
+          "desc": "Todas as fotos e documentos são armazenados no Cloudinary com controles de acesso, compressão e entrega via CDN."
+        },
+        {
+          "title": "Autenticação JWT",
+          "desc": "Autenticação segura com JSON Web Token com gerenciamento de sessão e controles de expiração automática."
+        }
+      ]
+    },
+    "faq": {
+      "badge": "Perguntas Frequentes",
+      "title": "Tem Dúvidas? Temos Respostas.",
+      "description": "Tudo que você precisa saber sobre o LINCE antes de começar.",
+      "items": [
+        {
+          "question": "O que é o LINCE e para quem é indicado?",
+          "answer": "O LINCE é uma plataforma completa de gestão de monitoramento e inspeção para sistemas de água. É projetado para dois perfis: Clientes Finais (empresas que gerenciam seus próprios sistemas de água como estações ETE/ETA, piscinas, torres de resfriamento, caldeiras) e Prestadores de Serviços (empresas que fornecem serviços de tratamento de água a múltiplos clientes)."
+        },
+        {
+          "question": "Qual é a diferença entre o modo Cliente Final e Prestador de Serviços?",
+          "answer": "No modo Cliente Final, a plataforma é organizada como: Sistemas → Etapas → Registros/Inspeções/Ocorrências. No modo Prestador de Serviços, a hierarquia muda para: Cliente → Sistemas → Etapas → Dados. Isso permite que os prestadores gerenciem múltiplos portfólios de clientes separados com isolamento estrito de dados. Você escolhe seu modo durante o onboarding."
+        },
+        {
+          "question": "Os técnicos podem usar o LINCE em campo com dispositivos móveis?",
+          "answer": "Sim. O LINCE é um aplicativo web totalmente responsivo que funciona em qualquer dispositivo — desktop, tablet e smartphone. Os técnicos podem registrar medições diárias, realizar inspeções com fotos e relatar ocorrências diretamente do navegador móvel em campo."
+        },
+        {
+          "question": "Como funciona a integração com IA?",
+          "answer": "O LINCE integra-se com o Claude AI (da Anthropic) para fornecer análise inteligente dos seus dados operacionais. A IA pode detectar anomalias, identificar tendências, comparar períodos, gerar relatórios inteligentes e responder perguntas sobre seus dados via um assistente de chat interativo. Os recursos de IA são opcionais e podem ser habilitados com sua própria chave de API."
+        },
+        {
+          "question": "Posso criar listas de verificação de inspeção personalizadas?",
+          "answer": "Sim. O LINCE permite configurar completamente suas listas de verificação de inspeção — criar itens personalizados para cada sistema ou etapa, marcá-los como conformes/não conformes, adicionar comentários e anexar fotos. Os itens da lista são configurados pelos gestores e reutilizados nas inspeções."
+        },
+        {
+          "question": "Que tipos de relatórios posso gerar?",
+          "answer": "O LINCE possui um sistema \"Monte Seu Relatório\" onde você cria modelos reutilizáveis selecionando blocos (marca, tabelas de monitoramento, resultados de inspeção, resumos de ocorrências, fotos, assinaturas digitais, anexos). Os relatórios são gerados como PDFs profissionais com sua marca e dados operacionais reais."
+        },
+        {
+          "question": "Os dados dos meus clientes estão completamente isolados no modo Prestador de Serviços?",
+          "answer": "Com certeza. Cada registro, inspeção, ocorrência, foto e relatório no LINCE é marcado com um client_id no nível do banco de dados. Isso significa que os dados do Cliente A são completamente inacessíveis quando trabalhando no contexto do Cliente B. Usuários prestadores só veem os clientes aos quais têm acesso."
+        },
+        {
+          "question": "Posso experimentar o LINCE antes de contratar?",
+          "answer": "Sim. Todos os planos incluem 14 dias de teste grátis com acesso completo a todos os recursos. Não é necessário cartão de crédito para começar. Você pode explorar toda a plataforma, criar sistemas, realizar inspeções e gerar relatórios durante o período de teste."
+        },
+        {
+          "question": "Que notificações o LINCE envia?",
+          "answer": "O LINCE suporta notificações por e-mail (via SendGrid) e SMS opcional para: valores de parâmetros fora do intervalo, prazos de inspeção, atualizações de status de ocorrências, alertas de estoque baixo de produtos e notificações personalizadas configuradas pelos administradores."
+        },
+        {
+          "question": "Múltiplos técnicos podem usar a mesma conta?",
+          "answer": "Sim. O LINCE suporta múltiplos usuários por organização com acesso baseado em função: Admin (acesso total à plataforma), Gestor (acesso aos seus sistemas e relatórios) e Técnico (entrada de dados e operações em campo). A gestão de usuários está disponível em todos os planos Profissional e Enterprise."
+        }
+      ]
+    },
+    "cta": {
+      "topBadge": "Inicie Seu Teste Grátis Hoje — Sem Necessidade de Cartão de Crédito",
+      "title": "Pronto para Transformar Suas",
+      "titleHighlight": "Operações Hídricas?",
+      "description": "Junte-se a centenas de profissionais de tratamento de água que usam o LINCE para otimizar seu monitoramento, inspeções e relatórios. Comece grátis, escale conforme cresce.",
+      "startTrial": "Iniciar Teste Grátis de 14 Dias",
+      "logIn": "Entrar na Sua Conta",
+      "features": [
+        "14 dias de teste grátis",
+        "Sem necessidade de cartão de crédito",
+        "Acesso completo a todos os módulos",
+        "Suporte de configuração incluído"
+      ]
+    },
+    "footer": {
+      "description": "A plataforma completa de gestão de monitoramento e inspeção para sistemas de água. Desenvolvida para profissionais que precisam de confiabilidade, flexibilidade e inteligência.",
+      "startFreeTrial": "Iniciar Teste Grátis",
+      "copyright": "Todos os direitos reservados · Plataforma de Gestão de Sistemas de Água",
+      "logIn": "Entrar",
+      "signUp": "Cadastrar",
+      "columns": {
+        "product": "Produto",
+        "solutions": "Soluções",
+        "modules": "Módulos"
+      },
+      "links": {
+        "product": {
+          "features": "Funcionalidades",
+          "howItWorks": "Como Funciona",
+          "industries": "Setores",
+          "aiIntegration": "Integração com IA",
+          "pricing": "Planos"
+        },
+        "solutions": {
+          "endCustomer": "Cliente Final",
+          "serviceProvider": "Prestador de Serviços",
+          "waterTreatment": "Tratamento de Água",
+          "swimmingPools": "Piscinas",
+          "industrial": "Industrial"
+        },
+        "modules": {
+          "dailyMonitoring": "Monitoramento Diário",
+          "inspections": "Inspeções",
+          "incidents": "Ocorrências",
+          "reports": "Relatórios",
+          "documentLibrary": "Biblioteca de Documentos"
+        }
+      }
+    }
+  }
+}

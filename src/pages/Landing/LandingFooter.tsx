@@ -1,40 +1,42 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import EmailIcon from '@mui/icons-material/Email';
 import LanguageIcon from '@mui/icons-material/Language';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const footerLinks = {
-  Product: [
-    { label: 'Features', section: '#modules' },
-    { label: 'How It Works', section: '#how-it-works' },
-    { label: 'Industries', section: '#industries' },
-    { label: 'AI Integration', section: '#ai' },
-    { label: 'Pricing', section: '#pricing' },
-  ],
-  Solutions: [
-    { label: 'End Customer', section: '#profiles' },
-    { label: 'Service Provider', section: '#service-provider' },
-    { label: 'Water Treatment', section: '#industries' },
-    { label: 'Swimming Pools', section: '#industries' },
-    { label: 'Industrial', section: '#industries' },
-  ],
-  Modules: [
-    { label: 'Daily Monitoring', section: '#modules' },
-    { label: 'Inspections', section: '#modules' },
-    { label: 'Incidents', section: '#modules' },
-    { label: 'Reports', section: '#reports' },
-    { label: 'Document Library', section: '#modules' },
-  ],
-};
-
 const LandingFooter: React.FC = () => {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const scrollTo = (href: string) => {
     const el = document.querySelector(href);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const footerLinks = {
+    [t('landing.footer.columns.product')]: [
+      { label: t('landing.footer.links.product.features'), section: '#modules' },
+      { label: t('landing.footer.links.product.howItWorks'), section: '#how-it-works' },
+      { label: t('landing.footer.links.product.industries'), section: '#industries' },
+      { label: t('landing.footer.links.product.aiIntegration'), section: '#ai' },
+      { label: t('landing.footer.links.product.pricing'), section: '#pricing' },
+    ],
+    [t('landing.footer.columns.solutions')]: [
+      { label: t('landing.footer.links.solutions.endCustomer'), section: '#profiles' },
+      { label: t('landing.footer.links.solutions.serviceProvider'), section: '#service-provider' },
+      { label: t('landing.footer.links.solutions.waterTreatment'), section: '#industries' },
+      { label: t('landing.footer.links.solutions.swimmingPools'), section: '#industries' },
+      { label: t('landing.footer.links.solutions.industrial'), section: '#industries' },
+    ],
+    [t('landing.footer.columns.modules')]: [
+      { label: t('landing.footer.links.modules.dailyMonitoring'), section: '#modules' },
+      { label: t('landing.footer.links.modules.inspections'), section: '#modules' },
+      { label: t('landing.footer.links.modules.incidents'), section: '#modules' },
+      { label: t('landing.footer.links.modules.reports'), section: '#reports' },
+      { label: t('landing.footer.links.modules.documentLibrary'), section: '#modules' },
+    ],
   };
 
   return (
@@ -56,8 +58,7 @@ const LandingFooter: React.FC = () => {
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
-              The complete monitoring and inspection management platform for water systems.
-              Built for professionals who need reliability, flexibility, and intelligence.
+              {t('landing.footer.description')}
             </p>
 
             {/* Contact info */}
@@ -80,7 +81,7 @@ const LandingFooter: React.FC = () => {
               onClick={() => navigate('/signup')}
               className="inline-flex items-center gap-2 bg-blue-600/20 border border-blue-500/30 text-blue-400 hover:bg-blue-600/30 hover:text-blue-300 px-4 py-2 rounded text-sm font-medium transition-all"
             >
-              Start Free Trial
+              {t('landing.footer.startFreeTrial')}
               <ArrowForwardIcon sx={{ fontSize: 14 }} />
             </button>
           </div>
@@ -108,22 +109,36 @@ const LandingFooter: React.FC = () => {
         {/* Bottom bar */}
         <div className="py-6 border-t border-slate-800/60 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-slate-600 text-xs">
-            © {new Date().getFullYear()} LINCE · All rights reserved · Water Systems Management Platform
+            © {new Date().getFullYear()} LINCE · {t('landing.footer.copyright')}
           </p>
           <div className="flex items-center gap-5">
             <button
               onClick={() => navigate('/login')}
               className="text-slate-600 hover:text-slate-300 text-xs transition-colors"
             >
-              Log In
+              {t('landing.footer.logIn')}
             </button>
             <button
               onClick={() => navigate('/signup')}
               className="text-slate-600 hover:text-slate-300 text-xs transition-colors"
             >
-              Sign Up
+              {t('landing.footer.signUp')}
             </button>
-            <span className="text-slate-700 text-xs">PT · EN</span>
+            <div className="flex items-center gap-1">
+              {['pt', 'en'].map((lng) => (
+                <button
+                  key={lng}
+                  onClick={() => i18n.changeLanguage(lng)}
+                  className={`px-2 py-1 rounded text-xs font-bold uppercase transition-all ${
+                    i18n.language === lng
+                      ? 'bg-white/10 text-slate-300'
+                      : 'text-slate-600 hover:text-slate-400'
+                  }`}
+                >
+                  {lng}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

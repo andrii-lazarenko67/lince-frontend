@@ -17,6 +17,7 @@ import { notifications, photoGallery } from './notifications.json';
 import { clients } from './clients.json';
 import { ai } from './ai.json';
 import tours from './tours.json';
+import { landing } from './landing.json';
 
 export default {
   common,
@@ -43,4 +44,5 @@ export default {
   clients,
   ai,
   tours,
+  landing,
 };
