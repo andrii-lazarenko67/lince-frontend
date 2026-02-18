@@ -57,6 +57,18 @@ export const AiChatSidebar: React.FC<AiChatSidebarProps> = ({ open, onClose, con
     }
   }, [open, messages.length, t]);
 
+  // Update welcome message when language changes
+  useEffect(() => {
+    if (messages.length === 1 && messages[0].role === 'assistant') {
+      // Only update if there's just the welcome message
+      const updatedWelcome: AiChatMessage = {
+        role: 'assistant',
+        content: t('ai.chat.welcome')
+      };
+      setMessages([updatedWelcome]);
+    }
+  }, [i18n.language, t]);
+
   const handleSend = async () => {
     if (!input.trim() || loading) return;
 
