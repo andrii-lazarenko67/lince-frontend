@@ -8,6 +8,9 @@ import { Card, Button, Badge, Modal, Input, Select, TextArea, ExportDropdown, Vi
 import ProductsChartView from './ProductsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Product, CreateProductRequest } from '../../types';
+import { useTour, useAutoStartTour, PRODUCTS_LIST_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 const ProductsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -17,6 +20,10 @@ const ProductsPage: React.FC = () => {
   const { units } = useAppSelector((state) => state.units);
   const { systems } = useAppSelector((state) => state.systems);
   const { goToProductDetail } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(PRODUCTS_LIST_TOUR);
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -277,31 +284,53 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('products.title')}</h1>
-          <p className="text-gray-500 mt-1">{t('products.description')}</p>
+      <div className="flex items-center space-x-4">
+        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="products-header">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{t('products.title')}</h1>
+            <p className="text-gray-500 mt-1">{t('products.description')}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div data-tour="view-mode">
+              <ViewModeToggle
+                value={viewMode}
+                onChange={setViewMode}
+              />
+            </div>
+            <div data-tour="export-button">
+              <ExportDropdown
+                onExportPDF={handleExportPDF}
+                onExportHTML={handleExportHTML}
+                onExportCSV={handleExportCSV}
+                disabled={products.length === 0}
+              />
+            </div>
+            <div data-tour="add-product-button">
+              <Button variant="primary" onClick={() => handleOpenForm()}>
+                {t('products.addProduct')}
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <ViewModeToggle
-            value={viewMode}
-            onChange={setViewMode}
-          />
-          <ExportDropdown
-            onExportPDF={handleExportPDF}
-            onExportHTML={handleExportHTML}
-            onExportCSV={handleExportCSV}
-            disabled={products.length === 0}
-          />
-          <Button variant="primary" onClick={() => handleOpenForm()}>
-            {t('products.addProduct')}
-          </Button>
-        </div>
+        <Tooltip title={isCompleted(PRODUCTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(PRODUCTS_LIST_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       {viewMode === 'table' ? (
         <>
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white rounded-lg shadow p-4" data-tour="filters">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <div>
                 <Select
@@ -361,8 +390,9 @@ const ProductsPage: React.FC = () => {
             </div>
           </div>
 
-          <Card noPadding>
-            <PaginatedTable
+          <div data-tour="products-table">
+            <Card noPadding>
+              <PaginatedTable
               columns={columns}
               data={products}
               keyExtractor={(product: Product) => product.id}
@@ -374,8 +404,9 @@ const ProductsPage: React.FC = () => {
               rowsPerPage={rowsPerPage}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Card>
+              />
+            </Card>
+          </div>
         </>
       ) : (
         <ProductsChartView products={products} />
@@ -383,84 +414,96 @@ const ProductsPage: React.FC = () => {
 
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingProduct ? t('products.form.editProduct') : t('products.form.addProduct')} size="lg">
         <form onSubmit={handleSubmit} className='flex flex-col gap-10'>
-          <Input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            label={t('products.form.name')}
-            placeholder={t('products.form.namePlaceholder')}
-            required
-          />
-
-          <Select
-            name="typeId"
-            value={formData.typeId?.toString() || ''}
-            onChange={handleChange}
-            options={typeOptions}
-            label={t('products.form.type')}
-            placeholder={t('products.form.selectType')}
-          />
-
-          <Select
-            name="unitId"
-            value={formData.unitId?.toString() || ''}
-            onChange={handleChange}
-            options={unitOptions}
-            label={t('products.form.unit')}
-            placeholder={t('products.form.selectUnit')}
-            required
-          />
-
-          <div className="grid grid-cols-2 gap-4">
+          <div data-tour="product-name">
             <Input
-              type="number"
-              name="currentStock"
-              value={formData.currentStock ?? 0}
+              type="text"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              label={t('products.form.currentStock')}
-              min={0}
-              step="0.01"
+              label={t('products.form.name')}
+              placeholder={t('products.form.namePlaceholder')}
               required
-            />
-
-            <Input
-              type="number"
-              name="minStockAlert"
-              value={formData.minStockAlert || 0}
-              onChange={handleChange}
-              label={t('products.form.minStockAlert')}
-              min={0}
-              step="0.01"
             />
           </div>
 
-          <Input
-            type="text"
-            name="supplier"
-            value={formData.supplier || ''}
-            onChange={handleChange}
-            label={t('products.form.supplier')}
-            placeholder={t('products.form.supplierPlaceholder')}
-          />
+          <div data-tour="product-type">
+            <Select
+              name="typeId"
+              value={formData.typeId?.toString() || ''}
+              onChange={handleChange}
+              options={typeOptions}
+              label={t('products.form.type')}
+              placeholder={t('products.form.selectType')}
+            />
+          </div>
 
-          <Input
-            type="text"
-            name="recommendedDosage"
-            value={formData.recommendedDosage || ''}
-            onChange={handleChange}
-            label={t('products.form.recommendedDosage')}
-            placeholder={t('products.form.recommendedDosagePlaceholder')}
-          />
+          <div data-tour="product-unit">
+            <Select
+              name="unitId"
+              value={formData.unitId?.toString() || ''}
+              onChange={handleChange}
+              options={unitOptions}
+              label={t('products.form.unit')}
+              placeholder={t('products.form.selectUnit')}
+              required
+            />
+          </div>
 
-          <TextArea
-            name="description"
-            value={formData.description || ''}
-            onChange={handleChange}
-            label={t('products.form.description')}
-            placeholder={t('products.form.descriptionPlaceholder')}
-            rows={3}
-          />
+          <div data-tour="stock-levels">
+            <div className="grid grid-cols-2 gap-4">
+              <Input
+                type="number"
+                name="currentStock"
+                value={formData.currentStock ?? 0}
+                onChange={handleChange}
+                label={t('products.form.currentStock')}
+                min={0}
+                step="0.01"
+                required
+              />
+
+              <Input
+                type="number"
+                name="minStockAlert"
+                value={formData.minStockAlert || 0}
+                onChange={handleChange}
+                label={t('products.form.minStockAlert')}
+                min={0}
+                step="0.01"
+              />
+            </div>
+          </div>
+
+          <div data-tour="supplier-info">
+            <Input
+              type="text"
+              name="supplier"
+              value={formData.supplier || ''}
+              onChange={handleChange}
+              label={t('products.form.supplier')}
+              placeholder={t('products.form.supplierPlaceholder')}
+            />
+
+            <Input
+              type="text"
+              name="recommendedDosage"
+              value={formData.recommendedDosage || ''}
+              onChange={handleChange}
+              label={t('products.form.recommendedDosage')}
+              placeholder={t('products.form.recommendedDosagePlaceholder')}
+              className="mt-4"
+            />
+
+            <TextArea
+              name="description"
+              value={formData.description || ''}
+              onChange={handleChange}
+              label={t('products.form.description')}
+              placeholder={t('products.form.descriptionPlaceholder')}
+              rows={3}
+              className="mt-4"
+            />
+          </div>
 
           <div className="flex justify-end space-x-3 mt-6">
             <Button type="button" variant="outline" onClick={handleCloseForm}>

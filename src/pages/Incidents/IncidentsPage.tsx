@@ -7,6 +7,9 @@ import { Card, Button, Select, DateInput, Badge, ExportDropdown, ViewModeToggle,
 import IncidentsChartView from './IncidentsChartView';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import type { Incident } from '../../types';
+import { useTour, useAutoStartTour, INCIDENTS_LIST_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 const IncidentsPage: React.FC = () => {
   const { t } = useTranslation();
@@ -15,6 +18,10 @@ const IncidentsPage: React.FC = () => {
   const { systems } = useAppSelector((state) => state.systems);
   const { incidents, pagination, loading } = useAppSelector((state) => state.incidents);
   const { goToNewIncident, goToIncidentDetail } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(INCIDENTS_LIST_TOUR);
 
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const [filters, setFilters] = useState({
@@ -225,31 +232,53 @@ const IncidentsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('incidents.page.title')}</h1>
-          <p className="text-gray-500 mt-1">{t('incidents.page.subtitle')}</p>
+      <div className="flex items-center space-x-4">
+        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="incidents-header">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">{t('incidents.page.title')}</h1>
+            <p className="text-gray-500 mt-1">{t('incidents.page.subtitle')}</p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div data-tour="view-mode">
+              <ViewModeToggle
+                value={viewMode}
+                onChange={setViewMode}
+              />
+            </div>
+            <div data-tour="export-button">
+              <ExportDropdown
+                onExportPDF={handleExportPDF}
+                onExportHTML={handleExportHTML}
+                onExportCSV={handleExportCSV}
+                disabled={incidents.length === 0}
+              />
+            </div>
+            <div data-tour="report-button">
+              <Button variant="primary" onClick={goToNewIncident}>
+                {t('incidents.page.reportButton')}
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <ViewModeToggle
-            value={viewMode}
-            onChange={setViewMode}
-          />
-          <ExportDropdown
-            onExportPDF={handleExportPDF}
-            onExportHTML={handleExportHTML}
-            onExportCSV={handleExportCSV}
-            disabled={incidents.length === 0}
-          />
-          <Button variant="primary" onClick={goToNewIncident}>
-            {t('incidents.page.reportButton')}
-          </Button>
-        </div>
+        <Tooltip title={isCompleted(INCIDENTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(INCIDENTS_LIST_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       {viewMode === 'table' ? (
         <>
-          <div className="bg-white rounded-lg shadow p-4">
+          <div className="bg-white rounded-lg shadow p-4" data-tour="filters">
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4">
               <div>
                 <Select
@@ -326,21 +355,23 @@ const IncidentsPage: React.FC = () => {
             </div>
           </div>
 
-          <Card noPadding>
-            <PaginatedTable
-              columns={columns}
-              data={incidents}
-              keyExtractor={(incident: Incident) => incident.id}
-              onRowClick={(incident: Incident) => goToIncidentDetail(incident.id)}
-              emptyMessage={t('incidents.page.emptyMessage')}
-              loading={loading}
-              pagination={pagination}
-              page={page}
-              rowsPerPage={rowsPerPage}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Card>
+          <div data-tour="incidents-table">
+            <Card noPadding>
+              <PaginatedTable
+                columns={columns}
+                data={incidents}
+                keyExtractor={(incident: Incident) => incident.id}
+                onRowClick={(incident: Incident) => goToIncidentDetail(incident.id)}
+                emptyMessage={t('incidents.page.emptyMessage')}
+                loading={loading}
+                pagination={pagination}
+                page={page}
+                rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </Card>
+          </div>
         </>
       ) : (
         <IncidentsChartView incidents={incidents} />

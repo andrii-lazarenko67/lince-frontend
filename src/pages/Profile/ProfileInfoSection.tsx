@@ -139,12 +139,13 @@ const ProfileInfoSection: React.FC = () => {
   };
 
   return (
-    <Card title={t('profile.info.title')}>
-      {successMessage && (
-        <Alert type="success" message={successMessage} className="mb-4" />
-      )}
+    <div data-tour="profile-info">
+      <Card title={t('profile.info.title')}>
+        {successMessage && (
+          <Alert type="success" message={successMessage} className="mb-4" />
+        )}
 
-      {isEditing ? (
+        {isEditing ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input
             type="text"
@@ -189,7 +190,7 @@ const ProfileInfoSection: React.FC = () => {
       ) : (
         <>
           <div className="flex items-center mb-6">
-            <div className="relative mr-4">
+            <div className="relative mr-4" data-tour="avatar-upload">
               {avatarPreview ? (
                 <img src={avatarPreview} alt="Preview" className="w-16 h-16 rounded-full" />
               ) : user?.avatar ? (
@@ -225,7 +226,7 @@ const ProfileInfoSection: React.FC = () => {
             </div>
           </div>
 
-          <dl className="space-y-4">
+          <dl className="space-y-4" data-tour="user-details">
             <div className="flex justify-between py-2 border-b border-gray-100">
               <dt className="text-sm font-medium text-gray-500">{t('profile.info.email')}</dt>
               <dd className="text-sm text-gray-900">{user?.email}</dd>
@@ -256,16 +257,19 @@ const ProfileInfoSection: React.FC = () => {
             </div>
           </dl>
 
-          <Button
-            variant="primary"
-            className="mt-6 w-full"
-            onClick={() => setIsEditing(true)}
-          >
-            {t('profile.info.editProfile')}
-          </Button>
+          <div data-tour="edit-profile-button">
+            <Button
+              variant="primary"
+              className="mt-6 w-full"
+              onClick={() => setIsEditing(true)}
+            >
+              {t('profile.info.editProfile')}
+            </Button>
+          </div>
         </>
       )}
-    </Card>
+      </Card>
+    </div>
   );
 };
 

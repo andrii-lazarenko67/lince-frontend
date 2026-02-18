@@ -438,9 +438,10 @@ const ReportGeneratorTab: React.FC = () => {
         </Alert>
       )}
 
-      <Stepper activeStep={activeStep} orientation="vertical">
-        {/* Step 1: Select Template */}
-        <Step>
+      <div data-tour="generator-stepper">
+        <Stepper activeStep={activeStep} orientation="vertical">
+          {/* Step 1: Select Template */}
+          <Step>
           <StepLabel
             StepIconComponent={() => (
               <Box
@@ -467,7 +468,8 @@ const ReportGeneratorTab: React.FC = () => {
                 {t('reports.generator.selectTemplateHelp')}
               </Typography>
 
-              <Grid container spacing={2}>
+              <div data-tour="template-selection">
+                <Grid container spacing={2}>
                 {templates.map((template) => (
                   <Grid item xs={12} sm={6} md={4} key={template.id}>
                     <Card
@@ -501,6 +503,7 @@ const ReportGeneratorTab: React.FC = () => {
                   </Grid>
                 ))}
               </Grid>
+              </div>
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button
@@ -542,7 +545,8 @@ const ReportGeneratorTab: React.FC = () => {
                 {t('reports.generator.selectPeriodHelp')}
               </Typography>
 
-              <FormControl fullWidth sx={{ mb: 3 }}>
+              <div data-tour="period-selection">
+                <FormControl fullWidth sx={{ mb: 3 }}>
                 <InputLabel>{t('reports.generator.periodType')}</InputLabel>
                 <Select
                   value={periodType}
@@ -578,6 +582,7 @@ const ReportGeneratorTab: React.FC = () => {
                   />
                 </Grid>
               </Grid>
+              </div>
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button onClick={handleBack} sx={{ mr: 1 }}>
@@ -622,7 +627,8 @@ const ReportGeneratorTab: React.FC = () => {
                 {t('reports.generator.selectSystemsHelp')}
               </Typography>
 
-              <FormGroup>
+              <div data-tour="system-selection">
+                <FormGroup>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -648,6 +654,7 @@ const ReportGeneratorTab: React.FC = () => {
                   />
                 ))}
               </FormGroup>
+              </div>
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button onClick={handleBack} sx={{ mr: 1 }}>
@@ -692,7 +699,8 @@ const ReportGeneratorTab: React.FC = () => {
                 {t('reports.generator.configureOptionsHelp')}
               </Typography>
 
-              <FormGroup>
+              <div data-tour="options-selection">
+                <FormGroup>
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -773,6 +781,7 @@ const ReportGeneratorTab: React.FC = () => {
                   )}
                 </Box>
               )}
+              </div>
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button onClick={handleBack} sx={{ mr: 1 }}>
@@ -1061,11 +1070,13 @@ const ReportGeneratorTab: React.FC = () => {
 
             {/* PDF Preview and Actions */}
             {currentReport && reportData && getPdfReportData() && (
-              <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
+              <div data-tour="preview-panel">
+                <Paper variant="outlined" sx={{ p: 2, mb: 2 }}>
                 <Typography variant="subtitle1" fontWeight="bold" sx={{ mb: 2 }}>
                   {currentReport.name}
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div data-tour="generate-actions">
+                  <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap' }}>
                   <ReportPdfViewer
                     reportName={currentReport.name}
                     config={getSelectedTemplate()?.config || currentReport.config}
@@ -1111,8 +1122,10 @@ const ReportGeneratorTab: React.FC = () => {
                       size="small"
                     />
                   )}
-                </Box>
+                  </Box>
+                </div>
               </Paper>
+              </div>
             )}
 
             <Box sx={{ mt: 2 }}>
@@ -1138,6 +1151,7 @@ const ReportGeneratorTab: React.FC = () => {
           </StepContent>
         </Step>
       </Stepper>
+      </div>
 
       {/* Email Dialog */}
       <Dialog

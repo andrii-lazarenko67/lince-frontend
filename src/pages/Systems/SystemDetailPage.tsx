@@ -11,6 +11,9 @@ import MonitoringPointForm from './MonitoringPointForm';
 import ChecklistItemForm from './ChecklistItemForm';
 import PhotoGallery from '../../components/PhotoGallery';
 import type { MonitoringPoint, ChecklistItem } from '../../types';
+import { useTour, useAutoStartTour, SYSTEMS_DETAIL_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 const SystemDetailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -35,6 +38,10 @@ const SystemDetailPage: React.FC = () => {
   const [editingChecklistItem, setEditingChecklistItem] = useState<ChecklistItem | null>(null);
   const [deletingChecklistItem, setDeletingChecklistItem] = useState<ChecklistItem | null>(null);
   const [isDeleteChecklistItemOpen, setIsDeleteChecklistItemOpen] = useState(false);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(SYSTEMS_DETAIL_TOUR);
 
   useEffect(() => {
     if (id) {
@@ -248,117 +255,140 @@ const SystemDetailPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
-          <div>
+          <div data-tour="detail-header">
             <h1 className="text-2xl font-bold text-gray-900">{currentSystem.name}</h1>
             <p className="text-gray-500 mt-1">{currentSystem.systemType?.name || '-'}</p>
           </div>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" onClick={() => setIsEditOpen(true)}>
-            {t('common.edit')}
-          </Button>
-          <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            {t('common.delete')}
-          </Button>
+        <div className="flex items-center space-x-3">
+          <div data-tour="action-buttons" className="flex space-x-3">
+            <Button variant="outline" onClick={() => setIsEditOpen(true)}>
+              {t('common.edit')}
+            </Button>
+            <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
+              {t('common.delete')}
+            </Button>
+          </div>
+          <Tooltip title={t('common.help')} placement="bottom">
+            <IconButton onClick={() => startTour(SYSTEMS_DETAIL_TOUR)} size="small">
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title={t('systems.systemDetails')} className="lg:col-span-1">
-          <dl className="space-y-4">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('common.status')}</dt>
-              <dd className="mt-1">
-                <Badge variant={currentSystem.status === 'active' ? 'success' : 'secondary'}>
-                  {currentSystem.status === 'active' ? t('systems.active') : currentSystem.status === 'inactive' ? t('systems.inactive') : t('systems.maintenance')}
-                </Badge>
-              </dd>
-            </div>
-            {currentSystem.parent && (
+        <div data-tour="system-info">
+          <Card title={t('systems.systemDetails')} className="lg:col-span-1">
+            <dl className="space-y-4">
               <div>
-                <dt className="text-sm font-medium text-gray-500">{t('systems.parentSystem')}</dt>
-                <dd className="mt-1 text-gray-900">
-                  <button
-                    onClick={() => goToSystemDetail(currentSystem.parent!.id)}
-                    className="text-blue-600 hover:text-blue-800 underline"
-                  >
-                    {currentSystem.parent.name} ({currentSystem.parent.systemType?.name || '-'})
-                  </button>
-                </dd>
-              </div>
-            )}
-            {currentSystem.children && currentSystem.children.length > 0 && (
-              <div>
-                <dt className="text-sm font-medium text-gray-500">{t('systems.subSystems')}</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('common.status')}</dt>
                 <dd className="mt-1">
-                  <ul className="space-y-1">
-                    {currentSystem.children.map(child => (
-                      <li key={child.id}>
-                        <button
-                          onClick={() => goToSystemDetail(child.id)}
-                          className="text-blue-600 hover:text-blue-800 underline text-sm"
-                        >
-                          {child.name} ({child.systemType?.name || '-'})
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
+                  <Badge variant={currentSystem.status === 'active' ? 'success' : 'secondary'}>
+                    {currentSystem.status === 'active' ? t('systems.active') : currentSystem.status === 'inactive' ? t('systems.inactive') : t('systems.maintenance')}
+                  </Badge>
                 </dd>
               </div>
-            )}
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('common.location')}</dt>
-              <dd className="mt-1 text-gray-900">{currentSystem.location || '-'}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('common.description')}</dt>
-              <dd className="mt-1 text-gray-900">{currentSystem.description || '-'}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('systems.createdAt')}</dt>
-              <dd className="mt-1 text-gray-900">
-                {new Date(currentSystem.createdAt).toLocaleDateString()}
-              </dd>
-            </div>
-          </dl>
-        </Card>
+              {currentSystem.parent && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">{t('systems.parentSystem')}</dt>
+                  <dd className="mt-1 text-gray-900">
+                    <button
+                      onClick={() => goToSystemDetail(currentSystem.parent!.id)}
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      {currentSystem.parent.name} ({currentSystem.parent.systemType?.name || '-'})
+                    </button>
+                  </dd>
+                </div>
+              )}
+              {currentSystem.children && currentSystem.children.length > 0 && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">{t('systems.subSystems')}</dt>
+                  <dd className="mt-1">
+                    <ul className="space-y-1">
+                      {currentSystem.children.map(child => (
+                        <li key={child.id}>
+                          <button
+                            onClick={() => goToSystemDetail(child.id)}
+                            className="text-blue-600 hover:text-blue-800 underline text-sm"
+                          >
+                            {child.name} ({child.systemType?.name || '-'})
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('common.location')}</dt>
+                <dd className="mt-1 text-gray-900">{currentSystem.location || '-'}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('common.description')}</dt>
+                <dd className="mt-1 text-gray-900">{currentSystem.description || '-'}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('systems.createdAt')}</dt>
+                <dd className="mt-1 text-gray-900">
+                  {new Date(currentSystem.createdAt).toLocaleDateString()}
+                </dd>
+              </div>
+            </dl>
+          </Card>
+        </div>
 
-        <PhotoGallery systemId={currentSystem.id} systemName={currentSystem.name} className="lg:col-span-2" />
+        <div data-tour="photo-gallery">
+          <PhotoGallery systemId={currentSystem.id} systemName={currentSystem.name} className="lg:col-span-2" />
+        </div>
       </div>
 
-      <Card
-        title={t('systems.monitoringPoints')}
-        noPadding
-        headerActions={
-          <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
-            {t('systems.addPoint')}
-          </Button>
-        }
-      >
-        <Table
-          columns={monitoringPointColumns}
-          data={monitoringPoints}
-          keyExtractor={(point) => point.id}
-          emptyMessage={t('monitoringPoints.noMonitoringPoints')}
-        />
-      </Card>
+      <div data-tour="monitoring-points-section">
+        <Card
+          title={t('systems.monitoringPoints')}
+          noPadding
+          headerActions={
+            <div data-tour="add-monitoring-point">
+              <Button variant="primary" size="sm" onClick={() => handleOpenMonitoringPointForm()}>
+                {t('systems.addPoint')}
+              </Button>
+            </div>
+          }
+        >
+          <div data-tour="monitoring-points-table">
+            <Table
+              columns={monitoringPointColumns}
+              data={monitoringPoints}
+              keyExtractor={(point) => point.id}
+              emptyMessage={t('monitoringPoints.noMonitoringPoints')}
+            />
+          </div>
+        </Card>
+      </div>
 
-      <Card
-        title={t('systems.checklistItems')}
-        noPadding
-        headerActions={
-          <Button variant="primary" size="sm" onClick={() => handleOpenChecklistItemForm()}>
-            {t('systems.addItem')}
-          </Button>
-        }
-      >
-        <Table
-          columns={checklistItemColumns}
-          data={checklistItems}
-          keyExtractor={(item) => item.id}
-          emptyMessage={t('checklistItems.noChecklistItems')}
-        />
-      </Card>
+      <div data-tour="checklist-section">
+        <Card
+          title={t('systems.checklistItems')}
+          noPadding
+          headerActions={
+            <div data-tour="add-checklist-item">
+              <Button variant="primary" size="sm" onClick={() => handleOpenChecklistItemForm()}>
+                {t('systems.addItem')}
+              </Button>
+            </div>
+          }
+        >
+          <div data-tour="checklist-table">
+            <Table
+              columns={checklistItemColumns}
+              data={checklistItems}
+              keyExtractor={(item) => item.id}
+              emptyMessage={t('checklistItems.noChecklistItems')}
+            />
+          </div>
+        </Card>
+      </div>
 
       <SystemForm
         isOpen={isEditOpen}

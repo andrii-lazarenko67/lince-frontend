@@ -5,6 +5,9 @@ import { fetchDocuments, uploadDocument } from '../../store/slices/librarySlice'
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Input, Select, Badge, Modal, TextArea, FileUpload, PaginatedTable } from '../../components/common';
 import type { Document } from '../../types';
+import { useTour, useAutoStartTour, LIBRARY_LIST_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline } from '@mui/icons-material';
 
 const LibraryPage: React.FC = () => {
   const { t } = useTranslation();
@@ -38,6 +41,10 @@ const LibraryPage: React.FC = () => {
   const [customCategory, setCustomCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(LIBRARY_LIST_TOUR);
 
   // Load documents with current pagination and filters
   const loadDocuments = useCallback(() => {
@@ -183,16 +190,29 @@ const LibraryPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+        <div data-tour="library-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('library.title')}</h1>
           <p className="text-gray-500 mt-1">{t('library.description')}</p>
         </div>
-        <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
-          {t('library.uploadDocument')}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Tooltip title={t('common.startTour')} arrow>
+            <IconButton
+              onClick={() => startTour(LIBRARY_LIST_TOUR)}
+              size="small"
+              sx={{ color: 'primary.main' }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <div data-tour="upload-button">
+            <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
+              {t('library.uploadDocument')}
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow p-4">
+      <div className="bg-white rounded-lg shadow p-4" data-tour="search-filters">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
           <div className="md:col-span-2">
             <Input
@@ -220,42 +240,48 @@ const LibraryPage: React.FC = () => {
         </div>
       </div>
 
-      <Card noPadding>
-        <PaginatedTable
-          columns={columns}
-          data={documents}
-          keyExtractor={(doc: Document) => doc.id}
-          onRowClick={(doc: Document) => goToDocumentDetail(doc.id)}
-          emptyMessage={t('library.emptyMessage')}
-          loading={loading}
-          pagination={pagination}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Card>
+      <div data-tour="documents-table">
+        <Card noPadding>
+          <PaginatedTable
+            columns={columns}
+            data={documents}
+            keyExtractor={(doc: Document) => doc.id}
+            onRowClick={(doc: Document) => goToDocumentDetail(doc.id)}
+            emptyMessage={t('library.emptyMessage')}
+            loading={loading}
+            pagination={pagination}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Card>
+      </div>
 
       <Modal isOpen={isUploadOpen} onClose={() => setIsUploadOpen(false)} title={t('library.uploadDocument')} size="lg">
         <div className="flex flex-col gap-10">
-          <Input
-            type="text"
-            name="title"
-            value={uploadData.title}
-            onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
-            label={t('library.modal.title')}
-            placeholder={t('library.modal.titlePlaceholder')}
-            required
-          />
+          <div data-tour="upload-title">
+            <Input
+              type="text"
+              name="title"
+              value={uploadData.title}
+              onChange={(e) => setUploadData({ ...uploadData, title: e.target.value })}
+              label={t('library.modal.title')}
+              placeholder={t('library.modal.titlePlaceholder')}
+              required
+            />
+          </div>
 
-          <Select
-            name="category"
-            value={uploadData.category}
-            onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
-            options={categoryOptions}
-            label={t('library.modal.category')}
-            placeholder={t('library.modal.categoryPlaceholder')}
-          />
+          <div data-tour="upload-category">
+            <Select
+              name="category"
+              value={uploadData.category}
+              onChange={(e) => setUploadData({ ...uploadData, category: e.target.value })}
+              options={categoryOptions}
+              label={t('library.modal.category')}
+              placeholder={t('library.modal.categoryPlaceholder')}
+            />
+          </div>
 
           {uploadData.category === 'other' && (
             <Input
@@ -269,14 +295,16 @@ const LibraryPage: React.FC = () => {
             />
           )}
 
-          <Select
-            name="systemId"
-            value={uploadData.systemId}
-            onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value, stageId: '' })}
-            options={systemOptions}
-            label={t('library.modal.relatedSystem')}
-            placeholder={t('library.modal.systemPlaceholder')}
-          />
+          <div data-tour="upload-system">
+            <Select
+              name="systemId"
+              value={uploadData.systemId}
+              onChange={(e) => setUploadData({ ...uploadData, systemId: e.target.value, stageId: '' })}
+              options={systemOptions}
+              label={t('library.modal.relatedSystem')}
+              placeholder={t('library.modal.systemPlaceholder')}
+            />
+          </div>
 
           {availableStages.length > 0 && (
             <Select
@@ -289,21 +317,25 @@ const LibraryPage: React.FC = () => {
             />
           )}
 
-          <TextArea
-            name="description"
-            value={uploadData.description}
-            onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
-            label={t('library.modal.description')}
-            placeholder={t('library.modal.descriptionPlaceholder')}
-            rows={3}
-          />
+          <div data-tour="upload-description">
+            <TextArea
+              name="description"
+              value={uploadData.description}
+              onChange={(e) => setUploadData({ ...uploadData, description: e.target.value })}
+              label={t('library.modal.description')}
+              placeholder={t('library.modal.descriptionPlaceholder')}
+              rows={3}
+            />
+          </div>
 
-          <FileUpload
-            name="file"
-            label={t('library.modal.documentFile')}
-            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
-            onChange={(files) => setSelectedFile(files[0] || null)}
-          />
+          <div data-tour="upload-file">
+            <FileUpload
+              name="file"
+              label={t('library.modal.documentFile')}
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.jpg,.jpeg,.png"
+              onChange={(files) => setSelectedFile(files[0] || null)}
+            />
+          </div>
         </div>
 
         {selectedFile && (

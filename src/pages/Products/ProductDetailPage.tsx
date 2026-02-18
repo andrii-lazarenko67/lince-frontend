@@ -7,6 +7,9 @@ import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Badge, Button, Modal, Input, Select, TextArea, Table } from '../../components/common';
 import ProductDosageSection from '../../components/ProductDosageSection';
 import type { ProductUsage } from '../../types';
+import { useTour, useAutoStartTour, PRODUCTS_DETAIL_TOUR } from '../../tours';
+import { HelpOutline } from '@mui/icons-material';
+import { IconButton, Tooltip } from '@mui/material';
 
 const ProductDetailPage: React.FC = () => {
   const { t } = useTranslation();
@@ -16,6 +19,10 @@ const ProductDetailPage: React.FC = () => {
   const { systems } = useAppSelector((state) => state.systems);
   const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToProducts } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(PRODUCTS_DETAIL_TOUR);
 
   const [isUsageOpen, setIsUsageOpen] = useState(false);
   const [isStockOpen, setIsStockOpen] = useState(false);
@@ -204,86 +211,112 @@ const ProductDetailPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <button onClick={goBack} className="text-gray-500 hover:text-gray-700">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{currentProduct.name}</h1>
-            <p className="text-gray-500 mt-1">{currentProduct.type?.name || t('products.detail.product')}</p>
+      <div className="flex items-center space-x-4">
+        <div className="flex-1 flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <button onClick={goBack} className="text-gray-500 hover:text-gray-700">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+            </button>
+            <div data-tour="detail-header">
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{currentProduct.name}</h1>
+                <p className="text-gray-500 mt-1">{currentProduct.type?.name || t('products.detail.product')}</p>
+              </div>
+            </div>
+          </div>
+          <div data-tour="action-buttons">
+            <div className="flex space-x-3">
+              <Button variant="outline" onClick={() => setIsStockOpen(true)}>
+                {t('products.detail.updateStock')}
+              </Button>
+              <Button variant="primary" onClick={() => setIsUsageOpen(true)}>
+                {t('products.detail.recordUsage')}
+              </Button>
+              <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
+                {t('common.delete')}
+              </Button>
+            </div>
           </div>
         </div>
-        <div className="flex space-x-3">
-          <Button variant="outline" onClick={() => setIsStockOpen(true)}>
-            {t('products.detail.updateStock')}
-          </Button>
-          <Button variant="primary" onClick={() => setIsUsageOpen(true)}>
-            {t('products.detail.recordUsage')}
-          </Button>
-          <Button variant="danger" onClick={() => setIsDeleteOpen(true)}>
-            {t('common.delete')}
-          </Button>
-        </div>
+        <Tooltip title={isCompleted(PRODUCTS_DETAIL_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(PRODUCTS_DETAIL_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title={t('products.detail.productDetails')}>
-          <dl className="space-y-4">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('products.detail.status')}</dt>
-              <dd className="mt-1">
-                {isLowStock() ? (
-                  <Badge variant="danger">{t('products.list.lowStock')}</Badge>
-                ) : (
-                  <Badge variant="success">{t('products.list.inStock')}</Badge>
-                )}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('products.detail.currentStock')}</dt>
-              <dd className="mt-1 text-2xl font-semibold text-gray-900">
-                {currentProduct.currentStock} {currentProduct.unit?.abbreviation || ''}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('products.detail.minStockAlert')}</dt>
-              <dd className="mt-1 text-gray-900">
-                {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit?.abbreviation || ''}` : t('products.detail.notSet')}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('products.detail.supplier')}</dt>
-              <dd className="mt-1 text-gray-900">{currentProduct.supplier || '-'}</dd>
-            </div>
-            {currentProduct.recommendedDosage && (
+        <div data-tour="product-info">
+          <Card title={t('products.detail.productDetails')}>
+            <dl className="space-y-4">
               <div>
-                <dt className="text-sm font-medium text-gray-500">{t('products.detail.recommendedDosage')}</dt>
-                <dd className="mt-1 text-gray-900">{currentProduct.recommendedDosage}</dd>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.status')}</dt>
+                <dd className="mt-1">
+                  {isLowStock() ? (
+                    <Badge variant="danger">{t('products.list.lowStock')}</Badge>
+                  ) : (
+                    <Badge variant="success">{t('products.list.inStock')}</Badge>
+                  )}
+                </dd>
               </div>
-            )}
-            {currentProduct.description && (
               <div>
-                <dt className="text-sm font-medium text-gray-500">{t('products.detail.description')}</dt>
-                <dd className="mt-1 text-gray-900">{currentProduct.description}</dd>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.currentStock')}</dt>
+                <dd className="mt-1 text-2xl font-semibold text-gray-900">
+                  {currentProduct.currentStock} {currentProduct.unit?.abbreviation || ''}
+                </dd>
               </div>
-            )}
-          </dl>
-        </Card>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.minStockAlert')}</dt>
+                <dd className="mt-1 text-gray-900">
+                  {currentProduct.minStockAlert ? `${currentProduct.minStockAlert} ${currentProduct.unit?.abbreviation || ''}` : t('products.detail.notSet')}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('products.detail.supplier')}</dt>
+                <dd className="mt-1 text-gray-900">{currentProduct.supplier || '-'}</dd>
+              </div>
+              {currentProduct.recommendedDosage && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">{t('products.detail.recommendedDosage')}</dt>
+                  <dd className="mt-1 text-gray-900">{currentProduct.recommendedDosage}</dd>
+                </div>
+              )}
+              {currentProduct.description && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">{t('products.detail.description')}</dt>
+                  <dd className="mt-1 text-gray-900">{currentProduct.description}</dd>
+                </div>
+              )}
+            </dl>
+          </Card>
+        </div>
 
-        <Card title={t('products.detail.usageHistory')} className="lg:col-span-2" noPadding>
-          <Table
-            columns={usageColumns}
-            data={usages}
-            keyExtractor={(usage) => usage.id}
-            emptyMessage={t('products.detail.noUsage')}
-          />
-        </Card>
+        <div data-tour="usage-history" className="lg:col-span-2">
+          <Card title={t('products.detail.usageHistory')} noPadding>
+            <Table
+              columns={usageColumns}
+              data={usages}
+              keyExtractor={(usage) => usage.id}
+              emptyMessage={t('products.detail.noUsage')}
+            />
+          </Card>
+        </div>
       </div>
 
-      <ProductDosageSection productId={currentProduct.id} productName={currentProduct.name} />
+      <div data-tour="dosage-section">
+        <ProductDosageSection productId={currentProduct.id} productName={currentProduct.name} />
+      </div>
 
       <Modal isOpen={isUsageOpen} onClose={() => setIsUsageOpen(false)} title={t('products.detail.recordUsage')}>
         <div className='flex flex-col gap-4'>

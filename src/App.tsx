@@ -11,6 +11,7 @@ import { PageLoader } from './components/common';
 import { TourProvider, TourRunner, allTours } from './tours';
 
 // Lazy load all pages for code splitting
+const LandingPage = lazy(() => import('./pages/Landing/LandingPage'));
 const LoginPage = lazy(() => import('./pages/Login/LoginPage'));
 const SignupPage = lazy(() => import('./pages/Signup/SignupPage'));
 const AddClientPage = lazy(() => import('./pages/Clients/AddClientPage'));
@@ -109,7 +110,7 @@ const App: React.FC = () => {
                 </Route>
               </Route>
 
-              <Route path="/" element={<Navigate to="/dashboard" replace />} />
+              <Route path="/" element={<LandingPage />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
               </Routes>
             </Suspense>

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Tabs, Tab, Paper } from '@mui/material';
+import { Box, Tabs, Tab, Paper, IconButton, Tooltip } from '@mui/material';
 import {
   Description as TemplateIcon,
   Add as GenerateIcon,
-  History as HistoryIcon
+  History as HistoryIcon,
+  HelpOutline
 } from '@mui/icons-material';
+import { useTour, useAutoStartTour, REPORTS_WORKFLOW_TOUR } from '../../tours';
 import ReportTemplatesTab from './ReportTemplatesTab';
 import ReportGeneratorTab from './ReportGeneratorTab';
 import ReportHistoryTab from './ReportHistoryTab';
@@ -43,18 +45,38 @@ const ReportsPage: React.FC = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(0);
 
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(REPORTS_WORKFLOW_TOUR);
+
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
   };
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box sx={{ mb: 3 }}>
-        <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
-        <p className="text-gray-500 mt-1">{t('reports.description')}</p>
+      <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
+        <Box sx={{ flex: 1 }} data-tour="reports-header">
+          <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('reports.description')}</p>
+        </Box>
+        <Tooltip title={isCompleted(REPORTS_WORKFLOW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(REPORTS_WORKFLOW_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </Box>
 
-      <Paper sx={{ width: '100%', mb: 2 }}>
+      <Paper sx={{ width: '100%', mb: 2 }} data-tour="reports-tabs">
         <Tabs
           value={activeTab}
           onChange={handleTabChange}

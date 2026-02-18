@@ -62,12 +62,13 @@ const ChangePasswordSection: React.FC = () => {
   };
 
   return (
-    <Card title={t('profile.password.title')}>
-      {successMessage && (
-        <Alert type="success" message={successMessage} className="mb-4" />
-      )}
+    <div data-tour="password-section">
+      <Card title={t('profile.password.title')}>
+        {successMessage && (
+          <Alert type="success" message={successMessage} className="mb-4" />
+        )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <Input
           type="password"
           name="currentPassword"
@@ -104,8 +105,9 @@ const ChangePasswordSection: React.FC = () => {
         <Button type="submit" variant="primary" className="mt-4" disabled={loading}>
           {t('profile.password.updatePassword')}
         </Button>
-      </form>
-    </Card>
+        </form>
+      </Card>
+    </div>
   );
 };
 

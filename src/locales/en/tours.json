@@ -123,6 +123,206 @@
       }
     }
   },
+  "incidents": {
+    "list": {
+      "title": "Incidents Tour",
+      "description": "Learn how to manage and track incidents in your water treatment systems",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Incidents!",
+          "content": "Incidents help you track and resolve issues that occur in your water treatment systems. Let's explore how to manage them effectively!"
+        },
+        "header": {
+          "title": "Incidents Page",
+          "content": "This page shows all reported incidents with their priority, status, and assignments. You can view, filter, and export incident reports from here."
+        },
+        "viewMode": {
+          "title": "View Mode Toggle",
+          "content": "Switch between table view (detailed list) and chart view (visual graphs) to analyze incidents in different ways. Charts help identify patterns and trends!"
+        },
+        "export": {
+          "title": "Export Your Data",
+          "content": "Export incident reports to PDF, HTML, or CSV format for documentation, compliance, or offline analysis."
+        },
+        "reportButton": {
+          "title": "Report New Incident",
+          "content": "Click here to report a new incident. You can document issues, set priority levels, and assign them to team members for resolution."
+        },
+        "filters": {
+          "title": "Filter Incidents",
+          "content": "Use filters to find specific incidents by system, stage, status, priority, or date range. Great for tracking resolution progress!"
+        },
+        "table": {
+          "title": "Incidents Table",
+          "content": "View all incidents with key details: title, system, priority, status, reporter, and creation date. Color-coded badges make it easy to spot critical issues. Click any row to see full details."
+        },
+        "complete": {
+          "title": "Incidents Mastered!",
+          "content": "You now know how to manage incidents effectively. Start tracking and resolving issues to maintain optimal system performance!"
+        }
+      }
+    },
+    "new": {
+      "title": "Report Incident Tour",
+      "description": "Learn how to report and document incidents in your systems",
+      "steps": {
+        "welcome": {
+          "title": "Report a New Incident!",
+          "content": "This form helps you document issues that occur in your water treatment systems. Let's walk through how to report an incident!"
+        },
+        "header": {
+          "title": "New Incident Form",
+          "content": "This page lets you report a new incident. You can describe the issue, set priority, and assign it to team members for resolution."
+        },
+        "actionButtons": {
+          "title": "Save or Cancel",
+          "content": "Use these buttons to submit your incident report when you're done, or cancel to go back without saving changes."
+        },
+        "basicInfo": {
+          "title": "Basic Information",
+          "content": "Enter the incident title, select the affected system, set priority level (critical, high, medium, low), and choose the current status. Priority helps team members address critical issues first!"
+        },
+        "description": {
+          "title": "Incident Description",
+          "content": "Provide a detailed description of the incident. Include what happened, when it occurred, and any observations. Clear descriptions help with faster resolution!"
+        },
+        "assignment": {
+          "title": "Assignment & Tracking",
+          "content": "Optionally assign the incident to a team member for resolution. You can also add notes about steps taken or additional context."
+        },
+        "complete": {
+          "title": "Ready to Report!",
+          "content": "You now know how to report incidents. Fill in the required information and click Submit to create the incident report!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Incident Details Tour",
+      "description": "Learn how to review incident details and track resolution progress",
+      "steps": {
+        "welcome": {
+          "title": "View Incident Details!",
+          "content": "This page shows complete details of an incident, including its description, status, assignment, and resolution information. Let's explore what's available!"
+        },
+        "header": {
+          "title": "Incident Overview",
+          "content": "See the incident title, priority, and status at a glance. Color-coded badges help you quickly identify the severity and current state."
+        },
+        "incidentInfo": {
+          "title": "Incident Information",
+          "content": "View all details about this incident: system, priority, status, reporter, assignee, creation date, and full description. This gives you complete context about the issue."
+        },
+        "resolution": {
+          "title": "Resolution Details",
+          "content": "See resolution information including when the incident was resolved, who resolved it, and resolution notes. For open incidents, you can update the status and add resolution notes here."
+        },
+        "complete": {
+          "title": "Details Reviewed!",
+          "content": "You now know how to review incident details and track resolution progress. Use this page to monitor issues and ensure they're addressed promptly!"
+        }
+      }
+    }
+  },
+  "inspections": {
+    "list": {
+      "title": "Inspections Tour",
+      "description": "Learn how to manage and track system inspections",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Inspections!",
+          "content": "Inspections help you ensure your water treatment systems are operating correctly through systematic checks. Let's explore how to manage them!"
+        },
+        "header": {
+          "title": "Inspections Page",
+          "content": "This page shows all inspections with their status, results, and completion details. You can view, filter, and export inspection reports from here."
+        },
+        "viewMode": {
+          "title": "View Mode Toggle",
+          "content": "Switch between table view (detailed list) and chart view (visual graphs) to analyze inspection data in different ways. Charts help identify compliance trends!"
+        },
+        "export": {
+          "title": "Export Your Data",
+          "content": "Export inspection reports to PDF, HTML, or CSV format for documentation, compliance records, or offline analysis."
+        },
+        "newInspection": {
+          "title": "Create New Inspection",
+          "content": "Click here to perform a new inspection. You'll complete a checklist of items to verify your system is operating within specifications."
+        },
+        "filters": {
+          "title": "Filter Inspections",
+          "content": "Use filters to find specific inspections by system, stage, status, or date range. Great for reviewing compliance history!"
+        },
+        "table": {
+          "title": "Inspections Table",
+          "content": "View all inspections with key details: date, system, inspector, status, and item results (conforming/non-conforming). Click any row to see full details and photos."
+        },
+        "complete": {
+          "title": "Inspections Mastered!",
+          "content": "You now know how to manage inspections effectively. Regular inspections help maintain system compliance and identify issues early!"
+        }
+      }
+    },
+    "new": {
+      "title": "Create Inspection Tour",
+      "description": "Learn how to perform and document system inspections",
+      "steps": {
+        "welcome": {
+          "title": "Perform a New Inspection!",
+          "content": "This form guides you through a systematic inspection of your water treatment system. Let's walk through the checklist process!"
+        },
+        "header": {
+          "title": "New Inspection Form",
+          "content": "This page lets you create a new inspection record. You'll complete a checklist of items to verify system compliance."
+        },
+        "actionButtons": {
+          "title": "Save or Cancel",
+          "content": "Use these buttons to save your inspection when you're done, or cancel to go back without saving changes."
+        },
+        "basicInfo": {
+          "title": "Inspection Details",
+          "content": "Select the system to inspect and set the inspection date. If the system has stages, you can optionally select a specific stage to focus on."
+        },
+        "checklistItems": {
+          "title": "Checklist Items",
+          "content": "Go through each checklist item and mark it as Conforme (C), Non-Conforme (NC), or Not Applicable (NA). Add observations and photos for non-conforming items to document issues."
+        },
+        "conclusion": {
+          "title": "Inspection Conclusion",
+          "content": "Add your overall conclusion and any general observations about the inspection. This provides context for the results."
+        },
+        "complete": {
+          "title": "Ready to Complete!",
+          "content": "You now know how to perform inspections. Complete all checklist items and click Save to record your inspection!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Inspection Details Tour",
+      "description": "Learn how to review inspection results and findings",
+      "steps": {
+        "welcome": {
+          "title": "View Inspection Results!",
+          "content": "This page shows complete details of an inspection, including all checklist items, their status, photos, and observations. Let's explore the results!"
+        },
+        "header": {
+          "title": "Inspection Overview",
+          "content": "See the inspection date, system, and status at a glance. This gives you quick context about the inspection you're reviewing."
+        },
+        "inspectionInfo": {
+          "title": "Inspection Information",
+          "content": "View all details about this inspection: date, system, stage, inspector, status, and conclusion. This provides complete context about when and how the inspection was performed."
+        },
+        "checklistResults": {
+          "title": "Checklist Results",
+          "content": "See all checklist items with their status (Conforme/Non-Conforme/NA), observations, and photos. Non-conforming items are highlighted to make issues easy to spot. Click on items to see full details and photos!"
+        },
+        "complete": {
+          "title": "Results Reviewed!",
+          "content": "You now know how to review inspection details. Use this page to verify compliance, track non-conforming items, and ensure corrective actions are taken!"
+        }
+      }
+    }
+  },
   "dashboard": {
     "title": "Dashboard Tour",
     "description": "Learn how to use the main dashboard and understand key metrics",
@@ -325,6 +525,492 @@
         "complete": {
           "title": "You're All Set!",
           "content": "Perfect! You now know how to add your first client. Once you submit this form, you'll be taken to the dashboard where you can start managing water treatment systems."
+        }
+      }
+    }
+  },
+  "products": {
+    "list": {
+      "title": "Products Inventory Tour",
+      "description": "Learn how to manage chemical products and inventory",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Product Management!",
+          "content": "Manage your water treatment chemical inventory here. Track stock levels, set low-stock alerts, and monitor product usage across all systems. Let's explore!"
+        },
+        "header": {
+          "title": "Products Page",
+          "content": "This page shows your complete product inventory. View all chemicals, their current stock levels, suppliers, and low-stock alerts."
+        },
+        "viewMode": {
+          "title": "View Mode Toggle",
+          "content": "Switch between table view (detailed product list) and chart view (visual inventory analysis) to manage your stock effectively."
+        },
+        "export": {
+          "title": "Export Inventory",
+          "content": "Export your product inventory to PDF, HTML, or CSV format for procurement, audits, or reporting purposes."
+        },
+        "addProduct": {
+          "title": "Add New Product",
+          "content": "Click here to add a new chemical product to your inventory. Enter details like name, type, unit, supplier, and stock levels."
+        },
+        "filters": {
+          "title": "Filter Products",
+          "content": "Filter products by system, type, or show only low-stock items. Perfect for procurement planning and inventory checks!"
+        },
+        "table": {
+          "title": "Products Table",
+          "content": "View all products with current stock, minimum alert levels, status (in stock/low stock), and supplier information. Click any row to see detailed usage history and manage stock."
+        },
+        "complete": {
+          "title": "Inventory Management Ready!",
+          "content": "You now know how to manage your chemical inventory. Keep track of stock levels to ensure your water treatment never runs out of essential products!"
+        }
+      }
+    },
+    "form": {
+      "title": "Add/Edit Product Tour",
+      "description": "Learn how to add and configure products in your inventory",
+      "steps": {
+        "welcome": {
+          "title": "Adding a New Product",
+          "content": "Let's walk through adding a new chemical product to your inventory. You'll set up all the details needed for effective stock management."
+        },
+        "name": {
+          "title": "Product Name",
+          "content": "Enter the product name (e.g., 'Sodium Hypochlorite', 'PAC', 'Lime'). Use clear, consistent names for easy identification."
+        },
+        "type": {
+          "title": "Product Type",
+          "content": "Select the product type (e.g., Coagulant, Disinfectant, pH Corrector). This helps categorize and filter products."
+        },
+        "unit": {
+          "title": "Unit of Measurement",
+          "content": "Choose the unit for measuring this product (kg, L, mL, g, etc.). This will be used for all stock tracking and usage records."
+        },
+        "stock": {
+          "title": "Stock Levels",
+          "content": "Enter the current stock quantity and minimum alert level. When stock falls below the minimum, you'll receive low-stock warnings."
+        },
+        "supplier": {
+          "title": "Supplier & Dosage Info",
+          "content": "Add supplier information and recommended dosage guidelines. This helps with procurement and proper product usage."
+        },
+        "complete": {
+          "title": "Product Configured!",
+          "content": "Great! You've learned how to add products to your inventory. Fill out the form and save to add your first product."
+        }
+      }
+    },
+    "detail": {
+      "title": "Product Details Tour",
+      "description": "Learn how to manage stock and track product usage",
+      "steps": {
+        "welcome": {
+          "title": "Product Detail Page",
+          "content": "This page shows complete product information, stock levels, usage history, and dosage configurations. Let's explore how to manage it!"
+        },
+        "header": {
+          "title": "Product Header",
+          "content": "See the product name and type. Quick access to all product information and management actions."
+        },
+        "actions": {
+          "title": "Stock Management Actions",
+          "content": "Update stock levels (add/remove), record product usage in systems, or delete the product if no longer needed."
+        },
+        "info": {
+          "title": "Product Information",
+          "content": "View current stock, minimum alert level, stock status, supplier, recommended dosage, and product description. All key details at a glance!"
+        },
+        "history": {
+          "title": "Usage History",
+          "content": "Track every stock movement: when products were used, in which systems, quantities, who recorded it, and any notes. Complete audit trail!"
+        },
+        "dosage": {
+          "title": "Dosage Configurations",
+          "content": "Configure automatic dosage calculations for different systems. Set dosage formulas based on flow rate, volume, or other parameters."
+        },
+        "complete": {
+          "title": "Product Management Mastered!",
+          "content": "You now know how to manage product stock and track usage. Keep your inventory updated for smooth water treatment operations!"
+        }
+      }
+    }
+  },
+  "reports": {
+    "workflow": {
+      "title": "Reports Module Overview",
+      "description": "Learn about the complete reports workflow and features",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Reports!",
+          "content": "Generate comprehensive water treatment reports with templates, data visualization, and AI-powered insights. Let's explore the reports module!"
+        },
+        "header": {
+          "title": "Reports Page",
+          "content": "This is the central hub for all reporting activities. Create new reports, manage templates, and view your report history all in one place."
+        },
+        "tabs": {
+          "title": "Report Tabs",
+          "content": "Three powerful tabs: Generator (create reports), Templates (customize report layouts), and History (view past reports). Each tab is designed for specific reporting tasks."
+        },
+        "complete": {
+          "title": "Reports Ready!",
+          "content": "You now understand the reports workflow. Explore each tab to master report generation, template management, and report history!"
+        }
+      }
+    },
+    "generator": {
+      "title": "Report Generator Tour",
+      "description": "Learn how to generate comprehensive water treatment reports",
+      "steps": {
+        "welcome": {
+          "title": "Generate Your First Report!",
+          "content": "The report generator guides you through creating professional reports with data from your systems. Follow the step-by-step process to create your report!"
+        },
+        "stepper": {
+          "title": "Report Generation Steps",
+          "content": "This stepper shows your progress through 5 steps: Template, Period, Systems, Options, and Preview. Complete each step to generate your report."
+        },
+        "template": {
+          "title": "Select Template",
+          "content": "Choose a report template that defines the structure and sections of your report. You can use default templates or create custom ones in the Templates tab."
+        },
+        "period": {
+          "title": "Select Period",
+          "content": "Choose the reporting period: daily, weekly, monthly, or custom date range. This determines which data will be included in your report."
+        },
+        "systems": {
+          "title": "Select Systems",
+          "content": "Choose which water treatment systems to include in the report. You can select multiple systems to create comprehensive reports covering all your operations."
+        },
+        "options": {
+          "title": "Report Options",
+          "content": "Configure report options: include only alerts, add photos, generate charts, select monitoring points, and add AI-generated conclusions with signature fields."
+        },
+        "preview": {
+          "title": "Preview & Edit",
+          "content": "Preview your report before generating the final PDF. Review all sections, edit the AI-generated conclusion, and add signature information."
+        },
+        "actions": {
+          "title": "Save & Share",
+          "content": "Once satisfied with the preview, save to database, download as PDF/Word, or send via email. Your report will also appear in the History tab."
+        },
+        "complete": {
+          "title": "Report Generation Mastered!",
+          "content": "You now know how to generate professional water treatment reports. Practice creating reports for different periods and systems!"
+        }
+      }
+    },
+    "templates": {
+      "title": "Report Templates Tour",
+      "description": "Learn how to create and manage custom report templates",
+      "steps": {
+        "welcome": {
+          "title": "Customize Your Reports!",
+          "content": "Report templates define the structure, sections, and branding of your reports. Create custom templates to match your organization's needs!"
+        },
+        "create": {
+          "title": "Create New Template",
+          "content": "Click here to create a new report template. You'll define sections, headers, footers, and customize the appearance of your reports."
+        },
+        "grid": {
+          "title": "Templates Grid",
+          "content": "View all your report templates. Each card shows the template name, description, sections, and whether it's set as default."
+        },
+        "card": {
+          "title": "Template Actions",
+          "content": "Edit templates to customize sections, duplicate templates to create variations, set default template for quick access, or delete unused templates."
+        },
+        "complete": {
+          "title": "Templates Management Mastered!",
+          "content": "You now know how to manage report templates. Create templates tailored to different report types and regulatory requirements!"
+        }
+      }
+    },
+    "history": {
+      "title": "Report History Tour",
+      "description": "Learn how to view and manage previously generated reports",
+      "steps": {
+        "welcome": {
+          "title": "Access Your Report Archive!",
+          "content": "The report history shows all previously generated reports. Download, view, or delete old reports as needed for compliance and record-keeping."
+        },
+        "filters": {
+          "title": "Filter Reports",
+          "content": "Filter reports by date range to quickly find specific reports. Perfect for audit preparation or reviewing historical data!"
+        },
+        "refresh": {
+          "title": "Refresh List",
+          "content": "Click refresh to update the report list and see newly generated reports. The list updates automatically but manual refresh ensures the latest data."
+        },
+        "table": {
+          "title": "Reports Table",
+          "content": "View all generated reports with details: name, period, systems covered, generated date, creator, and PDF availability. Click any row or use the menu to download PDF/Word or delete."
+        },
+        "complete": {
+          "title": "History Management Mastered!",
+          "content": "You now know how to access and manage your report archive. Keep organized records for compliance and historical analysis!"
+        }
+      }
+    }
+  },
+  "systems": {
+    "list": {
+      "title": "Systems Management Tour",
+      "description": "Learn how to manage water treatment systems",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Systems!",
+          "content": "Manage your water treatment systems here. Define systems, configure monitoring points, create inspection checklists, and track system status. Let's explore!"
+        },
+        "header": {
+          "title": "Systems Page",
+          "content": "This page shows all your water treatment systems and stages. Systems are the main treatment units, and stages represent specific sections within a system."
+        },
+        "viewMode": {
+          "title": "View Mode Toggle",
+          "content": "Switch between table view (detailed system list) and chart view (visual system analysis) to manage your infrastructure effectively."
+        },
+        "export": {
+          "title": "Export Systems",
+          "content": "Export your systems list to PDF, HTML, or CSV format for documentation, reporting, or offline reference."
+        },
+        "addSystem": {
+          "title": "Add New System",
+          "content": "Click here to add a new water treatment system or stage. Enter details like name, location, type, capacity, and status."
+        },
+        "table": {
+          "title": "Systems Table",
+          "content": "View all your systems and stages with details: name, location, type, status, and creation date. Click any row to see full system details, monitoring points, and checklists."
+        },
+        "complete": {
+          "title": "Systems Management Ready!",
+          "content": "You now know how to manage water treatment systems. Add systems, configure monitoring, and track operational status!"
+        }
+      }
+    },
+    "detail": {
+      "title": "System Details Tour",
+      "description": "Learn about system information and management options",
+      "steps": {
+        "welcome": {
+          "title": "System Detail Page",
+          "content": "This page shows complete system information, monitoring configuration, inspection checklists, and photo documentation. Let's explore!"
+        },
+        "header": {
+          "title": "System Header",
+          "content": "See the system name, type, and current status. Quick access to all system information and management features."
+        },
+        "actions": {
+          "title": "System Actions",
+          "content": "Edit system details, delete the system (with safety checks for related records), or navigate back to the systems list."
+        },
+        "info": {
+          "title": "System Information",
+          "content": "View complete system details: location, type, capacity, operating hours, installation date, status, responsible person, description, and parent system (if it's a stage)."
+        },
+        "photos": {
+          "title": "Photo Gallery",
+          "content": "View photos of the system for documentation and reference. Upload new photos to maintain visual records of your infrastructure."
+        },
+        "complete": {
+          "title": "System Details Mastered!",
+          "content": "You now understand system details. Continue to learn about monitoring points and checklists for complete system management!"
+        }
+      }
+    },
+    "monitoringPoints": {
+      "title": "Monitoring Points Tour",
+      "description": "Learn how to configure monitoring points for daily logs",
+      "steps": {
+        "welcome": {
+          "title": "Monitoring Points Configuration",
+          "content": "Monitoring points define the parameters you track in daily logs. Configure points for pH, chlorine, turbidity, flow rate, and other water quality metrics!"
+        },
+        "section": {
+          "title": "Monitoring Points Section",
+          "content": "This section shows all monitoring points configured for this system. Each point links to a parameter (what you measure) and unit (how you measure it)."
+        },
+        "add": {
+          "title": "Add Monitoring Point",
+          "content": "Click here to add a new monitoring point. Select the parameter, unit, set normal ranges (min/max), and configure alert thresholds for out-of-range values."
+        },
+        "table": {
+          "title": "Monitoring Points Table",
+          "content": "View all monitoring points with parameter, unit, normal ranges, alert thresholds, and actions. Edit points to adjust ranges or delete unused points."
+        },
+        "complete": {
+          "title": "Monitoring Configuration Complete!",
+          "content": "You now know how to configure monitoring points. These points will appear in daily logs for data entry and tracking!"
+        }
+      }
+    },
+    "checklist": {
+      "title": "Inspection Checklist Tour",
+      "description": "Learn how to create inspection checklist items",
+      "steps": {
+        "welcome": {
+          "title": "Inspection Checklist Setup",
+          "content": "Inspection checklists define the items operators check during inspections. Create comprehensive checklists for equipment checks, safety verification, and compliance items!"
+        },
+        "section": {
+          "title": "Checklist Section",
+          "content": "This section shows all checklist items configured for this system. Each item will appear in inspection forms for operators to mark as Conforme (OK) or Não Conforme (Not OK)."
+        },
+        "add": {
+          "title": "Add Checklist Item",
+          "content": "Click here to add a new checklist item. Enter the item description and set the display order. Items appear in inspections in the order you define."
+        },
+        "table": {
+          "title": "Checklist Items Table",
+          "content": "View all checklist items with descriptions and order. Edit items to change text or reorder them, or delete items that are no longer needed."
+        },
+        "complete": {
+          "title": "Checklist Configuration Complete!",
+          "content": "You now know how to create inspection checklists. These items will guide operators through systematic inspections!"
+        }
+      }
+    }
+  },
+  "notifications": {
+    "title": "Notifications Tour",
+    "description": "Learn how to manage and create system notifications",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Notifications!",
+        "content": "Stay informed with system alerts, incident notifications, stock warnings, and custom messages. Learn how to manage your notifications effectively!"
+      },
+      "header": {
+        "title": "Notifications Page",
+        "content": "This page shows all your notifications with unread count. Stay on top of important alerts, incidents, low stock warnings, and system updates."
+      },
+      "export": {
+        "title": "Export Notifications",
+        "content": "Export your notification history to PDF, HTML, or CSV format for record-keeping, audits, or offline review."
+      },
+      "create": {
+        "title": "Create Custom Notification",
+        "content": "Admins and managers can create custom notifications to send messages to all users, specific roles, or individual users. Perfect for announcements and important updates!"
+      },
+      "tabs": {
+        "title": "Notification Tabs",
+        "content": "Switch between 'My Notifications' (messages you received) and 'All Notifications' (admin view of all system notifications with delivery stats)."
+      },
+      "myNotifications": {
+        "title": "My Notifications List",
+        "content": "View all your notifications with priority indicators, read/unread status, and quick actions. Click notifications related to incidents, daily logs, or products to jump to the relevant page."
+      },
+      "actions": {
+        "title": "Notification Actions",
+        "content": "Mark all as read to clear unread indicators, or clear all notifications to remove them from your list. Keep your notification center organized!"
+      },
+      "complete": {
+        "title": "Notifications Mastered!",
+        "content": "You now know how to manage notifications and stay informed about system events. Never miss important alerts or updates!"
+      }
+    }
+  },
+  "profile": {
+    "title": "Profile Tour",
+    "description": "Learn how to manage your personal profile and security settings",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Your Profile!",
+        "content": "Your profile page lets you manage your personal information, update your avatar, and change your password. Keep your account secure and up-to-date!"
+      },
+      "header": {
+        "title": "Profile Page",
+        "content": "This page contains all your account settings divided into two sections: profile information and password management."
+      },
+      "profileInfo": {
+        "title": "Profile Information Card",
+        "content": "View and edit your personal details including name, email, phone, role, and account status. Your profile information is visible to other users in the system."
+      },
+      "avatar": {
+        "title": "Avatar Upload",
+        "content": "Click the camera icon to upload a profile picture. Supports JPG, PNG, GIF, and WebP formats up to 10MB. Your avatar appears throughout the system!"
+      },
+      "details": {
+        "title": "Account Details",
+        "content": "View your email, phone, account status, last login time, and member since date. This information helps you track your account activity and status."
+      },
+      "editButton": {
+        "title": "Edit Profile",
+        "content": "Click this button to edit your name, email, and phone number. Make sure your contact information is current for system notifications and communication!"
+      },
+      "password": {
+        "title": "Password Change Section",
+        "content": "Change your password regularly to keep your account secure. You'll need your current password and must confirm the new password. Minimum 6 characters required."
+      },
+      "complete": {
+        "title": "Profile Management Complete!",
+        "content": "You now know how to manage your profile information and security settings. Keep your profile updated and your password strong!"
+      }
+    }
+  },
+  "library": {
+    "list": {
+      "title": "Document Library Tour",
+      "description": "Learn how to manage and organize your document library",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to the Document Library!",
+          "content": "Store and manage all your water treatment documents in one place - manuals, SOPs, datasheets, reports, and more. Let's explore how to organize your library!"
+        },
+        "header": {
+          "title": "Library Page",
+          "content": "This page is your central document repository. Upload, search, filter, and access all documents related to your water treatment systems."
+        },
+        "upload": {
+          "title": "Upload Documents",
+          "content": "Click here to upload new documents. You can add manuals, SOPs, datasheets, reports, and link them to specific systems for easy organization."
+        },
+        "search": {
+          "title": "Search and Filter",
+          "content": "Use the search bar to find documents by name, and filter by category (manual, SOP, datasheet, report) to quickly locate what you need."
+        },
+        "table": {
+          "title": "Documents Table",
+          "content": "View all your documents with details like category, related system, file type, version, and last update. Click any row to view full document details and download."
+        },
+        "complete": {
+          "title": "Library Management Mastered!",
+          "content": "You now know how to manage your document library. Keep your documents organized and easily accessible for your team!"
+        }
+      }
+    },
+    "upload": {
+      "title": "Document Upload Tour",
+      "description": "Learn how to upload and organize new documents",
+      "steps": {
+        "welcome": {
+          "title": "Upload a New Document!",
+          "content": "Follow these steps to upload and properly categorize your documents for easy retrieval later."
+        },
+        "title": {
+          "title": "Document Title",
+          "content": "Enter a clear, descriptive title for the document. This helps your team quickly identify what the document contains."
+        },
+        "category": {
+          "title": "Select Category",
+          "content": "Choose the document type: Manual (equipment guides), SOP (standard procedures), Datasheet (technical specs), Report (analysis results), or Other (custom category)."
+        },
+        "system": {
+          "title": "Link to System",
+          "content": "Optionally link this document to a specific water treatment system. This makes it easier to find system-related documentation. You can also select a specific stage if needed."
+        },
+        "description": {
+          "title": "Add Description",
+          "content": "Provide a brief description of the document contents. This helps team members understand what's inside before downloading."
+        },
+        "file": {
+          "title": "Upload File",
+          "content": "Select the file to upload. Supports PDF, Office documents (Word, Excel, PowerPoint), and images (JPG, PNG). The system automatically tracks versions."
+        },
+        "complete": {
+          "title": "Upload Process Complete!",
+          "content": "You now know how to upload and organize documents. Keep your library up-to-date with the latest manuals, procedures, and reports!"
         }
       }
     }

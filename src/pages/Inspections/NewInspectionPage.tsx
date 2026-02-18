@@ -4,7 +4,9 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createInspection, fetchChecklistItems, clearChecklistItems } from '../../store/slices/inspectionSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Select, Input, TextArea } from '../../components/common';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, HelpOutline } from '@mui/icons-material';
+import { useTour, useAutoStartTour, INSPECTIONS_NEW_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface ItemValue {
   checklistItemId: number;
@@ -24,6 +26,10 @@ const NewInspectionPage: React.FC = () => {
   const { checklistItems } = useAppSelector((state) => state.inspections);
   const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToInspections } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(INSPECTIONS_NEW_TOUR);
 
   const [formData, setFormData] = useState({
     systemId: '',
@@ -175,15 +181,30 @@ const NewInspectionPage: React.FC = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </button>
-        <div>
+        <div className="flex-1" data-tour="new-inspection-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('inspections.new.title')}</h1>
           <p className="text-gray-500 mt-1">{t('inspections.new.description')}</p>
         </div>
+        <Tooltip title={isCompleted(INSPECTIONS_NEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(INSPECTIONS_NEW_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card title={t('inspections.new.inspectionInformation')} className="mb-6">
-          <div className="flex flex-col gap-4">
+        <div data-tour="basic-info">
+          <Card title={t('inspections.new.inspectionInformation')} className="mb-6">
+            <div className="flex flex-col gap-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Select
                 name="systemId"
@@ -218,10 +239,12 @@ const NewInspectionPage: React.FC = () => {
             />
           </div>
         </Card>
+        </div>
 
         {checklistItems.length > 0 && (
-          <Card title={t('inspections.new.checklistItems')} className="mb-6">
-            <div className="space-y-4">
+          <div data-tour="checklist-items">
+            <Card title={t('inspections.new.checklistItems')} className="mb-6">
+              <div className="space-y-4">
               {checklistItems.map((ci, index) => (
                 <div key={ci.id} className="p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-start justify-between mb-2">
@@ -252,6 +275,7 @@ const NewInspectionPage: React.FC = () => {
               ))}
             </div>
           </Card>
+          </div>
         )}
 
         <Card title={t('inspections.new.photos')} className="mb-6">
@@ -305,39 +329,43 @@ const NewInspectionPage: React.FC = () => {
           </div>
         </Card>
 
-        <Card title={t('inspections.new.conclusion')} className="mb-6">
-          <TextArea
-            name="conclusion"
-            value={formData.conclusion}
-            onChange={handleChange}
-            label={t('inspections.new.inspectionConclusion')}
-            placeholder={t('inspections.new.conclusionPlaceholder')}
-            rows={4}
-          />
-
-          {/* Send Notification Checkbox */}
-          <div className="flex items-center mt-4">
-            <input
-              type="checkbox"
-              id="sendNotification"
-              name="sendNotification"
-              checked={formData.sendNotification}
-              onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+        <div data-tour="conclusion">
+          <Card title={t('inspections.new.conclusion')} className="mb-6">
+            <TextArea
+              name="conclusion"
+              value={formData.conclusion}
+              onChange={handleChange}
+              label={t('inspections.new.inspectionConclusion')}
+              placeholder={t('inspections.new.conclusionPlaceholder')}
+              rows={4}
             />
-            <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
-              {t('inspections.new.sendNotification')}
-            </label>
-          </div>
-        </Card>
 
-        <div className="flex justify-end space-x-3">
-          <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
-            {t('inspections.new.cancel')}
-          </Button>
-          <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? t('inspections.new.submitting') : t('inspections.new.submitInspection')}
-          </Button>
+            {/* Send Notification Checkbox */}
+            <div className="flex items-center mt-4">
+              <input
+                type="checkbox"
+                id="sendNotification"
+                name="sendNotification"
+                checked={formData.sendNotification}
+                onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
+                {t('inspections.new.sendNotification')}
+              </label>
+            </div>
+          </Card>
+        </div>
+
+        <div data-tour="action-buttons">
+          <div className="flex justify-end space-x-3">
+            <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
+              {t('inspections.new.cancel')}
+            </Button>
+            <Button type="submit" variant="primary" disabled={loading}>
+              {loading ? t('inspections.new.submitting') : t('inspections.new.submitInspection')}
+            </Button>
+          </div>
         </div>
       </form>
     </div>

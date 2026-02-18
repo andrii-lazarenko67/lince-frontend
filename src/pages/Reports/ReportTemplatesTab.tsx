@@ -164,19 +164,23 @@ const ReportTemplatesTab: React.FC = () => {
         <Typography variant="h6">
           {t('reports.templates.title')} ({templates.length})
         </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setIsCreateDialogOpen(true)}
-        >
-          {t('reports.templates.create')}
-        </Button>
+        <div data-tour="create-template-button">
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setIsCreateDialogOpen(true)}
+          >
+            {t('reports.templates.create')}
+          </Button>
+        </div>
       </Box>
 
-      <Grid container spacing={3}>
-        {templates.map((template) => (
-          <Grid item xs={12} sm={6} md={4} key={template.id}>
-            <Card
+      <div data-tour="templates-grid">
+        <Grid container spacing={3}>
+          {templates.map((template, index) => (
+            <Grid item xs={12} sm={6} md={4} key={template.id}>
+              <div data-tour={index === 0 ? 'template-card' : undefined}>
+                <Card
               sx={{
                 height: '100%',
                 display: 'flex',
@@ -254,27 +258,29 @@ const ReportTemplatesTab: React.FC = () => {
                 </Button>
               </CardActions>
             </Card>
-          </Grid>
-        ))}
+              </div>
+            </Grid>
+          ))}
 
-        {templates.length === 0 && !loading && (
-          <Grid item xs={12}>
-            <Card sx={{ p: 4, textAlign: 'center' }}>
-              <Typography color="text.secondary" gutterBottom>
-                {t('reports.templates.empty')}
-              </Typography>
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => setIsCreateDialogOpen(true)}
-                sx={{ mt: 2 }}
-              >
-                {t('reports.templates.createFirst')}
-              </Button>
-            </Card>
-          </Grid>
-        )}
-      </Grid>
+          {templates.length === 0 && !loading && (
+            <Grid item xs={12}>
+              <Card sx={{ p: 4, textAlign: 'center' }}>
+                <Typography color="text.secondary" gutterBottom>
+                  {t('reports.templates.empty')}
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setIsCreateDialogOpen(true)}
+                  sx={{ mt: 2 }}
+                >
+                  {t('reports.templates.createFirst')}
+                </Button>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
+      </div>
 
       {/* Context Menu */}
       <Menu

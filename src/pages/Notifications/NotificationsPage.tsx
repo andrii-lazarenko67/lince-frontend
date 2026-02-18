@@ -18,6 +18,9 @@ import NotificationList from "./NotificationList"
 import AdminNotificationList from "./AdminNotificationList"
 import NotificationRecipientsModal from "./NotificationRecipientsModal"
 import CreateNotificationModal from './CreateNotificationModal';
+import { useTour, useAutoStartTour, NOTIFICATIONS_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline } from '@mui/icons-material';
 
 import type { Notification, CreateNotificationRequest } from '../../types';
 
@@ -32,6 +35,10 @@ const NotificationsPage: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   const isAdmin = user?.role === 'admin' || user?.role === 'manager';
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(NOTIFICATIONS_TOUR);
 
   useEffect(() => {
     dispatch(fetchNotifications({}));
@@ -174,30 +181,48 @@ const NotificationsPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+        <div data-tour="notifications-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('notifications.title')}</h1>
           <p className="text-gray-500 mt-1">
             {unreadCount > 0 ? t('notifications.subtitle', { count: unreadCount }) : t('notifications.allCaughtUp')}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <ExportDropdown
-            onExportPDF={handleExportPDF}
-            onExportHTML={handleExportHTML}
-            onExportCSV={handleExportCSV}
-            disabled={notifications.length === 0}
-          />
+          <Tooltip title={isCompleted(NOTIFICATIONS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(NOTIFICATIONS_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={notifications.length === 0}
+            />
+          </div>
           {isAdmin && (
-            <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
-              {t('notifications.createNotification')}
-            </Button>
+            <div data-tour="create-notification-button">
+              <Button variant="primary" onClick={() => setIsCreateModalOpen(true)}>
+                {t('notifications.createNotification')}
+              </Button>
+            </div>
           )}
         </div>
       </div>
 
       {/* Tabs for Admin/Manager */}
       {isAdmin && (
-        <div className="border-b border-gray-200">
+        <div className="border-b border-gray-200" data-tour="notification-tabs">
           <nav className="-mb-px flex space-x-8">
             <button
               onClick={() => setActiveTab('my')}
@@ -233,30 +258,32 @@ const NotificationsPage: React.FC = () => {
 
       {/* My Notifications Tab */}
       {activeTab === 'my' && (
-        <Card
-          noPadding
-          title={t('notifications.myNotifications')}
-          headerActions={
-            <div className="flex gap-2">
-              {unreadCount > 0 && (
-                <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
-                  {t('notifications.markAllAsRead')}
-                </Button>
-              )}
-              {notifications.length > 0 && (
-                <Button variant="outline" size="sm" onClick={handleClearMyNotifications}>
-                  {t('notifications.clearAll')}
-                </Button>
-              )}
-            </div>
-          }
-        >
-          <NotificationList
-            notifications={notifications}
-            onMarkAsRead={handleMarkAsRead}
-            onNotificationClick={handleNotificationClick}
-          />
-        </Card>
+        <div data-tour="my-notifications">
+          <Card
+            noPadding
+            title={t('notifications.myNotifications')}
+            headerActions={
+              <div className="flex gap-2" data-tour="notification-actions">
+                {unreadCount > 0 && (
+                  <Button variant="outline" size="sm" onClick={handleMarkAllAsRead}>
+                    {t('notifications.markAllAsRead')}
+                  </Button>
+                )}
+                {notifications.length > 0 && (
+                  <Button variant="outline" size="sm" onClick={handleClearMyNotifications}>
+                    {t('notifications.clearAll')}
+                  </Button>
+                )}
+              </div>
+            }
+          >
+            <NotificationList
+              notifications={notifications}
+              onMarkAsRead={handleMarkAsRead}
+              onNotificationClick={handleNotificationClick}
+            />
+          </Card>
+        </div>
       )}
 
       {/* Admin Notifications Tab */}

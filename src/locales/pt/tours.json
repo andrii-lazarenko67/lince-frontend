@@ -123,6 +123,206 @@
       }
     }
   },
+  "incidents": {
+    "list": {
+      "title": "Tour de Incidentes",
+      "description": "Aprenda a gerenciar e rastrear incidentes em seus sistemas de tratamento de água",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo aos Incidentes!",
+          "content": "Os incidentes ajudam você a rastrear e resolver problemas que ocorrem em seus sistemas de tratamento de água. Vamos explorar como gerenciá-los de forma eficaz!"
+        },
+        "header": {
+          "title": "Página de Incidentes",
+          "content": "Esta página mostra todos os incidentes reportados com sua prioridade, status e atribuições. Você pode visualizar, filtrar e exportar relatórios de incidentes daqui."
+        },
+        "viewMode": {
+          "title": "Alternar Modo de Visualização",
+          "content": "Alterne entre visualização em tabela (lista detalhada) e visualização em gráfico (gráficos visuais) para analisar incidentes de diferentes maneiras. Gráficos ajudam a identificar padrões e tendências!"
+        },
+        "export": {
+          "title": "Exportar Seus Dados",
+          "content": "Exporte relatórios de incidentes para formato PDF, HTML ou CSV para documentação, conformidade ou análise offline."
+        },
+        "reportButton": {
+          "title": "Reportar Novo Incidente",
+          "content": "Clique aqui para reportar um novo incidente. Você pode documentar problemas, definir níveis de prioridade e atribuí-los a membros da equipe para resolução."
+        },
+        "filters": {
+          "title": "Filtrar Incidentes",
+          "content": "Use filtros para encontrar incidentes específicos por sistema, etapa, status, prioridade ou intervalo de datas. Ótimo para rastrear o progresso da resolução!"
+        },
+        "table": {
+          "title": "Tabela de Incidentes",
+          "content": "Veja todos os incidentes com detalhes principais: título, sistema, prioridade, status, reporter e data de criação. Emblemas coloridos facilitam a identificação de problemas críticos. Clique em qualquer linha para ver detalhes completos."
+        },
+        "complete": {
+          "title": "Incidentes Dominados!",
+          "content": "Agora você sabe como gerenciar incidentes de forma eficaz. Comece a rastrear e resolver problemas para manter o desempenho ideal do sistema!"
+        }
+      }
+    },
+    "new": {
+      "title": "Tour de Reportar Incidente",
+      "description": "Aprenda a reportar e documentar incidentes em seus sistemas",
+      "steps": {
+        "welcome": {
+          "title": "Reporte um Novo Incidente!",
+          "content": "Este formulário ajuda você a documentar problemas que ocorrem em seus sistemas de tratamento de água. Vamos percorrer como reportar um incidente!"
+        },
+        "header": {
+          "title": "Formulário de Novo Incidente",
+          "content": "Esta página permite reportar um novo incidente. Você pode descrever o problema, definir prioridade e atribuí-lo a membros da equipe para resolução."
+        },
+        "actionButtons": {
+          "title": "Salvar ou Cancelar",
+          "content": "Use estes botões para enviar seu relatório de incidente quando terminar, ou cancelar para voltar sem salvar as alterações."
+        },
+        "basicInfo": {
+          "title": "Informações Básicas",
+          "content": "Digite o título do incidente, selecione o sistema afetado, defina o nível de prioridade (crítico, alto, médio, baixo) e escolha o status atual. A prioridade ajuda os membros da equipe a abordar problemas críticos primeiro!"
+        },
+        "description": {
+          "title": "Descrição do Incidente",
+          "content": "Forneça uma descrição detalhada do incidente. Inclua o que aconteceu, quando ocorreu e quaisquer observações. Descrições claras ajudam com resolução mais rápida!"
+        },
+        "assignment": {
+          "title": "Atribuição e Rastreamento",
+          "content": "Opcionalmente atribua o incidente a um membro da equipe para resolução. Você também pode adicionar notas sobre etapas tomadas ou contexto adicional."
+        },
+        "complete": {
+          "title": "Pronto para Reportar!",
+          "content": "Agora você sabe como reportar incidentes. Preencha as informações obrigatórias e clique em Enviar para criar o relatório de incidente!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes do Incidente",
+      "description": "Aprenda a revisar detalhes de incidentes e rastrear o progresso da resolução",
+      "steps": {
+        "welcome": {
+          "title": "Visualizar Detalhes do Incidente!",
+          "content": "Esta página mostra detalhes completos de um incidente, incluindo sua descrição, status, atribuição e informações de resolução. Vamos explorar o que está disponível!"
+        },
+        "header": {
+          "title": "Visão Geral do Incidente",
+          "content": "Veja o título do incidente, prioridade e status rapidamente. Emblemas coloridos ajudam você a identificar rapidamente a gravidade e o estado atual."
+        },
+        "incidentInfo": {
+          "title": "Informações do Incidente",
+          "content": "Visualize todos os detalhes sobre este incidente: sistema, prioridade, status, reporter, responsável, data de criação e descrição completa. Isso fornece contexto completo sobre o problema."
+        },
+        "resolution": {
+          "title": "Detalhes da Resolução",
+          "content": "Veja informações de resolução incluindo quando o incidente foi resolvido, quem resolveu e notas de resolução. Para incidentes abertos, você pode atualizar o status e adicionar notas de resolução aqui."
+        },
+        "complete": {
+          "title": "Detalhes Revisados!",
+          "content": "Agora você sabe como revisar detalhes de incidentes e rastrear o progresso da resolução. Use esta página para monitorar problemas e garantir que sejam abordados prontamente!"
+        }
+      }
+    }
+  },
+  "inspections": {
+    "list": {
+      "title": "Tour de Inspeções",
+      "description": "Aprenda a gerenciar e rastrear inspeções do sistema",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Inspeções!",
+          "content": "As inspeções ajudam você a garantir que seus sistemas de tratamento de água estejam operando corretamente através de verificações sistemáticas. Vamos explorar como gerenciá-las!"
+        },
+        "header": {
+          "title": "Página de Inspeções",
+          "content": "Esta página mostra todas as inspeções com seu status, resultados e detalhes de conclusão. Você pode visualizar, filtrar e exportar relatórios de inspeção daqui."
+        },
+        "viewMode": {
+          "title": "Alternar Modo de Visualização",
+          "content": "Alterne entre visualização em tabela (lista detalhada) e visualização em gráfico (gráficos visuais) para analisar dados de inspeção de diferentes maneiras. Gráficos ajudam a identificar tendências de conformidade!"
+        },
+        "export": {
+          "title": "Exportar Seus Dados",
+          "content": "Exporte relatórios de inspeção para formato PDF, HTML ou CSV para documentação, registros de conformidade ou análise offline."
+        },
+        "newInspection": {
+          "title": "Criar Nova Inspeção",
+          "content": "Clique aqui para realizar uma nova inspeção. Você completará uma lista de verificação de itens para verificar se seu sistema está operando dentro das especificações."
+        },
+        "filters": {
+          "title": "Filtrar Inspeções",
+          "content": "Use filtros para encontrar inspeções específicas por sistema, etapa, status ou intervalo de datas. Ótimo para revisar histórico de conformidade!"
+        },
+        "table": {
+          "title": "Tabela de Inspeções",
+          "content": "Veja todas as inspeções com detalhes principais: data, sistema, inspetor, status e resultados dos itens (conforme/não conforme). Clique em qualquer linha para ver detalhes completos e fotos."
+        },
+        "complete": {
+          "title": "Inspeções Dominadas!",
+          "content": "Agora você sabe como gerenciar inspeções de forma eficaz. Inspeções regulares ajudam a manter a conformidade do sistema e identificar problemas cedo!"
+        }
+      }
+    },
+    "new": {
+      "title": "Tour de Criar Inspeção",
+      "description": "Aprenda a realizar e documentar inspeções do sistema",
+      "steps": {
+        "welcome": {
+          "title": "Realize uma Nova Inspeção!",
+          "content": "Este formulário guia você através de uma inspeção sistemática do seu sistema de tratamento de água. Vamos percorrer o processo de lista de verificação!"
+        },
+        "header": {
+          "title": "Formulário de Nova Inspeção",
+          "content": "Esta página permite criar um novo registro de inspeção. Você completará uma lista de verificação de itens para verificar a conformidade do sistema."
+        },
+        "actionButtons": {
+          "title": "Salvar ou Cancelar",
+          "content": "Use estes botões para salvar sua inspeção quando terminar, ou cancelar para voltar sem salvar as alterações."
+        },
+        "basicInfo": {
+          "title": "Detalhes da Inspeção",
+          "content": "Selecione o sistema a inspecionar e defina a data da inspeção. Se o sistema tiver etapas, você pode opcionalmente selecionar uma etapa específica para focar."
+        },
+        "checklistItems": {
+          "title": "Itens da Lista de Verificação",
+          "content": "Percorra cada item da lista de verificação e marque-o como Conforme (C), Não Conforme (NC) ou Não Aplicável (NA). Adicione observações e fotos para itens não conformes para documentar problemas."
+        },
+        "conclusion": {
+          "title": "Conclusão da Inspeção",
+          "content": "Adicione sua conclusão geral e quaisquer observações gerais sobre a inspeção. Isso fornece contexto para os resultados."
+        },
+        "complete": {
+          "title": "Pronto para Concluir!",
+          "content": "Agora você sabe como realizar inspeções. Complete todos os itens da lista de verificação e clique em Salvar para registrar sua inspeção!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes da Inspeção",
+      "description": "Aprenda a revisar resultados e descobertas de inspeção",
+      "steps": {
+        "welcome": {
+          "title": "Visualizar Resultados da Inspeção!",
+          "content": "Esta página mostra detalhes completos de uma inspeção, incluindo todos os itens da lista de verificação, seu status, fotos e observações. Vamos explorar os resultados!"
+        },
+        "header": {
+          "title": "Visão Geral da Inspeção",
+          "content": "Veja a data da inspeção, sistema e status rapidamente. Isso fornece contexto rápido sobre a inspeção que você está revisando."
+        },
+        "inspectionInfo": {
+          "title": "Informações da Inspeção",
+          "content": "Visualize todos os detalhes sobre esta inspeção: data, sistema, etapa, inspetor, status e conclusão. Isso fornece contexto completo sobre quando e como a inspeção foi realizada."
+        },
+        "checklistResults": {
+          "title": "Resultados da Lista de Verificação",
+          "content": "Veja todos os itens da lista de verificação com seu status (Conforme/Não Conforme/NA), observações e fotos. Itens não conformes são destacados para facilitar a identificação de problemas. Clique nos itens para ver detalhes completos e fotos!"
+        },
+        "complete": {
+          "title": "Resultados Revisados!",
+          "content": "Agora você sabe como revisar detalhes de inspeção. Use esta página para verificar conformidade, rastrear itens não conformes e garantir que ações corretivas sejam tomadas!"
+        }
+      }
+    }
+  },
   "dashboard": {
     "title": "Tour do Painel",
     "description": "Aprenda a usar o painel principal e entender as métricas principais",
@@ -325,6 +525,492 @@
         "complete": {
           "title": "Tudo Pronto!",
           "content": "Perfeito! Agora você sabe como adicionar seu primeiro cliente. Depois de enviar este formulário, você será levado ao painel onde poderá começar a gerenciar sistemas de tratamento de água."
+        }
+      }
+    }
+  },
+  "products": {
+    "list": {
+      "title": "Tour de Inventário de Produtos",
+      "description": "Aprenda a gerenciar produtos químicos e inventário",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo ao Gerenciamento de Produtos!",
+          "content": "Gerencie seu inventário de produtos químicos para tratamento de água aqui. Acompanhe níveis de estoque, defina alertas de estoque baixo e monitore o uso de produtos em todos os sistemas. Vamos explorar!"
+        },
+        "header": {
+          "title": "Página de Produtos",
+          "content": "Esta página mostra seu inventário completo de produtos. Visualize todos os produtos químicos, seus níveis de estoque atuais, fornecedores e alertas de estoque baixo."
+        },
+        "viewMode": {
+          "title": "Alternar Modo de Visualização",
+          "content": "Alterne entre visualização de tabela (lista detalhada de produtos) e visualização de gráfico (análise visual de inventário) para gerenciar seu estoque efetivamente."
+        },
+        "export": {
+          "title": "Exportar Inventário",
+          "content": "Exporte seu inventário de produtos para formato PDF, HTML ou CSV para compras, auditorias ou relatórios."
+        },
+        "addProduct": {
+          "title": "Adicionar Novo Produto",
+          "content": "Clique aqui para adicionar um novo produto químico ao seu inventário. Insira detalhes como nome, tipo, unidade, fornecedor e níveis de estoque."
+        },
+        "filters": {
+          "title": "Filtrar Produtos",
+          "content": "Filtre produtos por sistema, tipo ou mostre apenas itens com estoque baixo. Perfeito para planejamento de compras e verificações de inventário!"
+        },
+        "table": {
+          "title": "Tabela de Produtos",
+          "content": "Visualize todos os produtos com estoque atual, níveis de alerta mínimos, status (em estoque/estoque baixo) e informações do fornecedor. Clique em qualquer linha para ver o histórico detalhado de uso e gerenciar o estoque."
+        },
+        "complete": {
+          "title": "Gerenciamento de Inventário Pronto!",
+          "content": "Agora você sabe como gerenciar seu inventário de produtos químicos. Acompanhe os níveis de estoque para garantir que seu tratamento de água nunca fique sem produtos essenciais!"
+        }
+      }
+    },
+    "form": {
+      "title": "Tour de Adicionar/Editar Produto",
+      "description": "Aprenda a adicionar e configurar produtos em seu inventário",
+      "steps": {
+        "welcome": {
+          "title": "Adicionando um Novo Produto",
+          "content": "Vamos percorrer a adição de um novo produto químico ao seu inventário. Você configurará todos os detalhes necessários para um gerenciamento eficaz de estoque."
+        },
+        "name": {
+          "title": "Nome do Produto",
+          "content": "Digite o nome do produto (ex: 'Hipoclorito de Sódio', 'PAC', 'Cal'). Use nomes claros e consistentes para fácil identificação."
+        },
+        "type": {
+          "title": "Tipo de Produto",
+          "content": "Selecione o tipo de produto (ex: Coagulante, Desinfetante, Corretor de pH). Isso ajuda a categorizar e filtrar produtos."
+        },
+        "unit": {
+          "title": "Unidade de Medida",
+          "content": "Escolha a unidade para medir este produto (kg, L, mL, g, etc.). Isso será usado para todo o rastreamento de estoque e registros de uso."
+        },
+        "stock": {
+          "title": "Níveis de Estoque",
+          "content": "Digite a quantidade de estoque atual e o nível de alerta mínimo. Quando o estoque cair abaixo do mínimo, você receberá avisos de estoque baixo."
+        },
+        "supplier": {
+          "title": "Info de Fornecedor e Dosagem",
+          "content": "Adicione informações do fornecedor e diretrizes de dosagem recomendadas. Isso ajuda com compras e uso adequado do produto."
+        },
+        "complete": {
+          "title": "Produto Configurado!",
+          "content": "Ótimo! Você aprendeu como adicionar produtos ao seu inventário. Preencha o formulário e salve para adicionar seu primeiro produto."
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes do Produto",
+      "description": "Aprenda a gerenciar estoque e rastrear uso de produtos",
+      "steps": {
+        "welcome": {
+          "title": "Página de Detalhes do Produto",
+          "content": "Esta página mostra informações completas do produto, níveis de estoque, histórico de uso e configurações de dosagem. Vamos explorar como gerenciá-lo!"
+        },
+        "header": {
+          "title": "Cabeçalho do Produto",
+          "content": "Veja o nome e tipo do produto. Acesso rápido a todas as informações e ações de gerenciamento do produto."
+        },
+        "actions": {
+          "title": "Ações de Gerenciamento de Estoque",
+          "content": "Atualize níveis de estoque (adicionar/remover), registre uso de produto em sistemas ou exclua o produto se não for mais necessário."
+        },
+        "info": {
+          "title": "Informações do Produto",
+          "content": "Visualize estoque atual, nível de alerta mínimo, status do estoque, fornecedor, dosagem recomendada e descrição do produto. Todos os detalhes principais de uma vez!"
+        },
+        "history": {
+          "title": "Histórico de Uso",
+          "content": "Rastreie cada movimentação de estoque: quando os produtos foram usados, em quais sistemas, quantidades, quem registrou e quaisquer observações. Trilha de auditoria completa!"
+        },
+        "dosage": {
+          "title": "Configurações de Dosagem",
+          "content": "Configure cálculos automáticos de dosagem para diferentes sistemas. Defina fórmulas de dosagem baseadas em vazão, volume ou outros parâmetros."
+        },
+        "complete": {
+          "title": "Gerenciamento de Produto Dominado!",
+          "content": "Agora você sabe como gerenciar estoque de produtos e rastrear uso. Mantenha seu inventário atualizado para operações de tratamento de água sem problemas!"
+        }
+      }
+    }
+  },
+  "reports": {
+    "workflow": {
+      "title": "Visão Geral do Módulo de Relatórios",
+      "description": "Aprenda sobre o fluxo de trabalho completo de relatórios e recursos",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo aos Relatórios!",
+          "content": "Gere relatórios abrangentes de tratamento de água com modelos, visualização de dados e insights com IA. Vamos explorar o módulo de relatórios!"
+        },
+        "header": {
+          "title": "Página de Relatórios",
+          "content": "Este é o hub central para todas as atividades de relatórios. Crie novos relatórios, gerencie modelos e visualize seu histórico de relatórios tudo em um só lugar."
+        },
+        "tabs": {
+          "title": "Abas de Relatórios",
+          "content": "Três abas poderosas: Gerador (criar relatórios), Modelos (personalizar layouts de relatórios) e Histórico (visualizar relatórios anteriores). Cada aba é projetada para tarefas específicas de relatórios."
+        },
+        "complete": {
+          "title": "Relatórios Prontos!",
+          "content": "Agora você entende o fluxo de trabalho de relatórios. Explore cada aba para dominar a geração de relatórios, gerenciamento de modelos e histórico de relatórios!"
+        }
+      }
+    },
+    "generator": {
+      "title": "Tour do Gerador de Relatórios",
+      "description": "Aprenda a gerar relatórios abrangentes de tratamento de água",
+      "steps": {
+        "welcome": {
+          "title": "Gere Seu Primeiro Relatório!",
+          "content": "O gerador de relatórios o orienta na criação de relatórios profissionais com dados de seus sistemas. Siga o processo passo a passo para criar seu relatório!"
+        },
+        "stepper": {
+          "title": "Etapas de Geração de Relatório",
+          "content": "Este stepper mostra seu progresso através de 5 etapas: Modelo, Período, Sistemas, Opções e Visualização. Complete cada etapa para gerar seu relatório."
+        },
+        "template": {
+          "title": "Selecionar Modelo",
+          "content": "Escolha um modelo de relatório que define a estrutura e seções do seu relatório. Você pode usar modelos padrão ou criar personalizados na aba Modelos."
+        },
+        "period": {
+          "title": "Selecionar Período",
+          "content": "Escolha o período do relatório: diário, semanal, mensal ou intervalo de datas personalizado. Isso determina quais dados serão incluídos no seu relatório."
+        },
+        "systems": {
+          "title": "Selecionar Sistemas",
+          "content": "Escolha quais sistemas de tratamento de água incluir no relatório. Você pode selecionar vários sistemas para criar relatórios abrangentes cobrindo todas as suas operações."
+        },
+        "options": {
+          "title": "Opções de Relatório",
+          "content": "Configure opções de relatório: incluir apenas alertas, adicionar fotos, gerar gráficos, selecionar pontos de monitoramento e adicionar conclusões geradas por IA com campos de assinatura."
+        },
+        "preview": {
+          "title": "Visualizar e Editar",
+          "content": "Visualize seu relatório antes de gerar o PDF final. Revise todas as seções, edite a conclusão gerada por IA e adicione informações de assinatura."
+        },
+        "actions": {
+          "title": "Salvar e Compartilhar",
+          "content": "Uma vez satisfeito com a visualização, salve no banco de dados, baixe como PDF/Word ou envie por e-mail. Seu relatório também aparecerá na aba Histórico."
+        },
+        "complete": {
+          "title": "Geração de Relatórios Dominada!",
+          "content": "Agora você sabe como gerar relatórios profissionais de tratamento de água. Pratique criando relatórios para diferentes períodos e sistemas!"
+        }
+      }
+    },
+    "templates": {
+      "title": "Tour de Modelos de Relatórios",
+      "description": "Aprenda a criar e gerenciar modelos de relatórios personalizados",
+      "steps": {
+        "welcome": {
+          "title": "Personalize Seus Relatórios!",
+          "content": "Modelos de relatórios definem a estrutura, seções e marca dos seus relatórios. Crie modelos personalizados para atender às necessidades da sua organização!"
+        },
+        "create": {
+          "title": "Criar Novo Modelo",
+          "content": "Clique aqui para criar um novo modelo de relatório. Você definirá seções, cabeçalhos, rodapés e personalizará a aparência dos seus relatórios."
+        },
+        "grid": {
+          "title": "Grade de Modelos",
+          "content": "Visualize todos os seus modelos de relatórios. Cada cartão mostra o nome do modelo, descrição, seções e se está definido como padrão."
+        },
+        "card": {
+          "title": "Ações de Modelo",
+          "content": "Edite modelos para personalizar seções, duplique modelos para criar variações, defina modelo padrão para acesso rápido ou exclua modelos não utilizados."
+        },
+        "complete": {
+          "title": "Gerenciamento de Modelos Dominado!",
+          "content": "Agora você sabe como gerenciar modelos de relatórios. Crie modelos adaptados a diferentes tipos de relatórios e requisitos regulatórios!"
+        }
+      }
+    },
+    "history": {
+      "title": "Tour do Histórico de Relatórios",
+      "description": "Aprenda a visualizar e gerenciar relatórios gerados anteriormente",
+      "steps": {
+        "welcome": {
+          "title": "Acesse Seu Arquivo de Relatórios!",
+          "content": "O histórico de relatórios mostra todos os relatórios gerados anteriormente. Baixe, visualize ou exclua relatórios antigos conforme necessário para conformidade e manutenção de registros."
+        },
+        "filters": {
+          "title": "Filtrar Relatórios",
+          "content": "Filtre relatórios por intervalo de datas para encontrar rapidamente relatórios específicos. Perfeito para preparação de auditoria ou revisão de dados históricos!"
+        },
+        "refresh": {
+          "title": "Atualizar Lista",
+          "content": "Clique em atualizar para atualizar a lista de relatórios e ver relatórios recém-gerados. A lista atualiza automaticamente, mas a atualização manual garante os dados mais recentes."
+        },
+        "table": {
+          "title": "Tabela de Relatórios",
+          "content": "Visualize todos os relatórios gerados com detalhes: nome, período, sistemas cobertos, data de geração, criador e disponibilidade de PDF. Clique em qualquer linha ou use o menu para baixar PDF/Word ou excluir."
+        },
+        "complete": {
+          "title": "Gerenciamento de Histórico Dominado!",
+          "content": "Agora você sabe como acessar e gerenciar seu arquivo de relatórios. Mantenha registros organizados para conformidade e análise histórica!"
+        }
+      }
+    }
+  },
+  "systems": {
+    "list": {
+      "title": "Tour de Gerenciamento de Sistemas",
+      "description": "Aprenda a gerenciar sistemas de tratamento de água",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo aos Sistemas!",
+          "content": "Gerencie seus sistemas de tratamento de água aqui. Defina sistemas, configure pontos de monitoramento, crie listas de verificação de inspeção e acompanhe o status do sistema. Vamos explorar!"
+        },
+        "header": {
+          "title": "Página de Sistemas",
+          "content": "Esta página mostra todos os seus sistemas e estágios de tratamento de água. Sistemas são as principais unidades de tratamento, e estágios representam seções específicas dentro de um sistema."
+        },
+        "viewMode": {
+          "title": "Alternar Modo de Visualização",
+          "content": "Alterne entre visualização de tabela (lista detalhada de sistemas) e visualização de gráfico (análise visual de sistemas) para gerenciar sua infraestrutura efetivamente."
+        },
+        "export": {
+          "title": "Exportar Sistemas",
+          "content": "Exporte sua lista de sistemas para formato PDF, HTML ou CSV para documentação, relatórios ou referência offline."
+        },
+        "addSystem": {
+          "title": "Adicionar Novo Sistema",
+          "content": "Clique aqui para adicionar um novo sistema ou estágio de tratamento de água. Insira detalhes como nome, localização, tipo, capacidade e status."
+        },
+        "table": {
+          "title": "Tabela de Sistemas",
+          "content": "Visualize todos os seus sistemas e estágios com detalhes: nome, localização, tipo, status e data de criação. Clique em qualquer linha para ver detalhes completos do sistema, pontos de monitoramento e listas de verificação."
+        },
+        "complete": {
+          "title": "Gerenciamento de Sistemas Pronto!",
+          "content": "Agora você sabe como gerenciar sistemas de tratamento de água. Adicione sistemas, configure monitoramento e acompanhe o status operacional!"
+        }
+      }
+    },
+    "detail": {
+      "title": "Tour de Detalhes do Sistema",
+      "description": "Aprenda sobre informações do sistema e opções de gerenciamento",
+      "steps": {
+        "welcome": {
+          "title": "Página de Detalhes do Sistema",
+          "content": "Esta página mostra informações completas do sistema, configuração de monitoramento, listas de verificação de inspeção e documentação fotográfica. Vamos explorar!"
+        },
+        "header": {
+          "title": "Cabeçalho do Sistema",
+          "content": "Veja o nome do sistema, tipo e status atual. Acesso rápido a todas as informações e recursos de gerenciamento do sistema."
+        },
+        "actions": {
+          "title": "Ações do Sistema",
+          "content": "Edite detalhes do sistema, exclua o sistema (com verificações de segurança para registros relacionados) ou navegue de volta para a lista de sistemas."
+        },
+        "info": {
+          "title": "Informações do Sistema",
+          "content": "Visualize detalhes completos do sistema: localização, tipo, capacidade, horário de operação, data de instalação, status, pessoa responsável, descrição e sistema pai (se for um estágio)."
+        },
+        "photos": {
+          "title": "Galeria de Fotos",
+          "content": "Visualize fotos do sistema para documentação e referência. Carregue novas fotos para manter registros visuais da sua infraestrutura."
+        },
+        "complete": {
+          "title": "Detalhes do Sistema Dominados!",
+          "content": "Agora você entende os detalhes do sistema. Continue a aprender sobre pontos de monitoramento e listas de verificação para gerenciamento completo do sistema!"
+        }
+      }
+    },
+    "monitoringPoints": {
+      "title": "Tour de Pontos de Monitoramento",
+      "description": "Aprenda a configurar pontos de monitoramento para registros diários",
+      "steps": {
+        "welcome": {
+          "title": "Configuração de Pontos de Monitoramento",
+          "content": "Pontos de monitoramento definem os parâmetros que você acompanha nos registros diários. Configure pontos para pH, cloro, turbidez, vazão e outras métricas de qualidade da água!"
+        },
+        "section": {
+          "title": "Seção de Pontos de Monitoramento",
+          "content": "Esta seção mostra todos os pontos de monitoramento configurados para este sistema. Cada ponto está vinculado a um parâmetro (o que você mede) e unidade (como você mede)."
+        },
+        "add": {
+          "title": "Adicionar Ponto de Monitoramento",
+          "content": "Clique aqui para adicionar um novo ponto de monitoramento. Selecione o parâmetro, unidade, defina faixas normais (mín/máx) e configure limites de alerta para valores fora da faixa."
+        },
+        "table": {
+          "title": "Tabela de Pontos de Monitoramento",
+          "content": "Visualize todos os pontos de monitoramento com parâmetro, unidade, faixas normais, limites de alerta e ações. Edite pontos para ajustar faixas ou exclua pontos não utilizados."
+        },
+        "complete": {
+          "title": "Configuração de Monitoramento Completa!",
+          "content": "Agora você sabe como configurar pontos de monitoramento. Esses pontos aparecerão nos registros diários para entrada e acompanhamento de dados!"
+        }
+      }
+    },
+    "checklist": {
+      "title": "Tour de Lista de Verificação de Inspeção",
+      "description": "Aprenda a criar itens de lista de verificação de inspeção",
+      "steps": {
+        "welcome": {
+          "title": "Configuração de Lista de Verificação de Inspeção",
+          "content": "Listas de verificação de inspeção definem os itens que os operadores verificam durante as inspeções. Crie listas de verificação abrangentes para verificações de equipamentos, verificação de segurança e itens de conformidade!"
+        },
+        "section": {
+          "title": "Seção de Lista de Verificação",
+          "content": "Esta seção mostra todos os itens de lista de verificação configurados para este sistema. Cada item aparecerá em formulários de inspeção para os operadores marcarem como Conforme (OK) ou Não Conforme (Não OK)."
+        },
+        "add": {
+          "title": "Adicionar Item de Lista de Verificação",
+          "content": "Clique aqui para adicionar um novo item de lista de verificação. Insira a descrição do item e defina a ordem de exibição. Os itens aparecem nas inspeções na ordem que você define."
+        },
+        "table": {
+          "title": "Tabela de Itens de Lista de Verificação",
+          "content": "Visualize todos os itens de lista de verificação com descrições e ordem. Edite itens para alterar o texto ou reordená-los, ou exclua itens que não são mais necessários."
+        },
+        "complete": {
+          "title": "Configuração de Lista de Verificação Completa!",
+          "content": "Agora você sabe como criar listas de verificação de inspeção. Esses itens guiarão os operadores através de inspeções sistemáticas!"
+        }
+      }
+    }
+  },
+  "notifications": {
+    "title": "Tour de Notificações",
+    "description": "Aprenda a gerenciar e criar notificações do sistema",
+    "steps": {
+      "welcome": {
+        "title": "Bem-vindo às Notificações!",
+        "content": "Mantenha-se informado com alertas do sistema, notificações de incidentes, avisos de estoque e mensagens personalizadas. Aprenda a gerenciar suas notificações efetivamente!"
+      },
+      "header": {
+        "title": "Página de Notificações",
+        "content": "Esta página mostra todas as suas notificações com contagem de não lidas. Fique por dentro de alertas importantes, incidentes, avisos de estoque baixo e atualizações do sistema."
+      },
+      "export": {
+        "title": "Exportar Notificações",
+        "content": "Exporte seu histórico de notificações para formato PDF, HTML ou CSV para manutenção de registros, auditorias ou revisão offline."
+      },
+      "create": {
+        "title": "Criar Notificação Personalizada",
+        "content": "Administradores e gerentes podem criar notificações personalizadas para enviar mensagens a todos os usuários, funções específicas ou usuários individuais. Perfeito para anúncios e atualizações importantes!"
+      },
+      "tabs": {
+        "title": "Abas de Notificações",
+        "content": "Alterne entre 'Minhas Notificações' (mensagens que você recebeu) e 'Todas as Notificações' (visão de administrador de todas as notificações do sistema com estatísticas de entrega)."
+      },
+      "myNotifications": {
+        "title": "Lista de Minhas Notificações",
+        "content": "Visualize todas as suas notificações com indicadores de prioridade, status de lida/não lida e ações rápidas. Clique em notificações relacionadas a incidentes, registros diários ou produtos para ir à página relevante."
+      },
+      "actions": {
+        "title": "Ações de Notificações",
+        "content": "Marque todas como lidas para limpar indicadores de não lidas, ou limpe todas as notificações para removê-las da sua lista. Mantenha seu centro de notificações organizado!"
+      },
+      "complete": {
+        "title": "Notificações Dominadas!",
+        "content": "Agora você sabe como gerenciar notificações e manter-se informado sobre eventos do sistema. Nunca perca alertas ou atualizações importantes!"
+      }
+    }
+  },
+  "profile": {
+    "title": "Tour do Perfil",
+    "description": "Aprenda a gerenciar seu perfil pessoal e configurações de segurança",
+    "steps": {
+      "welcome": {
+        "title": "Bem-vindo ao Seu Perfil!",
+        "content": "Sua página de perfil permite gerenciar suas informações pessoais, atualizar seu avatar e alterar sua senha. Mantenha sua conta segura e atualizada!"
+      },
+      "header": {
+        "title": "Página do Perfil",
+        "content": "Esta página contém todas as configurações da sua conta divididas em duas seções: informações do perfil e gerenciamento de senha."
+      },
+      "profileInfo": {
+        "title": "Cartão de Informações do Perfil",
+        "content": "Visualize e edite seus detalhes pessoais incluindo nome, e-mail, telefone, função e status da conta. Suas informações de perfil são visíveis para outros usuários no sistema."
+      },
+      "avatar": {
+        "title": "Upload de Avatar",
+        "content": "Clique no ícone da câmera para fazer upload de uma foto de perfil. Suporta formatos JPG, PNG, GIF e WebP de até 10MB. Seu avatar aparece em todo o sistema!"
+      },
+      "details": {
+        "title": "Detalhes da Conta",
+        "content": "Visualize seu e-mail, telefone, status da conta, horário do último login e data de cadastro. Essas informações ajudam você a rastrear a atividade e o status da sua conta."
+      },
+      "editButton": {
+        "title": "Editar Perfil",
+        "content": "Clique neste botão para editar seu nome, e-mail e número de telefone. Certifique-se de que suas informações de contato estejam atualizadas para notificações e comunicação do sistema!"
+      },
+      "password": {
+        "title": "Seção de Alteração de Senha",
+        "content": "Altere sua senha regularmente para manter sua conta segura. Você precisará da sua senha atual e deve confirmar a nova senha. Mínimo de 6 caracteres necessários."
+      },
+      "complete": {
+        "title": "Gerenciamento de Perfil Completo!",
+        "content": "Agora você sabe como gerenciar suas informações de perfil e configurações de segurança. Mantenha seu perfil atualizado e sua senha forte!"
+      }
+    }
+  },
+  "library": {
+    "list": {
+      "title": "Tour da Biblioteca de Documentos",
+      "description": "Aprenda a gerenciar e organizar sua biblioteca de documentos",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo à Biblioteca de Documentos!",
+          "content": "Armazene e gerencie todos os seus documentos de tratamento de água em um só lugar - manuais, POPs, fichas técnicas, relatórios e muito mais. Vamos explorar como organizar sua biblioteca!"
+        },
+        "header": {
+          "title": "Página da Biblioteca",
+          "content": "Esta página é seu repositório central de documentos. Faça upload, pesquise, filtre e acesse todos os documentos relacionados aos seus sistemas de tratamento de água."
+        },
+        "upload": {
+          "title": "Fazer Upload de Documentos",
+          "content": "Clique aqui para fazer upload de novos documentos. Você pode adicionar manuais, POPs, fichas técnicas, relatórios e vinculá-los a sistemas específicos para fácil organização."
+        },
+        "search": {
+          "title": "Pesquisar e Filtrar",
+          "content": "Use a barra de pesquisa para encontrar documentos por nome e filtre por categoria (manual, POP, ficha técnica, relatório) para localizar rapidamente o que você precisa."
+        },
+        "table": {
+          "title": "Tabela de Documentos",
+          "content": "Visualize todos os seus documentos com detalhes como categoria, sistema relacionado, tipo de arquivo, versão e última atualização. Clique em qualquer linha para ver detalhes completos e baixar."
+        },
+        "complete": {
+          "title": "Gerenciamento de Biblioteca Dominado!",
+          "content": "Agora você sabe como gerenciar sua biblioteca de documentos. Mantenha seus documentos organizados e facilmente acessíveis para sua equipe!"
+        }
+      }
+    },
+    "upload": {
+      "title": "Tour de Upload de Documentos",
+      "description": "Aprenda a fazer upload e organizar novos documentos",
+      "steps": {
+        "welcome": {
+          "title": "Fazer Upload de um Novo Documento!",
+          "content": "Siga estes passos para fazer upload e categorizar adequadamente seus documentos para fácil recuperação posterior."
+        },
+        "title": {
+          "title": "Título do Documento",
+          "content": "Digite um título claro e descritivo para o documento. Isso ajuda sua equipe a identificar rapidamente o conteúdo do documento."
+        },
+        "category": {
+          "title": "Selecionar Categoria",
+          "content": "Escolha o tipo de documento: Manual (guias de equipamento), POP (procedimentos padrão), Ficha Técnica (especificações técnicas), Relatório (resultados de análise) ou Outro (categoria personalizada)."
+        },
+        "system": {
+          "title": "Vincular ao Sistema",
+          "content": "Opcionalmente vincule este documento a um sistema específico de tratamento de água. Isso facilita encontrar documentação relacionada ao sistema. Você também pode selecionar uma etapa específica se necessário."
+        },
+        "description": {
+          "title": "Adicionar Descrição",
+          "content": "Forneça uma breve descrição do conteúdo do documento. Isso ajuda os membros da equipe a entender o que há dentro antes de baixar."
+        },
+        "file": {
+          "title": "Fazer Upload do Arquivo",
+          "content": "Selecione o arquivo para upload. Suporta PDF, documentos Office (Word, Excel, PowerPoint) e imagens (JPG, PNG). O sistema rastreia versões automaticamente."
+        },
+        "complete": {
+          "title": "Processo de Upload Completo!",
+          "content": "Agora você sabe como fazer upload e organizar documentos. Mantenha sua biblioteca atualizada com os manuais, procedimentos e relatórios mais recentes!"
         }
       }
     }

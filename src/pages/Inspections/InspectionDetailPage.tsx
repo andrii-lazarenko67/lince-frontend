@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchInspectionById, markInspectionAsViewed, addInspectionPhotos, deleteInspection } from '../../store/slices/inspectionSlice';
 import { Card, Badge, Table, Button, Modal, TextArea } from '../../components/common';
-import { Close as CloseIcon, Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Close as CloseIcon, Add as AddIcon, Delete as DeleteIcon, HelpOutline } from '@mui/icons-material';
 import type { InspectionItem } from '../../types';
+import { useTour, useAutoStartTour, INSPECTIONS_DETAIL_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface PhotoPreview {
   file: File;
@@ -19,6 +21,10 @@ const InspectionDetailPage: React.FC = () => {
   const { currentInspection } = useAppSelector((state) => state.inspections);
   const { user } = useAppSelector((state) => state.auth);
   const { goBack } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(INSPECTIONS_DETAIL_TOUR);
 
   const [isApproveOpen, setIsApproveOpen] = useState(false);
   const [isAddPhotosOpen, setIsAddPhotosOpen] = useState(false);
@@ -208,12 +214,26 @@ const InspectionDetailPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
-          <div>
+          <div className="flex-1" data-tour="detail-header">
             <h1 className="text-2xl font-bold text-gray-900">{t('inspections.detail.title')}</h1>
             <p className="text-gray-500 mt-1">
               {new Date(currentInspection.date).toLocaleDateString()} - {systemStageDisplay}
             </p>
           </div>
+          <Tooltip title={isCompleted(INSPECTIONS_DETAIL_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(INSPECTIONS_DETAIL_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </div>
         <div className="flex gap-3">
           {canDelete && (
@@ -231,8 +251,9 @@ const InspectionDetailPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title={t('inspections.detail.informationCard')} className="lg:col-span-1">
-          <dl className="space-y-4">
+        <div data-tour="inspection-info">
+          <Card title={t('inspections.detail.informationCard')} className="lg:col-span-1">
+            <dl className="space-y-4">
             <div>
               <dt className="text-sm font-medium text-gray-500">{t('inspections.detail.systemLabel')}</dt>
               <dd className="mt-1 text-gray-900">{currentInspection.system?.name}</dd>
@@ -275,15 +296,18 @@ const InspectionDetailPage: React.FC = () => {
             )}
           </dl>
         </Card>
+        </div>
 
-        <Card title={t('inspections.detail.checklistCard')} className="lg:col-span-2" noPadding>
-          <Table
-            columns={itemColumns}
-            data={currentInspection.items || []}
-            keyExtractor={(item) => item.id}
-            emptyMessage={t('inspections.detail.noChecklistItems')}
-          />
-        </Card>
+        <div data-tour="checklist-results" className="lg:col-span-2">
+          <Card title={t('inspections.detail.checklistCard')} noPadding>
+            <Table
+              columns={itemColumns}
+              data={currentInspection.items || []}
+              keyExtractor={(item) => item.id}
+              emptyMessage={t('inspections.detail.noChecklistItems')}
+            />
+          </Card>
+        </div>
       </div>
 
       <Card

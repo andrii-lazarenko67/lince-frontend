@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchIncidentById, updateIncidentStatus, addIncidentComment, assignIncident, addIncidentPhotos, fetchAssignableUsers } from '../../store/slices/incidentSlice';
 import { Card, Badge, Button, Modal, Select, TextArea, Input } from '../../components/common';
-import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
+import { Close as CloseIcon, Add as AddIcon, HelpOutline } from '@mui/icons-material';
+import { useTour, useAutoStartTour, INCIDENTS_DETAIL_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface PhotoPreview {
   file: File;
@@ -18,6 +20,10 @@ const IncidentDetailPage: React.FC = () => {
   const { currentIncident, assignableUsers } = useAppSelector((state) => state.incidents);
   const { user } = useAppSelector((state) => state.auth);
   const { goBack } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(INCIDENTS_DETAIL_TOUR);
 
   const [isStatusOpen, setIsStatusOpen] = useState(false);
   const [isAssignOpen, setIsAssignOpen] = useState(false);
@@ -197,10 +203,24 @@ const IncidentDetailPage: React.FC = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
           </button>
-          <div>
+          <div className="flex-1" data-tour="detail-header">
             <h1 className="text-2xl font-bold text-gray-900">{currentIncident.title}</h1>
             <p className="text-gray-500 mt-1">{currentIncident.system?.name}</p>
           </div>
+          <Tooltip title={isCompleted(INCIDENTS_DETAIL_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(INCIDENTS_DETAIL_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </div>
         {canManage && (
           <div className="flex space-x-3">
@@ -215,50 +235,54 @@ const IncidentDetailPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <Card title={t('incidents.detail.detailsCard')} className="lg:col-span-1">
-          <dl className="space-y-4">
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.statusLabel')}</dt>
-              <dd className="mt-1">{getStatusBadge(currentIncident.status)}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.priorityLabel')}</dt>
-              <dd className="mt-1">{getPriorityBadge(currentIncident.priority)}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.reporterLabel')}</dt>
-              <dd className="mt-1 text-gray-900">{currentIncident.reporter?.name}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.assignedToLabel')}</dt>
-              <dd className="mt-1 text-gray-900">{currentIncident.assignee?.name || t('incidents.detail.notAssigned')}</dd>
-            </div>
-            <div>
-              <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.createdAtLabel')}</dt>
-              <dd className="mt-1 text-gray-900">
-                {new Date(currentIncident.createdAt).toLocaleString()}
-              </dd>
-            </div>
-            {currentIncident.resolvedAt && (
+        <div data-tour="incident-info">
+          <Card title={t('incidents.detail.detailsCard')} className="lg:col-span-1">
+            <dl className="space-y-4">
               <div>
-                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.resolvedAtLabel')}</dt>
+                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.statusLabel')}</dt>
+                <dd className="mt-1">{getStatusBadge(currentIncident.status)}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.priorityLabel')}</dt>
+                <dd className="mt-1">{getPriorityBadge(currentIncident.priority)}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.reporterLabel')}</dt>
+                <dd className="mt-1 text-gray-900">{currentIncident.reporter?.name}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.assignedToLabel')}</dt>
+                <dd className="mt-1 text-gray-900">{currentIncident.assignee?.name || t('incidents.detail.notAssigned')}</dd>
+              </div>
+              <div>
+                <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.createdAtLabel')}</dt>
                 <dd className="mt-1 text-gray-900">
-                  {new Date(currentIncident.resolvedAt).toLocaleString()}
+                  {new Date(currentIncident.createdAt).toLocaleString()}
                 </dd>
               </div>
-            )}
-          </dl>
-        </Card>
+              {currentIncident.resolvedAt && (
+                <div>
+                  <dt className="text-sm font-medium text-gray-500">{t('incidents.detail.resolvedAtLabel')}</dt>
+                  <dd className="mt-1 text-gray-900">
+                    {new Date(currentIncident.resolvedAt).toLocaleString()}
+                  </dd>
+                </div>
+              )}
+            </dl>
+          </Card>
+        </div>
 
-        <Card title={t('incidents.detail.descriptionCard')} className="lg:col-span-2">
-          <p className="text-gray-700 whitespace-pre-wrap">{currentIncident.description}</p>
-          {currentIncident.resolution && (
-            <div className="mt-4 pt-4 border-t">
-              <h4 className="font-medium text-gray-900 mb-2">{t('incidents.detail.resolutionTitle')}</h4>
-              <p className="text-gray-700 whitespace-pre-wrap">{currentIncident.resolution}</p>
-            </div>
-          )}
-        </Card>
+        <div data-tour="resolution" className="lg:col-span-2">
+          <Card title={t('incidents.detail.descriptionCard')}>
+            <p className="text-gray-700 whitespace-pre-wrap">{currentIncident.description}</p>
+            {currentIncident.resolution && (
+              <div className="mt-4 pt-4 border-t">
+                <h4 className="font-medium text-gray-900 mb-2">{t('incidents.detail.resolutionTitle')}</h4>
+                <p className="text-gray-700 whitespace-pre-wrap">{currentIncident.resolution}</p>
+              </div>
+            )}
+          </Card>
+        </div>
       </div>
 
       <Card

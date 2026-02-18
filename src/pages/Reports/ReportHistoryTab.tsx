@@ -176,176 +176,182 @@ const ReportHistoryTab: React.FC = () => {
       )}
 
       {/* Filters */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-          <FilterIcon color="action" />
-          <Typography variant="subtitle2">{t('reports.history.filters')}</Typography>
-        </Box>
-        <Grid container spacing={2} alignItems="flex-end">
-          <Grid item xs={12} sm={4} md={3}>
-            <TextField
-              fullWidth
-              type="date"
-              size="small"
-              label={t('reports.history.startDate')}
-              value={startDateFilter}
-              onChange={(e) => setStartDateFilter(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-            />
+      <div data-tour="history-filters">
+        <Paper sx={{ p: 2, mb: 3 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <FilterIcon color="action" />
+            <Typography variant="subtitle2">{t('reports.history.filters')}</Typography>
+          </Box>
+          <Grid container spacing={2} alignItems="flex-end">
+            <Grid item xs={12} sm={4} md={3}>
+              <TextField
+                fullWidth
+                type="date"
+                size="small"
+                label={t('reports.history.startDate')}
+                value={startDateFilter}
+                onChange={(e) => setStartDateFilter(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4} md={3}>
+              <TextField
+                fullWidth
+                type="date"
+                size="small"
+                label={t('reports.history.endDate')}
+                value={endDateFilter}
+                onChange={(e) => setEndDateFilter(e.target.value)}
+                InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid item xs={12} sm={4} md={6}>
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <Button variant="contained" onClick={handleApplyFilters}>
+                  {t('common.apply')}
+                </Button>
+                <Button variant="outlined" onClick={handleClearFilters}>
+                  {t('common.clear')}
+                </Button>
+                <div data-tour="refresh-button">
+                  <Button
+                    variant="outlined"
+                    startIcon={<RefreshIcon />}
+                    onClick={handleRefresh}
+                  >
+                    {t('common.refresh')}
+                  </Button>
+                </div>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={4} md={3}>
-            <TextField
-              fullWidth
-              type="date"
-              size="small"
-              label={t('reports.history.endDate')}
-              value={endDateFilter}
-              onChange={(e) => setEndDateFilter(e.target.value)}
-              InputLabelProps={{ shrink: true }}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4} md={6}>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button variant="contained" onClick={handleApplyFilters}>
-                {t('common.apply')}
-              </Button>
-              <Button variant="outlined" onClick={handleClearFilters}>
-                {t('common.clear')}
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<RefreshIcon />}
-                onClick={handleRefresh}
-              >
-                {t('common.refresh')}
-              </Button>
-            </Box>
-          </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </div>
 
       {/* Reports Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>{t('reports.history.name')}</TableCell>
-              <TableCell>{t('reports.history.period')}</TableCell>
-              <TableCell>{t('reports.history.template')}</TableCell>
-              <TableCell>{t('reports.history.systems')}</TableCell>
-              <TableCell>{t('reports.history.generatedAt')}</TableCell>
-              <TableCell>{t('reports.history.download')}</TableCell>
-              <TableCell align="right">{t('common.actions')}</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedReports.map((report) => (
-              <TableRow key={report.id} hover>
-                <TableCell>
-                  <Typography variant="body2" fontWeight="medium">
-                    {report.name}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Box>
-                    <Chip
-                      size="small"
-                      label={t(`reports.generator.periods.${report.period?.type || 'custom'}`)}
-                      variant="outlined"
-                      sx={{ mb: 0.5 }}
-                    />
-                    <Typography variant="caption" display="block" color="text.secondary">
-                      {getPeriodLabel(report)}
+      <div data-tour="history-table">
+        <TableContainer component={Paper}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>{t('reports.history.name')}</TableCell>
+                <TableCell>{t('reports.history.period')}</TableCell>
+                <TableCell>{t('reports.history.template')}</TableCell>
+                <TableCell>{t('reports.history.systems')}</TableCell>
+                <TableCell>{t('reports.history.generatedAt')}</TableCell>
+                <TableCell>{t('reports.history.download')}</TableCell>
+                <TableCell align="right">{t('common.actions')}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedReports.map((report) => (
+                <TableRow key={report.id} hover>
+                  <TableCell>
+                    <Typography variant="body2" fontWeight="medium">
+                      {report.name}
                     </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  {report.template?.name || '-'}
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    {report.systemIds?.length || 0} {t('reports.history.systemsCount')}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography variant="body2">
-                    {formatDateTime(report.generatedAt)}
-                  </Typography>
-                  {report.user && (
-                    <Typography variant="caption" color="text.secondary">
-                      {t('reports.history.by')} {report.user.name}
+                  </TableCell>
+                  <TableCell>
+                    <Box>
+                      <Chip
+                        size="small"
+                        label={t(`reports.generator.periods.${report.period?.type || 'custom'}`)}
+                        variant="outlined"
+                        sx={{ mb: 0.5 }}
+                      />
+                      <Typography variant="caption" display="block" color="text.secondary">
+                        {getPeriodLabel(report)}
+                      </Typography>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    {report.template?.name || '-'}
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2">
+                      {report.systemIds?.length || 0} {t('reports.history.systemsCount')}
                     </Typography>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex', gap: 0.5 }}>
-                    {report.pdfUrl ? (
-                      <Tooltip title={t('reports.history.downloadPdf')}>
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="body2">
+                      {formatDateTime(report.generatedAt)}
+                    </Typography>
+                    {report.user && (
+                      <Typography variant="caption" color="text.secondary">
+                        {t('reports.history.by')} {report.user.name}
+                      </Typography>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 0.5 }}>
+                      {report.pdfUrl ? (
+                        <Tooltip title={t('reports.history.downloadPdf')}>
+                          <IconButton
+                            size="small"
+                            color="primary"
+                            onClick={() => {
+                              const filename = `${report.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
+                              downloadFromUrl(report.pdfUrl!, filename);
+                            }}
+                          >
+                            <PdfIcon />
+                          </IconButton>
+                        </Tooltip>
+                      ) : (
+                        <Tooltip title={t('reports.history.noPdf')}>
+                          <span>
+                            <IconButton size="small" disabled>
+                              <NoPdfIcon color="disabled" />
+                            </IconButton>
+                          </span>
+                        </Tooltip>
+                      )}
+                      <Tooltip title={t('reports.history.downloadWord')}>
                         <IconButton
                           size="small"
                           color="primary"
-                          onClick={() => {
-                            const filename = `${report.name.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-                            downloadFromUrl(report.pdfUrl!, filename);
-                          }}
+                          onClick={() => dispatch(downloadReportWord({ id: report.id, reportName: report.name, language: i18next.language }))}
                         >
-                          <PdfIcon />
+                          <WordIcon />
                         </IconButton>
                       </Tooltip>
-                    ) : (
-                      <Tooltip title={t('reports.history.noPdf')}>
-                        <span>
-                          <IconButton size="small" disabled>
-                            <NoPdfIcon color="disabled" />
-                          </IconButton>
-                        </span>
-                      </Tooltip>
-                    )}
-                    <Tooltip title={t('reports.history.downloadWord')}>
-                      <IconButton
-                        size="small"
-                        color="primary"
-                        onClick={() => dispatch(downloadReportWord({ id: report.id, reportName: report.name, language: i18next.language }))}
-                      >
-                        <WordIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    size="small"
-                    onClick={(e) => handleMenuClick(e, report)}
-                  >
-                    <MoreIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+                    </Box>
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      size="small"
+                      onClick={(e) => handleMenuClick(e, report)}
+                    >
+                      <MoreIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
 
-            {reports.length === 0 && !loading && (
-              <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
-                  <Typography color="text.secondary">
-                    {t('reports.history.empty')}
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              {reports.length === 0 && !loading && (
+                <TableRow>
+                  <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                    <Typography color="text.secondary">
+                      {t('reports.history.empty')}
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
 
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={reports.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage={t('common.rowsPerPage')}
-        />
-      </TableContainer>
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={reports.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+            labelRowsPerPage={t('common.rowsPerPage')}
+          />
+        </TableContainer>
+      </div>
 
       {/* Context Menu */}
       <Menu

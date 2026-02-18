@@ -4,8 +4,10 @@ import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createIncident } from '../../store/slices/incidentSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import { Card, Button, Select, Input, TextArea } from '../../components/common';
-import { Close as CloseIcon } from '@mui/icons-material';
+import { Close as CloseIcon, HelpOutline } from '@mui/icons-material';
 import type { IncidentPriority } from '../../types';
+import { useTour, useAutoStartTour, INCIDENTS_NEW_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
 
 interface PhotoPreview {
   file: File;
@@ -18,6 +20,10 @@ const NewIncidentPage: React.FC = () => {
   const { systems } = useAppSelector((state) => state.systems);
   const { loading } = useAppSelector((state) => state.ui);
   const { goBack, goToIncidents } = useAppNavigation();
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(INCIDENTS_NEW_TOUR);
 
   const [formData, setFormData] = useState({
     systemId: '',
@@ -143,89 +149,118 @@ const NewIncidentPage: React.FC = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
         </button>
-        <div>
+        <div className="flex-1" data-tour="new-incident-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('incidents.new.title')}</h1>
           <p className="text-gray-500 mt-1">{t('incidents.new.subtitle')}</p>
         </div>
+        <Tooltip title={isCompleted(INCIDENTS_NEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(INCIDENTS_NEW_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       <form onSubmit={handleSubmit}>
-        <Card title={t('incidents.new.informationCard')} className="mb-6">
-          <div className='flex flex-col gap-6'>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Select
-                name="systemId"
-                value={formData.systemId}
-                onChange={handleChange}
-                options={systemOptions}
-                label={t('incidents.new.systemLabel')}
-                placeholder={t('incidents.new.systemPlaceholder')}
-                error={errors.systemId}
-                required
-              />
+        <div className="flex justify-end space-x-3 mb-6" data-tour="action-buttons">
+          <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
+            {t('incidents.new.cancelButton')}
+          </Button>
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? t('incidents.new.submittingButton') : t('incidents.new.submitButton')}
+          </Button>
+        </div>
 
-              {/* Stage Selection (only if stages available) */}
-              {availableStages.length > 0 && (
+        <div data-tour="basic-info">
+          <Card title={t('incidents.new.informationCard')} className="mb-6">
+            <div className='flex flex-col gap-6'>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select
-                  name="stageId"
-                  value={formData.stageId}
+                  name="systemId"
+                  value={formData.systemId}
                   onChange={handleChange}
-                  options={availableStages}
-                  label={t('incidents.new.stageLabel')}
-                  placeholder={t('incidents.new.stagePlaceholder')}
+                  options={systemOptions}
+                  label={t('incidents.new.systemLabel')}
+                  placeholder={t('incidents.new.systemPlaceholder')}
+                  error={errors.systemId}
+                  required
                 />
-              )}
+
+                {/* Stage Selection (only if stages available) */}
+                {availableStages.length > 0 && (
+                  <Select
+                    name="stageId"
+                    value={formData.stageId}
+                    onChange={handleChange}
+                    options={availableStages}
+                    label={t('incidents.new.stageLabel')}
+                    placeholder={t('incidents.new.stagePlaceholder')}
+                  />
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  label={t('incidents.new.titleLabel')}
+                  placeholder={t('incidents.new.titlePlaceholder')}
+                  error={errors.title}
+                  required
+                />
+
+                <Select
+                  name="priority"
+                  value={formData.priority}
+                  onChange={handleChange}
+                  options={priorityOptions}
+                  label={t('incidents.new.priorityLabel')}
+                  required
+                />
+              </div>
+
+              <div data-tour="description">
+                <TextArea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  label={t('incidents.new.descriptionLabel')}
+                  placeholder={t('incidents.new.descriptionPlaceholder')}
+                  rows={5}
+                  error={errors.description}
+                  required
+                />
+              </div>
+
+              <div data-tour="assignment">
+                {/* Send Notification Checkbox */}
+                <div className="flex items-center">
+                  <input
+                    type="checkbox"
+                    id="sendNotification"
+                    name="sendNotification"
+                    checked={formData.sendNotification}
+                    onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
+                    {t('incidents.new.sendNotificationLabel')}
+                  </label>
+                </div>
+              </div>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleChange}
-                label={t('incidents.new.titleLabel')}
-                placeholder={t('incidents.new.titlePlaceholder')}
-                error={errors.title}
-                required
-              />
-
-              <Select
-                name="priority"
-                value={formData.priority}
-                onChange={handleChange}
-                options={priorityOptions}
-                label={t('incidents.new.priorityLabel')}
-                required
-              />
-            </div>
-
-            <TextArea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              label={t('incidents.new.descriptionLabel')}
-              placeholder={t('incidents.new.descriptionPlaceholder')}
-              rows={5}
-              error={errors.description}
-              required
-            />
-
-            {/* Send Notification Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="sendNotification"
-                name="sendNotification"
-                checked={formData.sendNotification}
-                onChange={(e) => setFormData({ ...formData, sendNotification: e.target.checked })}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="sendNotification" className="ml-2 block text-sm text-gray-700">
-                {t('incidents.new.sendNotificationLabel')}
-              </label>
-            </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
 
         <Card title={t('incidents.new.photosCard')} className="mb-6">
           <div className="space-y-4">
@@ -277,15 +312,6 @@ const NewIncidentPage: React.FC = () => {
             )}
           </div>
         </Card>
-
-        <div className="flex justify-end space-x-3">
-          <Button type="button" variant="outline" onClick={goBack} disabled={loading}>
-            {t('incidents.new.cancelButton')}
-          </Button>
-          <Button type="submit" variant="primary" disabled={loading}>
-            {loading ? t('incidents.new.submittingButton') : t('incidents.new.submitButton')}
-          </Button>
-        </div>
       </form>
     </div>
   );

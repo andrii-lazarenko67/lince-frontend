@@ -54,3 +54,103 @@ body {
 input, select, textarea {
   @apply outline-none;
 }
+
+/* ===== LANDING PAGE ANIMATIONS ===== */
+.anim-fade-up {
+  opacity: 0;
+  transform: translateY(40px);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-fade-down {
+  opacity: 0;
+  transform: translateY(-40px);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-fade-left {
+  opacity: 0;
+  transform: translateX(50px);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-fade-right {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-zoom-in {
+  opacity: 0;
+  transform: scale(0.8);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-zoom-out {
+  opacity: 0;
+  transform: scale(1.15);
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-flip-up {
+  opacity: 0;
+  transform: perspective(600px) rotateX(30deg);
+  transform-origin: bottom center;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-flip-down {
+  opacity: 0;
+  transform: perspective(600px) rotateX(-30deg);
+  transform-origin: top center;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Duration classes */
+.anim-duration-very-fast { transition-duration: 200ms; }
+.anim-duration-fast       { transition-duration: 400ms; }
+.anim-duration-normal     { transition-duration: 600ms; }
+.anim-duration-light-slow { transition-duration: 800ms; }
+.anim-duration-slow       { transition-duration: 1000ms; }
+.anim-duration-very-slow  { transition-duration: 1200ms; }
+
+/* Visible / resolved state */
+.anim-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Landing page hero gradient background */
+.landing-hero-bg {
+  background: linear-gradient(135deg, #0d1b2e 0%, #0f2744 40%, #0c3460 70%, #0a4277 100%);
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #60a5fa, #34d399);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Section alternating backgrounds */
+.section-dark {
+  background: #0d1b2e;
+}
+.section-dark-2 {
+  background: #0f2744;
+}
+
+/* Glowing card hover effect */
+.glow-card:hover {
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.5), 0 20px 40px rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Stat counter animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
