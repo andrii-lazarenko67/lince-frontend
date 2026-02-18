@@ -259,7 +259,7 @@ const UsersList: React.FC = () => {
       key: 'actions',
       header: t('users.list.actions'),
       render: (user: User) => (
-        <div className="flex space-x-2">
+        <div className="flex space-x-2" data-tour="user-actions">
           <Button size="sm" variant="outline" onClick={() => handleOpenForm(user)}>
             {t('common.edit')}
           </Button>
@@ -279,29 +279,33 @@ const UsersList: React.FC = () => {
 
   return (
     <>
-      <Card
-        title={t('users.list.title')}
-        subtitle={t('users.list.subtitle')}
-        noPadding
-        headerActions={
-          <Button variant="primary" onClick={() => handleOpenForm()}>
-            {t('users.list.addUser')}
-          </Button>
-        }
-      >
-        <PaginatedTable
-          columns={columns}
-          data={users}
-          keyExtractor={(user: User) => user.id}
-          emptyMessage={t('users.list.emptyMessage')}
-          loading={storeLoading || loading}
-          pagination={pagination}
-          page={page}
-          rowsPerPage={rowsPerPage}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </Card>
+      <div data-tour="users-table">
+        <Card
+          title={t('users.list.title')}
+          subtitle={t('users.list.subtitle')}
+          noPadding
+          headerActions={
+            <div data-tour="add-user-button">
+              <Button variant="primary" onClick={() => handleOpenForm()}>
+                {t('users.list.addUser')}
+              </Button>
+            </div>
+          }
+        >
+          <PaginatedTable
+            columns={columns}
+            data={users}
+            keyExtractor={(user: User) => user.id}
+            emptyMessage={t('users.list.emptyMessage')}
+            loading={storeLoading || loading}
+            pagination={pagination}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Card>
+      </div>
 
       {/* Create/Edit Modal */}
       <Modal isOpen={isFormOpen} onClose={handleCloseForm} title={editingUser ? t('users.form.editUser') : t('users.form.addUser')}>

@@ -136,7 +136,7 @@ const SystemTypesSection: React.FC = () => {
   ];
 
   return (
-    <>
+    <div data-tour="system-types-section">
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
           {error}
@@ -149,9 +149,11 @@ const SystemTypesSection: React.FC = () => {
         noPadding
         headerActions={
           canManage ? (
-            <Button variant="primary" onClick={handleOpenCreate}>
-              {t('settings.systemTypes.addSystemType')}
-            </Button>
+            <div data-tour="add-system-type-button">
+              <Button variant="primary" onClick={handleOpenCreate}>
+                {t('settings.systemTypes.addSystemType')}
+              </Button>
+            </div>
           ) : undefined
         }
       >
@@ -160,12 +162,14 @@ const SystemTypesSection: React.FC = () => {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
           </div>
         ) : (
-          <Table
-            columns={columns}
-            data={systemTypes}
-            keyExtractor={(systemType) => systemType.id}
-            emptyMessage={t('settings.systemTypes.emptyMessage')}
-          />
+          <div data-tour="system-types-table">
+            <Table
+              columns={columns}
+              data={systemTypes}
+              keyExtractor={(systemType) => systemType.id}
+              emptyMessage={t('settings.systemTypes.emptyMessage')}
+            />
+          </div>
         )}
       </Card>
 
@@ -243,7 +247,7 @@ const SystemTypesSection: React.FC = () => {
           </Button>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 

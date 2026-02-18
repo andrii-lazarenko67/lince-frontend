@@ -1014,5 +1014,193 @@
         }
       }
     }
+  },
+  "settings": {
+    "overview": {
+      "title": "Tour de Visão Geral das Configurações",
+      "description": "Aprenda sobre configuração do sistema e configurações de administração",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações!",
+          "content": "Configurações é seu centro de controle para configurar parâmetros, unidades, tipos de sistemas, tipos de produtos e mais. Vamos explorar as opções de configuração disponíveis!"
+        },
+        "header": {
+          "title": "Página de Configurações",
+          "content": "Esta página contém todas as opções de configuração do sistema. Apenas administradores podem acessar e modificar essas configurações críticas."
+        },
+        "tabs": {
+          "title": "Abas de Configuração",
+          "content": "As configurações são organizadas em abas: Parâmetros (métricas de qualidade da água), Unidades (unidades de medida), Tipos de Sistema (categorias de equipamento), Tipos de Produto (classificações químicas) e Clientes (apenas provedor de serviços)."
+        },
+        "complete": {
+          "title": "Visão Geral das Configurações Completa!",
+          "content": "Agora você entende as opções de configuração disponíveis. Use os tours dedicados para cada aba para aprender sobre configurações específicas!"
+        }
+      }
+    },
+    "parameters": {
+      "title": "Tour de Configurações de Parâmetros",
+      "description": "Aprenda a configurar parâmetros de qualidade da água",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações de Parâmetros!",
+          "content": "Parâmetros de qualidade da água são as métricas que você mede em registros diários e análises laboratoriais. Defina parâmetros personalizados específicos para seus processos de tratamento de água!"
+        },
+        "section": {
+          "title": "Configuração de Parâmetros",
+          "content": "Esta seção mostra todos os parâmetros de qualidade da água configurados como pH, turbidez, níveis de cloro, dureza e mais. Cada parâmetro pode ter faixas aceitáveis personalizadas."
+        },
+        "add": {
+          "title": "Adicionar Novo Parâmetro",
+          "content": "Clique aqui para criar um novo parâmetro de qualidade da água. Especifique o nome, unidade de medida, faixa aceitável (mín/máx) e se é crítico para alertas."
+        },
+        "table": {
+          "title": "Tabela de Parâmetros",
+          "content": "Visualize todos os parâmetros com suas unidades, faixas aceitáveis e status. Edite parâmetros para ajustar faixas ou exclua os não utilizados. Mudanças se aplicam a todos os registros diários futuros."
+        },
+        "complete": {
+          "title": "Configuração de Parâmetros Dominada!",
+          "content": "Agora você pode configurar parâmetros de qualidade da água para corresponder aos seus requisitos específicos de monitoramento. Mantenha os parâmetros atualizados com os padrões regulatórios!"
+        }
+      }
+    },
+    "units": {
+      "title": "Tour de Configurações de Unidades",
+      "description": "Aprenda a configurar unidades de medida",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações de Unidades!",
+          "content": "Unidades de medida definem como você quantifica parâmetros de qualidade da água, dosagens químicas e capacidades do sistema. Padronize unidades em toda a sua organização!"
+        },
+        "section": {
+          "title": "Configuração de Unidades",
+          "content": "Esta seção mostra todas as unidades de medida configuradas como mg/L, ppm, NTU, unidades de pH, °C e mais. Unidades são vinculadas a parâmetros e produtos."
+        },
+        "add": {
+          "title": "Adicionar Nova Unidade",
+          "content": "Clique aqui para criar uma nova unidade de medida. Especifique o símbolo da unidade, nome completo e descrição opcional. Unidades comuns incluem concentração, temperatura e unidades de taxa de fluxo."
+        },
+        "table": {
+          "title": "Tabela de Unidades",
+          "content": "Visualize todas as unidades com seus símbolos e descrições. Edite unidades para atualizar nomes ou exclua as não utilizadas. Cuidado - unidades em uso por parâmetros não podem ser excluídas."
+        },
+        "complete": {
+          "title": "Configuração de Unidades Dominada!",
+          "content": "Agora você pode gerenciar unidades de medida para garantir dados consistentes em todo o seu sistema de monitoramento de tratamento de água!"
+        }
+      }
+    },
+    "systemTypes": {
+      "title": "Tour de Configurações de Tipos de Sistema",
+      "description": "Aprenda a configurar tipos de sistemas de tratamento de água",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações de Tipos de Sistema!",
+          "content": "Tipos de sistema categorizam seus equipamentos de tratamento de água como sistemas de filtração, sistemas de cloração, sistemas de amaciamento e mais. Organize sistemas por tipo para melhor gerenciamento!"
+        },
+        "section": {
+          "title": "Configuração de Tipos de Sistema",
+          "content": "Esta seção mostra todos os tipos de sistema configurados. Cada tipo pode ter parâmetros específicos e requisitos de monitoramento. Tipos comuns incluem sistemas de OI, sistemas UV e sistemas de dosagem química."
+        },
+        "add": {
+          "title": "Adicionar Novo Tipo de Sistema",
+          "content": "Clique aqui para criar um novo tipo de sistema. Defina o nome do tipo, descrição e opcionalmente vincule parâmetros específicos que se aplicam a este tipo de sistema."
+        },
+        "table": {
+          "title": "Tabela de Tipos de Sistema",
+          "content": "Visualize todos os tipos de sistema com suas descrições e contagem de uso. Edite tipos para atualizar definições ou exclua os não utilizados. Tipos em uso por sistemas existentes não podem ser excluídos."
+        },
+        "complete": {
+          "title": "Configuração de Tipos de Sistema Dominada!",
+          "content": "Agora você pode organizar seus equipamentos de tratamento de água em categorias lógicas para melhor gerenciamento de sistemas e relatórios!"
+        }
+      }
+    },
+    "productTypes": {
+      "title": "Tour de Configurações de Tipos de Produto",
+      "description": "Aprenda a configurar tipos de produtos químicos",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações de Tipos de Produto!",
+          "content": "Tipos de produto categorizam seus produtos químicos de tratamento de água como coagulantes, desinfetantes, ajustadores de pH e mais. Organize o inventário por tipo para melhor rastreamento!"
+        },
+        "section": {
+          "title": "Configuração de Tipos de Produto",
+          "content": "Esta seção mostra todos os tipos de produto configurados. Tipos comuns incluem compostos de cloro, polímeros, ácidos, bases e produtos químicos especiais. Cada tipo ajuda a organizar o inventário."
+        },
+        "add": {
+          "title": "Adicionar Novo Tipo de Produto",
+          "content": "Clique aqui para criar um novo tipo de produto. Defina o nome do tipo, categoria (coagulante, desinfetante, etc.) e informações opcionais de segurança para manuseio."
+        },
+        "table": {
+          "title": "Tabela de Tipos de Produto",
+          "content": "Visualize todos os tipos de produto com suas categorias e contagem de uso. Edite tipos para atualizar classificações ou exclua os não utilizados. Tipos em uso por produtos no inventário não podem ser excluídos."
+        },
+        "complete": {
+          "title": "Configuração de Tipos de Produto Dominada!",
+          "content": "Agora você pode organizar seus produtos químicos em categorias para melhor gerenciamento de inventário, pedidos e conformidade de segurança!"
+        }
+      }
+    },
+    "clients": {
+      "title": "Tour de Configurações de Clientes",
+      "description": "Aprenda a gerenciar contas de clientes (apenas provedores de serviços)",
+      "steps": {
+        "welcome": {
+          "title": "Bem-vindo às Configurações de Clientes!",
+          "content": "Para provedores de serviços, esta aba gerencia contas de clientes. Crie clientes, atribua sistemas e controle acesso. Cada cliente obtém dados isolados e gerenciamento de usuários!"
+        },
+        "section": {
+          "title": "Configuração de Clientes",
+          "content": "Esta seção mostra todas as suas contas de clientes. Como provedor de serviços, você pode gerenciar múltiplos clientes, cada um com seus próprios sistemas, usuários e dados. Perfeito para empresas de serviços de tratamento de água!"
+        },
+        "add": {
+          "title": "Adicionar Novo Cliente",
+          "content": "Clique aqui para criar uma nova conta de cliente. Configure informações da empresa, detalhes de contato e usuário administrador inicial. Cada cliente é totalmente isolado."
+        },
+        "table": {
+          "title": "Tabela de Clientes",
+          "content": "Visualize todos os clientes com seus nomes de empresa, informações de contato, contagens de sistemas e status. Clique para gerenciar detalhes do cliente, usuários e sistemas atribuídos."
+        },
+        "complete": {
+          "title": "Gerenciamento de Clientes Dominado!",
+          "content": "Agora você pode gerenciar múltiplas contas de clientes como provedor de serviços. Cada cliente tem acesso independente aos seus sistemas e dados!"
+        }
+      }
+    }
+  },
+  "users": {
+    "title": "Tour de Gerenciamento de Usuários",
+    "description": "Aprenda a gerenciar contas de usuários e permissões",
+    "steps": {
+      "welcome": {
+        "title": "Bem-vindo ao Gerenciamento de Usuários!",
+        "content": "Gerencie todas as contas de usuários da sua organização nesta página. Crie usuários, atribua funções (admin, gerente, técnico) e controle permissões de acesso. Apenas administradores podem gerenciar usuários!"
+      },
+      "header": {
+        "title": "Página de Usuários",
+        "content": "Esta página mostra todas as contas de usuários com suas funções, status e atividade. Acompanhe quem tem acesso ao seu sistema de monitoramento de tratamento de água."
+      },
+      "export": {
+        "title": "Exportar Dados de Usuários",
+        "content": "Exporte sua lista de usuários para formato PDF, HTML ou CSV para documentação, auditorias ou registros de RH. Inclui detalhes dos usuários, funções e atividade de login."
+      },
+      "addUser": {
+        "title": "Adicionar Novo Usuário",
+        "content": "Clique aqui para criar uma nova conta de usuário. Defina nome, e-mail, senha, telefone e função. Usuários recebem credenciais de login e podem acessar o sistema com base nas permissões da função."
+      },
+      "table": {
+        "title": "Tabela de Usuários",
+        "content": "Visualize todos os usuários com seu ID, nome, e-mail, telefone, função, status, último login e data de criação. Usuários ativos podem fazer login, enquanto usuários inativos estão bloqueados do sistema."
+      },
+      "actions": {
+        "title": "Ações de Usuário",
+        "content": "Edite detalhes do usuário (nome, e-mail, telefone, função) ou exclua usuários que não precisam mais de acesso. Você também pode fazer upload de avatares de usuários ao editar. Cuidado - excluir um usuário é permanente!"
+      },
+      "complete": {
+        "title": "Gerenciamento de Usuários Dominado!",
+        "content": "Agora você sabe como gerenciar contas de usuários e permissões. Mantenha o acesso da sua equipe atualizado e seguro!"
+      }
+    }
   }
 }

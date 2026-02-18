@@ -6,6 +6,9 @@ import UnitsSection from './UnitsSection';
 import SystemTypesSection from './SystemTypesSection';
 import ProductTypesSection from './ProductTypesSection';
 import ClientsSection from './ClientsSection';
+import { useTour, useAutoStartTour, SETTINGS_OVERVIEW_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline } from '@mui/icons-material';
 
 type TabType = 'parameters' | 'units' | 'systemTypes' | 'productTypes' | 'clients';
 
@@ -15,17 +18,35 @@ const SettingsPage: React.FC = () => {
   const isServiceProvider = user?.isServiceProvider;
   const [activeTab, setActiveTab] = useState<TabType>('parameters');
 
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(SETTINGS_OVERVIEW_TOUR);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+        <div data-tour="settings-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('settings.title')}</h1>
           <p className="text-gray-500 mt-1">{t('settings.description')}</p>
         </div>
+        <Tooltip title={isCompleted(SETTINGS_OVERVIEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+          <IconButton
+            onClick={() => startTour(SETTINGS_OVERVIEW_TOUR)}
+            sx={{
+              color: 'primary.main',
+              '&:hover': {
+                backgroundColor: 'primary.light',
+                color: 'primary.dark'
+              }
+            }}
+          >
+            <HelpOutline />
+          </IconButton>
+        </Tooltip>
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="border-b border-gray-200" data-tour="settings-tabs">
         <nav className="-mb-px flex space-x-8">
           <button
             onClick={() => setActiveTab('parameters')}

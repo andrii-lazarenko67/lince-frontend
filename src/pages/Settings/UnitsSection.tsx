@@ -156,31 +156,37 @@ const UnitsSection: React.FC = () => {
         </div>
       )}
 
-      <Card
-        title={t('settings.units.title')}
-        subtitle={t('settings.units.subtitle')}
-        noPadding
-        headerActions={
-          canManage ? (
-            <Button variant="primary" onClick={handleOpenCreate}>
-              {t('settings.units.addUnit')}
-            </Button>
-          ) : undefined
-        }
-      >
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          </div>
-        ) : (
-          <Table
-            columns={columns}
-            data={units}
-            keyExtractor={(unit) => unit.id}
-            emptyMessage={t('settings.units.emptyMessage')}
-          />
-        )}
-      </Card>
+      <div data-tour="units-section">
+        <Card
+          title={t('settings.units.title')}
+          subtitle={t('settings.units.subtitle')}
+          noPadding
+          headerActions={
+            canManage ? (
+              <div data-tour="add-unit-button">
+                <Button variant="primary" onClick={handleOpenCreate}>
+                  {t('settings.units.addUnit')}
+                </Button>
+              </div>
+            ) : undefined
+          }
+        >
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <div data-tour="units-table">
+              <Table
+                columns={columns}
+                data={units}
+                keyExtractor={(unit) => unit.id}
+                emptyMessage={t('settings.units.emptyMessage')}
+              />
+            </div>
+          )}
+        </Card>
+      </div>
 
       {/* Create/Edit Modal */}
       <Modal

@@ -85,18 +85,20 @@ const ClientsSection: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" data-tour="clients-section">
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">{t('settings.clients.title')}</h2>
           <p className="text-sm text-gray-500">{t('settings.clients.subtitle')}</p>
         </div>
-        <button
-          onClick={() => handleOpenModal()}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          {t('settings.clients.addClient')}
-        </button>
+        <div data-tour="add-client-button">
+          <button
+            onClick={() => handleOpenModal()}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            {t('settings.clients.addClient')}
+          </button>
+        </div>
       </div>
 
       {loading ? (
@@ -108,7 +110,7 @@ const ClientsSection: React.FC = () => {
           <p className="text-gray-500">{t('settings.clients.emptyMessage')}</p>
         </div>
       ) : (
-        <div className="bg-white shadow rounded-lg overflow-hidden">
+        <div className="bg-white shadow rounded-lg overflow-hidden" data-tour="clients-table">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>

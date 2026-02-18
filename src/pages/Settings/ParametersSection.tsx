@@ -143,37 +143,43 @@ const ParametersSection: React.FC = () => {
 
   return (
     <>
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      <Card
-        title={t('settings.parameters.title')}
-        subtitle={t('settings.parameters.subtitle')}
-        noPadding
-        headerActions={
-          canManage ? (
-            <Button variant="primary" onClick={handleOpenCreate}>
-              {t('settings.parameters.addParameter')}
-            </Button>
-          ) : undefined
-        }
-      >
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div data-tour="parameters-section">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
           </div>
-        ) : (
-          <Table
-            columns={columns}
-            data={parameters}
-            keyExtractor={(param) => param.id}
-            emptyMessage={t('settings.parameters.emptyMessage')}
-          />
         )}
-      </Card>
+
+        <Card
+          title={t('settings.parameters.title')}
+          subtitle={t('settings.parameters.subtitle')}
+          noPadding
+          headerActions={
+            canManage ? (
+              <div data-tour="add-parameter-button">
+                <Button variant="primary" onClick={handleOpenCreate}>
+                  {t('settings.parameters.addParameter')}
+                </Button>
+              </div>
+            ) : undefined
+          }
+        >
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <div data-tour="parameters-table">
+              <Table
+                columns={columns}
+                data={parameters}
+                keyExtractor={(param) => param.id}
+                emptyMessage={t('settings.parameters.emptyMessage')}
+              />
+            </div>
+          )}
+        </Card>
+      </div>
 
       {/* Create/Edit Modal */}
       <Modal

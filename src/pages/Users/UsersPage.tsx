@@ -4,10 +4,17 @@ import { useAppSelector } from '../../hooks';
 import { ExportDropdown } from '../../components/common';
 import { exportToPdf, exportToHtml, exportToCsv } from '../../utils';
 import UsersList from './UsersList';
+import { useTour, useAutoStartTour, USERS_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline } from '@mui/icons-material';
 
 const UsersPage: React.FC = () => {
   const { t } = useTranslation();
   const { users } = useAppSelector((state) => state.users);
+
+  // Tour hooks
+  const { start: startTour, isCompleted } = useTour();
+  useAutoStartTour(USERS_TOUR);
 
   const getRoleLabel = (role: string) => {
     switch (role) {
@@ -85,16 +92,34 @@ const UsersPage: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
+        <div data-tour="users-header">
           <h1 className="text-2xl font-bold text-gray-900">{t('users.title')}</h1>
           <p className="text-gray-500 mt-1">{t('users.description')}</p>
         </div>
-        <ExportDropdown
-          onExportPDF={handleExportPDF}
-          onExportHTML={handleExportHTML}
-          onExportCSV={handleExportCSV}
-          disabled={users.length === 0}
-        />
+        <div className="flex items-center gap-2">
+          <Tooltip title={isCompleted(USERS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(USERS_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <div data-tour="export-dropdown">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={users.length === 0}
+            />
+          </div>
+        </div>
       </div>
 
       <UsersList />

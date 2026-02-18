@@ -269,8 +269,17 @@ const SystemDetailPage: React.FC = () => {
               {t('common.delete')}
             </Button>
           </div>
-          <Tooltip title={t('common.help')} placement="bottom">
-            <IconButton onClick={() => startTour(SYSTEMS_DETAIL_TOUR)} size="small">
+          <Tooltip title={isCompleted(SYSTEMS_DETAIL_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(SYSTEMS_DETAIL_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
               <HelpOutline />
             </IconButton>
           </Tooltip>

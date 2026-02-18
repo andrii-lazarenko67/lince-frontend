@@ -1014,5 +1014,193 @@
         }
       }
     }
+  },
+  "settings": {
+    "overview": {
+      "title": "Settings Overview Tour",
+      "description": "Learn about system configuration and administration settings",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Settings!",
+          "content": "Settings is your control center for configuring parameters, units, system types, product types, and more. Let's explore the available configuration options!"
+        },
+        "header": {
+          "title": "Settings Page",
+          "content": "This page contains all system-wide configuration options. Only administrators can access and modify these critical settings."
+        },
+        "tabs": {
+          "title": "Configuration Tabs",
+          "content": "Settings are organized into tabs: Parameters (water quality metrics), Units (measurement units), System Types (equipment categories), Product Types (chemical classifications), and Clients (service provider only)."
+        },
+        "complete": {
+          "title": "Settings Overview Complete!",
+          "content": "You now understand the available configuration options. Use the dedicated tours for each tab to learn about specific settings!"
+        }
+      }
+    },
+    "parameters": {
+      "title": "Parameters Settings Tour",
+      "description": "Learn how to configure water quality parameters",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Parameters Settings!",
+          "content": "Water quality parameters are the metrics you measure in daily logs and laboratory analysis. Define custom parameters specific to your water treatment processes!"
+        },
+        "section": {
+          "title": "Parameters Configuration",
+          "content": "This section shows all configured water quality parameters like pH, turbidity, chlorine levels, hardness, and more. Each parameter can have custom acceptable ranges."
+        },
+        "add": {
+          "title": "Add New Parameter",
+          "content": "Click here to create a new water quality parameter. Specify the name, measurement unit, acceptable range (min/max), and whether it's critical for alerting."
+        },
+        "table": {
+          "title": "Parameters Table",
+          "content": "View all parameters with their units, acceptable ranges, and status. Edit parameters to adjust ranges or delete unused ones. Changes apply to all future daily logs."
+        },
+        "complete": {
+          "title": "Parameters Configuration Mastered!",
+          "content": "You can now configure water quality parameters to match your specific monitoring requirements. Keep parameters up-to-date with regulatory standards!"
+        }
+      }
+    },
+    "units": {
+      "title": "Units Settings Tour",
+      "description": "Learn how to configure measurement units",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Units Settings!",
+          "content": "Measurement units define how you quantify water quality parameters, chemical dosages, and system capacities. Standardize units across your organization!"
+        },
+        "section": {
+          "title": "Units Configuration",
+          "content": "This section shows all configured measurement units like mg/L, ppm, NTU, pH units, °C, and more. Units are linked to parameters and products."
+        },
+        "add": {
+          "title": "Add New Unit",
+          "content": "Click here to create a new measurement unit. Specify the unit symbol, full name, and optional description. Common units include concentration, temperature, and flow rate units."
+        },
+        "table": {
+          "title": "Units Table",
+          "content": "View all units with their symbols and descriptions. Edit units to update names or delete unused ones. Be careful - units in use by parameters cannot be deleted."
+        },
+        "complete": {
+          "title": "Units Configuration Mastered!",
+          "content": "You can now manage measurement units to ensure consistent data across your water treatment monitoring system!"
+        }
+      }
+    },
+    "systemTypes": {
+      "title": "System Types Settings Tour",
+      "description": "Learn how to configure water treatment system types",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to System Types Settings!",
+          "content": "System types categorize your water treatment equipment like filtration systems, chlorination systems, softening systems, and more. Organize systems by type for better management!"
+        },
+        "section": {
+          "title": "System Types Configuration",
+          "content": "This section shows all configured system types. Each type can have specific parameters and monitoring requirements. Common types include RO systems, UV systems, and chemical dosing systems."
+        },
+        "add": {
+          "title": "Add New System Type",
+          "content": "Click here to create a new system type. Define the type name, description, and optionally link specific parameters that apply to this type of system."
+        },
+        "table": {
+          "title": "System Types Table",
+          "content": "View all system types with their descriptions and usage count. Edit types to update definitions or delete unused ones. Types in use by existing systems cannot be deleted."
+        },
+        "complete": {
+          "title": "System Types Configuration Mastered!",
+          "content": "You can now organize your water treatment equipment into logical categories for better system management and reporting!"
+        }
+      }
+    },
+    "productTypes": {
+      "title": "Product Types Settings Tour",
+      "description": "Learn how to configure chemical product types",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Product Types Settings!",
+          "content": "Product types categorize your water treatment chemicals like coagulants, disinfectants, pH adjusters, and more. Organize inventory by type for better tracking!"
+        },
+        "section": {
+          "title": "Product Types Configuration",
+          "content": "This section shows all configured product types. Common types include chlorine compounds, polymers, acids, bases, and specialty chemicals. Each type helps organize inventory."
+        },
+        "add": {
+          "title": "Add New Product Type",
+          "content": "Click here to create a new product type. Define the type name, category (coagulant, disinfectant, etc.), and optional safety information for handling."
+        },
+        "table": {
+          "title": "Product Types Table",
+          "content": "View all product types with their categories and usage count. Edit types to update classifications or delete unused ones. Types in use by products in inventory cannot be deleted."
+        },
+        "complete": {
+          "title": "Product Types Configuration Mastered!",
+          "content": "You can now organize your chemical products into categories for better inventory management, ordering, and safety compliance!"
+        }
+      }
+    },
+    "clients": {
+      "title": "Clients Settings Tour",
+      "description": "Learn how to manage client accounts (service providers only)",
+      "steps": {
+        "welcome": {
+          "title": "Welcome to Clients Settings!",
+          "content": "For service providers, this tab manages client accounts. Create clients, assign systems, and control access. Each client gets isolated data and user management!"
+        },
+        "section": {
+          "title": "Clients Configuration",
+          "content": "This section shows all your client accounts. As a service provider, you can manage multiple clients, each with their own systems, users, and data. Perfect for water treatment service companies!"
+        },
+        "add": {
+          "title": "Add New Client",
+          "content": "Click here to create a new client account. Set up company information, contact details, and initial administrator user. Each client is fully isolated."
+        },
+        "table": {
+          "title": "Clients Table",
+          "content": "View all clients with their company names, contact info, system counts, and status. Click to manage client details, users, and assigned systems."
+        },
+        "complete": {
+          "title": "Client Management Mastered!",
+          "content": "You can now manage multiple client accounts as a service provider. Each client has independent access to their systems and data!"
+        }
+      }
+    }
+  },
+  "users": {
+    "title": "Users Management Tour",
+    "description": "Learn how to manage user accounts and permissions",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to Users Management!",
+        "content": "Manage all user accounts in your organization from this page. Create users, assign roles (admin, manager, technician), and control access permissions. Only administrators can manage users!"
+      },
+      "header": {
+        "title": "Users Page",
+        "content": "This page shows all user accounts with their roles, status, and activity. Keep track of who has access to your water treatment monitoring system."
+      },
+      "export": {
+        "title": "Export User Data",
+        "content": "Export your user list to PDF, HTML, or CSV format for documentation, audits, or HR records. Includes user details, roles, and login activity."
+      },
+      "addUser": {
+        "title": "Add New User",
+        "content": "Click here to create a new user account. Set their name, email, password, phone, and role. Users receive login credentials and can access the system based on their role permissions."
+      },
+      "table": {
+        "title": "Users Table",
+        "content": "View all users with their ID, name, email, phone, role, status, last login, and creation date. Active users can log in, while inactive users are blocked from accessing the system."
+      },
+      "actions": {
+        "title": "User Actions",
+        "content": "Edit user details (name, email, phone, role) or delete users who no longer need access. You can also upload user avatars when editing. Be careful - deleting a user is permanent!"
+      },
+      "complete": {
+        "title": "User Management Mastered!",
+        "content": "You now know how to manage user accounts and permissions. Keep your team's access up-to-date and secure!"
+      }
+    }
   }
 }

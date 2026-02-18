@@ -133,37 +133,43 @@ const ProductTypesSection: React.FC = () => {
 
   return (
     <>
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
-          {error}
-        </div>
-      )}
-
-      <Card
-        title={t('settings.productTypes.title')}
-        subtitle={t('settings.productTypes.subtitle')}
-        noPadding
-        headerActions={
-          canManage ? (
-            <Button variant="primary" onClick={handleOpenCreate}>
-              {t('settings.productTypes.addType')}
-            </Button>
-          ) : undefined
-        }
-      >
-        {loading ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div data-tour="product-types-section">
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
           </div>
-        ) : (
-          <Table
-            columns={columns}
-            data={productTypes}
-            keyExtractor={(type) => type.id}
-            emptyMessage={t('settings.productTypes.emptyMessage')}
-          />
         )}
-      </Card>
+
+        <Card
+          title={t('settings.productTypes.title')}
+          subtitle={t('settings.productTypes.subtitle')}
+          noPadding
+          headerActions={
+            canManage ? (
+              <div data-tour="add-product-type-button">
+                <Button variant="primary" onClick={handleOpenCreate}>
+                  {t('settings.productTypes.addType')}
+                </Button>
+              </div>
+            ) : undefined
+          }
+        >
+          {loading ? (
+            <div className="flex justify-center items-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          ) : (
+            <div data-tour="product-types-table">
+              <Table
+                columns={columns}
+                data={productTypes}
+                keyExtractor={(type) => type.id}
+                emptyMessage={t('settings.productTypes.emptyMessage')}
+              />
+            </div>
+          )}
+        </Card>
+      </div>
 
       {/* Create/Edit Modal */}
       <Modal

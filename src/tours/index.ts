@@ -25,6 +25,15 @@ export { clientsListTour, clientsAddTour, clientsDetailTour, clientsUsersTour, c
 export { notificationsTour } from './configs/management/notificationsTour';
 export { profileTour } from './configs/management/profileTour';
 export { libraryListTour, libraryUploadTour } from './configs/management/libraryTour';
+export {
+  settingsOverviewTour,
+  settingsParametersTour,
+  settingsUnitsTour,
+  settingsSystemTypesTour,
+  settingsProductTypesTour,
+  settingsClientsTour
+} from './configs/administration/settingsTour';
+export { usersTour } from './configs/administration/usersTour';
 
 // Central tour registry
 import { dashboardTour } from './configs/operations/dashboardTour';
@@ -38,6 +47,15 @@ import { clientsListTour, clientsAddTour, clientsDetailTour, clientsUsersTour, c
 import { notificationsTour } from './configs/management/notificationsTour';
 import { profileTour } from './configs/management/profileTour';
 import { libraryListTour, libraryUploadTour } from './configs/management/libraryTour';
+import {
+  settingsOverviewTour,
+  settingsParametersTour,
+  settingsUnitsTour,
+  settingsSystemTypesTour,
+  settingsProductTypesTour,
+  settingsClientsTour
+} from './configs/administration/settingsTour';
+import { usersTour } from './configs/administration/usersTour';
 import type { TourConfig } from './types';
 
 export const allTours: TourConfig[] = [
@@ -70,6 +88,13 @@ export const allTours: TourConfig[] = [
   notificationsTour,
   profileTour,
   libraryListTour,
-  libraryUploadTour
+  libraryUploadTour,
+  settingsOverviewTour,
+  settingsParametersTour,
+  settingsUnitsTour,
+  settingsSystemTypesTour,
+  settingsProductTypesTour,
+  settingsClientsTour,
+  usersTour
   // More tours will be added here in future phases
 ];
