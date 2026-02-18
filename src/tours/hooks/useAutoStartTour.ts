@@ -20,7 +20,6 @@ export const useAutoStartTour = (tourId: string, enabled: boolean = true) => {
     // 2. This specific auto-start is enabled
     // 3. Tour hasn't been completed
     // 4. No tour is currently running
-    // 5. User hasn't dismissed first-visit prompt
     if (!enabled || !autoStartEnabled || isRunning || isCompleted(tourId)) {
       return;
     }
@@ -31,15 +30,20 @@ export const useAutoStartTour = (tourId: string, enabled: boolean = true) => {
       const hasVisited = localStorage.getItem(visitedKey);
 
       if (!hasVisited) {
+        console.log(`[Tour] First visit detected for ${tourId}, starting tour...`);
+
         // Mark as visited
         localStorage.setItem(visitedKey, 'true');
 
-        // Start tour after a short delay to ensure page is loaded
+        // Wait longer to ensure page elements are fully rendered
         const timer = setTimeout(() => {
+          console.log(`[Tour] Attempting to start ${tourId}`);
           start(tourId);
-        }, 500);
+        }, 1500);
 
         return () => clearTimeout(timer);
+      } else {
+        console.log(`[Tour] Page already visited for ${tourId}, skipping auto-start`);
       }
     } catch (error) {
       console.error('Failed to check first visit:', error);

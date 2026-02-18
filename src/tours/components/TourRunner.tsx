@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from '../../hooks';
 import { stopTour, completeTour, setStepIndex } from '../../store/slices/tourSlice';
 import type { TourConfig } from '../types';
 import { tourStyles } from '../shared/tourStyles';
+import '../shared/tourAnimations.css';
 
 interface TourRunnerProps {
   tours: TourConfig[];
@@ -96,7 +97,6 @@ export const TourRunner: React.FC<TourRunnerProps> = ({ tours }) => {
       showProgress
       showSkipButton
       scrollToFirstStep
-      disableOverlayClose
       callback={handleCallback}
       locale={{
         back: t('tours.common.back'),

@@ -8,7 +8,7 @@ import StatsSection from './StatsSection';
 import RecentActivitySection from './RecentActivitySection';
 import AlertsSection from './AlertsSection';
 import DashboardChartView from './DashboardChartView';
-import { useTour, DASHBOARD_TOUR } from '../../tours';
+import { useTour, useAutoStartTour, DASHBOARD_TOUR } from '../../tours';
 import { IconButton, Tooltip } from '@mui/material';
 import { HelpOutline } from '@mui/icons-material';
 
@@ -20,6 +20,9 @@ const DashboardPage: React.FC = () => {
   const { stats, recentActivity, alerts } = useAppSelector((state) => state.dashboard);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
   const { start: startTour, isCompleted } = useTour();
+
+  // Auto-start tour on first visit
+  useAutoStartTour(DASHBOARD_TOUR);
 
   useEffect(() => {
     dispatch(fetchDashboardData());

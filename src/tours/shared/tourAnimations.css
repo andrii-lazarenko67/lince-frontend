@@ -1,0 +1,14 @@
+/**
+ * Tour spotlight animation
+ * Slide-in reveal effect from tooltip direction
+ */
+@keyframes tourSpotlightReveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

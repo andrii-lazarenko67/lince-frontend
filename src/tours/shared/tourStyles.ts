@@ -100,8 +100,10 @@ export const tourStyles: Styles = {
   },
   spotlight: {
     borderRadius: '4px',
-    border: '3px solid #8039ff', // Bright cyan border - high contrast
-    backgroundColor: 'transparent' // Keep element visible
+    border: '3px solid #a039ff', // Purple border - high contrast
+    backgroundColor: 'transparent', // Keep element visible
+    animation: 'tourSpotlightReveal 0.4s ease-out',
+    boxShadow: '0 0 20px rgba(128, 57, 255, 0.5)'
   },
   beacon: {
     display: 'none' // We disable beacons
