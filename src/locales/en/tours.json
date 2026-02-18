@@ -1,0 +1,60 @@
+{
+  "common": {
+    "skip": "Skip Tour",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish",
+    "close": "Close",
+    "startTour": "Start Tour",
+    "resumeTour": "Resume Tour",
+    "tourCompleted": "Tour Completed!",
+    "restartTour": "Restart Tour"
+  },
+  "categories": {
+    "operations": "Operations",
+    "management": "Management",
+    "administration": "Administration"
+  },
+  "dashboard": {
+    "title": "Dashboard Tour",
+    "description": "Learn how to use the main dashboard and understand key metrics",
+    "steps": {
+      "welcome": {
+        "title": "Welcome to LINCE!",
+        "content": "Let's take a quick tour of your dashboard. You'll learn how to view statistics, monitor recent activity, and track alerts. Click 'Next' to begin."
+      },
+      "header": {
+        "title": "Dashboard Header",
+        "content": "This is your dashboard header showing the current view and your user information. You can see a personalized welcome message here."
+      },
+      "viewMode": {
+        "title": "View Mode Toggle",
+        "content": "Switch between table view (detailed lists) and chart view (visual graphs) to see your data in different formats. Try clicking this button!"
+      },
+      "export": {
+        "title": "Export Options",
+        "content": "Export your dashboard data to PDF, HTML, or CSV formats for reports and record-keeping. Perfect for sharing with your team or keeping archives."
+      },
+      "stats": {
+        "title": "Statistics Overview",
+        "content": "These cards show key metrics for your water treatment systems: total systems, daily logs, inspections, incidents, and alerts. Monitor everything at a glance!"
+      },
+      "recentActivity": {
+        "title": "Recent Activity",
+        "content": "View your most recent daily logs, inspections, and incidents in one place. Click any item to see more details."
+      },
+      "alerts": {
+        "title": "Active Alerts",
+        "content": "Critical alerts and notifications appear here. Keep an eye on out-of-range parameters, low stock items, and unread notifications."
+      },
+      "sidebar": {
+        "title": "Main Navigation",
+        "content": "Use the sidebar to navigate between different sections: Daily Logs, Inspections, Incidents, Systems, Reports, and more. All your tools are just one click away!"
+      },
+      "complete": {
+        "title": "You're All Set!",
+        "content": "Great job! You now know the basics of the dashboard. Explore other sections to learn more, or click 'Finish' to start using LINCE."
+      }
+    }
+  }
+}

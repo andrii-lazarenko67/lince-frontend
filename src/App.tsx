@@ -8,6 +8,7 @@ import theme from './theme';
 import { MainLayout } from './components/layout';
 import { PrivateRoute } from './components/auth';
 import { PageLoader } from './components/common';
+import { TourProvider, TourRunner, allTours } from './tours';
 
 // Lazy load all pages for code splitting
 const LoginPage = lazy(() => import('./pages/Login/LoginPage'));
@@ -44,9 +45,11 @@ const App: React.FC = () => {
     <Provider store={store}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
-          <Suspense fallback={<PageLoader />}>
-            <Routes>
+        <TourProvider>
+          <Router>
+            <TourRunner tours={allTours} />
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
 
@@ -108,9 +111,10 @@ const App: React.FC = () => {
 
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Routes>
-          </Suspense>
-        </Router>
+              </Routes>
+            </Suspense>
+          </Router>
+        </TourProvider>
       </ThemeProvider>
     </Provider>
   );

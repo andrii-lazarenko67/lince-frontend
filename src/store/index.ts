@@ -23,6 +23,7 @@ import systemTypeSlice from './slices/systemTypeSlice';
 import clientSlice from './slices/clientSlice';
 import reportTemplateSlice from './slices/reportTemplateSlice';
 import generatedReportSlice from './slices/generatedReportSlice';
+import tourSlice from './slices/tourSlice';
 
 export const store = configureStore({
   reducer: {
@@ -47,7 +48,8 @@ export const store = configureStore({
     checklistItems: checklistItemSlice,
     clients: clientSlice,
     reportTemplates: reportTemplateSlice,
-    generatedReports: generatedReportSlice
+    generatedReports: generatedReportSlice,
+    tour: tourSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

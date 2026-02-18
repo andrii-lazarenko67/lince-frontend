@@ -1,0 +1,60 @@
+{
+  "common": {
+    "skip": "Pular Tour",
+    "next": "Próximo",
+    "back": "Voltar",
+    "finish": "Concluir",
+    "close": "Fechar",
+    "startTour": "Iniciar Tour",
+    "resumeTour": "Retomar Tour",
+    "tourCompleted": "Tour Concluído!",
+    "restartTour": "Reiniciar Tour"
+  },
+  "categories": {
+    "operations": "Operações",
+    "management": "Gestão",
+    "administration": "Administração"
+  },
+  "dashboard": {
+    "title": "Tour do Painel",
+    "description": "Aprenda a usar o painel principal e entender as métricas principais",
+    "steps": {
+      "welcome": {
+        "title": "Bem-vindo ao LINCE!",
+        "content": "Vamos fazer um tour rápido do seu painel. Você vai aprender como visualizar estatísticas, monitorar atividades recentes e acompanhar alertas. Clique em 'Próximo' para começar."
+      },
+      "header": {
+        "title": "Cabeçalho do Painel",
+        "content": "Este é o cabeçalho do seu painel mostrando a visualização atual e suas informações de usuário. Você pode ver uma mensagem de boas-vindas personalizada aqui."
+      },
+      "viewMode": {
+        "title": "Alternar Modo de Visualização",
+        "content": "Alterne entre visualização em tabela (listas detalhadas) e visualização em gráfico (gráficos visuais) para ver seus dados em diferentes formatos. Experimente clicar neste botão!"
+      },
+      "export": {
+        "title": "Opções de Exportação",
+        "content": "Exporte os dados do seu painel para formatos PDF, HTML ou CSV para relatórios e manutenção de registros. Perfeito para compartilhar com sua equipe ou manter arquivos."
+      },
+      "stats": {
+        "title": "Visão Geral das Estatísticas",
+        "content": "Estes cartões mostram as métricas principais dos seus sistemas de tratamento de água: total de sistemas, registros diários, inspeções, incidentes e alertas. Monitore tudo de relance!"
+      },
+      "recentActivity": {
+        "title": "Atividade Recente",
+        "content": "Veja seus registros diários, inspeções e incidentes mais recentes em um só lugar. Clique em qualquer item para ver mais detalhes."
+      },
+      "alerts": {
+        "title": "Alertas Ativos",
+        "content": "Alertas críticos e notificações aparecem aqui. Fique de olho em parâmetros fora da faixa, itens com estoque baixo e notificações não lidas."
+      },
+      "sidebar": {
+        "title": "Navegação Principal",
+        "content": "Use a barra lateral para navegar entre diferentes seções: Registros Diários, Inspeções, Incidentes, Sistemas, Relatórios e mais. Todas as suas ferramentas estão a apenas um clique de distância!"
+      },
+      "complete": {
+        "title": "Tudo Pronto!",
+        "content": "Ótimo trabalho! Agora você conhece o básico do painel. Explore outras seções para aprender mais, ou clique em 'Concluir' para começar a usar o LINCE."
+      }
+    }
+  }
+}

@@ -132,7 +132,7 @@ const Sidebar: React.FC = () => {
       </Box>
 
       {/* Navigation */}
-      <Box sx={{ flex: 1, overflowY: 'auto', py: 1 }}>
+      <Box data-tour="sidebar" sx={{ flex: 1, overflowY: 'auto', py: 1 }}>
         <List>
           {filteredNavItems.map((item) => (
             <ListItem key={item.path} disablePadding>

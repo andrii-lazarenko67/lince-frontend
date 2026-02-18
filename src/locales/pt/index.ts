@@ -16,6 +16,7 @@ import { profile } from './profile.json';
 import { notifications, photoGallery } from './notifications.json';
 import { clients } from './clients.json';
 import { ai } from './ai.json';
+import tours from './tours.json';
 
 export default {
   common,
@@ -41,4 +42,5 @@ export default {
   photoGallery,
   clients,
   ai,
+  tours,
 };

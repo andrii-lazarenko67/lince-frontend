@@ -8,6 +8,9 @@ import StatsSection from './StatsSection';
 import RecentActivitySection from './RecentActivitySection';
 import AlertsSection from './AlertsSection';
 import DashboardChartView from './DashboardChartView';
+import { useTour, DASHBOARD_TOUR } from '../../tours';
+import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline } from '@mui/icons-material';
 
 const DashboardPage: React.FC = () => {
   const { t } = useTranslation();
@@ -16,6 +19,7 @@ const DashboardPage: React.FC = () => {
   const { selectedClientId } = useAppSelector((state) => state.clients);
   const { stats, recentActivity, alerts } = useAppSelector((state) => state.dashboard);
   const [viewMode, setViewMode] = useState<'table' | 'chart'>('table');
+  const { start: startTour, isCompleted } = useTour();
 
   useEffect(() => {
     dispatch(fetchDashboardData());
@@ -150,33 +154,57 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="dashboard-header">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">{t('dashboard.title')}</h1>
           <p className="text-gray-500 mt-1">{t('dashboard.welcome')}, {user?.name || t('users.title')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <ViewModeToggle
-            value={viewMode}
-            onChange={setViewMode}
-            tableLabel={t('dashboard.overview')}
-          />
-          <ExportDropdown
-            onExportPDF={handleExportPDF}
-            onExportHTML={handleExportHTML}
-            onExportCSV={handleExportCSV}
-            disabled={!stats}
-          />
+          <Tooltip title={isCompleted(DASHBOARD_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(DASHBOARD_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+          <div data-tour="view-mode-toggle">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+              tableLabel={t('dashboard.overview')}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={!stats}
+            />
+          </div>
         </div>
       </div>
 
       {viewMode === 'table' ? (
         <>
-          <StatsSection />
+          <div data-tour="stats-section">
+            <StatsSection />
+          </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <RecentActivitySection />
-            <AlertsSection />
+            <div data-tour="recent-activity">
+              <RecentActivitySection />
+            </div>
+            <div data-tour="alerts-section">
+              <AlertsSection />
+            </div>
           </div>
         </>
       ) : (
