@@ -44,10 +44,12 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  const trustSignals = t('login.trustSignals', { returnObjects: true }) as string[];
+
   return (
     <AuthLayout
-      panelTitle="Welcome Back to LINCE"
-      panelSubtitle="Log in to manage your water systems, review inspections, and access your operational dashboard."
+      panelTitle={t('login.panelTitle')}
+      panelSubtitle={t('login.panelSubtitle')}
     >
       <GlobalLoader />
 
@@ -122,7 +124,7 @@ const LoginPage: React.FC = () => {
             {/* Divider */}
             <div className="flex items-center gap-3 my-6">
               <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-gray-400 text-xs">or</span>
+              <span className="text-gray-400 text-xs">{t('login.orDivider')}</span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
@@ -142,11 +144,7 @@ const LoginPage: React.FC = () => {
 
         {/* Trust signals */}
         <div className="mt-5 flex flex-wrap justify-center gap-4">
-          {[
-            'Free 14-day trial',
-            'No credit card required',
-            'Cancel anytime',
-          ].map((label) => (
+          {trustSignals.map((label) => (
             <div key={label} className="flex items-center gap-1.5 text-gray-400 text-xs">
               <CheckCircleIcon sx={{ fontSize: 13, color: '#10b981' }} />
               {label}

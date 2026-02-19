@@ -77,10 +77,12 @@ const SignupPage: React.FC = () => {
     }
   };
 
+  const trustSignals = t('signup.trustSignals', { returnObjects: true }) as string[];
+
   return (
     <AuthLayout
-      panelTitle="Start Your LINCE Journey"
-      panelSubtitle="Create your account and get full access to all monitoring, inspection, and reporting features — free for 14 days."
+      panelTitle={t('signup.panelTitle')}
+      panelSubtitle={t('signup.panelSubtitle')}
     >
       <GlobalLoader />
 
@@ -189,9 +191,9 @@ const SignupPage: React.FC = () => {
                       sx={{ fontSize: 24, color: !formData.isServiceProvider ? '#3b82f6' : '#9ca3af' }}
                     />
                     <span className={`text-xs font-semibold leading-tight ${!formData.isServiceProvider ? 'text-blue-700' : 'text-gray-500'}`}>
-                      End Customer
+                      {t('signup.endCustomerLabel')}
                     </span>
-                    <span className="text-xs text-gray-400 leading-tight">Own facility</span>
+                    <span className="text-xs text-gray-400 leading-tight">{t('signup.endCustomerSub')}</span>
                     {!formData.isServiceProvider && (
                       <CheckCircleIcon sx={{ fontSize: 14, color: '#3b82f6' }} />
                     )}
@@ -211,9 +213,9 @@ const SignupPage: React.FC = () => {
                       sx={{ fontSize: 24, color: formData.isServiceProvider ? '#10b981' : '#9ca3af' }}
                     />
                     <span className={`text-xs font-semibold leading-tight ${formData.isServiceProvider ? 'text-emerald-700' : 'text-gray-500'}`}>
-                      Service Provider
+                      {t('signup.serviceProviderLabel')}
                     </span>
-                    <span className="text-xs text-gray-400 leading-tight">Multiple clients</span>
+                    <span className="text-xs text-gray-400 leading-tight">{t('signup.serviceProviderSub')}</span>
                     {formData.isServiceProvider && (
                       <CheckCircleIcon sx={{ fontSize: 14, color: '#10b981' }} />
                     )}
@@ -256,14 +258,14 @@ const SignupPage: React.FC = () => {
               {/* Legal note */}
               <p className="flex items-start gap-1.5 text-xs text-gray-400 text-center justify-center">
                 <LockIcon sx={{ fontSize: 12, mt: '2px', flexShrink: 0 }} />
-                Your data is encrypted and never shared with third parties.
+                {t('signup.legalNote')}
               </p>
             </form>
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-5">
               <div className="flex-1 h-px bg-gray-200" />
-              <span className="text-gray-400 text-xs">or</span>
+              <span className="text-gray-400 text-xs">{t('signup.orDivider')}</span>
               <div className="flex-1 h-px bg-gray-200" />
             </div>
 
@@ -283,11 +285,7 @@ const SignupPage: React.FC = () => {
 
         {/* Trust signals */}
         <div className="mt-5 flex flex-wrap justify-center gap-4">
-          {[
-            'Free 14-day trial',
-            'No credit card required',
-            'Cancel anytime',
-          ].map((label) => (
+          {trustSignals.map((label) => (
             <div key={label} className="flex items-center gap-1.5 text-gray-400 text-xs">
               <CheckCircleIcon sx={{ fontSize: 13, color: '#10b981' }} />
               {label}

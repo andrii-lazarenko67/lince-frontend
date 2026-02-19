@@ -93,48 +93,46 @@ const SystemsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="systems-header">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('systems.title')}</h1>
-            <p className="text-gray-500 mt-1">{t('nav.systems')}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div data-tour="view-mode">
-              <ViewModeToggle
-                value={viewMode}
-                onChange={setViewMode}
-              />
-            </div>
-            <div data-tour="export-button">
-              <ExportDropdown
-                onExportPDF={handleExportPDF}
-                onExportHTML={handleExportHTML}
-                onExportCSV={handleExportCSV}
-                disabled={systems.length === 0}
-              />
-            </div>
-            <div data-tour="add-system-button">
-              <Button variant="primary" onClick={() => setIsFormOpen(true)}>
-                {t('systems.addSystem')}
-              </Button>
-            </div>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="systems-header">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('systems.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('nav.systems')}</p>
         </div>
-        <Tooltip title={isCompleted(SYSTEMS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(SYSTEMS_LIST_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div data-tour="view-mode">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={systems.length === 0}
+            />
+          </div>
+          <div data-tour="add-system-button">
+            <Button variant="primary" onClick={() => setIsFormOpen(true)}>
+              {t('systems.addSystem')}
+            </Button>
+          </div>
+          <Tooltip title={isCompleted(SYSTEMS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(SYSTEMS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       {viewMode === 'table' ? (

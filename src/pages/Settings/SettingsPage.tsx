@@ -29,20 +29,22 @@ const SettingsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">{t('settings.title')}</h1>
           <p className="text-gray-500 mt-1">{t('settings.description')}</p>
         </div>
-        <Tooltip title={isCompleted(SETTINGS_OVERVIEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(SETTINGS_OVERVIEW_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex items-center gap-2">
+          <Tooltip title={isCompleted(SETTINGS_OVERVIEW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(SETTINGS_OVERVIEW_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       {/* Tabs */}

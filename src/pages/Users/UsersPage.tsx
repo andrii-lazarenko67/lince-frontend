@@ -97,6 +97,14 @@ const UsersPage: React.FC = () => {
           <p className="text-gray-500 mt-1">{t('users.description')}</p>
         </div>
         <div className="flex items-center gap-2">
+          <div data-tour="export-dropdown">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={users.length === 0}
+            />
+          </div>
           <Tooltip title={isCompleted(USERS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
             <IconButton
               onClick={() => startTour(USERS_TOUR)}
@@ -111,14 +119,6 @@ const UsersPage: React.FC = () => {
               <HelpOutline />
             </IconButton>
           </Tooltip>
-          <div data-tour="export-dropdown">
-            <ExportDropdown
-              onExportPDF={handleExportPDF}
-              onExportHTML={handleExportHTML}
-              onExportCSV={handleExportCSV}
-              disabled={users.length === 0}
-            />
-          </div>
         </div>
       </div>
 

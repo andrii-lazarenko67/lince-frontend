@@ -60,20 +60,22 @@ const ReportsPage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">{t('reports.title')}</h1>
           <p className="text-gray-500 mt-1">{t('reports.description')}</p>
         </Box>
-        <Tooltip title={isCompleted(REPORTS_WORKFLOW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(REPORTS_WORKFLOW_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Tooltip title={isCompleted(REPORTS_WORKFLOW_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(REPORTS_WORKFLOW_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
 
       <Paper sx={{ width: '100%', mb: 2 }} data-tour="reports-tabs">

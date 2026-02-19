@@ -209,20 +209,6 @@ const DailyLogsPage: React.FC = () => {
           <p className="text-gray-500 mt-1">{t('dailyLogs.description')}</p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Tooltip title={isCompleted(DAILY_LOGS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-            <IconButton
-              onClick={() => startTour(DAILY_LOGS_LIST_TOUR)}
-              sx={{
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.light',
-                  color: 'primary.dark'
-                }
-              }}
-            >
-              <HelpOutline />
-            </IconButton>
-          </Tooltip>
           <div data-tour="view-mode">
             <ViewModeToggle
               value={viewMode}
@@ -242,6 +228,20 @@ const DailyLogsPage: React.FC = () => {
               {t('dailyLogs.newLog')}
             </Button>
           </div>
+          <Tooltip title={isCompleted(DAILY_LOGS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(DAILY_LOGS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
 

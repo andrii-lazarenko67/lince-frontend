@@ -195,6 +195,11 @@ const LibraryPage: React.FC = () => {
           <p className="text-gray-500 mt-1">{t('library.description')}</p>
         </div>
         <div className="flex items-center gap-2">
+          <div data-tour="upload-button">
+            <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
+              {t('library.uploadDocument')}
+            </Button>
+          </div>
           <Tooltip title={isCompleted(LIBRARY_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
             <IconButton
               onClick={() => startTour(LIBRARY_LIST_TOUR)}
@@ -209,11 +214,6 @@ const LibraryPage: React.FC = () => {
               <HelpOutline />
             </IconButton>
           </Tooltip>
-          <div data-tour="upload-button">
-            <Button variant="primary" onClick={() => setIsUploadOpen(true)}>
-              {t('library.uploadDocument')}
-            </Button>
-          </div>
         </div>
       </div>
 

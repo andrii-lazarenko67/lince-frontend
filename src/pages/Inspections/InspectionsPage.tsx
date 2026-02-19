@@ -219,48 +219,46 @@ const InspectionsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="inspections-header">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('inspections.title')}</h1>
-            <p className="text-gray-500 mt-1">{t('inspections.description')}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div data-tour="view-mode">
-              <ViewModeToggle
-                value={viewMode}
-                onChange={setViewMode}
-              />
-            </div>
-            <div data-tour="export-button">
-              <ExportDropdown
-                onExportPDF={handleExportPDF}
-                onExportHTML={handleExportHTML}
-                onExportCSV={handleExportCSV}
-                disabled={inspections.length === 0}
-              />
-            </div>
-            <div data-tour="new-inspection-button">
-              <Button variant="primary" onClick={goToNewInspection}>
-                {t('inspections.newInspection')}
-              </Button>
-            </div>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="inspections-header">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('inspections.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('inspections.description')}</p>
         </div>
-        <Tooltip title={isCompleted(INSPECTIONS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(INSPECTIONS_LIST_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div data-tour="view-mode">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={inspections.length === 0}
+            />
+          </div>
+          <div data-tour="new-inspection-button">
+            <Button variant="primary" onClick={goToNewInspection}>
+              {t('inspections.newInspection')}
+            </Button>
+          </div>
+          <Tooltip title={isCompleted(INSPECTIONS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(INSPECTIONS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       {viewMode === 'table' ? (

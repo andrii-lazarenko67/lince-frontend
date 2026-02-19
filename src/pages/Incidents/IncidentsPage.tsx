@@ -232,48 +232,46 @@ const IncidentsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="incidents-header">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('incidents.page.title')}</h1>
-            <p className="text-gray-500 mt-1">{t('incidents.page.subtitle')}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div data-tour="view-mode">
-              <ViewModeToggle
-                value={viewMode}
-                onChange={setViewMode}
-              />
-            </div>
-            <div data-tour="export-button">
-              <ExportDropdown
-                onExportPDF={handleExportPDF}
-                onExportHTML={handleExportHTML}
-                onExportCSV={handleExportCSV}
-                disabled={incidents.length === 0}
-              />
-            </div>
-            <div data-tour="report-button">
-              <Button variant="primary" onClick={goToNewIncident}>
-                {t('incidents.page.reportButton')}
-              </Button>
-            </div>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="incidents-header">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('incidents.page.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('incidents.page.subtitle')}</p>
         </div>
-        <Tooltip title={isCompleted(INCIDENTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(INCIDENTS_LIST_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div data-tour="view-mode">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={incidents.length === 0}
+            />
+          </div>
+          <div data-tour="report-button">
+            <Button variant="primary" onClick={goToNewIncident}>
+              {t('incidents.page.reportButton')}
+            </Button>
+          </div>
+          <Tooltip title={isCompleted(INCIDENTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(INCIDENTS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       {viewMode === 'table' ? (

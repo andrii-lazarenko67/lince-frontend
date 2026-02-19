@@ -284,48 +284,46 @@ const ProductsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center space-x-4">
-        <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="products-header">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('products.title')}</h1>
-            <p className="text-gray-500 mt-1">{t('products.description')}</p>
-          </div>
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div data-tour="view-mode">
-              <ViewModeToggle
-                value={viewMode}
-                onChange={setViewMode}
-              />
-            </div>
-            <div data-tour="export-button">
-              <ExportDropdown
-                onExportPDF={handleExportPDF}
-                onExportHTML={handleExportHTML}
-                onExportCSV={handleExportCSV}
-                disabled={products.length === 0}
-              />
-            </div>
-            <div data-tour="add-product-button">
-              <Button variant="primary" onClick={() => handleOpenForm()}>
-                {t('products.addProduct')}
-              </Button>
-            </div>
-          </div>
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4" data-tour="products-header">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">{t('products.title')}</h1>
+          <p className="text-gray-500 mt-1">{t('products.description')}</p>
         </div>
-        <Tooltip title={isCompleted(PRODUCTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(PRODUCTS_LIST_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <div data-tour="view-mode">
+            <ViewModeToggle
+              value={viewMode}
+              onChange={setViewMode}
+            />
+          </div>
+          <div data-tour="export-button">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportHTML={handleExportHTML}
+              onExportCSV={handleExportCSV}
+              disabled={products.length === 0}
+            />
+          </div>
+          <div data-tour="add-product-button">
+            <Button variant="primary" onClick={() => handleOpenForm()}>
+              {t('products.addProduct')}
+            </Button>
+          </div>
+          <Tooltip title={isCompleted(PRODUCTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(PRODUCTS_LIST_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       {viewMode === 'table' ? (

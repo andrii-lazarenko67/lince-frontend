@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
@@ -9,23 +10,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LanguageSwitcher from '../LanguageSwitcher';
 
-const features = [
-  {
-    icon: <AnalyticsIcon sx={{ fontSize: 18, color: '#60a5fa' }} />,
-    text: 'Real-time monitoring across all your water systems',
-  },
-  {
-    icon: <CameraAltIcon sx={{ fontSize: 18, color: '#34d399' }} />,
-    text: 'Photo-based inspections with custom checklists',
-  },
-  {
-    icon: <AutoAwesomeIcon sx={{ fontSize: 18, color: '#a78bfa' }} />,
-    text: 'AI-powered insights and intelligent report generation',
-  },
-  {
-    icon: <GroupsIcon sx={{ fontSize: 18, color: '#fbbf24' }} />,
-    text: 'Multi-client service provider mode with full data isolation',
-  },
+const featureIcons = [
+  <AnalyticsIcon sx={{ fontSize: 18, color: '#60a5fa' }} />,
+  <CameraAltIcon sx={{ fontSize: 18, color: '#34d399' }} />,
+  <AutoAwesomeIcon sx={{ fontSize: 18, color: '#a78bfa' }} />,
+  <GroupsIcon sx={{ fontSize: 18, color: '#fbbf24' }} />,
 ];
 
 interface AuthLayoutProps {
@@ -37,10 +26,28 @@ interface AuthLayoutProps {
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({
   children,
-  panelTitle = 'Complete Water Systems Management',
-  panelSubtitle = 'Monitor, inspect, and manage your water treatment operations with AI-powered intelligence.',
+  panelTitle,
+  panelSubtitle,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const features = t('login.authLayout.features', { returnObjects: true }) as string[];
+
+  const defaultPanelTitle = t('login.panelTitle');
+  const defaultPanelSubtitle = t('login.panelSubtitle');
+
+  const statsData = [
+    { value: '500+', label: t('login.authLayout.statsCompanies') },
+    { value: '15k+', label: t('login.authLayout.statsInspections') },
+    { value: '99.9%', label: t('login.authLayout.statsUptime') },
+  ];
+
+  const footerLinks = [
+    { label: t('login.authLayout.footerHome'), path: '/' },
+    { label: t('login.authLayout.footerSignUp'), path: '/signup' },
+    { label: t('login.authLayout.footerLogIn'), path: '/login' },
+  ];
 
   return (
     <div className="min-h-screen flex">
@@ -78,23 +85,23 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           <div className="mt-14 flex-1">
             <div className="inline-flex items-center gap-2 bg-blue-500/15 border border-blue-500/30 text-blue-400 px-3 py-1 rounded text-xs font-medium mb-5">
               <AutoAwesomeIcon sx={{ fontSize: 12 }} />
-              Trusted by water professionals
+              {t('login.authLayout.trustedBadge')}
             </div>
             <h2 className="text-3xl font-bold text-white leading-snug mb-4">
-              {panelTitle}
+              {panelTitle ?? defaultPanelTitle}
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed mb-10">
-              {panelSubtitle}
+              {panelSubtitle ?? defaultPanelSubtitle}
             </p>
 
             {/* Feature list */}
             <ul className="space-y-4">
-              {features.map((f, i) => (
+              {features.map((text, i) => (
                 <li key={i} className="flex items-start gap-3">
                   <div className="w-8 h-8 rounded bg-slate-800/70 border border-slate-700 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    {f.icon}
+                    {featureIcons[i]}
                   </div>
-                  <span className="text-slate-300 text-sm leading-relaxed">{f.text}</span>
+                  <span className="text-slate-300 text-sm leading-relaxed">{text}</span>
                 </li>
               ))}
             </ul>
@@ -103,16 +110,15 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           {/* Testimonial quote */}
           <div className="mt-10 bg-slate-800/50 border border-slate-700 rounded p-5">
             <p className="text-slate-300 text-sm italic leading-relaxed mb-3">
-              "LINCE transformed how we manage our 20+ pool clients. The multi-client mode and
-              PDF reports save us hours every week."
+              "{t('login.authLayout.quote')}"
             </p>
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded bg-emerald-600 text-white text-xs font-bold flex items-center justify-center">
                 C
               </div>
               <div>
-                <p className="text-white text-xs font-semibold">Carlos M.</p>
-                <p className="text-slate-500 text-xs">AquaTech Pool Services</p>
+                <p className="text-white text-xs font-semibold">{t('login.authLayout.quoteName')}</p>
+                <p className="text-slate-500 text-xs">{t('login.authLayout.quoteCompany')}</p>
               </div>
               <div className="ml-auto flex gap-0.5">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -124,11 +130,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
 
           {/* Stats row */}
           <div className="mt-6 grid grid-cols-3 gap-3">
-            {[
-              { value: '500+', label: 'Companies' },
-              { value: '15k+', label: 'Inspections' },
-              { value: '99.9%', label: 'Uptime' },
-            ].map((s) => (
+            {statsData.map((s) => (
               <div key={s.label} className="bg-slate-800/40 border border-slate-700/60 rounded p-3 text-center">
                 <p className="text-white font-bold text-lg leading-none">{s.value}</p>
                 <p className="text-slate-500 text-xs mt-1">{s.label}</p>
@@ -160,7 +162,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
             className="hidden lg:flex items-center gap-1.5 text-gray-500 hover:text-gray-800 text-sm transition-colors"
           >
             <ArrowBackIcon sx={{ fontSize: 16 }} />
-            Back to Home
+            {t('login.authLayout.backToHome')}
           </button>
 
           <LanguageSwitcher />
@@ -174,15 +176,11 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
         {/* Footer */}
         <footer className="px-6 sm:px-10 py-4 border-t border-gray-200 bg-white flex-shrink-0">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-400">
-            <span>© {new Date().getFullYear()} LINCE · All rights reserved</span>
+            <span>© {new Date().getFullYear()} LINCE · {t('login.authLayout.copyright')}</span>
             <div className="flex items-center gap-4">
-              {[
-                { label: 'Home', path: '/' },
-                { label: 'Sign Up', path: '/signup' },
-                { label: 'Log In', path: '/login' },
-              ].map((l) => (
+              {footerLinks.map((l) => (
                 <button
-                  key={l.label}
+                  key={l.path}
                   type="button"
                   onClick={() => navigate(l.path)}
                   className="hover:text-gray-700 transition-colors"

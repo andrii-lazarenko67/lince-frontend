@@ -551,6 +551,34 @@
           "role": "CEO",
           "company": "TratAmbi Environmental Services",
           "industry": "Environmental Services"
+        },
+        {
+          "quote": "Managing cooling tower water treatment for an industrial park used to require constant manual tracking. LINCE's automated alerts and detailed dashboards give us confidence that Legionella controls are always in place.",
+          "author": "João P.",
+          "role": "Maintenance Manager",
+          "company": "Parque Industrial GranTec",
+          "industry": "Cooling Tower Systems"
+        },
+        {
+          "quote": "LINCE has been a game-changer for our irrigation water quality monitoring. We can now track fertigation parameters, water source quality, and treatment records all in one system — even from the field.",
+          "author": "Ana C.",
+          "role": "Agronomy Director",
+          "company": "AgroVerde Irrigação",
+          "industry": "Agricultural Irrigation"
+        },
+        {
+          "quote": "Boiler water chemistry is critical and unforgiving. LINCE lets our technicians log every treatment dosage and corrosion inhibitor reading with photo documentation. Regulatory audits that used to take days now take hours.",
+          "author": "Paulo R.",
+          "role": "Chief Engineer",
+          "company": "ThermoSteam Industrial",
+          "industry": "Boiler Water Treatment"
+        },
+        {
+          "quote": "We manage water systems across 12 residential buildings. LINCE's multi-system overview lets us monitor storage tanks, distribution quality, and maintenance compliance from a single dashboard.",
+          "author": "Luísa S.",
+          "role": "Facilities Director",
+          "company": "GestorPredial Group",
+          "industry": "Building Management"
         }
       ]
     },

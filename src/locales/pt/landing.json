@@ -551,6 +551,34 @@
           "role": "CEO",
           "company": "TratAmbi Serviços Ambientais",
           "industry": "Serviços Ambientais"
+        },
+        {
+          "quote": "Gerenciar o tratamento da água de torres de resfriamento em um parque industrial exigia rastreamento manual constante. Os alertas automatizados e painéis detalhados do LINCE nos dão confiança de que os controles de Legionella estão sempre em vigor.",
+          "author": "João P.",
+          "role": "Gerente de Manutenção",
+          "company": "Parque Industrial GranTec",
+          "industry": "Torres de Resfriamento"
+        },
+        {
+          "quote": "O LINCE transformou o monitoramento da qualidade da água de irrigação para nós. Agora rastreamos parâmetros de fertigação, qualidade da fonte de água e registros de tratamento em um único sistema — até mesmo do campo.",
+          "author": "Ana C.",
+          "role": "Diretora de Agronomia",
+          "company": "AgroVerde Irrigação",
+          "industry": "Irrigação Agrícola"
+        },
+        {
+          "quote": "A química da água de caldeiras é crítica e implacável. O LINCE permite que nossos técnicos registrem cada dosagem de tratamento e leitura de inibidor de corrosão com documentação fotográfica. Auditorias que levavam dias agora levam horas.",
+          "author": "Paulo R.",
+          "role": "Engenheiro-Chefe",
+          "company": "ThermoSteam Industrial",
+          "industry": "Tratamento de Água de Caldeiras"
+        },
+        {
+          "quote": "Gerenciamos sistemas de água em 12 edifícios residenciais. A visão geral de múltiplos sistemas do LINCE nos permite monitorar reservatórios, qualidade da distribuição e conformidade de manutenção em um único painel.",
+          "author": "Luísa S.",
+          "role": "Diretora de Facilities",
+          "company": "GestorPredial Group",
+          "industry": "Gestão Predial"
         }
       ]
     },

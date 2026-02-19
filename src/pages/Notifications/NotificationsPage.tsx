@@ -188,20 +188,6 @@ const NotificationsPage: React.FC = () => {
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          <Tooltip title={isCompleted(NOTIFICATIONS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-            <IconButton
-              onClick={() => startTour(NOTIFICATIONS_TOUR)}
-              sx={{
-                color: 'primary.main',
-                '&:hover': {
-                  backgroundColor: 'primary.light',
-                  color: 'primary.dark'
-                }
-              }}
-            >
-              <HelpOutline />
-            </IconButton>
-          </Tooltip>
           <div data-tour="export-button">
             <ExportDropdown
               onExportPDF={handleExportPDF}
@@ -217,6 +203,20 @@ const NotificationsPage: React.FC = () => {
               </Button>
             </div>
           )}
+          <Tooltip title={isCompleted(NOTIFICATIONS_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(NOTIFICATIONS_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
         </div>
       </div>
 

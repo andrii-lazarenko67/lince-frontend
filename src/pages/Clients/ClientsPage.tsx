@@ -157,6 +157,14 @@ const ClientsPage: React.FC = () => {
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => goTo('/clients/new')}
+            data-tour="add-client-button"
+          >
+            {t('settings.clients.addClient')}
+          </Button>
           <Tooltip title={isCompleted(CLIENTS_LIST_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
             <IconButton
               onClick={() => startTour(CLIENTS_LIST_TOUR)}
@@ -171,14 +179,6 @@ const ClientsPage: React.FC = () => {
               <HelpOutline />
             </IconButton>
           </Tooltip>
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => goTo('/clients/new')}
-            data-tour="add-client-button"
-          >
-            {t('settings.clients.addClient')}
-          </Button>
         </Box>
       </Box>
 

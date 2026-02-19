@@ -20,20 +20,22 @@ const ProfilePage: React.FC = () => {
           <h1 className="text-2xl font-bold text-gray-900">{t('profile.title')}</h1>
           <p className="text-gray-500 mt-1">{t('profile.description')}</p>
         </div>
-        <Tooltip title={isCompleted(PROFILE_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
-          <IconButton
-            onClick={() => startTour(PROFILE_TOUR)}
-            sx={{
-              color: 'primary.main',
-              '&:hover': {
-                backgroundColor: 'primary.light',
-                color: 'primary.dark'
-              }
-            }}
-          >
-            <HelpOutline />
-          </IconButton>
-        </Tooltip>
+        <div className="flex items-center gap-2">
+          <Tooltip title={isCompleted(PROFILE_TOUR) ? t('tours.common.restartTour') : t('tours.common.startTour')}>
+            <IconButton
+              onClick={() => startTour(PROFILE_TOUR)}
+              sx={{
+                color: 'primary.main',
+                '&:hover': {
+                  backgroundColor: 'primary.light',
+                  color: 'primary.dark'
+                }
+              }}
+            >
+              <HelpOutline />
+            </IconButton>
+          </Tooltip>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
