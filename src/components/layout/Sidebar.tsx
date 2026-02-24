@@ -75,7 +75,7 @@ const Sidebar: React.FC = () => {
     { name: t('nav.reports'), path: '/reports', icon: <AssessmentIcon /> },
     { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['admin'] },
-    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['admin'] }
+    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] }
   ];
 
   const filteredNavItems = navItems.filter(item => {

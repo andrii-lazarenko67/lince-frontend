@@ -11,6 +11,7 @@ const SystemsList: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems, pagination, loading } = useAppSelector((state) => state.systems);
+  const { selectedClientId } = useAppSelector((state) => state.clients);
   const { goToSystemDetail } = useAppNavigation();
   const [expandedSystems, setExpandedSystems] = useState<Set<number>>(new Set());
   const [isStageFormOpen, setIsStageFormOpen] = useState(false);
@@ -26,12 +27,12 @@ const SystemsList: React.FC = () => {
     handleChangeRowsPerPage
   } = usePagination({ initialRowsPerPage: 25 });
 
-  // Load systems with current pagination
+  // Load systems - re-fetch when client or pagination changes
   const loadSystems = useCallback(() => {
     dispatch(fetchSystems({ page: apiPage, limit: apiLimit }));
-  }, [dispatch, apiPage, apiLimit]);
+  }, [dispatch, apiPage, apiLimit, selectedClientId]);
 
-  // Initial load and when pagination changes
+  // Initial load and when pagination or selected client changes
   useEffect(() => {
     loadSystems();
   }, [loadSystems]);

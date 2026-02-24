@@ -13,15 +13,16 @@ const ClientSelector: React.FC = () => {
 
   useEffect(() => {
     if (isServiceProvider) {
-      // Fetch all clients for the selector dropdown (use high limit to get all)
-      dispatch(fetchClients({ limit: 100 }));
+      // Load stored client FIRST (synchronous), then fetch clients list
       dispatch(loadSelectedClientFromStorage());
+      dispatch(fetchClients({ limit: 100 }));
     }
   }, [dispatch, isServiceProvider]);
 
-  // Auto-select first client if none is selected (required for service providers)
+  // Auto-select first client only if nothing is stored in Redux OR localStorage
   useEffect(() => {
-    if (isServiceProvider && clients.length > 0 && !selectedClientId) {
+    const stored = localStorage.getItem('selectedClientId');
+    if (isServiceProvider && clients.length > 0 && !selectedClientId && !stored) {
       dispatch(setSelectedClient(clients[0].id));
     }
   }, [dispatch, isServiceProvider, clients, selectedClientId]);

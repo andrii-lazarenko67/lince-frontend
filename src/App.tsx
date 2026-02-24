@@ -106,6 +106,12 @@ const App: React.FC = () => {
               <Route element={<PrivateRoute allowedRoles={['admin']} />}>
                 <Route element={<MainLayout />}>
                   <Route path="/users" element={<UsersPage />} />
+                </Route>
+              </Route>
+
+              {/* Manager and Admin routes - Settings */}
+              <Route element={<PrivateRoute allowedRoles={['manager', 'admin']} />}>
+                <Route element={<MainLayout />}>
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
               </Route>
