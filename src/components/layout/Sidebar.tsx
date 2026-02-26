@@ -102,7 +102,7 @@ const Sidebar: React.FC = () => {
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <img src="/logo.png" alt="LINCE" style={{ height: 40, width: 'auto' }} />
+          <img src="/logo.png" alt="LINCE" style={{ height: 60, width: 'auto' }} />
         </Box>
         {isMobile && (
           <IconButton onClick={handleCloseSidebar} sx={{ color: '#1e40af' }}>

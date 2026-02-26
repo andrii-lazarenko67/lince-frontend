@@ -67,7 +67,7 @@ const LandingNav: React.FC = () => {
             className="flex items-center gap-2.5 group"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <img src="/logo.png" alt="LINCE" className="h-8 w-auto" />
+            <img src="/logo.png" alt="LINCE" className="h-16 w-auto bg-white" />
           </button>
 
           {/* Desktop Nav Links */}

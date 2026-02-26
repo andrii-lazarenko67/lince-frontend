@@ -50,7 +50,7 @@ const LandingFooter: React.FC = () => {
           <div className="lg:col-span-2">
             {/* Logo */}
             <div className="flex items-center gap-2.5 mb-5">
-              <img src="/logo.png" alt="LINCE" className="h-9 w-auto" />
+              <img src="/logo.png" alt="LINCE" className="h-16 w-auto bg-white" />
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
@@ -125,11 +125,10 @@ const LandingFooter: React.FC = () => {
                 <button
                   key={lng}
                   onClick={() => i18n.changeLanguage(lng)}
-                  className={`px-2 py-1 rounded text-xs font-bold uppercase transition-all ${
-                    i18n.language === lng
+                  className={`px-2 py-1 rounded text-xs font-bold uppercase transition-all ${i18n.language === lng
                       ? 'bg-white/10 text-slate-300'
                       : 'text-slate-600 hover:text-slate-400'
-                  }`}
+                    }`}
                 >
                   {lng}
                 </button>
