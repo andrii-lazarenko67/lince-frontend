@@ -101,28 +101,8 @@ const Sidebar: React.FC = () => {
         borderBottom: '1px solid rgba(59, 130, 246, 0.2)',
         boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-          <Avatar sx={{
-            background: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
-            width: 40,
-            height: 40,
-            boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)'
-          }}>
-            <InventoryIcon sx={{ color: 'white', fontSize: 24 }} />
-          </Avatar>
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 800,
-              background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: 2
-            }}
-          >
-            LINCE
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <img src="/logo.png" alt="LINCE" style={{ height: 40, width: 'auto' }} />
         </Box>
         {isMobile && (
           <IconButton onClick={handleCloseSidebar} sx={{ color: '#1e40af' }}>

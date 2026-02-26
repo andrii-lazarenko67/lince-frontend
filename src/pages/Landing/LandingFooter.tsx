@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import EmailIcon from '@mui/icons-material/Email';
 import LanguageIcon from '@mui/icons-material/Language';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
@@ -51,10 +50,7 @@ const LandingFooter: React.FC = () => {
           <div className="lg:col-span-2">
             {/* Logo */}
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-9 h-9 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center shadow-lg shadow-blue-500/30">
-                <WaterDropIcon sx={{ fontSize: 19, color: 'white' }} />
-              </div>
-              <span className="text-white font-bold text-xl tracking-tight">LINCE</span>
+              <img src="/logo.png" alt="LINCE" className="h-9 w-auto" />
             </div>
 
             <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">

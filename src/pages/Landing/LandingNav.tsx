@@ -5,7 +5,6 @@ import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 const navLinkKeys = [
@@ -68,10 +67,7 @@ const LandingNav: React.FC = () => {
             className="flex items-center gap-2.5 group"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded flex items-center justify-center shadow-lg shadow-blue-500/30 group-hover:shadow-blue-500/50 transition-shadow">
-              <WaterDropIcon sx={{ fontSize: 17, color: 'white' }} />
-            </div>
-            <span className="text-white font-bold text-xl tracking-tight">LINCE</span>
+            <img src="/logo.png" alt="LINCE" className="h-8 w-auto" />
           </button>
 
           {/* Desktop Nav Links */}

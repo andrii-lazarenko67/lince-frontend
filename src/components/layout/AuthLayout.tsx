@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import WaterDropIcon from '@mui/icons-material/WaterDrop';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
