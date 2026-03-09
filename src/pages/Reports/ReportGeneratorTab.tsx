@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import i18next from 'i18next';
 import {
@@ -47,8 +47,11 @@ import {
   AutoAwesome as AiIcon,
   Edit as EditIcon,
   Description as WordIcon,
-  Email as EmailIcon
+  Email as EmailIcon,
+  Send as SendIcon,
+  Psychology as AiCommandIcon
 } from '@mui/icons-material';
+import axiosInstance from '../../api/axiosInstance';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchReportTemplates, fetchDefaultTemplate } from '../../store/slices/reportTemplateSlice';
 import { fetchSystems } from '../../store/slices/systemSlice';
@@ -93,8 +96,24 @@ const ReportGeneratorTab: React.FC = () => {
   const [emailRecipient, setEmailRecipient] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
 
+  // AI Command dialog state
+  const [aiCommandOpen, setAiCommandOpen] = useState(false);
+  const [aiInstruction, setAiInstruction] = useState('');
+  const [aiCommandLoading, setAiCommandLoading] = useState(false);
+  const [aiCommandError, setAiCommandError] = useState('');
+
   // Get root systems (no parentId)
   const rootSystems = systems.filter(s => !s.parentId);
+
+  // Filter templates to only those matching the client's registered system types
+  const visibleTemplates = useMemo(() => {
+    const clientTypeIds = new Set(systems.map(s => s.systemTypeId));
+    if (clientTypeIds.size === 0) return templates;
+    return templates.filter(template =>
+      !template.systemTypeIds || template.systemTypeIds.length === 0 ||
+      template.systemTypeIds.some(id => clientTypeIds.has(id))
+    );
+  }, [templates, systems]);
 
   useEffect(() => {
     dispatch(fetchReportTemplates());
@@ -217,6 +236,29 @@ const ReportGeneratorTab: React.FC = () => {
       console.error('Error generating AI conclusion:', error);
     } finally {
       setGeneratingConclusion(false);
+    }
+  };
+
+  const handleAiCommand = async () => {
+    if (!aiInstruction.trim()) return;
+    setAiCommandLoading(true);
+    setAiCommandError('');
+    try {
+      const response = await axiosInstance.post('/ai/report-conclusion', {
+        instruction: aiInstruction.trim(),
+        systemIds: selectedSystemIds,
+        period: { startDate, endDate },
+        language: i18next.language?.startsWith('pt') ? 'pt' : 'en'
+      });
+      if (response.data?.data?.conclusion) {
+        setConclusionText(response.data.data.conclusion);
+        setAiCommandOpen(false);
+        setAiInstruction('');
+      }
+    } catch {
+      setAiCommandError(t('reports.generator.conclusion.aiCommandError'));
+    } finally {
+      setAiCommandLoading(false);
     }
   };
 
@@ -470,7 +512,7 @@ const ReportGeneratorTab: React.FC = () => {
 
               <div data-tour="template-selection">
                 <Grid container spacing={2}>
-                {templates.map((template) => (
+                {visibleTemplates.map((template) => (
                   <Grid item xs={12} sm={6} md={4} key={template.id}>
                     <Card
                       sx={{
@@ -826,23 +868,41 @@ const ReportGeneratorTab: React.FC = () => {
                 {t('reports.generator.conclusion.help')}
               </Typography>
 
-              {/* AI Assistance Button */}
-              <Box sx={{ mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Button
-                  variant="outlined"
-                  startIcon={generatingConclusion ? <CircularProgress size={16} /> : <AiIcon />}
-                  onClick={handleGenerateAiConclusion}
-                  disabled={generatingConclusion}
-                  size="small"
-                >
-                  {generatingConclusion
-                    ? t('reports.generator.conclusion.generating')
-                    : t('reports.generator.conclusion.aiAssist')
-                  }
-                </Button>
-                <Typography variant="caption" color="text.secondary">
-                  {t('reports.generator.conclusion.aiHint')}
+              {/* AI Assistance */}
+              <Box sx={{ mb: 2, p: 2, border: '1px solid', borderColor: 'primary.light', borderRadius: 1, bgcolor: 'primary.50', background: 'linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%)' }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                  <AiIcon sx={{ color: 'primary.main', fontSize: 20 }} />
+                  <Typography variant="subtitle2" color="primary.main" fontWeight={600}>
+                    {t('reports.generator.conclusion.aiTitle')}
+                  </Typography>
+                </Box>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1.5 }}>
+                  {t('reports.generator.conclusion.aiDescription')}
                 </Typography>
+                <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                  <Button
+                    variant="contained"
+                    size="small"
+                    startIcon={<AiCommandIcon />}
+                    onClick={() => { setAiCommandOpen(true); setAiCommandError(''); }}
+                    disabled={!selectedSystemIds.length || !startDate || !endDate}
+                    sx={{ bgcolor: '#3b82f6', '&:hover': { bgcolor: '#2563eb' } }}
+                  >
+                    {t('reports.generator.conclusion.aiCommand')}
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    startIcon={generatingConclusion ? <CircularProgress size={12} /> : <AiIcon />}
+                    onClick={handleGenerateAiConclusion}
+                    disabled={generatingConclusion}
+                  >
+                    {generatingConclusion
+                      ? t('reports.generator.conclusion.generating')
+                      : t('reports.generator.conclusion.aiAssist')
+                    }
+                  </Button>
+                </Box>
               </Box>
 
               {/* Conclusion Text Area */}
@@ -1193,6 +1253,94 @@ const ReportGeneratorTab: React.FC = () => {
             startIcon={sendingEmail ? <CircularProgress size={16} /> : <EmailIcon />}
           >
             {sendingEmail ? t('reports.email.sending') : t('reports.email.send')}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* AI Command Dialog */}
+      <Dialog
+        open={aiCommandOpen}
+        onClose={() => !aiCommandLoading && setAiCommandOpen(false)}
+        maxWidth="md"
+        fullWidth
+        container={document.getElementById('modal-root') || undefined}
+      >
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <AiIcon sx={{ color: 'primary.main' }} />
+          {t('reports.generator.conclusion.aiCommandTitle')}
+        </DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            {t('reports.generator.conclusion.aiCommandSubtitle')}
+          </Typography>
+
+          {/* Preset commands */}
+          <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+            {t('reports.generator.conclusion.presets')}:
+          </Typography>
+          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
+            {[
+              t('reports.generator.conclusion.preset1'),
+              t('reports.generator.conclusion.preset2'),
+              t('reports.generator.conclusion.preset3'),
+              t('reports.generator.conclusion.preset4'),
+            ].map((preset) => (
+              <Chip
+                key={preset}
+                label={preset}
+                size="small"
+                clickable
+                onClick={() => setAiInstruction(preset)}
+                color={aiInstruction === preset ? 'primary' : 'default'}
+                variant={aiInstruction === preset ? 'filled' : 'outlined'}
+                sx={{ cursor: 'pointer', fontSize: '0.72rem' }}
+              />
+            ))}
+          </Box>
+
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            label={t('reports.generator.conclusion.aiInstructionLabel')}
+            value={aiInstruction}
+            onChange={(e) => setAiInstruction(e.target.value)}
+            placeholder={t('reports.generator.conclusion.aiInstructionPlaceholder')}
+            disabled={aiCommandLoading}
+            autoFocus
+          />
+
+          {aiCommandError && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {aiCommandError}
+            </Alert>
+          )}
+
+          <Alert severity="info" sx={{ mt: 2 }} icon={<AiIcon fontSize="small" />}>
+            {t('reports.generator.conclusion.aiCommandInfo', {
+              systems: selectedSystemIds.length,
+              start: startDate,
+              end: endDate
+            })}
+          </Alert>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setAiCommandOpen(false)}
+            disabled={aiCommandLoading}
+          >
+            {t('common.cancel')}
+          </Button>
+          <Button
+            onClick={handleAiCommand}
+            variant="contained"
+            disabled={aiCommandLoading || !aiInstruction.trim()}
+            startIcon={aiCommandLoading ? <CircularProgress size={16} /> : <SendIcon />}
+          >
+            {aiCommandLoading
+              ? t('reports.generator.conclusion.aiCommandGenerating')
+              : t('reports.generator.conclusion.aiCommandGenerate')
+            }
           </Button>
         </DialogActions>
       </Dialog>

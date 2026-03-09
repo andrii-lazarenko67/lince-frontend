@@ -153,7 +153,18 @@
       "stageType": "stage",
       "systemType": "system",
       "enterLaboratory": "Please enter the laboratory name",
-      "enterOneValue": "Please enter at least one measurement value"
+      "enterOneValue": "Please enter at least one measurement value",
+      "ai": {
+        "title": "AI Auto-fill",
+        "description": "Upload a lab report (image or PDF) to automatically fill in the analysis values.",
+        "uploadButton": "Upload Report",
+        "uploadTooltip": "Upload a lab report to extract values automatically",
+        "analyzing": "Analyzing...",
+        "found": "Filled",
+        "notFound": "Not found",
+        "error": "Could not extract values from the report. Please try again.",
+        "noMonitoringPoints": "Please select a system first to load monitoring points."
+      }
     }
   }
 }

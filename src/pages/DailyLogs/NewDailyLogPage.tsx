@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { createDailyLog } from '../../store/slices/dailyLogSlice';
@@ -7,8 +7,9 @@ import { fetchMonitoringPoints } from '../../store/slices/monitoringPointSlice';
 import { Card, Button, Select, Input, TextArea } from '../../components/common';
 import type { RecordType, TimeMode } from '../../types';
 import { useTour, useAutoStartTour, DAILY_LOGS_NEW_TOUR } from '../../tours';
-import { HelpOutline } from '@mui/icons-material';
-import { IconButton, Tooltip } from '@mui/material';
+import { HelpOutline, AutoAwesome, CheckCircle, UploadFile } from '@mui/icons-material';
+import { IconButton, Tooltip, CircularProgress, Chip } from '@mui/material';
+import axiosInstance from '../../api/axiosInstance';
 
 interface EntryValue {
   monitoringPointId: number;
@@ -17,7 +18,7 @@ interface EntryValue {
 }
 
 const NewDailyLogPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
   const { systems } = useAppSelector((state) => state.systems);
   const { monitoringPoints } = useAppSelector((state) => state.monitoringPoints);
@@ -47,6 +48,12 @@ const NewDailyLogPage: React.FC = () => {
   });
   const [entries, setEntries] = useState<EntryValue[]>([]);
   const [availableStages, setAvailableStages] = useState<Array<{ value: number; label: string }>>([]);
+
+  // AI lab report extraction
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiResult, setAiResult] = useState<{ found: string[]; notFound: string[] } | null>(null);
+  const [aiError, setAiError] = useState('');
 
   useEffect(() => {
     dispatch(fetchSystems({}));
@@ -121,6 +128,52 @@ const NewDailyLogPage: React.FC = () => {
     const newEntries = [...entries];
     newEntries[index] = { ...newEntries[index], [field]: value };
     setEntries(newEntries);
+  };
+
+  const handleAiExtract = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (monitoringPoints.length === 0) {
+      setAiError(t('dailyLogs.new.ai.noMonitoringPoints'));
+      return;
+    }
+    setAiLoading(true);
+    setAiResult(null);
+    setAiError('');
+    try {
+      const formPayload = new FormData();
+      formPayload.append('file', file);
+      formPayload.append('monitoringPoints', JSON.stringify(
+        monitoringPoints.map(mp => ({
+          id: mp.id,
+          parameterName: mp.parameterObj?.name || mp.name,
+          name: mp.name,
+          unit: mp.unitObj?.abbreviation || ''
+        }))
+      ));
+      formPayload.append('language', i18n.language?.startsWith('pt') ? 'pt' : 'en');
+
+      const response = await axiosInstance.post('/ai/extract-lab-report', formPayload, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+
+      const { values, found, notFound } = response.data;
+      // Auto-fill entries with extracted values
+      setEntries(prev => prev.map(entry => {
+        const extracted = values[String(entry.monitoringPointId)];
+        if (extracted !== undefined && extracted !== null) {
+          return { ...entry, value: String(extracted) };
+        }
+        return entry;
+      }));
+      setAiResult({ found: found || [], notFound: notFound || [] });
+    } catch (err: unknown) {
+      setAiError(t('dailyLogs.new.ai.error'));
+    } finally {
+      setAiLoading(false);
+      // Reset file input so same file can be re-uploaded if needed
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -234,6 +287,66 @@ const NewDailyLogPage: React.FC = () => {
                   ? t('dailyLogs.new.fieldRecordInfo')
                   : t('dailyLogs.new.laboratoryRecordInfo')}
               </p>
+
+              {/* AI Lab Report Extraction */}
+              <div className="border border-blue-100 bg-blue-50 rounded p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <AutoAwesome sx={{ fontSize: 18, color: '#3b82f6' }} />
+                    <span className="text-sm font-medium text-blue-700">{t('dailyLogs.new.ai.title')}</span>
+                  </div>
+                  <Tooltip title={t('dailyLogs.new.ai.uploadTooltip')}>
+                    <span>
+                      <button
+                        type="button"
+                        disabled={aiLoading || monitoringPoints.length === 0}
+                        onClick={() => fileInputRef.current?.click()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white text-xs font-semibold rounded transition-colors"
+                      >
+                        {aiLoading
+                          ? <CircularProgress size={12} sx={{ color: 'white' }} />
+                          : <UploadFile sx={{ fontSize: 14 }} />
+                        }
+                        {aiLoading ? t('dailyLogs.new.ai.analyzing') : t('dailyLogs.new.ai.uploadButton')}
+                      </button>
+                    </span>
+                  </Tooltip>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="hidden"
+                    onChange={handleAiExtract}
+                  />
+                </div>
+                <p className="text-xs text-blue-600">{t('dailyLogs.new.ai.description')}</p>
+
+                {aiError && (
+                  <p className="mt-2 text-xs text-red-600">{aiError}</p>
+                )}
+
+                {aiResult && (
+                  <div className="mt-3 flex flex-col gap-2">
+                    {aiResult.found.length > 0 && (
+                      <div className="flex flex-wrap gap-1 items-center">
+                        <CheckCircle sx={{ fontSize: 14, color: '#10b981' }} />
+                        <span className="text-xs text-gray-600 mr-1">{t('dailyLogs.new.ai.found')}:</span>
+                        {aiResult.found.map((name) => (
+                          <Chip key={name} label={name} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: '#d1fae5', color: '#065f46' }} />
+                        ))}
+                      </div>
+                    )}
+                    {aiResult.notFound.length > 0 && (
+                      <div className="flex flex-wrap gap-1 items-center">
+                        <span className="text-xs text-gray-400 mr-1">{t('dailyLogs.new.ai.notFound')}:</span>
+                        {aiResult.notFound.map((name) => (
+                          <Chip key={name} label={name} size="small" sx={{ fontSize: '0.65rem', height: 20, bgcolor: '#f3f4f6', color: '#6b7280' }} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </Card>
         </div>
@@ -459,6 +572,16 @@ const NewDailyLogPage: React.FC = () => {
             </p>
           </Card>
         )}
+
+        {/* Bottom action buttons */}
+        <div className="flex justify-end space-x-3 mt-6">
+          <Button type="button" variant="danger" onClick={goBack} disabled={loading}>
+            {t('dailyLogs.new.cancel')}
+          </Button>
+          <Button type="submit" variant="primary" disabled={loading}>
+            {loading ? t('dailyLogs.new.saving') : t('dailyLogs.new.saveRecord')}
+          </Button>
+        </div>
       </form>
     </div>
   );

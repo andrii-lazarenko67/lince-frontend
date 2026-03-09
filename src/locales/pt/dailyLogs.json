@@ -153,7 +153,18 @@
       "stageType": "etapa",
       "systemType": "sistema",
       "enterLaboratory": "Por favor, digite o nome do laboratório",
-      "enterOneValue": "Por favor, digite pelo menos um valor de medição"
+      "enterOneValue": "Por favor, digite pelo menos um valor de medição",
+      "ai": {
+        "title": "Preenchimento por IA",
+        "description": "Envie um laudo laboratorial (imagem ou PDF) para preencher automaticamente os valores das análises.",
+        "uploadButton": "Enviar Laudo",
+        "uploadTooltip": "Envie um laudo para extrair os valores automaticamente",
+        "analyzing": "Analisando...",
+        "found": "Preenchidos",
+        "notFound": "Não encontrados",
+        "error": "Não foi possível extrair os valores do laudo. Tente novamente.",
+        "noMonitoringPoints": "Por favor, selecione um sistema primeiro para carregar os pontos de monitoramento."
+      }
     }
   }
 }

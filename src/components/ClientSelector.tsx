@@ -36,7 +36,7 @@ const ClientSelector: React.FC = () => {
     dispatch(setSelectedClient(value ? parseInt(value, 10) : null));
   };
 
-  const selectedClient = clients.find(c => c.id === selectedClientId);
+  // const selectedClient = clients.find(c => c.id === selectedClientId);
 
   return (
     <div className="flex items-center gap-2">
@@ -57,11 +57,6 @@ const ClientSelector: React.FC = () => {
           ))
         )}
       </select>
-      {selectedClient && (
-        <span className="text-xs text-white/70 hidden md:inline">
-          {selectedClient.name}
-        </span>
-      )}
     </div>
   );
 };

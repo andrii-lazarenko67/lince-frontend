@@ -766,7 +766,7 @@
         },
         "header": {
           "title": "Página de Sistemas",
-          "content": "Esta página mostra todos os seus sistemas e estágios de tratamento de água. Sistemas são as principais unidades de tratamento, e estágios representam seções específicas dentro de um sistema."
+          "content": "Esta página mostra todos os seus sistemas e Etapas de tratamento de água. Sistemas são as principais unidades de tratamento, e Etapas representam seções específicas dentro de um sistema."
         },
         "viewMode": {
           "title": "Alternar Modo de Visualização",
@@ -778,11 +778,11 @@
         },
         "addSystem": {
           "title": "Adicionar Novo Sistema",
-          "content": "Clique aqui para adicionar um novo sistema ou estágio de tratamento de água. Insira detalhes como nome, localização, tipo, capacidade e status."
+          "content": "Clique aqui para adicionar um novo sistema ou Etapa de tratamento de água. Insira detalhes como nome, localização, tipo, capacidade e status."
         },
         "table": {
           "title": "Tabela de Sistemas",
-          "content": "Visualize todos os seus sistemas e estágios com detalhes: nome, localização, tipo, status e data de criação. Clique em qualquer linha para ver detalhes completos do sistema, pontos de monitoramento e listas de verificação."
+          "content": "Visualize todos os seus sistemas e Etapas com detalhes: nome, localização, tipo, status e data de criação. Clique em qualquer linha para ver detalhes completos do sistema, pontos de monitoramento e listas de verificação."
         },
         "complete": {
           "title": "Gerenciamento de Sistemas Pronto!",
@@ -808,7 +808,7 @@
         },
         "info": {
           "title": "Informações do Sistema",
-          "content": "Visualize detalhes completos do sistema: localização, tipo, capacidade, horário de operação, data de instalação, status, pessoa responsável, descrição e sistema pai (se for um estágio)."
+          "content": "Visualize detalhes completos do sistema: localização, tipo, capacidade, horário de operação, data de instalação, status, pessoa responsável, descrição e sistema pai (se for um Etapa)."
         },
         "photos": {
           "title": "Galeria de Fotos",

@@ -14,6 +14,7 @@ import { TourProvider, TourRunner, allTours } from './tours';
 const LandingPage = lazy(() => import('./pages/Landing/LandingPage'));
 const LoginPage = lazy(() => import('./pages/Login/LoginPage'));
 const SignupPage = lazy(() => import('./pages/Signup/SignupPage'));
+const ResetPasswordPage = lazy(() => import('./pages/Login/ResetPasswordPage'));
 const AddClientPage = lazy(() => import('./pages/Clients/AddClientPage'));
 const FirstClientSetupPage = lazy(() => import('./pages/Clients/FirstClientSetupPage'));
 const ClientsPage = lazy(() => import('./pages/Clients/ClientsPage'));
@@ -53,6 +54,7 @@ const App: React.FC = () => {
               <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<SignupPage />} />
+              <Route path="/reset-password" element={<ResetPasswordPage />} />
 
               {/* Standalone route for first client setup after signup */}
               <Route element={<PrivateRoute />}>

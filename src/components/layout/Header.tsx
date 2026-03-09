@@ -113,8 +113,8 @@ const Header: React.FC = () => {
             </Badge>
           </IconButton>
 
-          {/* Settings - Admin only */}
-          {user?.role === 'admin' && (
+          {/* Settings - Admin and Manager */}
+          {(user?.role === 'admin' || user?.role === 'manager') && (
             <IconButton
               onClick={goToSettings}
               sx={{

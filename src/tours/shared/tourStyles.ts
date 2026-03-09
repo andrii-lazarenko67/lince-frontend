@@ -11,7 +11,7 @@ export const tourStyles: Styles = {
     backgroundColor: '#ffffff',
     overlayColor: 'rgba(0, 0, 0, 0.2)', // Dark overlay on background
     primaryColor: '#3b82f6',
-    textColor: '#1f2937',
+    textColor: '#000000',
     width: 400,
     zIndex: 10000
   },
@@ -24,14 +24,14 @@ export const tourStyles: Styles = {
     textAlign: 'left'
   },
   tooltipTitle: {
-    color: '#111827',
+    color: '#000000',
     fontSize: '18px',
     fontWeight: 600,
     margin: 0,
     padding: '20px 24px 12px'
   },
   tooltipContent: {
-    color: '#4b5563',
+    color: '#000000',
     fontSize: '14px',
     lineHeight: '1.6',
     padding: '0 24px 20px'
@@ -63,7 +63,7 @@ export const tourStyles: Styles = {
     backgroundColor: 'transparent',
     borderRadius: '6px',
     border: '1px solid #d1d5db',
-    color: '#6b7280',
+    color: '#000000',
     fontSize: '14px',
     fontWeight: 500,
     padding: '8px 16px',
@@ -74,8 +74,9 @@ export const tourStyles: Styles = {
   },
   buttonSkip: {
     backgroundColor: 'transparent',
-    border: 'none',
-    color: '#9ca3af',
+    border: '1px solid #000000',
+    borderRadius: '6px',
+    color: '#000000',
     fontSize: '14px',
     fontWeight: 500,
     padding: '8px 12px',
@@ -84,7 +85,7 @@ export const tourStyles: Styles = {
     outline: 'none'
   },
   buttonClose: {
-    color: '#9ca3af',
+    color: '#000000',
     height: '16px',
     padding: '20px',
     position: 'absolute',

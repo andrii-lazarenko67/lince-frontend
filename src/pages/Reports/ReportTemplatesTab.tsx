@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Box,
@@ -41,6 +41,7 @@ import {
   duplicateReportTemplate,
   setDefaultTemplate
 } from '../../store/slices/reportTemplateSlice';
+import { fetchSystems } from '../../store/slices/systemSlice';
 import type { ReportTemplate, CreateReportTemplateRequest } from '../../types';
 import { DEFAULT_TEMPLATE_CONFIG } from '../../types/reportTemplate.types';
 import ReportTemplateEditor from './ReportTemplateEditor';
@@ -49,6 +50,12 @@ const ReportTemplatesTab: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const { templates, loading, error } = useAppSelector((state) => state.reportTemplates);
+  const { systems } = useAppSelector((state) => state.systems);
+
+  // Unique system type IDs registered for this client
+  const clientSystemTypeIds = useMemo(() => {
+    return new Set(systems.map(s => s.systemTypeId));
+  }, [systems]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<ReportTemplate | null>(null);
@@ -60,7 +67,20 @@ const ReportTemplatesTab: React.FC = () => {
 
   useEffect(() => {
     dispatch(fetchReportTemplates());
-  }, [dispatch]);
+    if (systems.length === 0) {
+      dispatch(fetchSystems({}));
+    }
+  }, [dispatch]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Filter templates: show templates that match at least one of the client's system types,
+  // or templates with no system type restriction (systemTypeIds is null/empty)
+  const visibleTemplates = useMemo(() => {
+    if (clientSystemTypeIds.size === 0) return templates;
+    return templates.filter(template =>
+      !template.systemTypeIds || template.systemTypeIds.length === 0 ||
+      template.systemTypeIds.some(id => clientSystemTypeIds.has(id))
+    );
+  }, [templates, clientSystemTypeIds]);
 
   const handleMenuClick = (event: React.MouseEvent<HTMLElement>, template: ReportTemplate) => {
     event.stopPropagation();
@@ -162,7 +182,7 @@ const ReportTemplatesTab: React.FC = () => {
 
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h6">
-          {t('reports.templates.title')} ({templates.length})
+          {t('reports.templates.title')} ({visibleTemplates.length})
         </Typography>
         <div data-tour="create-template-button">
           <Button
@@ -177,7 +197,7 @@ const ReportTemplatesTab: React.FC = () => {
 
       <div data-tour="templates-grid">
         <Grid container spacing={3}>
-          {templates.map((template, index) => (
+          {visibleTemplates.map((template, index) => (
             <Grid item xs={12} sm={6} md={4} key={template.id}>
               <div data-tour={index === 0 ? 'template-card' : undefined}>
                 <Card
@@ -262,7 +282,7 @@ const ReportTemplatesTab: React.FC = () => {
             </Grid>
           ))}
 
-          {templates.length === 0 && !loading && (
+          {visibleTemplates.length === 0 && !loading && (
             <Grid item xs={12}>
               <Card sx={{ p: 4, textAlign: 'center' }}>
                 <Typography color="text.secondary" gutterBottom>

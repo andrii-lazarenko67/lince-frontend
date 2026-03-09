@@ -74,6 +74,7 @@ const ClientDetailPage: React.FC = () => {
 
   useEffect(() => {
     if (id) {
+      dispatch(clearCurrentClient());
       dispatch(fetchClientById(parseInt(id)));
       dispatch(fetchClientStats(parseInt(id)));
     }

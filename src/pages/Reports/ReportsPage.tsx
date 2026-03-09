@@ -5,12 +5,14 @@ import {
   Description as TemplateIcon,
   Add as GenerateIcon,
   History as HistoryIcon,
-  HelpOutline
+  HelpOutline,
+  AutoAwesome as AiIcon
 } from '@mui/icons-material';
 import { useTour, useAutoStartTour, REPORTS_WORKFLOW_TOUR } from '../../tours';
 import ReportTemplatesTab from './ReportTemplatesTab';
 import ReportGeneratorTab from './ReportGeneratorTab';
 import ReportHistoryTab from './ReportHistoryTab';
+import AIReportsTab from './AIReportsTab';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -103,6 +105,16 @@ const ReportsPage: React.FC = () => {
             label={t('reports.tabs.history')}
             {...a11yProps(2)}
           />
+          <Tab
+            icon={<AiIcon />}
+            iconPosition="start"
+            label={t('reports.tabs.aiReports')}
+            {...a11yProps(3)}
+            sx={{
+              '&.Mui-selected': { color: '#1d4ed8' },
+              fontWeight: 600
+            }}
+          />
         </Tabs>
       </Paper>
 
@@ -114,6 +126,9 @@ const ReportsPage: React.FC = () => {
       </TabPanel>
       <TabPanel value={activeTab} index={2}>
         <ReportHistoryTab />
+      </TabPanel>
+      <TabPanel value={activeTab} index={3}>
+        <AIReportsTab />
       </TabPanel>
     </Box>
   );
