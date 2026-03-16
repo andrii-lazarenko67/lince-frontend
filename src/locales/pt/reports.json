@@ -42,7 +42,10 @@
       "refinementInstruction": "Nova instrução",
       "emptyState": "Seu relatório aparecerá aqui.",
       "emptyStateHint": "Configure os sistemas, o período e insira um prompt para começar.",
-      "error": "Não foi possível gerar o relatório. Verifique sua conexão e tente novamente."
+      "error": "Não foi possível gerar o relatório. Verifique sua conexão e tente novamente.",
+      "exportPdf": "Exportar PDF",
+      "exportWord": "Exportar Word",
+      "exporting": "Exportando..."
     },
     "templates": {
       "title": "Modelos de Relatório",
@@ -59,6 +62,9 @@
       "createFirst": "Criar Primeiro Modelo",
       "duplicate": "Duplicar",
       "setDefault": "Definir como Padrão",
+      "makeGlobal": "Tornar Global",
+      "removeGlobal": "Tornar Privado",
+      "globalTemplate": "Modelo global (visível para todos os clientes)",
       "deleteConfirmTitle": "Excluir Modelo",
       "deleteConfirmMessage": "Tem certeza que deseja excluir \"{{name}}\"? Esta ação não pode ser desfeita.",
       "reportBlocks": "Blocos do Relatório",
@@ -217,6 +223,11 @@
       "startDate": "Data Inicial",
       "endDate": "Data Final",
       "selectAll": "Selecionar Todos os Sistemas",
+      "selectStages": "Selecionar Etapas",
+      "selectStagesHelp": "Selecione as etapas dos sistemas a incluir no relatório. Deixe em branco para incluir todas as etapas.",
+      "selectAllStages": "Selecionar Todas as Etapas",
+      "selectedStages": "Etapas",
+      "allStages": "Todas as etapas",
       "configureOptionsHelp": "Configure o que incluir no relatório",
       "options": {
         "title": "Opções",
@@ -522,6 +533,7 @@
       "result": "Resultado",
       "itemsChecked": "Itens",
       "pending": "Pendente",
+      "viewed": "Visualizada",
       "completed": "Concluída",
       "approved": "Aprovada",
       "compliant": "Conforme",

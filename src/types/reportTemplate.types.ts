@@ -166,6 +166,7 @@ export interface CreateReportTemplateRequest {
   type?: ReportTemplateType;
   config?: ReportTemplateConfig;
   isDefault?: boolean;
+  isGlobal?: boolean;
   clientId?: number;
   systemTypeIds?: number[];  // Optional system type IDs for filtering
 }
@@ -176,6 +177,7 @@ export interface UpdateReportTemplateRequest {
   type?: ReportTemplateType;
   config?: ReportTemplateConfig;
   isDefault?: boolean;
+  isGlobal?: boolean;
   systemTypeIds?: number[];  // Optional system type IDs for filtering
 }
 

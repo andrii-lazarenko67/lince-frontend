@@ -79,6 +79,7 @@ const ReportGeneratorTab: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedSystemIds, setSelectedSystemIds] = useState<number[]>([]);
+  const [selectedStageIds, setSelectedStageIds] = useState<number[]>([]);
   const [includeOnlyAlerts, setIncludeOnlyAlerts] = useState(false);
   const [includePhotos, setIncludePhotos] = useState(true);
   const [includeCharts, setIncludeCharts] = useState(true);
@@ -105,6 +106,12 @@ const ReportGeneratorTab: React.FC = () => {
   // Get root systems (no parentId)
   const rootSystems = systems.filter(s => !s.parentId);
 
+  // Get stages (children) of the currently selected root systems
+  const availableStages = useMemo(() => {
+    if (selectedSystemIds.length === 0) return [];
+    return systems.filter(s => s.parentId !== null && s.parentId !== undefined && selectedSystemIds.includes(s.parentId));
+  }, [systems, selectedSystemIds]);
+
   // Filter templates to only those matching the client's registered system types
   const visibleTemplates = useMemo(() => {
     const clientTypeIds = new Set(systems.map(s => s.systemTypeId));
@@ -122,8 +129,14 @@ const ReportGeneratorTab: React.FC = () => {
     dispatch(fetchMonitoringPoints({}));
   }, [dispatch]);
 
-  // Update available monitoring points when selected systems change
+  // Update available monitoring points and clear invalid stage selections when selected systems change
   useEffect(() => {
+    // Clear stage selections that no longer belong to selected systems
+    setSelectedStageIds(prev => prev.filter(id => {
+      const stage = systems.find(s => s.id === id);
+      return stage?.parentId !== null && stage?.parentId !== undefined && selectedSystemIds.includes(stage.parentId);
+    }));
+
     if (selectedSystemIds.length > 0) {
       // Filter monitoring points for selected systems
       const filtered = monitoringPoints.filter(mp => selectedSystemIds.includes(mp.systemId));
@@ -191,6 +204,20 @@ const ReportGeneratorTab: React.FC = () => {
       setSelectedSystemIds([]);
     } else {
       setSelectedSystemIds(rootSystems.map(s => s.id));
+    }
+  };
+
+  const handleStageToggle = (stageId: number) => {
+    setSelectedStageIds(prev =>
+      prev.includes(stageId) ? prev.filter(id => id !== stageId) : [...prev, stageId]
+    );
+  };
+
+  const handleSelectAllStages = () => {
+    if (selectedStageIds.length === availableStages.length && availableStages.length > 0) {
+      setSelectedStageIds([]);
+    } else {
+      setSelectedStageIds(availableStages.map(s => s.id));
     }
   };
 
@@ -289,6 +316,7 @@ const ReportGeneratorTab: React.FC = () => {
         includeOnlyAlerts,
         includePhotos,
         includeCharts,
+        stageIds: selectedStageIds.length > 0 ? selectedStageIds : undefined,
         selectedMonitoringPointIds: selectedMonitoringPointIds.length > 0 ? selectedMonitoringPointIds : undefined
       },
       conclusion: conclusionText || undefined,
@@ -697,6 +725,46 @@ const ReportGeneratorTab: React.FC = () => {
                 ))}
               </FormGroup>
               </div>
+
+              {availableStages.length > 0 && (
+                <Box sx={{ mt: 3 }}>
+                  <Typography variant="subtitle2" fontWeight="bold" gutterBottom>
+                    {t('reports.generator.selectStages')}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    {t('reports.generator.selectStagesHelp')}
+                  </Typography>
+                  <FormGroup>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={selectedStageIds.length === availableStages.length && availableStages.length > 0}
+                          indeterminate={selectedStageIds.length > 0 && selectedStageIds.length < availableStages.length}
+                          onChange={handleSelectAllStages}
+                        />
+                      }
+                      label={<Typography fontWeight="bold">{t('reports.generator.selectAllStages')}</Typography>}
+                    />
+                    <Divider sx={{ my: 1 }} />
+                    {availableStages.map((stage) => {
+                      const parentSystem = rootSystems.find(s => s.id === stage.parentId);
+                      return (
+                        <FormControlLabel
+                          key={stage.id}
+                          control={
+                            <Checkbox
+                              checked={selectedStageIds.includes(stage.id)}
+                              onChange={() => handleStageToggle(stage.id)}
+                            />
+                          }
+                          label={`${stage.name}${parentSystem ? ` (${parentSystem.name})` : ''}`}
+                          sx={{ ml: 2 }}
+                        />
+                      );
+                    })}
+                  </FormGroup>
+                </Box>
+              )}
             </Box>
             <Box sx={{ mt: 2 }}>
               <Button onClick={handleBack} sx={{ mr: 1 }}>
@@ -798,7 +866,7 @@ const ReportGeneratorTab: React.FC = () => {
                       const systemName = systems.find(s => s.id === mp.systemId)?.name || '';
                       const parameterName = mp.parameterObj?.name || mp.name;
                       const unit = mp.unitObj?.abbreviation || '';
-                      const label = `${parameterName} (${systemName})${unit ? ` - ${unit}` : ''}`;
+                      const label = `${parameterName}${unit ? ` - ${unit}` : ''} (${systemName})`;
 
                       return (
                         <FormControlLabel
@@ -1044,6 +1112,21 @@ const ReportGeneratorTab: React.FC = () => {
                     }
                   />
                 </ListItem>
+                {availableStages.length > 0 && (
+                  <ListItem>
+                    <ListItemIcon>
+                      <SystemIcon color="action" />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={t('reports.generator.selectedStages')}
+                      secondary={
+                        selectedStageIds.length > 0
+                          ? availableStages.filter(s => selectedStageIds.includes(s.id)).map(s => s.name).join(', ')
+                          : t('reports.generator.allStages')
+                      }
+                    />
+                  </ListItem>
+                )}
               </List>
 
               <Typography variant="subtitle2" sx={{ mt: 2, mb: 1 }}>

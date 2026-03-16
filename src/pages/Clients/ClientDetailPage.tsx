@@ -27,7 +27,7 @@ import {
   HelpOutline
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
-import { fetchClientById, updateClient, clearCurrentClient, fetchClientStats, uploadClientLogo } from '../../store/slices/clientSlice';
+import { fetchClientById, updateClient, clearCurrentClient, fetchClientStats, uploadClientLogo, setSelectedClient } from '../../store/slices/clientSlice';
 import { useTour, useAutoStartTour, CLIENTS_DETAIL_TOUR } from '../../tours';
 
 interface TabPanelProps {
@@ -77,6 +77,7 @@ const ClientDetailPage: React.FC = () => {
       dispatch(clearCurrentClient());
       dispatch(fetchClientById(parseInt(id)));
       dispatch(fetchClientStats(parseInt(id)));
+      dispatch(setSelectedClient(parseInt(id)));
     }
     return () => {
       dispatch(clearCurrentClient());

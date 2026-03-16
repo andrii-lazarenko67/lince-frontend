@@ -27,8 +27,11 @@ import {
   Refresh as RefreshIcon,
   Send as SendIcon,
   BarChart as DataIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
+  PictureAsPdf as PdfIcon,
+  Description as WordIcon
 } from '@mui/icons-material';
+import jsPDF from 'jspdf';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchSystems } from '../../store/slices/systemSlice';
 import axiosInstance from '../../api/axiosInstance';
@@ -55,6 +58,7 @@ const AIReportsTab: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [refinementPrompt, setRefinementPrompt] = useState('');
   const [refining, setRefining] = useState(false);
+  const [exportingWord, setExportingWord] = useState(false);
 
   const reportRef = useRef<HTMLDivElement>(null);
 
@@ -119,6 +123,96 @@ const AIReportsTab: React.FC = () => {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // fallback: select text
+    }
+  };
+
+  const handleExportPdf = () => {
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 15;
+    const maxWidth = pageWidth - margin * 2;
+    let y = margin;
+
+    const addPage = () => {
+      doc.addPage();
+      y = margin;
+    };
+
+    const checkY = (needed: number) => {
+      if (y + needed > doc.internal.pageSize.getHeight() - margin) addPage();
+    };
+
+    const lines = report.split('\n');
+    for (const line of lines) {
+      if (line.startsWith('# ')) {
+        checkY(12);
+        doc.setFontSize(16);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(30, 58, 95);
+        doc.text(line.slice(2), margin, y);
+        y += 8;
+      } else if (line.startsWith('## ')) {
+        checkY(10);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(30, 58, 95);
+        doc.text(line.slice(3), margin, y);
+        y += 7;
+      } else if (line.startsWith('### ')) {
+        checkY(8);
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(37, 99, 235);
+        doc.text(line.slice(4), margin, y);
+        y += 6;
+      } else if (line.startsWith('- ') || line.startsWith('• ')) {
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(50, 50, 50);
+        const wrapped = doc.splitTextToSize('• ' + line.slice(2), maxWidth - 4);
+        checkY(wrapped.length * 5);
+        doc.text(wrapped, margin + 3, y);
+        y += wrapped.length * 5;
+      } else if (line.startsWith('---')) {
+        checkY(4);
+        doc.setDrawColor(200, 200, 200);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 4;
+      } else if (line.trim() === '') {
+        y += 3;
+      } else {
+        const isBoldLine = line.startsWith('**') && line.endsWith('**');
+        doc.setFontSize(10);
+        doc.setFont('helvetica', isBoldLine ? 'bold' : 'normal');
+        doc.setTextColor(50, 50, 50);
+        const text = isBoldLine ? line.slice(2, -2) : line;
+        const wrapped = doc.splitTextToSize(text, maxWidth);
+        checkY(wrapped.length * 5);
+        doc.text(wrapped, margin, y);
+        y += wrapped.length * 5;
+      }
+    }
+
+    doc.save('ai-report.pdf');
+  };
+
+  const handleExportWord = async () => {
+    setExportingWord(true);
+    try {
+      const filename = `ai-report-${startDate}-${endDate}`;
+      const response = await axiosInstance.post('/ai/export-word', { text: report, filename }, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${filename}.docx`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch {
+      // silent fail
+    } finally {
+      setExportingWord(false);
     }
   };
 
@@ -352,6 +446,20 @@ const AIReportsTab: React.FC = () => {
                         <IconButton size="small" onClick={handleCopy}>
                           {copied ? <CheckIcon fontSize="small" color="success" /> : <CopyIcon fontSize="small" />}
                         </IconButton>
+                      </Tooltip>
+                      <Tooltip title={t('reports.aiReports.exportPdf')}>
+                        <IconButton size="small" onClick={handleExportPdf}>
+                          <PdfIcon fontSize="small" color="error" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title={exportingWord ? t('reports.aiReports.exporting') : t('reports.aiReports.exportWord')}>
+                        <span>
+                          <IconButton size="small" onClick={handleExportWord} disabled={exportingWord}>
+                            {exportingWord
+                              ? <CircularProgress size={16} />
+                              : <WordIcon fontSize="small" sx={{ color: '#1d6fd4' }} />}
+                          </IconButton>
+                        </span>
                       </Tooltip>
                       <Tooltip title={t('reports.aiReports.regenerate')}>
                         <IconButton size="small" onClick={handleGenerate} disabled={loading}>

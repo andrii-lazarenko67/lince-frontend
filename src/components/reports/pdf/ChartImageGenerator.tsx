@@ -102,7 +102,7 @@ export const ChartImageGenerator: React.FC<ChartImageGeneratorProps> = ({
       datasets.push({
         label: `${chartSeries.parameterName} (${chartSeries.unit})`,
         data: values,
-        backgroundColor: hexToRgba(primaryColor, 0.3), // Semi-transparent fill
+        backgroundColor: hexToRgba(primaryColor, 0.5), // Semi-transparent fill
         borderColor: primaryColor,
         borderWidth: 2,
         fill: true, // Enable area fill

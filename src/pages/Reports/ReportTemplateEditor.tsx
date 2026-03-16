@@ -378,10 +378,9 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
                               checked={block.includeCharts || false}
                               onChange={(e) => {
                                 handleBlockOptionChange(block.type, 'includeCharts', e.target.checked);
-                                // Initialize chart config when enabling charts
-                                if (e.target.checked && !block.chartConfig) {
-                                  handleChartConfigChange({ ...DEFAULT_CHART_CONFIG, enabled: true });
-                                } else if (!e.target.checked && block.chartConfig) {
+                                if (e.target.checked) {
+                                  handleChartConfigChange({ ...(block.chartConfig || DEFAULT_CHART_CONFIG), enabled: true });
+                                } else if (block.chartConfig) {
                                   handleChartConfigChange({ ...block.chartConfig, enabled: false });
                                 }
                               }}
@@ -730,28 +729,56 @@ const ReportTemplateEditor: React.FC<ReportTemplateEditorProps> = ({
               )}
 
               <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  type="color"
-                  label={t('reports.branding.primaryColor')}
-                  value={branding.primaryColor}
-                  onChange={(e) => handleBrandingChange('primaryColor', e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <Box
-                        sx={{
-                          width: 24,
-                          height: 24,
-                          borderRadius: 1,
-                          bgcolor: branding.primaryColor,
-                          mr: 1,
-                          border: '1px solid #ccc'
-                        }}
-                      />
-                    )
-                  }}
-                />
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+                  {t('reports.branding.primaryColor')}
+                </Typography>
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, mb: 1 }}>
+                  {[
+                    '#1976d2', '#3b82f6', '#1d4ed8', '#0ea5e9',
+                    '#10b981', '#22c55e', '#8b5cf6', '#ec4899',
+                    '#f59e0b', '#ef4444', '#6b7280', '#111827'
+                  ].map((color) => (
+                    <Box
+                      key={color}
+                      onClick={() => handleBrandingChange('primaryColor', color)}
+                      sx={{
+                        width: 28,
+                        height: 28,
+                        borderRadius: 1,
+                        bgcolor: color,
+                        cursor: 'pointer',
+                        border: branding.primaryColor === color
+                          ? '2px solid #111827'
+                          : '2px solid transparent',
+                        boxShadow: branding.primaryColor === color
+                          ? '0 0 0 1px #fff inset'
+                          : 'none',
+                        '&:hover': { opacity: 0.85 }
+                      }}
+                    />
+                  ))}
+                </Box>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box
+                    sx={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: 1,
+                      bgcolor: branding.primaryColor,
+                      border: '1px solid #ccc',
+                      flexShrink: 0
+                    }}
+                  />
+                  <input
+                    type="color"
+                    value={branding.primaryColor}
+                    onChange={(e) => handleBrandingChange('primaryColor', e.target.value)}
+                    style={{ width: 36, height: 28, padding: 0, border: '1px solid #ccc', borderRadius: 4, cursor: 'pointer' }}
+                  />
+                  <Typography variant="caption" color="text.secondary">
+                    {branding.primaryColor}
+                  </Typography>
+                </Box>
               </Grid>
 
               <Grid item xs={12}>

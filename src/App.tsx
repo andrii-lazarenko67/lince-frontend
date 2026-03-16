@@ -41,6 +41,7 @@ const UsersPage = lazy(() => import('./pages/Users/UsersPage'));
 const SettingsPage = lazy(() => import('./pages/Settings/SettingsPage'));
 const NotificationsPage = lazy(() => import('./pages/Notifications/NotificationsPage'));
 const ProfilePage = lazy(() => import('./pages/Profile/ProfilePage'));
+const IoTPage = lazy(() => import('./pages/IoT/IoTPage'));
 
 const App: React.FC = () => {
   return (
@@ -78,6 +79,7 @@ const App: React.FC = () => {
                   <Route path="/incidents/:id" element={<IncidentDetailPage />} />
 
                   <Route path="/reports" element={<ReportsPage />} />
+                  <Route path="/iot" element={<IoTPage />} />
 
                   <Route path="/notifications" element={<NotificationsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />

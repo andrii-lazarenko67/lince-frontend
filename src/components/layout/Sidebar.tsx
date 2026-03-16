@@ -26,7 +26,8 @@ import {
   People as PeopleIcon,
   Settings as SettingsIcon,
   Close as CloseIcon,
-  Business as BusinessIcon
+  Business as BusinessIcon,
+  Sensors as SensorsIcon
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { useLocation } from 'react-router-dom';
@@ -73,6 +74,7 @@ const Sidebar: React.FC = () => {
     { name: t('nav.incidents'), path: '/incidents', icon: <WarningIcon /> },
     { name: t('nav.products'), path: '/products', icon: <InventoryIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.reports'), path: '/reports', icon: <AssessmentIcon /> },
+    { name: t('nav.iot'), path: '/iot', icon: <SensorsIcon /> },
     { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['admin'] },
     { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] }

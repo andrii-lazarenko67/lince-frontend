@@ -21,7 +21,9 @@ import {
   TextField,
   Alert,
   Tooltip,
-  Skeleton
+  Skeleton,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -31,12 +33,14 @@ import {
   ContentCopy as DuplicateIcon,
   Star as DefaultIcon,
   StarBorder as SetDefaultIcon,
-  Public as GlobalIcon
+  Public as GlobalIcon,
+  PublicOff as PrivateIcon
 } from '@mui/icons-material';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import {
   fetchReportTemplates,
   createReportTemplate,
+  updateReportTemplate,
   deleteReportTemplate,
   duplicateReportTemplate,
   setDefaultTemplate
@@ -51,6 +55,8 @@ const ReportTemplatesTab: React.FC = () => {
   const dispatch = useAppDispatch();
   const { templates, loading, error } = useAppSelector((state) => state.reportTemplates);
   const { systems } = useAppSelector((state) => state.systems);
+  const { user } = useAppSelector((state) => state.auth);
+  const isAdmin = user?.role === 'admin';
 
   // Unique system type IDs registered for this client
   const clientSystemTypeIds = useMemo(() => {
@@ -64,6 +70,7 @@ const ReportTemplatesTab: React.FC = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [newTemplateName, setNewTemplateName] = useState('');
   const [newTemplateDescription, setNewTemplateDescription] = useState('');
+  const [newTemplateIsGlobal, setNewTemplateIsGlobal] = useState(false);
 
   useEffect(() => {
     dispatch(fetchReportTemplates());
@@ -98,7 +105,8 @@ const ReportTemplatesTab: React.FC = () => {
     const data: CreateReportTemplateRequest = {
       name: newTemplateName.trim(),
       description: newTemplateDescription.trim() || undefined,
-      config: DEFAULT_TEMPLATE_CONFIG
+      config: DEFAULT_TEMPLATE_CONFIG,
+      ...(isAdmin && newTemplateIsGlobal ? { isGlobal: true } : {})
     };
 
     const result = await dispatch(createReportTemplate(data));
@@ -106,10 +114,20 @@ const ReportTemplatesTab: React.FC = () => {
       setIsCreateDialogOpen(false);
       setNewTemplateName('');
       setNewTemplateDescription('');
+      setNewTemplateIsGlobal(false);
       // Open editor for new template
       setSelectedTemplate(result.payload);
       setIsEditorOpen(true);
     }
+  };
+
+  const handleToggleGlobal = async () => {
+    if (!selectedTemplate) return;
+    handleMenuClose();
+    await dispatch(updateReportTemplate({
+      id: selectedTemplate.id,
+      data: { isGlobal: !selectedTemplate.isGlobal }
+    }));
   };
 
   const handleEditTemplate = () => {
@@ -329,7 +347,23 @@ const ReportTemplatesTab: React.FC = () => {
             <ListItemText>{t('reports.templates.setDefault')}</ListItemText>
           </MenuItem>
         )}
-        {selectedTemplate && !selectedTemplate.isGlobal && (
+        {isAdmin && selectedTemplate && (
+          <MenuItem onClick={handleToggleGlobal}>
+            <ListItemIcon>
+              {selectedTemplate.isGlobal
+                ? <PrivateIcon fontSize="small" />
+                : <GlobalIcon fontSize="small" />
+              }
+            </ListItemIcon>
+            <ListItemText>
+              {selectedTemplate.isGlobal
+                ? t('reports.templates.removeGlobal')
+                : t('reports.templates.makeGlobal')
+              }
+            </ListItemText>
+          </MenuItem>
+        )}
+        {selectedTemplate && (!selectedTemplate.isGlobal || isAdmin) && (
           <MenuItem onClick={handleDeleteClick} sx={{ color: 'error.main' }}>
             <ListItemIcon>
               <DeleteIcon fontSize="small" color="error" />
@@ -361,6 +395,18 @@ const ReportTemplatesTab: React.FC = () => {
             value={newTemplateDescription}
             onChange={(e) => setNewTemplateDescription(e.target.value)}
           />
+          {isAdmin && (
+            <FormControlLabel
+              sx={{ mt: 1 }}
+              control={
+                <Checkbox
+                  checked={newTemplateIsGlobal}
+                  onChange={(e) => setNewTemplateIsGlobal(e.target.checked)}
+                />
+              }
+              label={t('reports.templates.globalTemplate')}
+            />
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsCreateDialogOpen(false)}>

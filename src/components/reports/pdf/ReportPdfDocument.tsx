@@ -162,7 +162,7 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: '#FFFFFF',
     paddingTop: 30,
-    paddingBottom: 50,
+    paddingBottom: 70,
     paddingHorizontal: 40,
     fontFamily: 'Helvetica',
     fontSize: 10
@@ -615,7 +615,7 @@ const SystemsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
             <View style={styles.photoGrid}>
               {data.systems.flatMap(system =>
                 (system.photos || []).slice(0, 4).map(photo => (
-                  <View key={photo.id} style={styles.photoContainer}>
+                  <View key={photo.id} style={styles.photoContainer} wrap={false}>
                     <Image src={photo.url} style={styles.photo} />
                     {photo.description && (
                       <Text style={styles.photoCaption}>{photo.description}</Text>
@@ -866,7 +866,7 @@ const renderChartImages = (
     <View style={styles.chartsSection}>
       <Text style={styles.chartsSectionTitle}>{title}</Text>
       {images.map(([mpId, base64]) => (
-        <View key={mpId} style={styles.chartContainer}>
+        <View key={mpId} style={styles.chartContainer} wrap={false}>
           <Image src={base64} style={styles.chartImage} />
         </View>
       ))}
@@ -1181,7 +1181,7 @@ const InspectionsBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
           {highlightOnlyNC && totalWithNC > 0 && (
             <View style={[styles.infoBox, { backgroundColor: '#fef2f2', marginBottom: 8 }]}>
               <Text style={[styles.text, { color: '#dc2626' }]}>
-                ⚠ {t('reports.pdf.inspectionsWithNC', { count: totalWithNC, total: data.inspections.length })}
+                {t('reports.pdf.inspectionsWithNC', { count: totalWithNC, total: data.inspections.length })}
               </Text>
             </View>
           )}
@@ -1593,7 +1593,7 @@ const ConclusionBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
           borderLeftColor: '#dc2626'
         }}>
           <Text style={{ fontSize: 10, color: '#dc2626', fontFamily: 'Helvetica-Bold' }}>
-            ⚠ {t('reports.pdf.alertsFound', { defaultValue: 'Alerts Found' })}: {data.summary.outOfRangeCount} {t('reports.statistics.outOfRange').toLowerCase()}
+            {t('reports.pdf.alertsFound', { defaultValue: 'Alerts Found' })}: {data.summary.outOfRangeCount} {t('reports.statistics.outOfRange').toLowerCase()}
           </Text>
         </View>
       )}
@@ -1609,7 +1609,7 @@ const ConclusionBlock: React.FC<BlockProps> = ({ data, styles, t }) => (
           borderLeftColor: '#f59e0b'
         }}>
           <Text style={{ fontSize: 10, color: '#92400e', fontFamily: 'Helvetica-Bold' }}>
-            ⚡ {t('reports.pdf.openIncidents', { defaultValue: 'Open Incidents' })}: {data.summary.openIncidents}
+            {t('reports.pdf.openIncidents', { defaultValue: 'Open Incidents' })}: {data.summary.openIncidents}
           </Text>
         </View>
       )}
