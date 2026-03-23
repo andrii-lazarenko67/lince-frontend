@@ -320,7 +320,8 @@
       "errors": {
         "recipientRequired": "Recipient email is required",
         "invalidEmail": "Invalid email address",
-        "notConfigured": "Email service is not configured. Please contact your administrator."
+        "notConfigured": "Email service is not configured. Please contact your administrator.",
+        "sendFailed": "Failed to send email. Please try again."
       }
     },
     "pdf": {

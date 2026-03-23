@@ -27,9 +27,11 @@ import {
   Settings as SettingsIcon,
   Close as CloseIcon,
   Business as BusinessIcon,
-  Sensors as SensorsIcon
+  Sensors as SensorsIcon,
+  Logout as LogoutIcon
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
+import { logout } from '../../store/slices/authSlice';
 import { useLocation } from 'react-router-dom';
 import { toggleSidebar } from '../../store/slices/uiSlice';
 import LanguageSwitcher from '../LanguageSwitcher';
@@ -56,6 +58,12 @@ const Sidebar: React.FC = () => {
 
   const handleCloseSidebar = () => {
     dispatch(toggleSidebar());
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    goTo('/login');
+    if (isMobile) dispatch(toggleSidebar());
   };
 
   const handleNavClick = (path: string) => {
@@ -196,6 +204,31 @@ const Sidebar: React.FC = () => {
             </Typography>
           </Box>
         </Box>
+
+        {/* Logout */}
+        <ListItemButton
+          onClick={handleLogout}
+          sx={{
+            px: 1.5,
+            py: 1,
+            borderRadius: 1.5,
+            color: 'primary.contrastText',
+            opacity: 0.8,
+            transition: 'all 0.2s',
+            '&:hover': {
+              bgcolor: 'rgba(239, 68, 68, 0.3)',
+              opacity: 1
+            }
+          }}
+        >
+          <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary={t('common.signOut')}
+            slotProps={{ primary: { fontSize: 14, fontWeight: 500 } }}
+          />
+        </ListItemButton>
       </Box>
     </Box>
   );

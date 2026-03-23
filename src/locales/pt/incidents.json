@@ -12,6 +12,7 @@
     "high": "Alta",
     "critical": "Crítica",
     "open": "Aberto",
+    "in_progress": "Em Andamento",
     "investigating": "Investigando",
     "resolved": "Resolvido",
     "closed": "Fechado",

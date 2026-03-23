@@ -96,6 +96,7 @@ const ReportGeneratorTab: React.FC = () => {
   const [emailDialogOpen, setEmailDialogOpen] = useState(false);
   const [emailRecipient, setEmailRecipient] = useState('');
   const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailError, setEmailError] = useState<string | null>(null);
 
   // AI Command dialog state
   const [aiCommandOpen, setAiCommandOpen] = useState(false);
@@ -367,6 +368,7 @@ const ReportGeneratorTab: React.FC = () => {
     if (!currentReport || !emailRecipient.trim()) return;
 
     setSendingEmail(true);
+    setEmailError(null);
     try {
       const result = await dispatch(sendReportEmail({
         id: currentReport.id,
@@ -377,11 +379,13 @@ const ReportGeneratorTab: React.FC = () => {
       if (sendReportEmail.fulfilled.match(result)) {
         setEmailDialogOpen(false);
         setEmailRecipient('');
+      } else if (sendReportEmail.rejected.match(result)) {
+        setEmailError(String(result.payload || t('reports.email.errors.sendFailed')));
       }
     } finally {
       setSendingEmail(false);
     }
-  }, [currentReport, emailRecipient, dispatch]);
+  }, [currentReport, emailRecipient, dispatch, t]);
 
   // Transform reportData to ReportData format for PDF viewer
   const getPdfReportData = useCallback((): ReportData | null => {
@@ -1299,7 +1303,7 @@ const ReportGeneratorTab: React.FC = () => {
       {/* Email Dialog */}
       <Dialog
         open={emailDialogOpen}
-        onClose={() => !sendingEmail && setEmailDialogOpen(false)}
+        onClose={() => { if (!sendingEmail) { setEmailDialogOpen(false); setEmailError(null); } }}
         maxWidth="sm"
         fullWidth
       >
@@ -1308,6 +1312,11 @@ const ReportGeneratorTab: React.FC = () => {
           <DialogContentText sx={{ mb: 2 }}>
             {t('reports.email.enterRecipient')}
           </DialogContentText>
+          {emailError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {emailError}
+            </Alert>
+          )}
           <TextField
             autoFocus
             margin="dense"

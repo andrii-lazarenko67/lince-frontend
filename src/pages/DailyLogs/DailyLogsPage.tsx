@@ -82,7 +82,7 @@ const DailyLogsPage: React.FC = () => {
       new Date(log.date).toLocaleDateString(),
       log.system?.name || '-',
       log.stage?.name || '-',
-      log.period ? t(`dailyLogs.period.${log.period}`) : '-',
+      log.period ? t(`dailyLogs.period.${log.period}`, { defaultValue: log.period }) : '-',
       log.recordType === 'laboratory' ? (log.laboratory || '-') : '-',
       log.user?.name || '-',
       log.entries?.length || 0,

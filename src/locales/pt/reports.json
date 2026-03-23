@@ -320,7 +320,8 @@
       "errors": {
         "recipientRequired": "E-mail do destinatário é obrigatório",
         "invalidEmail": "Endereço de e-mail inválido",
-        "notConfigured": "Serviço de e-mail não está configurado. Entre em contato com o administrador."
+        "notConfigured": "Serviço de e-mail não está configurado. Entre em contato com o administrador.",
+        "sendFailed": "Falha ao enviar o e-mail. Tente novamente."
       }
     },
     "pdf": {

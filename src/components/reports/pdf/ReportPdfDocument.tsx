@@ -421,7 +421,7 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
   },
   chartImage: {
     width: '100%',
-    maxHeight: 250,
+    height: 220,
     objectFit: 'contain'
   },
   chartTitle: {
@@ -446,7 +446,11 @@ const createStyles = (primaryColor: string) => StyleSheet.create({
 // Helper functions
 const formatDate = (dateString: string): string => {
   try {
-    return new Date(dateString).toLocaleDateString();
+    const d = new Date(dateString);
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const year = d.getUTCFullYear();
+    return `${day}/${month}/${year}`;
   } catch {
     return dateString;
   }
@@ -454,7 +458,13 @@ const formatDate = (dateString: string): string => {
 
 const formatDateTime = (dateString: string): string => {
   try {
-    return new Date(dateString).toLocaleString();
+    const d = new Date(dateString);
+    const day = String(d.getUTCDate()).padStart(2, '0');
+    const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const year = d.getUTCFullYear();
+    const hours = String(d.getUTCHours()).padStart(2, '0');
+    const minutes = String(d.getUTCMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year} ${hours}:${minutes}`;
   } catch {
     return dateString;
   }
@@ -900,18 +910,18 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
   return (
     <View>
       {!hasAnyLogs || !hasAnySectionEnabled ? (
-        <>
+        <View>
           <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.title')}</Text>
           <Text style={styles.textMuted}>{t('reports.pdf.noAnalyses')}</Text>
-        </>
+        </View>
       ) : (
-        <>
+        <View>
           {/* Field Monitoring Analysis – Overview */}
           {showFieldOverview && (
-            <>
+            <View>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldOverviewTitle')}</Text>
               <AnalysesOverviewTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
-            </>
+            </View>
           )}
 
           {/* Field Charts */}
@@ -925,7 +935,7 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
 
           {/* Field Monitoring Analysis – Detailed */}
           {showFieldDetailed && hasFieldLogs && (
-            <View style={{ marginTop: showFieldOverview ? 15 : 0 }}>
+            <View style={{ marginTop: 15 }}>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.fieldDetailedTitle')}</Text>
               <AnalysesDetailedTable logs={fieldLogs} data={data} block={block} styles={styles} t={t} />
             </View>
@@ -933,7 +943,7 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
 
           {/* Laboratory Monitoring Analysis – Overview */}
           {showLaboratoryOverview && (
-            <View style={{ marginTop: (showFieldOverview || showFieldDetailed) ? 20 : 0 }}>
+            <View style={{ marginTop: 20 }}>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryOverviewTitle')}</Text>
               <AnalysesOverviewTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
             </View>
@@ -950,12 +960,12 @@ const AnalysesBlock: React.FC<BlockProps> = ({ data, block, styles, t }) => {
 
           {/* Laboratory Monitoring Analysis – Detailed */}
           {showLaboratoryDetailed && hasLaboratoryLogs && (
-            <View style={{ marginTop: showLaboratoryOverview ? 15 : ((showFieldOverview || showFieldDetailed) ? 20 : 0) }}>
+            <View style={{ marginTop: 15 }}>
               <Text style={styles.sectionTitle}>{t('reports.blocks.analyses.laboratoryDetailedTitle')}</Text>
               <AnalysesDetailedTable logs={laboratoryLogs} data={data} block={block} styles={styles} t={t} />
             </View>
           )}
-        </>
+        </View>
       )}
     </View>
   );
