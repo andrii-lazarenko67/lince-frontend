@@ -37,6 +37,18 @@ axiosInstance.interceptors.response.use(
       localStorage.removeItem('user');
       window.location.href = '/login';
     }
+
+    // Subscription expired / cancelled / trial ended — redirect to blocked page
+    // Do NOT intercept 402s that come from the billing routes themselves
+    // (e.g. creating a checkout session), only from data routes
+    if (error.response?.status === 402) {
+      const requestUrl: string = error.config?.url || '';
+      const isBillingRoute = requestUrl.includes('/billing');
+      if (!isBillingRoute) {
+        window.location.href = '/billing/blocked';
+      }
+    }
+
     return Promise.reject(error);
   }
 );

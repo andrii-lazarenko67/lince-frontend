@@ -28,7 +28,8 @@ import {
   Close as CloseIcon,
   Business as BusinessIcon,
   Sensors as SensorsIcon,
-  Logout as LogoutIcon
+  Logout as LogoutIcon,
+  CreditCard as CreditCardIcon
 } from '@mui/icons-material';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { logout } from '../../store/slices/authSlice';
@@ -42,6 +43,7 @@ interface NavItem {
   icon: React.ReactNode;
   roles?: string[];
   serviceProviderOnly?: boolean;
+  endCustomerOnly?: boolean;
 }
 
 const DRAWER_WIDTH = 256;
@@ -85,13 +87,14 @@ const Sidebar: React.FC = () => {
     { name: t('nav.iot'), path: '/iot', icon: <SensorsIcon /> },
     { name: t('nav.library'), path: '/library', icon: <FolderOpenIcon />, roles: ['manager', 'admin'] },
     { name: t('nav.users'), path: '/users', icon: <PeopleIcon />, roles: ['admin'] },
-    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] }
+    { name: t('nav.settings'), path: '/settings', icon: <SettingsIcon />, roles: ['manager', 'admin'] },
+    { name: t('nav.billing'), path: '/billing', icon: <CreditCardIcon />, endCustomerOnly: true },
+    { name: t('nav.adminBilling'), path: '/billing/admin', icon: <CreditCardIcon />, serviceProviderOnly: true, roles: ['manager', 'admin'] }
   ];
 
   const filteredNavItems = navItems.filter(item => {
-    // Check service provider only items
     if (item.serviceProviderOnly && !user?.isServiceProvider) return false;
-    // Check role restrictions
+    if (item.endCustomerOnly && user?.isServiceProvider) return false;
     if (item.roles && (!user || !item.roles.includes(user.role))) return false;
     return true;
   });

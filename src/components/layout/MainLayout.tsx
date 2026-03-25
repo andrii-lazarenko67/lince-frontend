@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector, useAppDispatch, useAppNavigation } from '../../hooks';
 import { getMe } from '../../store/slices/authSlice';
+import { fetchBillingStatus } from '../../store/slices/billingSlice';
 import Sidebar from './Sidebar';
 import Header from './Header';
-import { GlobalLoader } from '../common';
+import { GlobalLoader, TrialBanner } from '../common';
 import { AiChatSidebar, AiChatButton } from '../ai/AiChatSidebar';
 import type { AiContext } from '../../api/aiApi';
 
@@ -38,6 +39,12 @@ const MainLayout: React.FC = () => {
   }, [dispatch, token, user]);
 
   useEffect(() => {
+    if (token && user && !user.isServiceProvider) {
+      dispatch(fetchBillingStatus());
+    }
+  }, [dispatch, token, user?.id]);
+
+  useEffect(() => {
     if (!token) {
       goToLogin();
     }
@@ -53,8 +60,11 @@ const MainLayout: React.FC = () => {
       <Sidebar />
       <Header />
 
-      <main className="flex-grow mt-[64px] lg:ml-64 overflow-auto p-3">
-        <Outlet />
+      <main className="flex-grow mt-[64px] lg:ml-64 overflow-auto">
+        <TrialBanner />
+        <div className="p-3">
+          <Outlet />
+        </div>
       </main>
 
       {/* AI Assistant */}

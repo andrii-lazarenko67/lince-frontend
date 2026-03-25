@@ -16,3 +16,4 @@ export { default as StatCard } from './StatCard';
 export { default as ExportDropdown } from './ExportDropdown';
 export { default as ViewModeToggle } from './ViewModeToggle';
 export { default as PaginatedTable } from './PaginatedTable';
+export { default as TrialBanner } from './TrialBanner';

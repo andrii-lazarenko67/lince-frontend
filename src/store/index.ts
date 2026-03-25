@@ -25,6 +25,7 @@ import reportTemplateSlice from './slices/reportTemplateSlice';
 import generatedReportSlice from './slices/generatedReportSlice';
 import tourSlice from './slices/tourSlice';
 import iotSlice from './slices/iotSlice';
+import billingSlice from './slices/billingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -51,7 +52,8 @@ export const store = configureStore({
     reportTemplates: reportTemplateSlice,
     generatedReports: generatedReportSlice,
     tour: tourSlice,
-    iot: iotSlice
+    iot: iotSlice,
+    billing: billingSlice
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,0 +1,124 @@
+{
+  "billing": {
+    "title": "Assinatura",
+    "nav": "Assinatura",
+    "currentPlan": "Plano Atual",
+    "periodEnd": "Próxima cobrança",
+    "plans": {
+      "none": "Sem Plano",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise"
+    },
+    "status": {
+      "label": "Status",
+      "trialing": "Período de Teste",
+      "active": "Ativo",
+      "past_due": "Pagamento Pendente",
+      "cancelled": "Cancelado",
+      "expired": "Expirado",
+      "none": "Sem Plano"
+    },
+    "trial": {
+      "badge": "Teste Grátis",
+      "endsIn": "Seu período de teste termina em {{days}} dias",
+      "endsToday": "Seu período de teste termina hoje",
+      "endsTomorrow": "Seu período de teste termina amanhã",
+      "expired": "Seu período de teste expirou",
+      "upgrade": "Assinar Agora"
+    },
+    "actions": {
+      "subscribe": "Assinar",
+      "manageSubscription": "Gerenciar Assinatura",
+      "changePlan": "Mudar Plano",
+      "viewInvoices": "Ver Faturas"
+    },
+    "checkout": {
+      "redirecting": "Redirecionando para o pagamento...",
+      "error": "Erro ao criar sessão de pagamento. Tente novamente."
+    },
+    "portal": {
+      "redirecting": "Abrindo portal de assinatura...",
+      "error": "Erro ao abrir o portal. Tente novamente."
+    },
+    "invoices": {
+      "title": "Histórico de Faturas",
+      "empty": "Nenhuma fatura encontrada.",
+      "columns": {
+        "date": "Data",
+        "plan": "Plano",
+        "period": "Período",
+        "amount": "Valor",
+        "status": "Status",
+        "pdf": "PDF"
+      },
+      "status": {
+        "paid": "Pago",
+        "open": "Em Aberto",
+        "void": "Cancelada",
+        "uncollectible": "Incobrável"
+      },
+      "download": "Baixar PDF"
+    },
+    "blocked": {
+      "trialExpired": {
+        "title": "Período de Teste Encerrado",
+        "message": "Seu período de teste gratuito expirou. Assine um plano para continuar usando a plataforma."
+      },
+      "cancelled": {
+        "title": "Assinatura Cancelada",
+        "message": "Sua assinatura foi cancelada. Assine novamente para recuperar o acesso."
+      },
+      "expired": {
+        "title": "Assinatura Expirada",
+        "message": "Sua assinatura expirou. Renove para continuar usando a plataforma."
+      },
+      "cta": "Ver Planos e Assinar",
+      "contactAdmin": "O acesso foi suspenso. Entre em contato com o administrador da conta para reativar a assinatura."
+    },
+    "success": {
+      "title": "Assinatura Confirmada!",
+      "message": "Seu pagamento foi processado com sucesso. Bem-vindo ao plano {{plan}}!",
+      "goToDashboard": "Ir para o Dashboard"
+    },
+    "cancel": {
+      "title": "Pagamento Cancelado",
+      "message": "Você cancelou o processo de pagamento. Quando quiser, pode assinar um plano.",
+      "tryAgain": "Tentar Novamente"
+    },
+    "errors": {
+      "clientNotFound": "Cliente não encontrado.",
+      "invalidPlan": "Plano inválido selecionado.",
+      "noCustomer": "Nenhum cliente Stripe associado a esta conta.",
+      "trialExpired": "Seu período de teste expirou. Assine um plano para continuar.",
+      "subscriptionCancelled": "Sua assinatura foi cancelada. Assine novamente para continuar.",
+      "subscriptionExpired": "Sua assinatura expirou. Renove para continuar."
+    },
+    "admin": {
+      "title": "Gestão de Assinaturas",
+      "subtitle": "Visão geral das assinaturas de todos os clientes",
+      "empty": "Nenhum cliente encontrado.",
+      "summary": {
+        "total": "Total",
+        "active": "Ativos",
+        "trialing": "Em Teste",
+        "issues": "Com Problemas"
+      },
+      "columns": {
+        "client": "Cliente",
+        "plan": "Plano",
+        "status": "Status",
+        "trialEndsAt": "Fim do Teste",
+        "periodEnd": "Fim do Período",
+        "actions": "Ações"
+      },
+      "update": {
+        "title": "Atualizar Assinatura",
+        "plan": "Plano",
+        "status": "Status",
+        "save": "Salvar",
+        "success": "Assinatura atualizada com sucesso."
+      }
+    }
+  }
+}

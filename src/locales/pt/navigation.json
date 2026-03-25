@@ -10,5 +10,7 @@
   "library": "Biblioteca",
   "users": "Usuários",
   "settings": "Configurações",
-  "iot": "Monitoramento IoT"
+  "iot": "Monitoramento IoT",
+  "billing": "Assinatura",
+  "adminBilling": "Gestão de Assinaturas"
 }

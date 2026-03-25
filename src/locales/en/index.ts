@@ -19,6 +19,7 @@ import { ai } from './ai.json';
 import tours from './tours.json';
 import { landing } from './landing.json';
 import { iot } from './iot.json';
+import { billing } from './billing.json';
 
 export default {
   common,
@@ -47,4 +48,5 @@ export default {
   tours,
   landing,
   iot,
+  billing,
 };

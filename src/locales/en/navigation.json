@@ -10,5 +10,7 @@
   "library": "Library",
   "users": "Users",
   "settings": "Settings",
-  "iot": "IoT Monitoring"
+  "iot": "IoT Monitoring",
+  "billing": "Subscription",
+  "adminBilling": "Subscription Management"
 }

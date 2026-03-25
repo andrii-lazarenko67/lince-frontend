@@ -42,6 +42,11 @@ const SettingsPage = lazy(() => import('./pages/Settings/SettingsPage'));
 const NotificationsPage = lazy(() => import('./pages/Notifications/NotificationsPage'));
 const ProfilePage = lazy(() => import('./pages/Profile/ProfilePage'));
 const IoTPage = lazy(() => import('./pages/IoT/IoTPage'));
+const BillingPage = lazy(() => import('./pages/Billing/BillingPage'));
+const AdminBillingPage = lazy(() => import('./pages/Billing/AdminBillingPage'));
+const CheckoutSuccessPage = lazy(() => import('./pages/Billing/CheckoutSuccessPage'));
+const CheckoutCancelPage = lazy(() => import('./pages/Billing/CheckoutCancelPage'));
+const SubscriptionBlockedPage = lazy(() => import('./pages/Billing/SubscriptionBlockedPage'));
 
 const App: React.FC = () => {
   return (
@@ -60,6 +65,13 @@ const App: React.FC = () => {
               {/* Standalone route for first client setup after signup */}
               <Route element={<PrivateRoute />}>
                 <Route path="/add-client" element={<FirstClientSetupPage />} />
+              </Route>
+
+              {/* Billing standalone pages (no sidebar layout) */}
+              <Route path="/billing/success" element={<CheckoutSuccessPage />} />
+              <Route path="/billing/cancel" element={<CheckoutCancelPage />} />
+              <Route element={<PrivateRoute />}>
+                <Route path="/billing/blocked" element={<SubscriptionBlockedPage />} />
               </Route>
 
               <Route element={<PrivateRoute />}>
@@ -83,6 +95,7 @@ const App: React.FC = () => {
 
                   <Route path="/notifications" element={<NotificationsPage />} />
                   <Route path="/profile" element={<ProfilePage />} />
+                  <Route path="/billing" element={<BillingPage />} />
                 </Route>
               </Route>
 
@@ -110,6 +123,13 @@ const App: React.FC = () => {
               <Route element={<PrivateRoute allowedRoles={['admin']} />}>
                 <Route element={<MainLayout />}>
                   <Route path="/users" element={<UsersPage />} />
+                </Route>
+              </Route>
+
+              {/* Admin and Manager billing overview */}
+              <Route element={<PrivateRoute allowedRoles={['manager', 'admin']} />}>
+                <Route element={<MainLayout />}>
+                  <Route path="/billing/admin" element={<AdminBillingPage />} />
                 </Route>
               </Route>
 
