@@ -90,6 +90,7 @@
       "clientNotFound": "Client not found.",
       "invalidPlan": "Invalid plan selected.",
       "noCustomer": "No Stripe customer associated with this account.",
+      "stripeNotConfigured": "The payment system has not been configured yet. Please contact support.",
       "trialExpired": "Your trial has expired. Subscribe to a plan to continue.",
       "subscriptionCancelled": "Your subscription has been cancelled. Subscribe again to continue.",
       "subscriptionExpired": "Your subscription has expired. Renew to continue."

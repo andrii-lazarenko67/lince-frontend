@@ -90,6 +90,7 @@
       "clientNotFound": "Cliente não encontrado.",
       "invalidPlan": "Plano inválido selecionado.",
       "noCustomer": "Nenhum cliente Stripe associado a esta conta.",
+      "stripeNotConfigured": "O sistema de pagamento ainda não foi configurado. Entre em contato com o suporte.",
       "trialExpired": "Seu período de teste expirou. Assine um plano para continuar.",
       "subscriptionCancelled": "Sua assinatura foi cancelada. Assine novamente para continuar.",
       "subscriptionExpired": "Sua assinatura expirou. Renove para continuar."
