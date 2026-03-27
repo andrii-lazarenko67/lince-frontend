@@ -40,6 +40,7 @@ const LandingFooter: React.FC = () => {
 
   return (
     <footer className="bg-slate-950">
+
       {/* Top gradient line */}
       <div className="h-px bg-gradient-to-r from-transparent via-blue-500/40 to-transparent" />
 
@@ -100,6 +101,15 @@ const LandingFooter: React.FC = () => {
               </ul>
             </div>
           ))}
+        </div>
+
+        {/* Elquímica logo — just above copyright bar */}
+        <div className="flex justify-center pb-6">
+          <img
+            src="/elquimica_logo.png"
+            alt="Elquímica Soluções Ambientais"
+            style={{ minWidth: 400, width: '38%', maxWidth: 600 }}
+          />
         </div>
 
         {/* Bottom bar */}
