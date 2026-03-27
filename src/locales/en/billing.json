@@ -4,12 +4,6 @@
     "nav": "Subscription",
     "currentPlan": "Current Plan",
     "periodEnd": "Next billing date",
-    "plans": {
-      "none": "No Plan",
-      "starter": "Starter",
-      "pro": "Pro",
-      "enterprise": "Enterprise"
-    },
     "status": {
       "label": "Status",
       "trialing": "Free Trial",
@@ -37,6 +31,36 @@
       "manageSubscription": "Manage Subscription",
       "changePlan": "Change Plan",
       "viewInvoices": "View Invoices"
+    },
+    "changePlan": {
+      "title": "Change Plan",
+      "description": "Upgrade or downgrade at any time. Charges are prorated.",
+      "current": "CURRENT",
+      "recommended": "RECOMMENDED",
+      "yourCurrentPlan": "Your current plan",
+      "upgradeTo": "Upgrade to {{plan}}",
+      "downgradeTo": "Switch to {{plan}}",
+      "upgradeNote": "When upgrading, you will be charged the prorated difference immediately.",
+      "downgradeNote": "When downgrading, a prorated credit will be applied to your next invoice.",
+      "confirmUpgradeTitle": "Confirm Upgrade",
+      "confirmDowngradeTitle": "Confirm Downgrade",
+      "confirmUpgradeMsg": "You will be charged the prorated difference now and moved to the {{plan}} plan ({{price}}/month).",
+      "confirmDowngradeMsg": "You will be moved to the {{plan}} plan ({{price}}/month). A prorated credit will be applied to your next invoice.",
+      "confirm": "Confirm"
+    },
+    "plans": {
+      "none": "No Plan",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "starterDesc": "Ideal for growing companies.",
+      "proDesc": "For advanced operations with more features.",
+      "starterFeature1": "Up to 5 systems",
+      "starterFeature2": "Basic reports",
+      "starterFeature3": "Email support",
+      "proFeature1": "Unlimited systems",
+      "proFeature2": "Advanced reports + AI",
+      "proFeature3": "Priority support"
     },
     "checkout": {
       "redirecting": "Redirecting to payment...",
@@ -84,7 +108,8 @@
     "success": {
       "title": "Subscription Confirmed!",
       "message": "Your payment was processed successfully. Welcome to the {{plan}} plan!",
-      "goToDashboard": "Go to Dashboard"
+      "goToDashboard": "Go to Dashboard",
+      "confirming": "Confirming your payment..."
     },
     "cancel": {
       "title": "Payment Cancelled",
@@ -96,9 +121,25 @@
       "invalidPlan": "Invalid plan selected.",
       "noCustomer": "No Stripe customer associated with this account.",
       "stripeNotConfigured": "The payment system has not been configured yet. Please contact support.",
+      "noSubscription": "No active subscription found.",
+      "alreadyOnPlan": "You are already on this plan.",
       "trialExpired": "Your trial has expired. Subscribe to a plan to continue.",
       "subscriptionCancelled": "Your subscription has been cancelled. Subscribe again to continue.",
       "subscriptionExpired": "Your subscription has expired. Renew to continue."
+    },
+    "pastDue": {
+      "title": "Payment Past Due",
+      "description": "We could not process your subscription payment. Update your card details to prevent access suspension.",
+      "updateCard": "Update Card",
+      "banner": "There is a problem with your payment. Update your card to keep access.",
+      "action": "Update Card"
+    },
+    "cancelScheduled": {
+      "title": "Cancellation Scheduled",
+      "description": "Your cancellation has been scheduled. You still have access until {{date}}. Reactivate to continue using the platform.",
+      "reactivate": "Reactivate Subscription",
+      "banner": "Your subscription will be cancelled on {{date}}.",
+      "action": "Reactivate"
     },
     "admin": {
       "title": "Subscription Management",

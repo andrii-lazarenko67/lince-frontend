@@ -9,25 +9,70 @@ const TrialBanner: React.FC = () => {
   const billingStatus = useAppSelector((state) => state.billing.status);
   const user = useAppSelector((state) => state.auth.user);
 
-  // Only show for non-service-providers on trial
   if (!billingStatus || user?.isServiceProvider) return null;
+
+  // past_due — persistent payment warning (highest priority)
+  if (billingStatus.status === 'past_due') {
+    return (
+      <Alert
+        severity="error"
+        sx={{ borderRadius: 0, py: 0.5 }}
+        action={
+          <Button
+            color="error"
+            size="small"
+            variant="outlined"
+            onClick={() => goTo('/billing')}
+            sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}
+          >
+            {t('billing.pastDue.action')}
+          </Button>
+        }
+      >
+        {t('billing.pastDue.banner')}
+      </Alert>
+    );
+  }
+
+  // cancellation scheduled — warn owner before period ends
+  if (billingStatus.cancelAtPeriodEnd && billingStatus.currentPeriodEnd && billingStatus.isOwner) {
+    const endDate = new Date(billingStatus.currentPeriodEnd).toLocaleDateString('pt-BR');
+    return (
+      <Alert
+        severity="warning"
+        sx={{ borderRadius: 0, py: 0.5 }}
+        action={
+          <Button
+            color="warning"
+            size="small"
+            variant="outlined"
+            onClick={() => goTo('/billing')}
+            sx={{ whiteSpace: 'nowrap', fontWeight: 600 }}
+          >
+            {t('billing.cancelScheduled.action')}
+          </Button>
+        }
+      >
+        {t('billing.cancelScheduled.banner', { date: endDate })}
+      </Alert>
+    );
+  }
+
+  // trial ending soon — show when 7 or fewer days remain
   if (!billingStatus.isTrialing || !billingStatus.trialEndsAt) return null;
 
-  const trialEnd = new Date(billingStatus.trialEndsAt);
-  const now = new Date();
-  const daysLeft = Math.ceil((trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const daysLeft = Math.ceil(
+    (new Date(billingStatus.trialEndsAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+  );
 
-  // Only show banner when 7 or fewer days remain
   if (daysLeft > 7) return null;
 
-  let message: string;
-  if (daysLeft === 0) {
-    message = t('billing.trial.endsToday');
-  } else if (daysLeft === 1) {
-    message = t('billing.trial.endsTomorrow');
-  } else {
-    message = t('billing.trial.endsIn', { days: daysLeft });
-  }
+  const message =
+    daysLeft === 0
+      ? t('billing.trial.endsToday')
+      : daysLeft === 1
+      ? t('billing.trial.endsTomorrow')
+      : t('billing.trial.endsIn', { days: daysLeft });
 
   return (
     <Alert

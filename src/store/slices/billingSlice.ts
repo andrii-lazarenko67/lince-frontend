@@ -37,6 +37,52 @@ export const fetchInvoices = createAsyncThunk(
   }
 );
 
+// Sync invoices from Stripe then return the updated list.
+// Use this instead of fetchInvoices when a Stripe event (checkout, plan change)
+// may have created invoices that webhooks haven't delivered yet.
+export const syncAndFetchInvoices = createAsyncThunk(
+  'billing/syncAndFetchInvoices',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post<{ success: boolean; data: Invoice[] }>('/billing/sync-invoices');
+      return response.data.data;
+    } catch (error: unknown) {
+      // Fallback to regular fetch if sync endpoint fails
+      try {
+        const fallback = await axiosInstance.get<{ success: boolean; data: Invoice[] }>('/billing/invoices');
+        return fallback.data.data;
+      } catch {
+        return rejectWithValue(getApiErrorMessage(error, 'Failed to fetch invoices'));
+      }
+    }
+  }
+);
+
+export const changePlan = createAsyncThunk(
+  'billing/changePlan',
+  async (plan: 'starter' | 'pro', { dispatch, rejectWithValue }) => {
+    try {
+      await axiosInstance.post('/billing/change-plan', { plan });
+      // Backend already synced invoices from Stripe; refresh both status and invoices
+      dispatch(fetchBillingStatus());
+      dispatch(syncAndFetchInvoices());
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to change plan'));
+    }
+  }
+);
+
+export const syncFromSession = createAsyncThunk(
+  'billing/syncFromSession',
+  async (sessionId: string, { rejectWithValue }) => {
+    try {
+      await axiosInstance.post('/billing/sync-session', { sessionId });
+    } catch (error: unknown) {
+      return rejectWithValue(getApiErrorMessage(error, 'Failed to sync session'));
+    }
+  }
+);
+
 export const createCheckoutSession = createAsyncThunk(
   'billing/createCheckout',
   async (plan: 'starter' | 'pro', { rejectWithValue }) => {
@@ -191,6 +237,34 @@ const billingSlice = createSlice({
         if (idx !== -1) state.adminClients[idx] = action.payload;
       })
       .addCase(adminUpdateBilling.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
+
+    // syncAndFetchInvoices — same shape as fetchInvoices
+    builder
+      .addCase(syncAndFetchInvoices.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(syncAndFetchInvoices.fulfilled, (state, action) => {
+        state.invoices = action.payload;
+        state.loading = false;
+      })
+      .addCase(syncAndFetchInvoices.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    // changePlan
+    builder
+      .addCase(changePlan.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(changePlan.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(changePlan.rejected, (state, action) => {
+        state.loading = false;
         state.error = action.payload as string;
       });
   }

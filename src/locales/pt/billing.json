@@ -4,12 +4,6 @@
     "nav": "Assinatura",
     "currentPlan": "Plano Atual",
     "periodEnd": "Próxima cobrança",
-    "plans": {
-      "none": "Sem Plano",
-      "starter": "Starter",
-      "pro": "Pro",
-      "enterprise": "Enterprise"
-    },
     "status": {
       "label": "Status",
       "trialing": "Período de Teste",
@@ -37,6 +31,36 @@
       "manageSubscription": "Gerenciar Assinatura",
       "changePlan": "Mudar Plano",
       "viewInvoices": "Ver Faturas"
+    },
+    "changePlan": {
+      "title": "Mudar de Plano",
+      "description": "Faça upgrade ou downgrade a qualquer momento. As cobranças são proporcionais (pro rata).",
+      "current": "ATUAL",
+      "recommended": "RECOMENDADO",
+      "yourCurrentPlan": "Seu plano atual",
+      "upgradeTo": "Upgrade para {{plan}}",
+      "downgradeTo": "Mudar para {{plan}}",
+      "upgradeNote": "Ao fazer upgrade, você será cobrado pela diferença proporcional imediatamente.",
+      "downgradeNote": "Ao fazer downgrade, o crédito proporcional será aplicado na próxima fatura.",
+      "confirmUpgradeTitle": "Confirmar Upgrade",
+      "confirmDowngradeTitle": "Confirmar Downgrade",
+      "confirmUpgradeMsg": "Você será cobrado a diferença proporcional agora e passará para o plano {{plan}} ({{price}}/mês).",
+      "confirmDowngradeMsg": "Você será movido para o plano {{plan}} ({{price}}/mês). O crédito proporcional será aplicado na próxima fatura.",
+      "confirm": "Confirmar"
+    },
+    "plans": {
+      "none": "Sem Plano",
+      "starter": "Starter",
+      "pro": "Pro",
+      "enterprise": "Enterprise",
+      "starterDesc": "Ideal para empresas em crescimento.",
+      "proDesc": "Para operações avançadas com mais recursos.",
+      "starterFeature1": "Até 5 sistemas",
+      "starterFeature2": "Relatórios básicos",
+      "starterFeature3": "Suporte por email",
+      "proFeature1": "Sistemas ilimitados",
+      "proFeature2": "Relatórios avançados + IA",
+      "proFeature3": "Suporte prioritário"
     },
     "checkout": {
       "redirecting": "Redirecionando para o pagamento...",
@@ -84,7 +108,8 @@
     "success": {
       "title": "Assinatura Confirmada!",
       "message": "Seu pagamento foi processado com sucesso. Bem-vindo ao plano {{plan}}!",
-      "goToDashboard": "Ir para o Dashboard"
+      "goToDashboard": "Ir para o Dashboard",
+      "confirming": "Confirmando seu pagamento..."
     },
     "cancel": {
       "title": "Pagamento Cancelado",
@@ -96,9 +121,25 @@
       "invalidPlan": "Plano inválido selecionado.",
       "noCustomer": "Nenhum cliente Stripe associado a esta conta.",
       "stripeNotConfigured": "O sistema de pagamento ainda não foi configurado. Entre em contato com o suporte.",
+      "noSubscription": "Nenhuma assinatura ativa encontrada.",
+      "alreadyOnPlan": "Você já está neste plano.",
       "trialExpired": "Seu período de teste expirou. Assine um plano para continuar.",
       "subscriptionCancelled": "Sua assinatura foi cancelada. Assine novamente para continuar.",
       "subscriptionExpired": "Sua assinatura expirou. Renove para continuar."
+    },
+    "pastDue": {
+      "title": "Pagamento Pendente",
+      "description": "Não conseguimos processar o pagamento da sua assinatura. Atualize os dados do cartão para evitar a suspensão do acesso.",
+      "updateCard": "Atualizar Cartão",
+      "banner": "Há um problema com seu pagamento. Atualize o cartão para não perder o acesso.",
+      "action": "Atualizar Cartão"
+    },
+    "cancelScheduled": {
+      "title": "Cancelamento Agendado",
+      "description": "Seu cancelamento foi agendado. Você ainda terá acesso até {{date}}. Reative para continuar usando a plataforma.",
+      "reactivate": "Reativar Assinatura",
+      "banner": "Sua assinatura será cancelada em {{date}}.",
+      "action": "Reativar"
     },
     "admin": {
       "title": "Gestão de Assinaturas",

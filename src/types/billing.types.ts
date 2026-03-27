@@ -12,6 +12,7 @@ export interface BillingStatus {
   currentPeriodEnd: string | null;
   hasStripeCustomer: boolean;
   hasActiveSubscription: boolean;
+  cancelAtPeriodEnd: boolean;
   isOwner: boolean;
 }
 
