@@ -25,7 +25,12 @@
       "endsToday": "Your trial ends today",
       "endsTomorrow": "Your trial ends tomorrow",
       "expired": "Your trial has expired",
-      "upgrade": "Subscribe Now"
+      "upgrade": "Subscribe Now",
+      "addPayment": {
+        "title": "Add a Payment Method",
+        "description": "You are on a free trial. Choose a plan and register your card now to keep using LINCE after the trial ends.",
+        "cta": "Choose Plan"
+      }
     },
     "actions": {
       "subscribe": "Subscribe",

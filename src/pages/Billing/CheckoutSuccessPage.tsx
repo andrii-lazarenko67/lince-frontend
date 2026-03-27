@@ -5,6 +5,7 @@ import { CheckCircleOutline as CheckIcon } from '@mui/icons-material';
 import { Button } from '../../components/common';
 import { useAppDispatch, useAppSelector, useAppNavigation } from '../../hooks';
 import { fetchBillingStatus } from '../../store/slices/billingSlice';
+import { BillingLayout } from '../../components/layout';
 
 const CheckoutSuccessPage: React.FC = () => {
   const { t } = useTranslation();
@@ -20,16 +21,8 @@ const CheckoutSuccessPage: React.FC = () => {
   const planName = billingStatus?.planName || t('billing.plans.starter');
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#f1f5f9',
-        p: 3
-      }}
-    >
+    <BillingLayout>
+    <Box sx={{ width: '100%', maxWidth: 480 }}>
       <Paper
         elevation={3}
         sx={{
@@ -70,6 +63,7 @@ const CheckoutSuccessPage: React.FC = () => {
         </Button>
       </Paper>
     </Box>
+    </BillingLayout>
   );
 };
 

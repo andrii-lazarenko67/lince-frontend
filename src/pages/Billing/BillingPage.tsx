@@ -104,7 +104,8 @@ const BillingPage: React.FC = () => {
     );
   }
 
-  const canSubscribe = status?.isOwner && !status?.hasActiveSubscription;
+  const canAddPayment = status?.isOwner && !status?.hasStripeCustomer && status?.isTrialing;
+  const canSubscribe = status?.isOwner && !status?.hasActiveSubscription && !canAddPayment;
   const canManage = status?.isOwner && status?.hasStripeCustomer;
   const isTrialing = status?.isTrialing;
   const daysLeft = trialDaysLeft();
@@ -203,6 +204,61 @@ const BillingPage: React.FC = () => {
           </>
         )}
       </Card>
+
+      {/* Add payment method — trialing owners who haven't subscribed yet */}
+      {canAddPayment && (
+        <Card title={t('billing.trial.addPayment.title')}>
+          <Typography variant="body2" color="text.secondary" mb={3}>
+            {t('billing.trial.addPayment.description')}
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 3, flexWrap: 'wrap' }}>
+            {/* Starter */}
+            <Box sx={{ flex: '1 1 220px', border: '1px solid #e2e8f0', borderRadius: 2, p: 3 }}>
+              <Typography variant="subtitle1" fontWeight={700} mb={0.5}>
+                {t('billing.plans.starter')}
+              </Typography>
+              <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
+                R$ 149
+                <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                  /mês
+                </Typography>
+              </Typography>
+              <Button
+                variant="outline"
+                fullWidth
+                disabled={loading}
+                onClick={() => handleSubscribe('starter')}
+              >
+                {loading ? '...' : t('billing.trial.addPayment.cta')}
+              </Button>
+            </Box>
+
+            {/* Pro */}
+            <Box sx={{ flex: '1 1 220px', border: '2px solid #3b82f6', borderRadius: 2, p: 3, position: 'relative' }}>
+              <Box sx={{ position: 'absolute', top: -12, left: 24, bgcolor: '#3b82f6', color: '#fff', px: 1.5, py: 0.25, borderRadius: 1, fontSize: 11, fontWeight: 700 }}>
+                RECOMENDADO
+              </Box>
+              <Typography variant="subtitle1" fontWeight={700} mb={0.5}>
+                {t('billing.plans.pro')}
+              </Typography>
+              <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
+                R$ 349
+                <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
+                  /mês
+                </Typography>
+              </Typography>
+              <Button
+                variant="primary"
+                fullWidth
+                disabled={loading}
+                onClick={() => handleSubscribe('pro')}
+              >
+                {loading ? '...' : t('billing.trial.addPayment.cta')}
+              </Button>
+            </Box>
+          </Box>
+        </Card>
+      )}
 
       {/* Subscribe to a Plan section (shown when no active subscription) */}
       {canSubscribe && (

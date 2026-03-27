@@ -4,22 +4,15 @@ import { Box, Typography, Paper } from '@mui/material';
 import { CancelOutlined as CancelIcon } from '@mui/icons-material';
 import { Button } from '../../components/common';
 import { useAppNavigation } from '../../hooks';
+import { BillingLayout } from '../../components/layout';
 
 const CheckoutCancelPage: React.FC = () => {
   const { t } = useTranslation();
   const { goTo } = useAppNavigation();
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        bgcolor: '#f1f5f9',
-        p: 3
-      }}
-    >
+    <BillingLayout>
+    <Box sx={{ width: '100%', maxWidth: 480 }}>
       <Paper
         elevation={3}
         sx={{
@@ -65,6 +58,7 @@ const CheckoutCancelPage: React.FC = () => {
         </Box>
       </Paper>
     </Box>
+    </BillingLayout>
   );
 };
 

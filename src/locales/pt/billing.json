@@ -25,7 +25,12 @@
       "endsToday": "Seu período de teste termina hoje",
       "endsTomorrow": "Seu período de teste termina amanhã",
       "expired": "Seu período de teste expirou",
-      "upgrade": "Assinar Agora"
+      "upgrade": "Assinar Agora",
+      "addPayment": {
+        "title": "Adicione um Método de Pagamento",
+        "description": "Você está no período de teste. Escolha um plano e cadastre seu cartão agora para continuar usando o LINCE após o término do teste.",
+        "cta": "Escolher Plano"
+      }
     },
     "actions": {
       "subscribe": "Assinar",
