@@ -50,17 +50,17 @@
     },
     "plans": {
       "none": "No Plan",
-      "starter": "Starter",
-      "pro": "Pro",
-      "enterprise": "Enterprise",
-      "starterDesc": "Ideal for growing companies.",
-      "proDesc": "For advanced operations with more features.",
-      "starterFeature1": "Up to 5 systems",
-      "starterFeature2": "Basic reports",
-      "starterFeature3": "Email support",
-      "proFeature1": "Unlimited systems",
-      "proFeature2": "Advanced reports + AI",
-      "proFeature3": "Priority support"
+      "starter": "Basic Plan",
+      "pro": "Professional Plan",
+      "enterprise": "Advanced Plan",
+      "starterDesc": "Ideal for small businesses and single-location operations.",
+      "proDesc": "For growing companies and service providers with multiple clients.",
+      "starterFeature1": "Up to 3 systems",
+      "starterFeature2": "Basic reports (PDF) + charts",
+      "starterFeature3": "AI Assistant — 35 insights/month",
+      "proFeature1": "Up to 18 systems",
+      "proFeature2": "Advanced reports (PDF + Word) + AI generation",
+      "proFeature3": "250 AI insights/month — Priority support"
     },
     "checkout": {
       "redirecting": "Redirecting to payment...",

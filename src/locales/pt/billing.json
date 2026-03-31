@@ -50,17 +50,17 @@
     },
     "plans": {
       "none": "Sem Plano",
-      "starter": "Starter",
-      "pro": "Pro",
-      "enterprise": "Enterprise",
-      "starterDesc": "Ideal para empresas em crescimento.",
-      "proDesc": "Para operações avançadas com mais recursos.",
-      "starterFeature1": "Até 5 sistemas",
-      "starterFeature2": "Relatórios básicos",
-      "starterFeature3": "Suporte por email",
-      "proFeature1": "Sistemas ilimitados",
-      "proFeature2": "Relatórios avançados + IA",
-      "proFeature3": "Suporte prioritário"
+      "starter": "Basic Plan",
+      "pro": "Professional Plan",
+      "enterprise": "Advanced Plan",
+      "starterDesc": "Ideal para pequenas empresas e operações em um único local.",
+      "proDesc": "Para empresas em crescimento e prestadores de serviços com múltiplos clientes.",
+      "starterFeature1": "Até 3 sistemas",
+      "starterFeature2": "Relatórios básicos (PDF) + gráficos",
+      "starterFeature3": "Assistente de IA — 35 insights/mês",
+      "proFeature1": "Até 18 sistemas",
+      "proFeature2": "Relatórios avançados (PDF + Word) + geração por IA",
+      "proFeature3": "250 insights de IA/mês — Suporte prioritário"
     },
     "checkout": {
       "redirecting": "Redirecionando para o pagamento...",

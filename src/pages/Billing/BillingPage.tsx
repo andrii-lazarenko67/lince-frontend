@@ -45,14 +45,17 @@ const statusColors: Record<SubscriptionStatus, 'success' | 'warning' | 'error' |
   none: 'default'
 };
 
+const BASIC_PRICE = `R$ ${import.meta.env.VITE_PLAN_BASIC_PRICE || '128'}`;
+const PRO_PRICE = `R$ ${import.meta.env.VITE_PLAN_PRO_PRICE || '349'}`;
+
 const PLAN_DETAILS: Record<'starter' | 'pro', { price: string; description: string; features: string[] }> = {
   starter: {
-    price: 'R$ 149',
+    price: BASIC_PRICE,
     description: 'billing.plans.starterDesc',
     features: ['billing.plans.starterFeature1', 'billing.plans.starterFeature2', 'billing.plans.starterFeature3']
   },
   pro: {
-    price: 'R$ 349',
+    price: PRO_PRICE,
     description: 'billing.plans.proDesc',
     features: ['billing.plans.proFeature1', 'billing.plans.proFeature2', 'billing.plans.proFeature3']
   }
@@ -294,7 +297,7 @@ const BillingPage: React.FC = () => {
                 {t('billing.plans.starter')}
               </Typography>
               <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
-                R$ 149
+                {BASIC_PRICE}
                 <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
                   /mês
                 </Typography>
@@ -312,13 +315,13 @@ const BillingPage: React.FC = () => {
             {/* Pro */}
             <Box sx={{ flex: '1 1 220px', border: '2px solid #3b82f6', borderRadius: 2, p: 3, position: 'relative' }}>
               <Box sx={{ position: 'absolute', top: -12, left: 24, bgcolor: '#3b82f6', color: '#fff', px: 1.5, py: 0.25, borderRadius: 1, fontSize: 11, fontWeight: 700 }}>
-                RECOMENDADO
+                {t('billing.changePlan.recommended')}
               </Box>
               <Typography variant="subtitle1" fontWeight={700} mb={0.5}>
                 {t('billing.plans.pro')}
               </Typography>
               <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
-                R$ 349
+                {PRO_PRICE}
                 <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
                   /mês
                 </Typography>
@@ -353,13 +356,13 @@ const BillingPage: React.FC = () => {
                 {t('billing.plans.starter')}
               </Typography>
               <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
-                R$ 149
+                {BASIC_PRICE}
                 <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
                   /mês
                 </Typography>
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                Ideal para empresas em crescimento.
+                {t('billing.plans.starterDesc')}
               </Typography>
               <Button
                 variant="outline"
@@ -395,19 +398,19 @@ const BillingPage: React.FC = () => {
                   fontWeight: 700
                 }}
               >
-                RECOMENDADO
+                {t('billing.changePlan.recommended')}
               </Box>
               <Typography variant="subtitle1" fontWeight={700} mb={0.5}>
                 {t('billing.plans.pro')}
               </Typography>
               <Typography variant="h5" fontWeight={800} color="primary.main" mb={1}>
-                R$ 349
+                {PRO_PRICE}
                 <Typography component="span" variant="body2" color="text.secondary" ml={0.5}>
                   /mês
                 </Typography>
               </Typography>
               <Typography variant="body2" color="text.secondary" mb={2}>
-                Para operações avançadas com mais recursos.
+                {t('billing.plans.proDesc')}
               </Typography>
               <Button
                 variant="primary"
@@ -510,8 +513,8 @@ const BillingPage: React.FC = () => {
         <DialogContent>
           <Typography variant="body2" color="text.secondary">
             {confirmPlan === 'pro'
-              ? t('billing.changePlan.confirmUpgradeMsg', { plan: t('billing.plans.pro'), price: 'R$ 349' })
-              : t('billing.changePlan.confirmDowngradeMsg', { plan: t('billing.plans.starter'), price: 'R$ 149' })}
+              ? t('billing.changePlan.confirmUpgradeMsg', { plan: t('billing.plans.pro'), price: PRO_PRICE })
+              : t('billing.changePlan.confirmDowngradeMsg', { plan: t('billing.plans.starter'), price: BASIC_PRICE })}
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2, gap: 1 }}>

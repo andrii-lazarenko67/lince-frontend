@@ -7,11 +7,56 @@ import StarIcon from '@mui/icons-material/Star';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 
+const env = import.meta.env;
+
+const PLAN_CONFIG = {
+  basic: {
+    price: `R$ ${env.VITE_PLAN_BASIC_PRICE || '128'}`,
+    systems: env.VITE_PLAN_BASIC_SYSTEMS || '3',
+    users: env.VITE_PLAN_BASIC_USERS || '5',
+    insights: env.VITE_PLAN_BASIC_AI_INSIGHTS || '35',
+    storage: env.VITE_PLAN_BASIC_STORAGE_GB || '10',
+  },
+  pro: {
+    price: `R$ ${env.VITE_PLAN_PRO_PRICE || '349'}`,
+    systems: env.VITE_PLAN_PRO_SYSTEMS || '18',
+    users: env.VITE_PLAN_PRO_USERS || '25',
+    insights: env.VITE_PLAN_PRO_AI_INSIGHTS || '250',
+    storage: env.VITE_PLAN_PRO_STORAGE_GB || '50',
+  },
+  advanced: {
+    storage: 'Ilimitado',
+  },
+};
+
+const ADDONS = {
+  extraUserPrice: env.VITE_ADDON_EXTRA_USER_PRICE || '15',
+  insightsPackageSize: env.VITE_ADDON_AI_INSIGHTS_PACKAGE_SIZE || '200',
+};
+
 const planMeta = [
-  { price: 'R$ 149', highlighted: false, isEnterprise: false },
-  { price: 'R$ 349', highlighted: true, isEnterprise: false },
+  { price: PLAN_CONFIG.basic.price, highlighted: false, isEnterprise: false },
+  { price: PLAN_CONFIG.pro.price, highlighted: true, isEnterprise: false },
   { price: 'Custom', highlighted: false, isEnterprise: true },
 ];
+
+function interpolateFeatures(features: string[], planKey: 'basic' | 'pro' | 'advanced'): string[] {
+  const cfg = planKey === 'basic' ? PLAN_CONFIG.basic : planKey === 'pro' ? PLAN_CONFIG.pro : null;
+  return features.map(f =>
+    f
+      .replace('{{basicSystems}}', PLAN_CONFIG.basic.systems)
+      .replace('{{basicUsers}}', PLAN_CONFIG.basic.users)
+      .replace('{{basicInsights}}', PLAN_CONFIG.basic.insights)
+      .replace('{{basicStorage}}', PLAN_CONFIG.basic.storage)
+      .replace('{{proSystems}}', PLAN_CONFIG.pro.systems)
+      .replace('{{proUsers}}', PLAN_CONFIG.pro.users)
+      .replace('{{proInsights}}', PLAN_CONFIG.pro.insights)
+      .replace('{{proStorage}}', PLAN_CONFIG.pro.storage)
+      .replace('{{advancedStorage}}', PLAN_CONFIG.advanced.storage)
+      .replace('{{extraUserPrice}}', ADDONS.extraUserPrice)
+      .replace('{{insightsPackageSize}}', ADDONS.insightsPackageSize)
+  );
+}
 
 const PricingSection: React.FC = () => {
   const navigate = useNavigate();
@@ -33,9 +78,19 @@ const PricingSection: React.FC = () => {
   const animDirs = ['anim-fade-right', 'anim-fade-up', 'anim-fade-left'];
   const animDurs = ['anim-duration-fast', 'anim-duration-normal', 'anim-duration-light-slow'];
 
-  const plans = t('landing.pricing.plans', { returnObjects: true }) as {
+  const rawPlans = t('landing.pricing.plans', { returnObjects: true }) as {
     name: string; period: string; description: string; badge: string; features: string[]; cta: string;
   }[];
+
+  const planKeys: ('basic' | 'pro' | 'advanced')[] = ['basic', 'pro', 'advanced'];
+  const plans = rawPlans.map((plan, i) => ({
+    ...plan,
+    features: interpolateFeatures(plan.features, planKeys[i])
+  }));
+
+  const footnote = (t('landing.pricing.footnote') as string)
+    .replace('{{extraUserPrice}}', ADDONS.extraUserPrice)
+    .replace('{{insightsPackageSize}}', ADDONS.insightsPackageSize);
 
   return (
     <section
@@ -180,7 +235,7 @@ const PricingSection: React.FC = () => {
         </div>
 
         <p className={`text-center text-slate-600 text-xs mt-10 anim-fade-up anim-duration-slow ${isVisible ? 'anim-visible' : ''}`}>
-          {t('landing.pricing.footnote')}
+          {footnote}
         </p>
       </div>
     </section>
